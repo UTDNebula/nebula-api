@@ -49,7 +49,7 @@ def search():
         return jsonify(data[name])
     return jsonify({"message": "course name not found."})
 
-def recursion(obj, grade=""):
+def recursion(obj, grade="CR"):
     if type(obj) == list and len(obj) == 1:
         return recursion(obj[0], grade=grade)
     if type(obj) == str:
