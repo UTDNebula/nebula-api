@@ -6,28 +6,65 @@ import copy
 
 app = Flask(__name__)
 
+# https://utdallas.collegescheduler.com/api/terms/2021%20Spring/subjects/CS/courses/3345
+
 with open("data/new.json", 'r') as f:
     data = json.loads(f.read())
+with open("data/major_requirements_processed.txt", 'r') as f:
+    degreePlan = json.loads(f.read())
 
 @app.route('/')
 def hello():
     return "Hello World!"
 
-@app.route('/update')
-def update():
-    num = None
-    with open("number.txt", 'r') as fr:
-        num = fr.read()
-        num = int(num) + 1 if num != '' else 1
-    with open("number.txt", 'w') as fw:
-        fw.write(str(num))
-    return str(num)
 
-@app.route('/number')
-def number():
-    with open("number.txt", 'r') as fr:
-        num = fr.read()
-    return num
+@app.route('/degreeAll')
+def degreeAll():
+    return jsonify(degreePlan)
+
+
+@app.route('/degree')
+def degree():
+    school = request.args.get('school')
+    major = request.args.get('major')
+    try:
+        result = jsonify(degreePlan[school][major])
+    except:
+        result = {"message": "school/major not found"}
+    return result
+
+
+@app.route('/core')
+def core():
+    school = request.args.get('school')
+    major = request.args.get('major')
+    try:
+        result = jsonify(degreePlan[school][major]["Core"])
+    except:
+        result = {"message": "school/major not found"}
+    return result
+
+
+@app.route('/major')
+def major():
+    school = request.args.get('school')
+    major = request.args.get('major')
+    try:
+        result = jsonify(degreePlan[school][major]["Major"])
+    except:
+        result = {"message": "school/major not found"}
+    return result
+
+
+@app.route('/elective')
+def elective():
+    school = request.args.get('school')
+    major = request.args.get('major')
+    try:
+        result = jsonify(degreePlan[school][major]["Elective"])
+    except:
+        result = {"message": "school/major not found"}
+    return result
 
 
 @app.route("/prerequisite")
