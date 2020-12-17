@@ -15,11 +15,11 @@ const collectionName = "courses";
 db.initialize(dbName, collectionName, function (dbCollection) { 
 
     // runs at server start
-    dbCollection.find().toArray(function (err, result) {
-        if (err) throw err;
-        // result has all courses' information
-        // console.log(result);
-    });
+    // dbCollection.find().toArray(function (err, result) {
+    //     if (err) throw err;
+    //     // result has all courses' information
+    //     // console.log(result);
+    // });
 
     // POST: adds a new course
     server.post("/courses", (request, response) => {
@@ -118,6 +118,10 @@ db.initialize(dbName, collectionName, function (dbCollection) {
 const port = process.env.PORT || 3000;
 
 server.use(body_parser.urlencoded({ extended: true }))
+
+server.get("/", (req, res) => {
+    res.sendFile(__dirname + '/index.html')
+})
 
 server.listen(port, function () {
     console.log('listening on 3000')
