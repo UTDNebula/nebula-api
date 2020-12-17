@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 import json
 
-degreePlan = pd.read_excel('20.21 CS Degree Plan1.xlsm', index_col=None, header=None)
+filename = 'ecs_computer-science'
+
+degreePlan = pd.read_excel(f'{filename}.xlsm', index_col=None, header=None)
 df = degreePlan.fillna('N/A')
 formatted = df.values.tolist()
 
@@ -26,5 +28,5 @@ for start in starts:
         courses.append(course)
     all_info[name] = courses
 
-with open('data.json', 'w') as f:
+with open(f'{filename}.json', 'w') as f:
     json.dump(all_info, f)
