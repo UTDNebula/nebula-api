@@ -1,5 +1,6 @@
 # Admin Console
 
+Heroku endpoint: `https://comet-data-service.herokuapp.com/`
 ## Courses
 
 1. `GET /`:  UI for CRUD console
@@ -12,7 +13,7 @@
 
 ### Course format:
 
-```json
+```javascript
 {
     "id": 0, 
     "course": "ACCT 2301", 
