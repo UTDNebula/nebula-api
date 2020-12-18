@@ -24,6 +24,7 @@ db.initialize(dbName, collectionName, function (dbCollection) {
     // POST: adds a new course
     server.post("/courses", (request, response) => {
         const course = request.body;
+        console.log(course);
         dbCollection.insertOne(course, (error, result) => { 
             if (error) throw error;
             dbCollection.find().toArray((_error, _result) => {
@@ -117,7 +118,10 @@ db.initialize(dbName, collectionName, function (dbCollection) {
 
 const port = process.env.PORT || 3000;
 
-server.use(body_parser.urlencoded({ extended: true }))
+server.use(body_parser.urlencoded({ extended: false }))
+server.use(body_parser.json());
+server.use(express.static(__dirname + '/public'));
+
 
 server.get("/", (req, res) => {
     res.sendFile(__dirname + '/index.html')

@@ -4,15 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Console</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-    <h1>Admin Console</h1>
-    <form action="/quotes" method="POST">
-        <input type="text" placeholder="name" name="name">
-        <input type="text" placeholder="quote" name="quote">
-        <button type="submit">Submit</button>
-    </form>
+
+    <div class="container">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="add-number">Course Number</label>
+                    <input type="text" class="form-control" id="add-number">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="add-name">Course Name</label>
+                    <input type="text" class="form-control" id="add-name">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="add-description">Course Description</label>
+                    <input type="text" class="form-control" id="add-description">
+                </div>
+            </div>
+            <button id="add-submit" type="submit" class="btn btn-primary">Add</button>
+        </form>
+        <hr />
+        <form>
+            <div class="form-group">
+                <label for="search">Course Name</label>
+                <input type="text" class="form-control" id="search" aria-describedby="searchHelp"
+                    placeholder="Enter course name">
+                <small id="searchHelp" class="form-text text-muted">Ex. CS 3341</small>
+            </div>
+            <button id="search-name" type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <div id="cards-container">
+        </div>
+    </div>
+    <script src="index.js"></script>
 </body>
 
 </html>
