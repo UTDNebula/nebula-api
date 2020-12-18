@@ -18,6 +18,7 @@ function setupEvents() {
 				console.log(res);
 			})
 		} else if (event.target.id === 'search-name') {
+			event.preventDefault();
 			fetch(`/courses/name/${name_input.value}`).then(res => res.json()).then(res => {
 				if (res !== null) {
 					container.innerHTML = "";
