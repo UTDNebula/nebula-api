@@ -23,13 +23,17 @@ db.initialize(dbName, collectionName, function (dbCollection) {
 
     // POST: adds a new course
     server.post("/courses", (request, response) => {
-        const course = request.body;
+        var course = request.body;
         console.log(course);
-        dbCollection.insertOne(course, (error, result) => { 
-            if (error) throw error;
-            dbCollection.find().toArray((_error, _result) => {
-                if (_error) throw _error;
-                response.json(_result);
+        dbCollection.countDocuments({}, (err, res) => {
+            console.log(res);
+            course["id"] = res + 1;
+            dbCollection.insertOne(course, (error, result) => { 
+                if (error) throw error;
+                dbCollection.find().toArray((_error, _result) => {
+                    if (_error) throw _error;
+                    response.json(_result);
+                });
             });
         });
     });
@@ -65,7 +69,8 @@ db.initialize(dbName, collectionName, function (dbCollection) {
     // GET: get a course with name
     server.get("/courses/name/:name", (request, response) => {
         const name = request.params.name;
-        dbCollection.findOne({ course: name }, (error, result) => {
+        console.log(name);
+        dbCollection.find({ course: {$regex: `^${name}.*`, $options: 'i'} }).toArray((error, result) => {
             if (error) throw error;
             response.json(result);
         });
@@ -97,7 +102,7 @@ db.initialize(dbName, collectionName, function (dbCollection) {
 
     // DELETE: deletes course with id
     server.delete("/courses/:id", (request, response) => {
-        const courseId = request.params.id;
+        const courseId = parseInt(request.params.id);
         console.log("Deleting course with id: ", courseId);
     
         dbCollection.deleteOne({ id: courseId }, function(error, result) {
@@ -124,7 +129,7 @@ server.use(express.static(__dirname + '/public'));
 
 
 server.get("/", (req, res) => {
-    res.sendFile(__dirname + '/index.html')
+    res.sendFile(__dirname + 'public/index.html')
 })
 
 server.listen(port, function () {

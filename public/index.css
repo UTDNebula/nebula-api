@@ -2,6 +2,10 @@
     margin-top: 15px;
   }
 
+  .form-group {
+      width: 100%;
+  }
+
   .card {
       width: 100%;
       margin-top: 10px;
