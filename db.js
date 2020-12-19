@@ -1,8 +1,8 @@
-
+require('dotenv').config()
 // mongodb driver
 const MongoClient = require("mongodb").MongoClient;
 
-const dbConnectionUrl = "mongodb+srv://root:root@cluster0.r219d.mongodb.net/data?retryWrites=true&w=majority";
+const dbConnectionUrl = process.env.DB_URL;
 
 function initialize(
     dbName,
