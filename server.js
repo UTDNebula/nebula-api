@@ -4,7 +4,7 @@ const body_parser = require("body-parser");
 require('dotenv').config()
 
 // used to init database
-// const course_info = require('./data/scheduler_info.json')
+const course_info = require('./data/scheduler_prereq.json')
 
 const db = require("./db");
 const dbName = "data";
@@ -12,7 +12,7 @@ const collectionName = "courses";
 
 // initializes database (currently MongoDB Atlas) and defines routes
 
-db.initialize(dbName, collectionName, function (dbCollection) { 
+db.initialize(dbName, collectionName, function (dbCollection) {
 
     // runs at server start
     // dbCollection.find().toArray(function (err, result) {
@@ -28,7 +28,7 @@ db.initialize(dbName, collectionName, function (dbCollection) {
         dbCollection.countDocuments({}, (err, res) => {
             console.log(res);
             course["id"] = res + 1;
-            dbCollection.insertOne(course, (error, result) => { 
+            dbCollection.insertOne(course, (error, result) => {
                 if (error) throw error;
                 dbCollection.find().toArray((_error, _result) => {
                     if (_error) throw _error;
@@ -41,17 +41,19 @@ db.initialize(dbName, collectionName, function (dbCollection) {
     // used to load database
     // server.get("/init", (request, response) => {
     //     var obj = [];
-    //     for(var name in course_info) {
+    //     for (var name in course_info) {
     //         var newObj = course_info[name];
     //         newObj["course"] = newObj["subjectId"] + " " + newObj["number"];
     //         obj.push(newObj);
     //     }
-    //     dbCollection.insertMany(obj, (error, result) => { // callback of insertOne
-    //         if (error) throw error;
-    //         // return updated list
-    //         dbCollection.find().toArray((_error, _result) => { // callback of find
-    //             if (_error) throw _error;
-    //             response.json(_result);
+    //     dbCollection.remove({}, (err, res) => {
+    //         dbCollection.insertMany(obj, (error, result) => { // callback of insertOne
+    //             if (error) throw error;
+    //             // return updated list
+    //             dbCollection.find().toArray((_error, _result) => { // callback of find
+    //                 if (_error) throw _error;
+    //                 response.json(_result);
+    //             });
     //         });
     //     });
     // });
@@ -70,7 +72,7 @@ db.initialize(dbName, collectionName, function (dbCollection) {
     server.get("/courses/name/:name", (request, response) => {
         const name = request.params.name;
         console.log(name);
-        dbCollection.find({ course: {$regex: `^${name}.*`, $options: 'i'} }).toArray((error, result) => {
+        dbCollection.find({ course: { $regex: `^${name}.*`, $options: 'i' } }).toArray((error, result) => {
             if (error) throw error;
             response.json(result);
         });
@@ -104,11 +106,11 @@ db.initialize(dbName, collectionName, function (dbCollection) {
     server.delete("/courses/:id", (request, response) => {
         const courseId = parseInt(request.params.id);
         console.log("Deleting course with id: ", courseId);
-    
-        dbCollection.deleteOne({ id: courseId }, function(error, result) {
+
+        dbCollection.deleteOne({ id: courseId }, function (error, result) {
             if (error) throw error;
             // send back entire updated list after successful request
-            dbCollection.find().toArray(function(_error, _result) {
+            dbCollection.find().toArray(function (_error, _result) {
                 if (_error) throw _error;
                 response.json(_result);
             });

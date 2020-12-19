@@ -109,13 +109,22 @@ var maps = {};
 
 function addCard(course) {
 	maps[course.id] = course;
+	var prerequisites = "";
+	var corequisites = "";
+	var prerequisiteOrCorequisites = "";
+	if(course.prerequisites !== "") prerequisites = `<h6 class="card-subtitle mb-3 text-muted">Prerequisites: ${course.prerequisites}</h6>`;
+	if(course.corequisites !== "") corequisites = `<h6 class="card-subtitle mb-3 text-muted">Corequisites: ${course.corequisites}</h6>`;
+	if(course.prerequisiteOrCorequisites) prerequisiteOrCorequisites = `<h6 class="card-subtitle mb-3 text-muted">Prerequisite or Corequisite: ${course.prerequisiteOrCorequisites}</h6>`;
 	var card = htmlToElement(`
 	<div class="card">
 		<div class="card-body">
 			<h5 class="card-title">${course.course}</h5>
 			<h6 class="card-subtitle mb-2 text-muted">${course.title}</h6>
 			<p class="card-text">${course.description}</p>
-				<button value="${course.id}" class="edit-course btn btn-primary">Edit</button>
+			${prerequisites}
+			${corequisites}
+			${prerequisiteOrCorequisites}
+			<button value="${course.id}" class="edit-course btn btn-primary">Edit</button>
 			<button value="${course.id}" class="delete-course btn btn-primary">Delete</button>
 		</div>
 	</div>`);
