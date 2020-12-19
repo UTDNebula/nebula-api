@@ -1,12 +1,20 @@
 .container, .well{
     margin-top: 15px;
-  }
+}
 
-  .form-group {
-      width: 100%;
-  }
+.form-group {
+    width: 100%;
+}
 
-  .card {
-      width: 100%;
-      margin-top: 10px;
-  }
+.card {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#hidden-id {
+    display: none;
+}
+
+#edit-button {
+    display: none;
+}

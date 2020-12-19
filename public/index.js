@@ -11,10 +11,8 @@
 	})*/
 })();
 
-var addModal = true;
-
 function setupEvents() {
-	var fields = ["number", "name", "description", "hours", "period", "inclass", "outclass"];
+	var fields = ["course", "title", "description"];
 	for (var field of fields) {
 		var fg = htmlToElement(`
 		<div class="form-group ">
@@ -23,6 +21,15 @@ function setupEvents() {
         </div>
 		`);
 		document.getElementsByClassName("form-row")[0].appendChild(fg);
+	}
+	for (var field of fields) {
+		var fg = htmlToElement(`
+		<div class="form-group ">
+			<label for="edit-${field}">Course ${field[0].toUpperCase() + field.slice(1)}</label>
+			<input type="text" class="form-control" id="edit-${field}">
+		</div>
+		`);
+		document.getElementsByClassName("form-row")[1].appendChild(fg);
 	}
 	document.body.addEventListener('click', function (event) {
 		if (event.target.classList.contains('delete-course')) {
@@ -43,7 +50,7 @@ function setupEvents() {
 			}
 			var uri = "/courses";
 			var method = "POST";
-			if(!addModal) {
+			if (!addModal) {
 				uri = "/courses/" + event.target.getAttribute("value");
 				method = "PUT";
 			}
@@ -54,9 +61,31 @@ function setupEvents() {
 			}).then(res => res.json()).then(res => {
 				console.log(res);
 			})
+		} else if (event.target.id === 'edit-submit') {
+			console.log(event.target);
+			var id = parseInt(document.getElementById("hidden-id").textContent);
+			var obj = {id: id};
+			for (var field of fields) {
+				obj[field] = document.getElementById(`edit-${field}`).value;
+			}
+			var uri = "/courses/" + id;
+			var method = "PUT";
+			fetch(uri, {
+				method: method,
+				headers: { 'Content-type': 'application/json' },
+				body: JSON.stringify(obj)
+			}).then(res => res.json()).then(res => {
+				console.log(res);
+			})
 		} else if (event.target.classList.contains("edit-course")) {
-			addModal = false;
-
+			document.querySelector("#edit-button").click();
+			console.log(maps);
+			console.log(event.target.getAttribute("value"));
+			var mapping = maps[parseInt(event.target.getAttribute("value"))];
+			document.getElementById("hidden-id").textContent = mapping["id"];
+			for (var field of fields) {
+				document.getElementById(`edit-${field}`).value = mapping[field];
+			}
 		}
 	});
 }
@@ -76,22 +105,20 @@ function search() {
 var container = document.getElementById("cards-container");
 var name_input = document.getElementById("search");
 var allCards = [];
+var maps = {};
 
 function addCard(course) {
+	maps[course.id] = course;
 	var card = htmlToElement(`
 	<div class="card">
-				<div class="card-body">
-					<h5 class="card-title">${course.course}</h5>
-					<h6 class="card-subtitle mb-2 text-muted">${course.name}</h6>
-					<p class="card-text">${course.description}</p>
-					<h6 class="card-subtitle mb-3 text-muted">
-						Hours: ${course.hours} | Period: ${course.period} | Inclass: ${course.inclass} |
-				Outclass: ${course.outclass}
-					</h6>
-					<button value="${course.id}" class="edit-course btn btn-primary">Edit</button>
-					<button value="${course.id}" class="delete-course btn btn-primary">Delete</button>
-				</div>
-			</div>`);
+		<div class="card-body">
+			<h5 class="card-title">${course.course}</h5>
+			<h6 class="card-subtitle mb-2 text-muted">${course.title}</h6>
+			<p class="card-text">${course.description}</p>
+				<button value="${course.id}" class="edit-course btn btn-primary">Edit</button>
+			<button value="${course.id}" class="delete-course btn btn-primary">Delete</button>
+		</div>
+	</div>`);
 	container.appendChild(card);
 }
 

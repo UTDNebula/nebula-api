@@ -4,7 +4,7 @@ const body_parser = require("body-parser");
 require('dotenv').config()
 
 // used to init database
-// const course_info = require('./data/course_info.json')
+// const course_info = require('./data/scheduler_info.json')
 
 const db = require("./db");
 const dbName = "data";
@@ -43,7 +43,7 @@ db.initialize(dbName, collectionName, function (dbCollection) {
     //     var obj = [];
     //     for(var name in course_info) {
     //         var newObj = course_info[name];
-    //         newObj["course"] = name;
+    //         newObj["course"] = newObj["subjectId"] + " " + newObj["number"];
     //         obj.push(newObj);
     //     }
     //     dbCollection.insertMany(obj, (error, result) => { // callback of insertOne
@@ -86,11 +86,11 @@ db.initialize(dbName, collectionName, function (dbCollection) {
 
     // PUT: edit course with id
     server.put("/courses/:id", (request, response) => {
-        const courseId = request.params.id;
+        const courseId = parseInt(request.params.id);
         const course = request.body;
         console.log("Original: ", courseId, "; New: ", course);
 
-        dbCollection.updateOne({ id: courseId }, { $set: course }, (error, result) => {
+        dbCollection.updateOne({ "id": courseId }, { $set: course }, (error, result) => {
             if (error) throw error;
             // returns updated list TODO: change to limit range (either frontend or backend)
             dbCollection.find().toArray(function (_error, _result) {
