@@ -95,7 +95,15 @@ function setupEvents() {
 				document.getElementById(`edit-${field}`).value = mapping[field] ? mapping[field] : "";
 			}
 			console.log(mapping["prerequisites"]);
-			prettyPrint(mapping["prerequisites"]);
+		} else if (event.target.classList.contains("prereq-course")) {
+			var mapping = maps[parseInt(event.target.getAttribute("value"))];
+			if(mapping["prerequisites"] !== "") {
+				var res = prettyPrint(mapping["prerequisites"]);
+				document.querySelector("#graph-button").click();
+				drawGraph(res, mapping["course"]);
+			} else {
+				alert("This course has no prerequisites.");
+			}
 		}
 	});
 }
@@ -135,6 +143,7 @@ function addCard(course) {
 			${corequisites}
 			${prerequisiteOrCorequisites}
 			<button value="${course.id}" class="edit-course btn btn-primary">Edit</button>
+			<button value="${course.id}" class="prereq-course btn btn-primary">Show Prereq</button>
 			<button value="${course.id}" class="delete-course btn btn-primary">Delete</button>
 		</div>
 	</div>`);

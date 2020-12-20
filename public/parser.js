@@ -176,8 +176,10 @@ function parseInput(text) {
 }
 
 function prettyPrint(text) {
+    console.log(text);
     var res = parseInput(text);
     console.log(JSON.stringify(res, null, 2));
+    return res;
 }
 
     // const inputText = "((CE 2336 or CS 2336 or CS 2337) with a grade of C or better or CS 3333) and (CE 2305 or CS 2305) with a grade of C or better and (CS 2340 or SE 2340 or CE 4304 or EE 4304)"

@@ -11,10 +11,16 @@
     margin-top: 10px;
 }
 
-#hidden-id {
+#hidden-id, #edit-button, #graph-button {
     display: none;
 }
 
-#edit-button {
-    display: none;
+#mynetwork {
+    width: 100%;
+    height: 800px;
+    border: 1px solid lightgray;
+}
+
+.modal-dialog {
+    max-width: 80%;
 }
