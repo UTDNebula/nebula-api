@@ -106,6 +106,8 @@ app.delete("/courses/:id", async (req, res) => {
             res.json({ "deleted": false });
         } else {
             snapshot.docs[0].ref.delete();
+            const counter = courseCol.doc("_counter");
+            await counter.update({ count: decrement }); 
             res.json({ "deleted": true });
         }
     })
