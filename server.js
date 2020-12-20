@@ -24,12 +24,16 @@ const decrement = admin.firestore.FieldValue.increment(-1);
 // DEBUG init database data
 const course_info = require("./data/scheduler_prereq.json")
 
-// START server routing
-const port = process.env.PORT || 3000
-
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + "/public"))
+
+// START server routing
+const port = process.env.PORT || 3000;
+
+app.listen(port, function () {
+    console.log(`Server started on ${port}`)
+})
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "public/index.html")
@@ -100,7 +104,7 @@ app.delete("/courses/:id", async (req, res) => {
     const courseId = parseInt(req.params.id);
     console.log(`Deleting course with id ${courseId}`);
     const result = db.collection("courses").where("id", "==", courseId);
-    result.get().then(snapshot => {
+    result.get().then(async (snapshot) => {
         if (snapshot.empty) {
             console.log("not found");
             res.json({ "deleted": false });
@@ -143,7 +147,3 @@ app.put("/courses/:id", async (req, res) => {
 //     batch.commit();
 //     res.json({"message": "data saved successfully!"})
 // })
-
-app.listen(port, () => {
-    console.log(`Server started on ${port}`)
-})
