@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "comet-data-service",
     "public": "public",
     "ignore": [
       "firebase.json",
