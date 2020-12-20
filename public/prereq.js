@@ -24,6 +24,9 @@ function setup(obj, level) {
             var nid = setup(obj["courses"], level);
             return nid;
         }
+        if(level == 0) label = rootname;
+        nodes.push({id: myId, label: label, level: level});
+        return myId;
     } else if (obj["and"] || obj["or"]) {
         label = "Node";
         var andOr = obj["and"] ? obj["and"] : obj["or"];
@@ -31,13 +34,21 @@ function setup(obj, level) {
             var nextid = setup(next, level + 1);
             edges.push({from: myId, to: nextid, label: obj["and"] ? "and" : "or"});
         }
+        if(level == 0) label = rootname;
+        nodes.push({id: myId, label: label, level: level});
+        return myId;
     } else if (obj["course"]) {
         label = obj["course"];
         if(obj["grade"] && obj["grade"] !== "") label += " " + obj["grade"];
+        if(level == 0) {
+            nodes.push({id: 0, label: rootname, level: 0});
+            nodes.push({id: 1, label: label, level: 1});
+            edges.push({from: 0, to: 1});
+        } else {
+            nodes.push({id: myId, label: label, level: level});
+            return myId;
+        }
     }
-    if(level == 0) label = rootname;
-    nodes.push({id: myId, label: label, level: level});
-    return myId;
 }
 
 function draw(obj) {
