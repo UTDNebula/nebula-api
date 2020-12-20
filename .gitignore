@@ -2,3 +2,4 @@ env/*
 scraper/secret.json
 node_modules/
 .DS_STORE
+firestore_key.json

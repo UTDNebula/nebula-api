@@ -1,139 +1,152 @@
-const express = require("express");
-const server = express();
-const body_parser = require("body-parser");
+// START Firestore init
+const admin = require('firebase-admin')
+const serviceAccount = require('./firestore_key.json')
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+})
+const db = admin.firestore();
+const increment = admin.firestore.FieldValue.increment(1);
+const decrement = admin.firestore.FieldValue.increment(-1);
+// END Firestore init
+
+// START server config
+const express = require("express")
+const app = express()
+const bodyParser = require("body-parser")
 require('dotenv').config()
+// END server config
 
-// used to init database
-const course_info = require('./data/scheduler_prereq.json')
+// DEBUG init database data
+const course_info = require("./data/scheduler_prereq.json")
 
-const db = require("./db");
-const dbName = "data";
-const collectionName = "courses";
+// START server routing
+const port = process.env.PORT || 3000
 
-// initializes database (currently MongoDB Atlas) and defines routes
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(express.static(__dirname + "/public"))
 
-db.initialize(dbName, collectionName, function (dbCollection) {
-
-    // runs at server start
-    // dbCollection.find().toArray(function (err, result) {
-    //     if (err) throw err;
-    //     // result has all courses' information
-    //     // console.log(result);
-    // });
-
-    // POST: adds a new course
-    server.post("/courses", (request, response) => {
-        var course = request.body;
-        console.log(course);
-        dbCollection.countDocuments({}, (err, res) => {
-            console.log(res);
-            course["id"] = res + 1;
-            dbCollection.insertOne(course, (error, result) => {
-                if (error) throw error;
-                dbCollection.find().toArray((_error, _result) => {
-                    if (_error) throw _error;
-                    response.json(_result);
-                });
-            });
-        });
-    });
-
-    // used to load database
-    // server.get("/init", (request, response) => {
-    //     var obj = [];
-    //     for (var name in course_info) {
-    //         var newObj = course_info[name];
-    //         newObj["course"] = newObj["subjectId"] + " " + newObj["number"];
-    //         obj.push(newObj);
-    //     }
-    //     dbCollection.remove({}, (err, res) => {
-    //         dbCollection.insertMany(obj, (error, result) => { // callback of insertOne
-    //             if (error) throw error;
-    //             // return updated list
-    //             dbCollection.find().toArray((_error, _result) => { // callback of find
-    //                 if (_error) throw _error;
-    //                 response.json(_result);
-    //             });
-    //         });
-    //     });
-    // });
-
-    // GET: get a course with id
-    server.get("/courses/id/:id", (request, response) => {
-        const courseId = parseInt(request.params.id);
-        dbCollection.findOne({ id: courseId }, (error, result) => {
-            if (error) throw error;
-            // return course
-            response.json(result);
-        });
-    });
-
-    // GET: get a course with name
-    server.get("/courses/name/:name", (request, response) => {
-        const name = request.params.name;
-        console.log(name);
-        dbCollection.find({ course: { $regex: `^${name}.*`, $options: 'i' } }).toArray((error, result) => {
-            if (error) throw error;
-            response.json(result);
-        });
-    });
-
-    // GET: get all courses
-    server.get("/courses", (request, response) => {
-        dbCollection.find().toArray((error, result) => {
-            if (error) throw error;
-            response.json(result);
-        });
-    });
-
-    // PUT: edit course with id
-    server.put("/courses/:id", (request, response) => {
-        const courseId = parseInt(request.params.id);
-        const course = request.body;
-        console.log("Original: ", courseId, "; New: ", course);
-
-        dbCollection.updateOne({ "id": courseId }, { $set: course }, (error, result) => {
-            if (error) throw error;
-            // returns updated list TODO: change to limit range (either frontend or backend)
-            dbCollection.find().toArray(function (_error, _result) {
-                if (_error) throw _error;
-                response.json(_result);
-            });
-        });
-    });
-
-    // DELETE: deletes course with id
-    server.delete("/courses/:id", (request, response) => {
-        const courseId = parseInt(request.params.id);
-        console.log("Deleting course with id: ", courseId);
-
-        dbCollection.deleteOne({ id: courseId }, function (error, result) {
-            if (error) throw error;
-            // send back entire updated list after successful request
-            dbCollection.find().toArray(function (_error, _result) {
-                if (_error) throw _error;
-                response.json(_result);
-            });
-        });
-    });
-
-}, function (err) {
-    throw (err);
-});
-
-// start listening on 3000 or host port
-
-const port = process.env.PORT || 3000;
-
-server.use(body_parser.urlencoded({ extended: false }))
-server.use(body_parser.json());
-server.use(express.static(__dirname + '/public'));
-
-
-server.get("/", (req, res) => {
-    res.sendFile(__dirname + 'public/index.html')
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "public/index.html")
 })
 
-server.listen(port, function () {
-    console.log('listening on 3000')
+app.get("/courses", async (req, res) => {
+    const courses = db.collection("courses")
+    const allCourses = await courses.get()
+    var result = []
+    allCourses.forEach(c => {
+        result.push(c.data());
+    })
+    res.json(result)
 })
+
+app.post("/courses", async (req, res) => {
+    const course = req.body;
+    console.log(course);
+
+    // get counter to set new id
+    const courseCol = db.collection("courses");
+    const counter = courseCol.doc("_counter");
+    const count = await counter.get();
+    console.log(count.data());
+    var newId = count.data()["count"];
+    course["id"] = parseInt(newId);
+
+    await courseCol.doc(course["course"]).set(course);
+    await counter.update({ count: increment });
+
+    res.json({ "message": "Course updated and counter updated"});
+})
+
+app.get("/courses/id/:id", async (req, res) => {
+    const courseId = parseInt(req.params.id);
+    const coursesRef = db.collection("courses");
+    const idCourses = await coursesRef.where("id", "==", courseId).get();
+    if(idCourses.empty) {
+        res.json({});
+    } else {
+        res.json(idCourses.docs[0].data());
+    }
+})
+
+app.get("/courses/name/:name", async (req, res) => {
+    const name = req.params.name.toUpperCase();
+    console.log(name);
+
+    const end = name.replace(/.$/, c => String.fromCharCode(c.charCodeAt(0) + 1));
+    const courseCol = db.collection("courses");
+    const snapshot = await courseCol.where("course", ">=", name)
+                                    .where("course",  "<", end)
+                                    .get();
+    if(snapshot.empty) {
+        console.log("not found");
+        res.json([]);
+    } else {
+        console.log("found!");
+        var result = [];
+        snapshot.forEach(doc => {
+            result.push(doc.data());
+        })
+        res.json(result);
+    }
+})
+
+app.delete("/courses/:id", async (req, res) => {
+    const courseId = parseInt(req.params.id);
+    console.log(`Deleting course with id ${courseId}`);
+    const result = db.collection("courses").where("id", "==", courseId);
+    result.get().then(snapshot => {
+        if(snapshot.empty) {
+            console.log("not found");
+            res.json({"deleted": false});
+        } else {
+            snapshot.docs[0].ref.delete();
+            res.json({"deleted": true});
+        }
+    })
+})
+
+app.put("/courses/:id", async (req, res) => {
+    const courseId = parseInt(req.params.id);
+    const course = req.body;
+    db.collection("courses").where("id", "==", courseId).get()
+        .then(snapshot => {
+            if(snapshot.empty) {
+                res.json({"updated": false})
+            } else {
+                snapshot.docs[0].ref.update(course);
+                res.json({"updated": true})
+            }
+        })
+})
+
+// init database
+// app.get("/initDB", async (req, res) => {
+//     var batch = db.batch()
+//     course_info.forEach((course, index) => {
+//         var ref = db.collection("courses").doc(course["course"]);
+//         batch.set(ref, course);
+//         // Firestore only allows 500 docs every batch write
+//         if(index % 400 == 0) {
+//             batch.commit()
+//             batch = db.batch()
+//             console.log(`batch ${index/400} saved.`)
+//         }
+//     })
+//     batch.commit();
+//     res.json({"message": "data saved successfully!"})
+// })
+
+app.listen(port, () => {
+    console.log(`Server started on ${port}`)
+})
+// END server routing
+
+// read();
+
+// async function read() {
+//     const snapshot = await db.collection('users').get();
+//     snapshot.forEach((doc) => {
+//         console.log(doc.id, '=>', doc.data());
+//     });
+// }

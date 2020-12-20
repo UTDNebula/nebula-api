@@ -43,11 +43,12 @@ function generateOr(children) {
     else return children
 }
 
+var check = false;
+var taken_courses = [];
+
 class Calculator extends EmbeddedActionsParser {
     constructor() {
         super(allTokens);
-        let check = false;
-
         const $ = this;
 
         $.RULE("expression", () => {
@@ -76,7 +77,10 @@ class Calculator extends EmbeddedActionsParser {
                 else value &= $.SUBRULE2($.orExpression);
             });
 
-            return value.length === 1 ? value[0] : generateAnd(value)
+            if (check)
+                return value;
+            else
+                return value.length === 1 ? value[0] : generateAnd(value)
         });
 
         $.RULE("orExpression", () => {
@@ -96,7 +100,10 @@ class Calculator extends EmbeddedActionsParser {
                 else value |= val;
             });
 
-            return value.length === 1 ? value[0] : generateOr(value)
+            if (check)
+                return value;
+            else
+                return value.length === 1 ? value[0] : generateOr(value)
         });
 
         $.RULE("atomicBooleanExpression", () => $.OR([
@@ -107,7 +114,8 @@ class Calculator extends EmbeddedActionsParser {
             {
                 ALT: () => {
                     var rand = $.CONSUME(RandomRequest).image
-                    return { "course": rand, "type": "special" }
+                    if(check) return true;
+                    else return { "course": rand, "type": "special" }
                 }
             }
         ]));
@@ -128,8 +136,13 @@ class Calculator extends EmbeddedActionsParser {
                 // 2. grade meets minimum
                 if (courseNum != null) {
                     // do all checks here
-                    if (courseNum[1].includes("CS 2305"))
-                        return true;
+                    for (var taken_course of taken_courses) {
+                        if (courseNum[1].includes(taken_course)) {
+                            console.log(courseNum[1] + " satisfied");
+                            return true;
+                        }
+                    }
+                    return false;
                 }
                 return false;
             } else {
@@ -151,7 +164,8 @@ class Calculator extends EmbeddedActionsParser {
                 grade = $.CONSUME(Grade).image;
             })
             var res = { "courses": expValue, "grade": grade }
-            return res
+            if(check) return expValue;
+            else return res
         });
 
         // very important to call this after all the rules have been defined.
@@ -179,6 +193,15 @@ function prettyPrint(text) {
     console.log(text);
     var res = parseInput(text);
     console.log(JSON.stringify(res, null, 2));
+    return res;
+}
+
+function verify(text, courses) {
+    check = true;
+    taken_courses = courses;
+    var res = parseInput(text);
+    check = false;
+    taken_courses = [];
     return res;
 }
 

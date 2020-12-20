@@ -23,6 +23,7 @@ for course in courses:
             newCourse["corequisites"] = match[1]
             count += 1
     newCourse["description"] = re.sub(r"\. (Prerequisite[s]* or Corequisite|Prerequisite|Corequisite)[s]*: (.*?)(?=(\.))", "", course["description"])
+    newCourse["course"] = course["subjectId"] + " " + course["number"]
     updated_courses.append(newCourse)
 
 with open("data/scheduler_prereq.json", 'w') as f:

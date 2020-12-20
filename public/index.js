@@ -21,7 +21,7 @@
 	// })
 })();
 
-function setupEvents() {
+async function setupEvents() {
 	var fields = ["course", "title", "description", "prerequisites", "prerequisiteOrCorerequisites", "corequisites"];
 	for (var field of fields) {
 		var fg = htmlToElement(`
@@ -84,8 +84,9 @@ function setupEvents() {
 				method: method,
 				headers: { 'Content-type': 'application/json' },
 				body: JSON.stringify(obj)
-			}).then(res => res.json()).then(res => {
+			}).then(res => res.json()).then(async (res) => {
 				console.log(res);
+				search();
 			})
 		} else if (event.target.classList.contains("edit-course")) {
 			document.querySelector("#edit-button").click();
