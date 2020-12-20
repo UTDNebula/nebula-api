@@ -1,18 +1,28 @@
 (function () {
 	addModal = true;
 	setupEvents();
-	/*fetch("/courses").then(res => res.json()).then(res => {
-		console.log(res);
-		allCards = res;
-		for(var i = 0; i < 10; i++) {
-			addCard(allCards[i]);
-		}
-
-	})*/
+	// fetch("/courses").then(res => res.json()).then(res => {
+	// 	console.log(res);
+	// 	var total = 0;
+	// 	var error = 0;
+	// 	for(var i = 0; i < res.length; i++) {
+	// 		var checkString = res[i]["prerequisites"];
+	// 		if(checkString && checkString !== "") {
+	// 			try {
+	// 				parseInput(checkString);
+	// 			} catch(err) {
+	// 				console.log(res[i]["course"] + ": " + checkString);
+	// 				error++;
+	// 			}
+	// 			total++;
+	// 		}
+	// 	}
+	// 	console.log(`total: ${total}, errors: ${error}`);
+	// })
 })();
 
 function setupEvents() {
-	var fields = ["course", "title", "description"];
+	var fields = ["course", "title", "description", "prerequisites", "prerequisiteOrCorerequisites", "corequisites"];
 	for (var field of fields) {
 		var fg = htmlToElement(`
 		<div class="form-group ">
@@ -79,13 +89,13 @@ function setupEvents() {
 			})
 		} else if (event.target.classList.contains("edit-course")) {
 			document.querySelector("#edit-button").click();
-			console.log(maps);
-			console.log(event.target.getAttribute("value"));
 			var mapping = maps[parseInt(event.target.getAttribute("value"))];
 			document.getElementById("hidden-id").textContent = mapping["id"];
 			for (var field of fields) {
-				document.getElementById(`edit-${field}`).value = mapping[field];
+				document.getElementById(`edit-${field}`).value = mapping[field] ? mapping[field] : "";
 			}
+			console.log(mapping["prerequisites"]);
+			prettyPrint(mapping["prerequisites"]);
 		}
 	});
 }
