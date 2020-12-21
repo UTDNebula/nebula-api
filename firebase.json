@@ -11,7 +11,7 @@
       {
         "source": "**",
         "run": {
-          "serviceId": "comet-data-service-demo", 
+          "serviceId": "comet-data-service", 
           "region": "us-central1"
         }
       }
