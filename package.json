@@ -1,6 +1,6 @@
 {
   "name": "comet-data-service",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "API for Comet Planning",
   "main": "server.js",
   "scripts": {
