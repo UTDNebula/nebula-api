@@ -2,7 +2,7 @@
 
 <head>
     <meta name="google-signin-client_id"
-        content="***REMOVED***-5csqgrjl6raqo5q52ohrdp6alr9ef8ol.apps.googleusercontent.com">
+        content="<%= OAUTH_CLIENT_ID %>">
     <meta name="google-signin-cookiepolicy" content="single_host_origin">
     <meta name="google-signin-scope" content="profile email">
     <!-- <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script> -->
@@ -25,7 +25,6 @@
         <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
         <!-- <button type="button" class="btn btn-primary" onclick="popup()">Sign in</button> -->
     </div>
-
     <!-- FIREBASE CONFIG -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
@@ -33,13 +32,13 @@
     <script>
         // Your web app's Firebase configuration
         var firebaseConfig = {
-            apiKey: "***REMOVED***",
-            authDomain: "cometplanning.firebaseapp.com",
+            apiKey: "<%= FIREBASE_API_KEY %>", 
+            authDomain: "cometplanning.firebaseapp.com", 
             databaseURL: "https://cometplanning.firebaseio.com",
             projectId: "cometplanning",
             storageBucket: "cometplanning.appspot.com",
-            messagingSenderId: "***REMOVED***",
-            appId: "1:***REMOVED***:web:1c12ccb40998f2f3492342"
+            messagingSenderId: "<%= FIREBASE_MESSAGING_ID %>",
+            appId: "<%= FIREBASE_APP_ID %>"
         };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
