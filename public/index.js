@@ -1,30 +1,12 @@
 (function () {
 	addModal = true;
 	setupEvents();
-	// fetch("/courses").then(res => res.json()).then(res => {
-	// 	console.log(res);
-	// 	var total = 0;
-	// 	var error = 0;
-	// 	for(var i = 0; i < res.length; i++) {
-	// 		var checkString = res[i]["prerequisites"];
-	// 		if(checkString && checkString !== "") {
-	// 			try {
-	// 				parseInput(checkString);
-	// 			} catch(err) {
-	// 				console.log(res[i]["course"] + ": " + checkString);
-	// 				error++;
-	// 			}
-	// 			total++;
-	// 		}
-	// 	}
-	// 	console.log(`total: ${total}, errors: ${error}`);
-	// })
 })();
 
 async function setupEvents() {
-	var fields = ["course", "title", "description", "prerequisites", "prerequisiteOrCorerequisites", "corequisites"];
-	for (var field of fields) {
-		var fg = htmlToElement(`
+	const fields = ["course", "title", "description", "prerequisites", "prerequisiteOrCorerequisites", "corequisites"];
+	for (let field of fields) {
+		let fg = htmlToElement(`
 		<div class="form-group ">
 			<label for="add-${field}">Course ${field[0].toUpperCase() + field.slice(1)}</label>
 			<input type="text" class="form-control" id="add-${field}">
@@ -32,8 +14,8 @@ async function setupEvents() {
 		`);
 		document.getElementsByClassName("form-row")[0].appendChild(fg);
 	}
-	for (var field of fields) {
-		var fg = htmlToElement(`
+	for (let field of fields) {
+		let fg = htmlToElement(`
 		<div class="form-group ">
 			<label for="edit-${field}">Course ${field[0].toUpperCase() + field.slice(1)}</label>
 			<input type="text" class="form-control" id="edit-${field}">
@@ -54,12 +36,12 @@ async function setupEvents() {
 			search();
 		} else if (event.target.id === 'add-submit') {
 			console.log(event.target);
-			var obj = {};
-			for (var field of fields) {
+			let obj = {};
+			for (let field of fields) {
 				obj[field] = document.getElementById(`add-${field}`).value;
 			}
-			var uri = "/courses";
-			var method = "POST";
+			let uri = "/courses";
+			const method = "POST";
 			if (!addModal) {
 				uri = "/courses/" + event.target.getAttribute("value");
 				method = "PUT";
@@ -73,13 +55,13 @@ async function setupEvents() {
 			})
 		} else if (event.target.id === 'edit-submit') {
 			console.log(event.target);
-			var id = parseInt(document.getElementById("hidden-id").textContent);
-			var obj = {id: id};
-			for (var field of fields) {
+			let id = parseInt(document.getElementById("hidden-id").textContent);
+			let obj = {id: id};
+			for (let field of fields) {
 				obj[field] = document.getElementById(`edit-${field}`).value;
 			}
-			var uri = "/courses/" + id;
-			var method = "PUT";
+			let uri = "/courses/" + id;
+			const method = "PUT";
 			fetch(uri, {
 				method: method,
 				headers: { 'Content-type': 'application/json' },
@@ -90,16 +72,16 @@ async function setupEvents() {
 			})
 		} else if (event.target.classList.contains("edit-course")) {
 			document.querySelector("#edit-button").click();
-			var mapping = maps[parseInt(event.target.getAttribute("value"))];
+			let mapping = maps[parseInt(event.target.getAttribute("value"))];
 			document.getElementById("hidden-id").textContent = mapping["id"];
-			for (var field of fields) {
+			for (let field of fields) {
 				document.getElementById(`edit-${field}`).value = mapping[field] ? mapping[field] : "";
 			}
 			console.log(mapping["prerequisites"]);
 		} else if (event.target.classList.contains("prereq-course")) {
-			var mapping = maps[parseInt(event.target.getAttribute("value"))];
+			let mapping = maps[parseInt(event.target.getAttribute("value"))];
 			if(mapping["prerequisites"] !== "") {
-				var res = prettyPrint(mapping["prerequisites"]);
+				let res = prettyPrint(mapping["prerequisites"]);
 				document.querySelector("#graph-button").click();
 				drawGraph(res, mapping["course"]);
 			} else {
@@ -113,7 +95,7 @@ function search() {
 	fetch(`/courses/name/${name_input.value}`).then(res => res.json()).then(res => {
 		if (res !== null) {
 			container.innerHTML = "";
-			for (var course of res)
+			for (let course of res)
 				addCard(course);
 		} else {
 			alert("Course not found!");
@@ -121,20 +103,20 @@ function search() {
 	})
 }
 
-var container = document.getElementById("cards-container");
-var name_input = document.getElementById("search");
-var allCards = [];
-var maps = {};
+let container = document.getElementById("cards-container");
+let name_input = document.getElementById("search");
+let allCards = [];
+let maps = {};
 
 function addCard(course) {
 	maps[course.id] = course;
-	var prerequisites = "";
-	var corequisites = "";
-	var prerequisiteOrCorequisites = "";
+	let prerequisites = "";
+	let corequisites = "";
+	let prerequisiteOrCorequisites = "";
 	if(course.prerequisites !== "") prerequisites = `<h6 class="card-subtitle mb-3 text-muted">Prerequisites: ${course.prerequisites}</h6>`;
 	if(course.corequisites !== "") corequisites = `<h6 class="card-subtitle mb-3 text-muted">Corequisites: ${course.corequisites}</h6>`;
 	if(course.prerequisiteOrCorequisites) prerequisiteOrCorequisites = `<h6 class="card-subtitle mb-3 text-muted">Prerequisite or Corequisite: ${course.prerequisiteOrCorequisites}</h6>`;
-	var card = htmlToElement(`
+	let card = htmlToElement(`
 	<div class="card">
 		<div class="card-body">
 			<h5 class="card-title">${course.course}</h5>
@@ -152,8 +134,8 @@ function addCard(course) {
 }
 
 function htmlToElement(html) {
-	var template = document.createElement('template');
-	html = html.trim(); // Never return a text node of whitespace as the result
+	const template = document.createElement('template');
+	html = html.trim();
 	template.innerHTML = html;
 	return template.content.firstChild;
 }

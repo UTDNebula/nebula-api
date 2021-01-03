@@ -26,3 +26,13 @@ Testing server: `https://comet-data-api.herokuapp.com/`
 - `prerequisite`
   - params = name (CS 3345, CS 1200, ...)
   - Returns the prerequisites for the given course name in a structured format
+
+## Implementation
+
+### Prerequisite Parser
+
+[Pyparsing](https://github.com/pyparsing/pyparsing) is used for parsing prerequisite strings. This is now deprecated as we have moved to using [Chevrotain](https://github.com/SAP/chevrotain), which is a similar (but slightly more flexible and easier to use) language parser in JavaScript.
+
+## Notes
+
++ `Procfile` and `runtime.txt` are for Heroku deployment

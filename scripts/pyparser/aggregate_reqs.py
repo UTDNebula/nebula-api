@@ -1,10 +1,15 @@
+"""
+Original implementation of gathering prerequisite information from course catalog data. This is now deprecated as UTD's schedule planner has a much better API for collecting course information (see link below for schedule planner documentation).
+
+https://github.com/au5ton/docs/wiki/CollegeScheduler-(*.collegescheduler.com)
+"""
+
 import pyparsing as pp
 from pyparsing import oneOf
 import json
 import copy
 
 
-# https://utdallas.collegescheduler.com/api/terms/2021%20Spring/subjects/CS/courses/3345
 
 with open("data/new.json", 'r') as f:
     data = json.loads(f.read())
@@ -93,5 +98,5 @@ def courseToId():
         json.dump(id_co, f)
 
 if __name__ == '__main__':
-    #start()
+    start()
     courseToId()

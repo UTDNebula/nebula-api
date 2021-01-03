@@ -1,3 +1,7 @@
+"""
+Extracts course information from ECS degree plans and store it as JSON format.
+"""
+
 import pandas as pd
 import numpy as np
 import json

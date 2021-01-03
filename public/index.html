@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Comet Data Service Admin Console</title>
+    <meta name="google-signin-client_id"
+        content="***REMOVED***-5csqgrjl6raqo5q52ohrdp6alr9ef8ol.apps.googleusercontent.com">
+    <meta name="google-signin-cookiepolicy" content="single_host_origin">
+    <meta name="google-signin-scope" content="profile email">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -12,7 +16,13 @@
 
 <body>
 
-    <div class="container">
+    <div class="container" style="display: none">
+        <div id="sign-in-status"></div>
+        <div id="sign-in" style="float: right">
+            <button class="btn btn-primary" type="button" onclick="logout()">Sign Out</button>
+        </div>
+
+        <pre id="account-details"></pre>
         <p id="hidden-id"></p>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" id="add-button">
@@ -126,15 +136,34 @@
 
     <script src="https://unpkg.com/chevrotain/lib/chevrotain.min.js" crossorigin="anonymous"></script>
     <script src="parser.js"></script>
+    <script>
+        function onLoad() {
+            gapi.load('auth2', function() {
+                gapi.auth2.init();
+            })
+        }
+    </script>
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="/__/firebase/8.2.1/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
     <!-- Initialize Firebase -->
-    <script src="/__/firebase/init.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "***REMOVED***",
+            authDomain: "cometplanning.firebaseapp.com",
+            databaseURL: "https://cometplanning.firebaseio.com",
+            projectId: "cometplanning",
+            storageBucket: "cometplanning.appspot.com",
+            messagingSenderId: "***REMOVED***",
+            appId: "1:***REMOVED***:web:1c12ccb40998f2f3492342"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="auth.js"></script>
     <script src="index.js"></script>
 </body>
 
