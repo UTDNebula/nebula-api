@@ -11,7 +11,7 @@ formatted = df.values.tolist()
 # each group = [name row, data start row, data end row]
 starts = [[3, 5, 19], [21, 22, 39], [41, 42, 49], [51, 52, 57]]
 
-def lineToDict(row):
+def line_to_dict(row):
     lower_div = row[0]
     upper_div = row[1]
     title = row[3]
@@ -24,7 +24,7 @@ for start in starts:
     name = formatted[start[0]][0]
     courses = []
     for i in range(start[1], start[2] + 1):
-        course = lineToDict(formatted[i])
+        course = line_to_dict(formatted[i])
         courses.append(course)
     all_info[name] = courses
 

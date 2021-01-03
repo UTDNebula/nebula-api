@@ -130,10 +130,8 @@ def process(st):
 
     complex_expr << expr
 
-    string = st # "((CE 3311 or EE 3311) and (CE 3320 or EE 3320) and (CE 3345 or CS 3345 or SE 3345) and (CE 3354 or CS 3354 or SE 3354)) or (ENGR 3300 and EE 3302 and (CE 3311 or EE 3311) and (CE 3320 or EE 3320)) or (ENGR 3300 and EE 3302 and (CE 3345 or CS 3345 or SE 3345))"
-    # string = "RHET 1302 with GRADE_C"
     try:
-        rep = complex_expr.parseString(string)
+        rep = complex_expr.parseString(st)
         strRep = str(rep).replace('\'', '"')
 
         js = json.loads(strRep)
