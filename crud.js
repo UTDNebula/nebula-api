@@ -4,13 +4,13 @@ require('dotenv').config();
 var firebase = require('firebase/app');
 require('firebase/auth');
 const firebaseConfig = {
-    apiKey: '***REMOVED***',
+    apiKey: process.env.FIREBASE_API_KEY,
     authDomain: 'cometplanning.firebaseapp.com',
     databaseURL: 'https://cometplanning.firebaseio.com',
     projectId: 'cometplanning',
     storageBucket: 'cometplanning.appspot.com',
-    messagingSenderId: '***REMOVED***',
-    appId: '***REMOVED***'
+    messagingSenderId: process.env.FIREBASE_MESSAGING_ID,
+    appId: process.env.FIREBASE_APP_ID
 };
 firebase.initializeApp(firebaseConfig);
 // END Firebase Auth
