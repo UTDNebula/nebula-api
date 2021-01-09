@@ -1,0 +1,20 @@
+{
+  "hosting": {
+    "site": "comet-data-service",
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "comet-data-service", 
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}

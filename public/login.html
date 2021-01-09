@@ -1,0 +1,89 @@
+<html>
+
+<head>
+    <meta name="google-signin-client_id"
+        content="<%= OAUTH_CLIENT_ID %>">
+    <meta name="google-signin-cookiepolicy" content="single_host_origin">
+    <meta name="google-signin-scope" content="profile email">
+    <!-- <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+    <style>
+        #main {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        <!-- <button type="button" class="btn btn-primary" onclick="popup()">Sign in</button> -->
+    </div>
+    <!-- FIREBASE CONFIG -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "<%= FIREBASE_API_KEY %>", 
+            authDomain: "cometplanning.firebaseapp.com", 
+            databaseURL: "https://cometplanning.firebaseio.com",
+            projectId: "cometplanning",
+            storageBucket: "cometplanning.appspot.com",
+            messagingSenderId: "<%= FIREBASE_MESSAGING_ID %>",
+            appId: "<%= FIREBASE_APP_ID %>"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    <!--END FIREBASE CONFIG-->
+
+    <script>
+        function onSignIn(googleUser) {
+            console.log('Google Auth Response', googleUser);
+            // We need to register an Observer on Firebase Auth to make sure auth is initialized.
+            var unsubscribe = firebase.auth().onAuthStateChanged((firebaseUser) => {
+                unsubscribe();
+                // Check if we are already signed-in Firebase with the correct user.
+                var id_token = googleUser.getAuthResponse().id_token;
+                fetch("/auth", {
+                    method: 'POST', headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }, body: JSON.stringify({ token: id_token })
+                }).then(res => {
+                    window.location.replace("/console");
+                })
+                // if (!isUserEqual(googleUser, firebaseUser)) {
+                //     // Build Firebase credential with the Google ID token.
+
+                // } else {
+                //     console.log('User already signed-in Firebase.');
+                //     window.location.replace("/console")
+                // }
+            });
+        }
+        function isUserEqual(googleUser, firebaseUser) {
+            if (firebaseUser) {
+                var providerData = firebaseUser.providerData;
+                for (var i = 0; i < providerData.length; i++) {
+                    if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+                        providerData[i].uid === googleUser.getBasicProfile().getId()) {
+                        // We don't need to reauth the Firebase connection.
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    </script>
+</body>
+
+</html>

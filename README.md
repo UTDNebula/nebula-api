@@ -11,6 +11,8 @@ Part of the Comet Planning project.
 - Python 3.5 (or higher)
 
 ### Development
+See the [docs](docs/index.md) for more information about the project.
+
 Clone the repository.
 
 - The `scraper` directory contains scripts to obtain data.
