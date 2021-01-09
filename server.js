@@ -5,7 +5,7 @@ const express = require('express');
 const app = express();
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
-app.set('views', __dirname + "/public");
+app.set('views', __dirname + '/public');
 
 const bodyParser = require('body-parser');
 require('dotenv').config();
@@ -40,7 +40,7 @@ app.get('/logout', logout);
 app.post('/auth', auth)
 
 app.get('/', (req, res) => {
-    res.render('login', {...process.env});
+    res.render('login', { ...process.env });
 })
 
 app.use(express.static(__dirname + '/public'))

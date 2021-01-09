@@ -15,12 +15,14 @@ formatted = df.values.tolist()
 # each group = [name row, data start row, data end row]
 starts = [[3, 5, 19], [21, 22, 39], [41, 42, 49], [51, 52, 57]]
 
+
 def line_to_dict(row):
     lower_div = row[0]
     upper_div = row[1]
     title = row[3]
     course = row[4]
     return {"title": title, "course": course, "LD": lower_div, "UD": upper_div}
+
 
 all_info = {}
 
