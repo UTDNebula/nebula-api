@@ -1,0 +1,10 @@
+.env
+env/*
+scraper/secret.json
+node_modules/
+.DS_STORE
+firestore_key.json
+.firebase/
+.firebaserc
+deploy_log.sh
+data/
