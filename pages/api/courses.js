@@ -1,4 +1,4 @@
-import { db, increment } from '../../lib/firebase';
+import { db, increment } from '../../lib/firebaseAdmin';
 
 export default async (req, res) => {
     if (req.method === 'POST') {
