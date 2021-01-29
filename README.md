@@ -1,7 +1,7 @@
 # Comet Data Service
 *A database for some really useful UTD data.*
 
-Part of the Comet Planning project.
+Part of the Nebula project.
 
 [A work in progress]
 
