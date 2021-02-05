@@ -1,38 +1,22 @@
-import Head from 'next/head';
 import firebase from '../lib/firebase';
+import { useEffect } from 'react';
 import { useAuth } from './use-auth';
-import nookies from "nookies";
-import { auth } from "../lib/firebaseAdmin";
-import Link from "next/link";
 import { useRouter } from 'next/router'
-
-
-export const getServerSideProps = async (ctx) => {
-    try {
-        const cookies = nookies.get(ctx);
-        const token = await auth.verifyIdToken(cookies.token);
-        return {
-            redirect: {
-                permanent: false,
-                destination: "/console",
-            },
-            props: {}
-        };
-    } catch (err) {
-        // user not logged in
-        return { props: {} };
-    }
-}
 
 export default function Home() {
 
-    // const auth = useAuth();
+    const auth = useAuth();
     const router = useRouter();
 
+    useEffect(() => {
+        if(auth.user) {
+            router.push("/console");
+        }
+    })
+
     return (
-        <div>
-            <p>Please log in:</p>
-            <button className="button" onClick={() => {
+        <div className="min-h-screen min-w-screen flex">
+            <button className="button rounded-lg p-4 bg-blue-200 hover:bg-blue-400 mx-auto place-self-center text-xl font-light" onClick={() => {
                 var provider = new firebase.auth.GoogleAuthProvider();
                 firebase.auth()
                     .signInWithPopup(provider)
@@ -42,7 +26,7 @@ export default function Home() {
                     }).catch((error) => {
                         console.error(error);
                     });
-            }}>Click me</button>
+            }}>Log In</button>
         </div>
     );
 }

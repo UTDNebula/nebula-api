@@ -4,7 +4,7 @@ import nookies from 'nookies';
 
 const authContext = createContext();
 
-export function ProvideAuth({ children }) {
+export default function ProvideAuth({ children }) {
     const auth = useProvideAuth();
     return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 }

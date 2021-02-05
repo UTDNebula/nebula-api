@@ -20,7 +20,7 @@ const authCheck = async (req) => {
 export default async function handler(req, res) {
     const id = parseInt(req.query.id);
     if (req.method === 'GET') {
-        db.collection('courses')
+        await db.collection('courses')
             .where('id', '==', id)
             .get()
             .then((querysnapshot) => {
@@ -35,8 +35,9 @@ export default async function handler(req, res) {
             res.json({ "message": "not authorized." });
             return;
         }
-        const course = req.body;
-        db.collection('courses')
+        const course = JSON.parse(req.body);
+        console.log(course);
+        await db.collection('courses')
             .where('id', '==', id)
             .get()
             .then((snapshot) => {
@@ -55,7 +56,7 @@ export default async function handler(req, res) {
         }
         console.log(`deleting course with id ${id}`);
         const result = db.collection('courses').where('id', '==', id);
-        result.get().then(async (snapshot) => {
+        await result.get().then(async (snapshot) => {
             if (snapshot.empty) {
                 console.log('not found');
                 res.json({ deleted: false });
@@ -67,4 +68,5 @@ export default async function handler(req, res) {
             }
         });
     }
+    return 0;
 }
