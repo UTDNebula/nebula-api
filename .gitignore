@@ -26,9 +26,9 @@ yarn-error.log*
 
 # local env files
 .env.local
+.env.production
 .env.development.local
 .env.test.local
-.env.production
 .env
 
 # vercel
@@ -37,4 +37,3 @@ yarn-error.log*
 # custom
 misc/
 deploy_log.sh
-p.txt
