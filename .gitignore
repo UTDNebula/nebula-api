@@ -36,3 +36,5 @@ yarn-error.log*
 
 # custom
 misc/
+deploy_log.sh
+p.txt
