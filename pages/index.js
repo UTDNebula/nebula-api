@@ -16,7 +16,7 @@ export default function Home() {
 
     return (
         <div className="min-h-screen min-w-screen flex">
-            <button className="button rounded-lg p-4 bg-blue-200 hover:bg-blue-400 mx-auto place-self-center text-xl font-light" onClick={() => {
+            <button className="button py-2 px-4 rounded-md shadow-md bg-blue-600 hover:bg-blue-700 mx-auto place-self-center text-xl text-white" onClick={() => {
                 var provider = new firebase.auth.GoogleAuthProvider();
                 firebase.auth()
                     .signInWithPopup(provider)

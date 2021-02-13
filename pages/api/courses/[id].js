@@ -1,4 +1,4 @@
-import { db, decrement } from '../../../lib/firebaseAdmin';
+import { db, increment, decrement } from '../../../lib/firebaseAdmin';
 import { parseCookies } from 'nookies';
 import { auth } from '../../../lib/firebaseAdmin';
 
@@ -62,11 +62,35 @@ export default async function handler(req, res) {
                 res.json({ deleted: false });
             } else {
                 snapshot.docs[0].ref.delete();
+                const courseCol = db.collection('courses');
                 const counter = courseCol.doc('_counter');
                 await counter.update({ count: decrement });
                 res.json({ deleted: true });
             }
         });
+    } else if (req.method === 'POST') {
+        const authorized = await authCheck(req);
+        if (!authorized) {
+            res.json({ "message": "not authorized." });
+            return;
+        }
+
+        const course = JSON.parse(req.body);
+        console.log(course);
+        console.log(req.body);
+
+        // get counter to set new id
+        const courseCol = db.collection('courses');
+        const counter = courseCol.doc('_counter');
+        const count = await counter.get();
+        console.log(count.data());
+        const newId = count.data()['count'];
+        course['id'] = parseInt(newId);
+
+        await courseCol.doc(course['course']).set(course);
+        await counter.update({ count: increment });
+
+        res.json({ message: 'Course updated and counter updated' });
     }
     return 0;
 }

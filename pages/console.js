@@ -10,20 +10,45 @@ const AuthenticatedPage = (props) => {
     const [input, setInput] = useState('');
     const [data, setData] = useState('');
     const [open, setOpen] = useState(null);
+    const [method, setMethod] = useState('');
+    const [message, setMessage] = useState('No results found.')
 
     const auth = useAuth();
     const router = useRouter();
 
     const search = async () => {
+        setMessage('Searching database...');
         setData(await fetch(`/api/courses/search?name=${input}`).then(res => res.json()));
+        console.log(data.length);
+        setMessage('No results found.');
     }
 
     const editCourse = (course) => {
+        setMethod("PUT");
         setOpen(course);
     }
 
-    const deleteCourse = (id) => {
+    const addModal = (course) => {
+        setMethod("POST");
+        setOpen({
+            "course": "",
+            "description": "",
+            "titleLong": "",
+            "hours": "",
+            "inclass": "",
+            "number": "",
+            "outclass": "",
+            "period": "",
+            "prerequisites": "",
+            "title": ""
+        });
+    }
+
+    const deleteCourse = async (id) => {
         console.log("deleting " + id);
+        await fetch(`/api/courses/${id}`, {
+            method: "DELETE",
+        }).then(res => console.log(res.json()));
     }
 
     useEffect(() => {
@@ -33,13 +58,17 @@ const AuthenticatedPage = (props) => {
     })
 
     const close = async (course, update=false) => {
+        console.log(method);
+        console.log(course);
         if (update) {
             await fetch(`/api/courses/${course.id}`, {
-                method: 'PUT',
+                method: method,
                 body: JSON.stringify(course)
-            }).then(res => res.json()).then(msg => console.log(msg));
+            }).then(res => res.json()).then(msg => console.log(msg))
+            .catch(err => console.error(err));
         }
         setOpen(null);
+        setMethod('');
     }
 
     return (
@@ -58,7 +87,7 @@ const AuthenticatedPage = (props) => {
                 <div className="flex mb-8">
                     <input 
                         value={input} 
-                        className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full shadow-md focus:outline-none ring-2 focus:ring-blue-600" 
+                        className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block shadow-md focus:outline-none ring-2 focus:ring-blue-600" 
                         placeholder="search term"
                         onInput={e => setInput(e.target.value)}
                         onKeyDown={(e) => {
@@ -68,13 +97,16 @@ const AuthenticatedPage = (props) => {
                     <button className="p-2 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
                         onClick={search}
                     >Search</button>
+                    <button className="mx-4 p-2 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
+                        onClick={addModal}
+                    >Add Course</button>
                 </div>
                 <div className="mt-4 grid grid-cols-1 gap-8">
-                    {data ?
+                    {data && data.length != 0 ?
                         data.map((course) => {
                             return <Course key={course.id} course={course} editCourse={editCourse} deleteCourse={deleteCourse} />
                         })
-                    : <p className="text-center">No results found.</p>
+                    : <p className="text-center">{message}</p>
                     }
                 </div>
             </div>

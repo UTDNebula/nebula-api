@@ -1,8 +1,9 @@
 import { db, increment } from '../../lib/firebaseAdmin';
 
 export default async (req, res) => {
+    console.log(req.method);
     if (req.method === 'POST') {
-        const course = req.body;
+        const course = JSON.parse(req.body);
         console.log(course);
 
         // get counter to set new id
@@ -18,4 +19,6 @@ export default async (req, res) => {
 
         res.json({ message: 'Course updated and counter updated' });
     }
+
+    return 0;
 };
