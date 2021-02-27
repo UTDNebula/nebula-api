@@ -1,13 +1,12 @@
-import admin from "firebase-admin";
-import { GetStaticProps } from "next";
+import admin from 'firebase-admin';
 
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId: process.env.firestore_project_id,
-      privateKey: process.env.firestore_private_key.replace(/\\n/g, "\n"),
+      privateKey: process.env.firestore_private_key.replace(/\\n/g, '\n'),
       clientEmail: process.env.firestore_client_email,
-    })
+    }),
   });
 }
 

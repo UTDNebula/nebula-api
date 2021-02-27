@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p $PORT"
+    "start": "next start -p $PORT",
+    "pretty": "prettier --write \"./**/*.{js,jsx,json,ts,tsx}\""
   },
   "dependencies": {
     "autoprefixer": "^10.2.3",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@types/react": "^17.0.2",
+    "prettier": "^2.2.1",
     "typescript": "^4.2.2"
   }
 }

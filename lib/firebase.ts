@@ -8,11 +8,11 @@ const firebaseConfig = {
   projectId: 'cometplanning',
   storageBucket: 'cometplanning.appspot.com',
   messagingSenderId: process.env.NEXT_PUBLIC_firebase_messagingSenderId,
-  appId: process.env.NEXT_PUBLIC_firebase_appId
+  appId: process.env.NEXT_PUBLIC_firebase_appId,
 };
 
 if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
 }
 
 export default firebase;
