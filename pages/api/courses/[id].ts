@@ -1,24 +1,9 @@
-import { db, increment, decrement } from '../../../lib/firebaseAdmin';
-import { parseCookies } from 'nookies';
-import { auth } from '../../../lib/firebaseAdmin';
+import { db, increment, decrement } from "../../../lib/firebaseAdmin"
+import { NextApiRequest, NextApiResponse } from 'next';
+import { authCheck } from '../auth';
 
-const authCheck = async (req) => {
-    const cookies = parseCookies({ req });
-    if (!cookies) return false;
-    try {
-        const token = await auth.verifyIdToken(cookies.token);
-        const { uid, email } = token;
-        console.log(email);
-        return true;
-    } catch (err) {
-        // not logged in
-        console.log("no login")
-        return false;
-    }
-}
-
-export default async function handler(req, res) {
-    const id = parseInt(req.query.id);
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const id = parseInt(req.query.id as string);
     if (req.method === 'GET') {
         await db.collection('courses')
             .where('id', '==', id)

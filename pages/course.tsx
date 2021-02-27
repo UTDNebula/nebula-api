@@ -1,4 +1,17 @@
-const Course = (props) => {
+
+export type courseType = {
+    titleLong: string,
+    id: string,
+    description: string
+};
+
+type courseProps = {
+    course: courseType,
+    editCourse: (course: courseType) => any,
+    deleteCourse: (id: string) => any
+};
+
+const Course: React.FunctionComponent<courseProps> = (props) => {
    
     const course = props.course;
     const editCourse = props.editCourse;

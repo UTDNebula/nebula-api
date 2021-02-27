@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAuth } from './use-auth';
 import { useRouter } from 'next/router'
 
-export default function Home() {
+const Home: React.FunctionComponent = () => {
 
     const auth = useAuth();
     const router = useRouter();
@@ -21,7 +21,6 @@ export default function Home() {
                 firebase.auth()
                     .signInWithPopup(provider)
                     .then((result) => {
-                        console.log(result.user);
                         router.push("/console")
                     }).catch((error) => {
                         console.error(error);
@@ -30,3 +29,5 @@ export default function Home() {
         </div>
     );
 }
+
+export default Home;

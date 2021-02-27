@@ -1,6 +1,12 @@
 import { useState } from 'react';
+import { courseType } from './course'
 
-const Modal = (props) => {
+type ModalProps = {
+  info: courseType,
+  close: (course: courseType | null, save: boolean) => any,
+};
+
+const Modal: React.FunctionComponent<ModalProps> = (props) => {
 
   const [course, setCourse] = useState(props.info);
 

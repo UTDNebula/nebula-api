@@ -1,6 +1,8 @@
 import { db, increment } from '../../lib/firebaseAdmin';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async (req, res) => {
+// TODO: fallback in case of empty ID, should find better way
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     console.log(req.method);
     if (req.method === 'POST') {
         const course = JSON.parse(req.body);

@@ -5,10 +5,10 @@ import { useRouter } from 'next/router';
 import Course from './course';
 import Modal from './modal';
 
-const AuthenticatedPage = (props) => {
+const AuthenticatedPage: React.FunctionComponent = () => {
 
     const [input, setInput] = useState('');
-    const [data, setData] = useState('');
+    const [data, setData] = useState([]);
     const [open, setOpen] = useState(null);
     const [method, setMethod] = useState('');
     const [message, setMessage] = useState('No results found.')
@@ -17,9 +17,8 @@ const AuthenticatedPage = (props) => {
     const router = useRouter();
 
     const search = async () => {
-        setMessage('Searching database...');
+        setMessage(`Searching database for ${input}...`);
         setData(await fetch(`/api/courses/search?name=${input}`).then(res => res.json()));
-        console.log(data.length);
         setMessage('No results found.');
     }
 
@@ -45,7 +44,6 @@ const AuthenticatedPage = (props) => {
     }
 
     const deleteCourse = async (id) => {
-        console.log("deleting " + id);
         await fetch(`/api/courses/${id}`, {
             method: "DELETE",
         }).then(res => console.log(res.json()));
@@ -58,8 +56,6 @@ const AuthenticatedPage = (props) => {
     })
 
     const close = async (course, update=false) => {
-        console.log(method);
-        console.log(course);
         if (update) {
             await fetch(`/api/courses/${course.id}`, {
                 method: method,
@@ -89,7 +85,10 @@ const AuthenticatedPage = (props) => {
                         value={input} 
                         className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block shadow-md focus:outline-none ring-2 focus:ring-blue-600" 
                         placeholder="search term"
-                        onInput={e => setInput(e.target.value)}
+                        onInput={e => {
+                            const value = e.currentTarget.value;
+                            setInput(value);
+                        }}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') search();
                         }}

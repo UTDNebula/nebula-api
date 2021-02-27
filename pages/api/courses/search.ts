@@ -1,9 +1,8 @@
 import { db } from '../../../lib/firebaseAdmin';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async (req, res) => {
-    const name = req.query.name.toUpperCase();
-    console.log(name);
-
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+    const name = (req.query.name as string).toUpperCase();
     const end = name.replace(/.$/, (c) =>
         String.fromCharCode(c.charCodeAt(0) + 1)
     );
@@ -13,10 +12,8 @@ export default async (req, res) => {
         .where('course', '<', end)
         .get();
     if (snapshot.empty) {
-        console.log('not found');
         res.json([]);
     } else {
-        console.log('found!');
         const result = [];
         snapshot.forEach((doc) => {
             result.push(doc.data());

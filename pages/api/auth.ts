@@ -1,7 +1,8 @@
 import { parseCookies } from 'nookies';
 import { auth } from '../../lib/firebaseAdmin';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-const authCheck = async (req) => {
+export const authCheck = async (req: NextApiRequest) => {
     const cookies = parseCookies({ req });
     if (!cookies) return false;
     try {
@@ -15,13 +16,3 @@ const authCheck = async (req) => {
         return false;
     }
 }
-
-export default async (req, res) => {
-    const authorized = await authCheck(req);
-    if (!authorized) {
-        res.json({ "authorized": false });
-    } else {
-        res.json({ "authorized": true })
-    }
-    return;
-};

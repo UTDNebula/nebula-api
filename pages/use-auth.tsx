@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, createContext } from "react";
 import firebase from '../lib/firebase';
 import nookies from 'nookies';
 
-const authContext = createContext();
+const authContext = createContext(null);
 
 export default function ProvideAuth({ children }) {
     const auth = useProvideAuth();
