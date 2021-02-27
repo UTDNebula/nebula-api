@@ -1,34 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Comet Data Service
+*A database for some really useful UTD data.*
 
-## Getting Started
+Part of the Nebula project.
 
-First, run the development server:
+[A work in progress]
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Contributing
+### Prerequisites
+- Node.js 12 (or higher) and NPM
+- Python 3.5 (or higher)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development
+See the [docs](docs/index.md) for more information about the project.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Clone the repository.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- The `scraper` directory contains scripts to obtain data.
+- The `api` directory contains infrastructure for endpoints to query data.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+#### Scraper
+[TBD]
 
-## Learn More
+#### API (Under construction)
+The API uses TypeScript (bundled into the project) and Express.js for its endpoints.
 
-To learn more about Next.js, take a look at the following resources:
+### Deployment
+[TBD]
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Contributors
+- Willie Chalmers III (Dev Officer)
+- Sunny Guan (Developer)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Questions or Feedback
+If you have any questions about this project, reach out to ACM Development
+[development@acmutd.co](mailto:development@acmutd.co) or make a post in the
+#development-general channel in the ACM UTD [Discord server](http://acmutd.co/discord).
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+![ACM Development](https://www.acmutd.co/brand/Development/Banners/light_dark_background.png)
