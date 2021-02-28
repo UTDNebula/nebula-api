@@ -9,14 +9,19 @@ Testing endpoint: `https://comet-data-service-4jd5l66fka-uc.a.run.app/`
 Access and edit information related to courses.
 
 1. `GET /console`:  UI for CRUD console
-2. `POST /courses`: add a new course
-3. `GET /courses/name/<name>`: get course info by name (public)
-4. `GET /courses/id/<id>`: get course info by id (public)
-5. `GET /courses`: get all courses
-6. `PUT /courses/<id>`: edit course with id
-7. `DELETE /course/<id>`: delete course with id
+2. `POST /api/courses`: add a new course
+3. `GET /api/courses/search?name=<name>`: get course info by name (public)
+4. `GET /api/courses/<id>`: get course info by id (public)
+5. `GET /api/courses`: get all courses
+6. `PUT /api/courses/<id>`: edit course with id
+7. `DELETE /api/courses/<id>`: delete course with id
+
+An example for replacement for `<name>` could be 'CS 3345'.
+
+An example replacement for `<id>` could be '403'.
 
 Note: routes that are not public can only be accessed on the admin console through Google OAuth login. Public routes are available to the public without any authentication.
+
 ### Course format:
 
 ```javascript
