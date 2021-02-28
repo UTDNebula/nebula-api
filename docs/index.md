@@ -16,9 +16,9 @@ Access and edit information related to courses.
 6. `PUT /api/courses/<id>`: edit course with id
 7. `DELETE /api/courses/<id>`: delete course with id
 
-An example for replacement for `<name>` could be 'CS 3345'.
+An example for replacement for `<name>` could be `CS 3345`.
 
-An example replacement for `<id>` could be '403'.
+An example replacement for `<id>` could be `403`.
 
 Note: routes that are not public can only be accessed on the admin console through Google OAuth login. Public routes are available to the public without any authentication.
 
