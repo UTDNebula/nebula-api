@@ -1,3 +1,4 @@
+// TODO: better course type
 export type courseType = {
   titleLong: string;
   id: string;
