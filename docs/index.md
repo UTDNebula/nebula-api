@@ -55,18 +55,6 @@ Note: routes that are not public can only be accessed on the admin console throu
 }
 ```
 
-## Announcements
-
-Stores system-wide announcements that will be displayed in the Comet Planning front-end.
-
-1. `GET /anncmnt`:  UI for CRUD console
-2. `POST /announcements`: add a new announcements
-3. `GET /announcements/name/<name>`: get announcement info by name (public)
-4. `GET /announcements/id/<id>`: get announcement info by id (public)
-5. `GET /announcements`: get all announcements
-6. `PUT /announcements/<id>`: edit announcement with id
-7. `DELETE /announcements/<id>`: delete announcement with id
-
 ## Setup
 
 ### Environment Variables
