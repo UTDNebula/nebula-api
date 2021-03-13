@@ -16,8 +16,6 @@ export const useAuth = () => {
 function useProvideAuth() {
   const [user, setUser] = useState(null);
 
-  // signout is the only provided method for now, see https://usehooks.com/useAuth/ for more examples
-  // sign in (through OAuth) is in components
   const signout = () => {
     return firebase
       .auth()

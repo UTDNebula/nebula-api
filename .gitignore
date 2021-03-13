@@ -39,3 +39,4 @@ misc/
 deploy_log.sh
 .gcloudignore
 .idea/
+.vscode/

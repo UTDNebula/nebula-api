@@ -1,6 +1,6 @@
 import firebase from '../lib/firebase';
 import { useEffect } from 'react';
-import { useAuth } from './use-auth';
+import { useAuth } from '../components/use-auth';
 import { useRouter } from 'next/router';
 
 const Home: React.FunctionComponent = () => {

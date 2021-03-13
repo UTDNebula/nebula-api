@@ -1,9 +1,5 @@
 // TODO: better course type
-export type courseType = {
-  titleLong: string;
-  id: string;
-  description: string;
-};
+import { courseType } from '../../lib/types/types';
 
 type courseProps = {
   course: courseType;
@@ -17,7 +13,7 @@ const Course: React.FunctionComponent<courseProps> = (props) => {
   const deleteCourse = props.deleteCourse;
 
   return (
-    <div className="p-4 ring-2 ring-blue-400 rounded-md shadow-md">
+    <div className="p-8 bg-blue-200 rounded-2xl shadow-lg">
       {course ? (
         <>
           <h1 className="text-2xl text-light">

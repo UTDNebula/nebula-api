@@ -1,5 +1,5 @@
 import 'tailwindcss/tailwind.css';
-import ProvideAuth from './use-auth';
+import ProvideAuth from '../components/use-auth';
 import { AppProps } from 'next/app';
 
 function MyApp({ Component, pageProps }: AppProps) {

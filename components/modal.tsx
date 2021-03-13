@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { courseType } from './course';
+import { courseType } from '../lib/types/types';
 
 type ModalProps = {
   info: courseType;
