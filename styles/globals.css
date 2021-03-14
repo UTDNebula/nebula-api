@@ -1,16 +1,12 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+/* ./styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn1 {
+  @apply px-4 py-2 font-light rounded-xl bg-blue-300 hover:bg-blue-500 shadow-md border-blue-500 border-2 focus:outline-none hover:text-white;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+.btn2 {
+  @apply px-4 py-2 font-light rounded-xl bg-red-300 hover:bg-red-500 shadow-md border-red-500 border-2 focus:outline-none hover:text-white;
 }

@@ -76,13 +76,13 @@ const Courses: React.FunctionComponent = () => {
               }}
             ></input>
             <button
-              className="p-2 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
+              className="btn1"
               onClick={search}
             >
               Search
             </button>
             <button
-              className="mx-4 p-2 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
+              className="btn1 mx-4"
               onClick={addModal}
             >
               Add Course

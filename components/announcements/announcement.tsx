@@ -16,14 +16,18 @@ const Announcement: React.FunctionComponent<announcementProps> = (props) => {
     <div className="p-8 bg-blue-200 rounded-2xl shadow-lg">
       {announcement ? (
         <>
-          <h1 className="text-2xl text-light">
-            {announcement.title} ({announcement.id})
-          </h1>
-          <p className="text-md my-4">{announcement.description}</p>
-          <a href={announcement.link} className="text-md my-4">Link</a>
-          <div className="flex">
+          <div className="pb-4">
+            <h1 className="text-2xl text-light">
+              {announcement.title} ({announcement.id})
+            </h1>
+            <p className="text-md my-4">{announcement.description}</p>
+            <a href={announcement.link} className="text-md my-4">
+              Link
+            </a>
+          </div>
+          <div className="flex gap-4">
             <button
-              className="mr-2 px-4 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
+              className="btn1"
               onClick={() => {
                 editAnnouncement(announcement);
               }}
@@ -31,7 +35,7 @@ const Announcement: React.FunctionComponent<announcementProps> = (props) => {
               Edit
             </button>
             <button
-              className="p-2 font-light rounded-lg bg-red-300 hover:bg-red-500"
+              className="btn2"
               onClick={() => {
                 deleteAnnouncement(announcement.id);
               }}

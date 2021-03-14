@@ -45,8 +45,8 @@ function generateOr(children) {
     else return children
 }
 
-var check = false;
-var taken_courses = [];
+let check = false;
+let taken_courses = [];
 
 class Calculator extends EmbeddedActionsParser {
     constructor() {
@@ -54,7 +54,7 @@ class Calculator extends EmbeddedActionsParser {
         const $ = this;
 
         $.RULE("expression", () => {
-            var res = $.SUBRULE($.andExpression);
+            let res = $.SUBRULE($.andExpression);
             if (check)
                 return res ? "Good" : "Bad";
             else
@@ -115,7 +115,7 @@ class Calculator extends EmbeddedActionsParser {
             { ALT: () => $.SUBRULE($.courseExpression) },
             {
                 ALT: () => {
-                    var rand = $.CONSUME(RandomRequest).image
+                    let rand = $.CONSUME(RandomRequest).image
                     if(check) return true;
                     else return { "course": rand, "type": "special" }
                 }
@@ -131,14 +131,14 @@ class Calculator extends EmbeddedActionsParser {
                 grade = $.CONSUME(Grade)
             })
             if (check) {
-                var courseNum = course.image.match(course.tokenType.PATTERN);
+                let courseNum = course.image.match(course.tokenType.PATTERN);
                 // check if this course is good or not
                 // depending on:
                 // 1. taken or not
                 // 2. grade meets minimum
                 if (courseNum != null) {
                     // do all checks here
-                    for (var taken_course of taken_courses) {
+                    for (let taken_course of taken_courses) {
                         if (courseNum[1].includes(taken_course)) {
                             console.log(courseNum[1] + " satisfied");
                             return true;
@@ -165,7 +165,7 @@ class Calculator extends EmbeddedActionsParser {
             $.OPTION(() => {
                 grade = $.CONSUME(Grade).image;
             })
-            var res = { "courses": expValue, "grade": grade }
+            let res = { "courses": expValue, "grade": grade }
             if(check) return expValue;
             else return res
         });
@@ -183,7 +183,7 @@ export function parseInput(text) {
     const lexingResult = CalculatorLexer.tokenize(text)
     // "input" is a setter which will reset the parser's state.
     parser.input = lexingResult.tokens
-    var res = parser.expression()
+    let res = parser.expression()
 
     if (parser.errors.length > 0) {
         throw new Error("sad sad panda, Parsing errors detected")
@@ -193,7 +193,7 @@ export function parseInput(text) {
 
 export function prettyPrint(text) {
     console.log(text);
-    var res = parseInput(text);
+    let res = parseInput(text);
     console.log(JSON.stringify(res, null, 2));
     return res;
 }
@@ -201,7 +201,7 @@ export function prettyPrint(text) {
 export function verify(text, courses) {
     check = true;
     taken_courses = courses;
-    var res = parseInput(text);
+    let res = parseInput(text);
     check = false;
     taken_courses = [];
     return res;

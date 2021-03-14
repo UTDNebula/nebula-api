@@ -22,7 +22,7 @@ const AuthenticatedPage: React.FunctionComponent = () => {
       <div className="bg-blue-100 px-8 py-4 flex">
         <h1 className="text-xl font-bold flex-1 place-self-center">Admin Console</h1>
         <button
-          className="mr-4 p-2 font-light rounded-xl bg-blue-300 hover:bg-blue-500"
+          className="btn1 mr-4"
           onClick={() => {
             setShowCourses(!showCourses);
           }}
@@ -30,7 +30,7 @@ const AuthenticatedPage: React.FunctionComponent = () => {
           Show {!showCourses ? "Courses" : "Announcements"}
         </button>
         <button
-          className="p-2 font-light rounded-xl bg-blue-300 hover:bg-blue-500"
+          className="btn1"
           onClick={() => {
             auth.signout().then((_) => router.push('/'));
           }}

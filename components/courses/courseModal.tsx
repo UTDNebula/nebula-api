@@ -31,7 +31,7 @@ const Modal: React.FunctionComponent<ModalProps> = (props) => {
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
-          <div className="max-w-2xl px-8">
+          <div className="max-w-screen-2xl px-8">
             <div className="bg-white pt-5 pb-4 sm:p-6 sm:pb-4 grid grid-cols-1 md:grid-cols-2">
               {course ? (
                 Object.keys(course)

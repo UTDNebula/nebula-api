@@ -31,9 +31,9 @@ const Course: React.FunctionComponent<courseProps> = (props) => {
             <p className="text-md">Out-class Hours: {course.outclass}</p>
           </div>
 
-          <div className="flex">
+          <div className="flex gap-4">
             <button
-              className="mr-2 px-4 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
+              className="btn1"
               onClick={() => {
                 editCourse(course);
               }}
@@ -41,7 +41,7 @@ const Course: React.FunctionComponent<courseProps> = (props) => {
               Edit
             </button>
             <button
-              className="p-2 font-light rounded-lg bg-red-300 hover:bg-red-500"
+              className="btn2"
               onClick={() => {
                 deleteCourse(course.id);
               }}

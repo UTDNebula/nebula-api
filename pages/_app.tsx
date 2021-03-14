@@ -1,4 +1,4 @@
-import 'tailwindcss/tailwind.css';
+import '../styles/globals.css'
 import ProvideAuth from '../components/use-auth';
 import { AppProps } from 'next/app';
 
