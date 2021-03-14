@@ -7,6 +7,12 @@ export type announcementType = {
 
 export type courseType = {
   id: string;
-  titleLong: string;
+  course: string;
   description: string;
+  title: string;
+  prerequisites: string;
+  corequisites: string;
+  hours: string;
+  inclass: string;
+  outclass: string;
 };

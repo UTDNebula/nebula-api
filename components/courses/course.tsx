@@ -17,9 +17,20 @@ const Course: React.FunctionComponent<courseProps> = (props) => {
       {course ? (
         <>
           <h1 className="text-2xl text-light">
-            {course.titleLong} ({course.id})
+            {course.title} ({course.id})
           </h1>
           <p className="text-md my-4">{course.description}</p>
+
+          <div className="my-4">
+            <p className="text-md">Prerequisites: {course.prerequisites}</p>
+            <p className="text-md">Corequisites: {course.corequisites}</p>
+          </div>
+
+          <div className="my-4">
+            <p className="text-md">In-class Hours: {course.inclass}</p>
+            <p className="text-md">Out-class Hours: {course.outclass}</p>
+          </div>
+
           <div className="flex">
             <button
               className="mr-2 px-4 font-light rounded-lg bg-blue-300 hover:bg-blue-500"

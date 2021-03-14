@@ -2,76 +2,87 @@ import { db, increment, decrement } from '../firebaseAdmin';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { authCheck } from './auth';
 
-export default async function all_handler(req: NextApiRequest, res: NextApiResponse, collection: string, titleName: string) {
-  const id = parseInt(req.query.id as string);
-  if (req.method === 'GET') {
-    await db
-      .collection(collection)
-      .where('id', '==', id)
-      .get()
-      .then((querysnapshot) => {
-        res.json(querysnapshot.docs[0].data());
-      })
-      .catch((error) => {
-        res.json({ error });
-      });
-  } else if (req.method === 'PUT') {
-    const authorized = await authCheck(req);
-    if (!authorized) {
-      res.json({ message: 'not authorized.' });
-      return;
-    }
-    const course = JSON.parse(req.body);
-    await db
-      .collection(collection)
-      .where('id', '==', id)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.empty) {
-          res.json({ updated: false });
-        } else {
-          snapshot.docs[0].ref.update(course);
-          res.json({ updated: true });
-        }
-      });
-  } else if (req.method === 'DELETE') {
-    const authorized = await authCheck(req);
-    if (!authorized) {
-      res.json({ message: 'not authorized.' });
-      return;
-    }
-    const result = db.collection(collection).where('id', '==', id);
-    await result.get().then(async (snapshot) => {
+export function getAll(collection: string, key: string, value: number) {
+  return db
+    .collection(collection)
+    .where(key, '==', value)
+    .get()
+    .then((querysnapshot) => {
+      return querysnapshot.docs[0].data();
+    });
+}
+
+export function update(collection: string, key: string, value: number, updated: any) {
+  return db.collection(collection)
+    .where(key, '==', value)
+    .get()
+    .then((snapshot) => {
       if (snapshot.empty) {
-        res.json({ deleted: false });
+        return { updated: false };
       } else {
-        snapshot.docs[0].ref.delete();
-        const courseCol = db.collection(collection);
-        const counter = courseCol.doc('_counter');
-        await counter.update({ count: decrement });
-        res.json({ deleted: true });
+        snapshot.docs[0].ref.update(updated);
+        return { updated: true };
       }
     });
-  } else if (req.method === 'POST') {
-    const authorized = await authCheck(req);
-    if (!authorized) {
-      res.json({ message: 'not authorized.' });
-      return;
+}
+
+export function remove(collection: string, key: string, value: number) {
+  const result = db.collection(collection).where(key, '==', value);
+  return result.get().then(async (snapshot) => {
+    if (snapshot.empty) {
+      return { deleted: false };
+    } else {
+      snapshot.docs[0].ref.delete();
+      const col = db.collection(collection);
+      const counter = col.doc('_counter');
+      await counter.update({ count: decrement });
+      return { deleted: true };
     }
+  });
+}
 
-    const course = JSON.parse(req.body);
-    // get counter to set new id
-    const courseCol = db.collection(collection);
-    const counter = courseCol.doc('_counter');
-    const count = await counter.get();
+export function post(
+  collection: string,
+  key: string,
+  value: number,
+  data: any,
+  titleName: string,
+) {
+  // get counter to set new id
+  const col = db.collection(collection);
+  const counter = col.doc('_counter');
+  return counter.get().then(async (count) => {
     const newId = count.data()['count'];
-    course['id'] = parseInt(newId);
-    console.log(course);
+    data['id'] = parseInt(newId);
 
-    await courseCol.doc(course[titleName]).set(course);
+    await col.doc(data[titleName]).set(data);
     await counter.update({ count: increment });
 
-    res.json({ message: 'Data updated and counter updated' });
-  }
-  return 0;
+    return { added: true };
+  });
 }
+
+// export default async function all_handler(
+//   req: NextApiRequest,
+//   res: NextApiResponse,
+//   collection: string,
+//   titleName: string,
+// ) {
+//   const id = parseInt(req.query.id as string);
+//   if (req.method === 'GET') {
+//     return getAll(collection, 'id', id);
+//   }
+//   return authCheck(req)
+//     .then(async (x) => {
+//       if (req.method === 'PUT') {
+//         return update(collection, 'id', id, JSON.parse(req.body));
+//       } else if (req.method === 'DELETE') {
+//         return remove(collection, 'id', id);
+//       } else if (req.method === 'POST') {
+//         return post(collection, 'id', id, JSON.parse(req.body), titleName);
+//       }
+//     })
+//     .catch((_) => {
+//       return { auth: false, updated: false };
+//     });
+// }

@@ -1,16 +1,18 @@
 import { parseCookies } from 'nookies';
 import { auth } from '../firebaseAdmin';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest } from 'next';
 
 export const authCheck = async (req: NextApiRequest) => {
   const cookies = parseCookies({ req });
-  if (!cookies) return false;
+  if (!cookies) 
+    return new Promise((res, rej) => rej);
   try {
     const token = await auth.verifyIdToken(cookies.token);
     const { uid, email } = token;
-    return true;
+    // logged in
+    return new Promise((res, rej) => res);
   } catch (err) {
     // not logged in
-    return false;
+    return new Promise((res, rej) => rej);
   }
 };

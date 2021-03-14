@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import Course from './course';
-import Modal from '../modal';
+import Modal from './courseModal';
 
 const Courses: React.FunctionComponent = () => {
   const [input, setInput] = useState('');
@@ -60,52 +60,52 @@ const Courses: React.FunctionComponent = () => {
   return (
     <div>
       {open ? <Modal info={open} close={close} /> : <></>}
-        <>
-          <div className="m-8">
-            <div className="flex mb-8">
-              <input
-                value={input}
-                className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block shadow-md focus:outline-none ring-2 focus:ring-blue-600"
-                placeholder="search term"
-                onInput={(e) => {
-                  const value = e.currentTarget.value;
-                  setInput(value);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') search();
-                }}
-              ></input>
-              <button
-                className="p-2 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
-                onClick={search}
-              >
-                Search
-              </button>
-              <button
-                className="mx-4 p-2 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
-                onClick={addModal}
-              >
-                Add Course
-              </button>
-            </div>
-            <div className="mt-4 grid grid-cols-1 gap-8">
-              {data && data.length != 0 ? (
-                data.map((course) => {
-                  return (
-                    <Course
-                      key={course.id}
-                      course={course}
-                      editCourse={editCourse}
-                      deleteCourse={deleteCourse}
-                    />
-                  );
-                })
-              ) : (
-                <p className="text-center">{message}</p>
-              )}
-            </div>
+      <>
+        <div className="m-8">
+          <div className="flex mb-8">
+            <input
+              value={input}
+              className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block shadow-md focus:outline-none ring-2 focus:ring-blue-600"
+              placeholder="search term"
+              onInput={(e) => {
+                const value = e.currentTarget.value;
+                setInput(value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') search();
+              }}
+            ></input>
+            <button
+              className="p-2 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
+              onClick={search}
+            >
+              Search
+            </button>
+            <button
+              className="mx-4 p-2 font-light rounded-lg bg-blue-300 hover:bg-blue-500"
+              onClick={addModal}
+            >
+              Add Course
+            </button>
           </div>
-        </>
+          <div className="mt-4 grid grid-cols-1 gap-8">
+            {data && data.length != 0 ? (
+              data.map((course) => {
+                return (
+                  <Course
+                    key={course.id}
+                    course={course}
+                    editCourse={editCourse}
+                    deleteCourse={deleteCourse}
+                  />
+                );
+              })
+            ) : (
+              <p className="text-center">{message}</p>
+            )}
+          </div>
+        </div>
+      </>
     </div>
   );
 };
