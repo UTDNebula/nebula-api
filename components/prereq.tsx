@@ -74,13 +74,16 @@ function setup(obj, level) {
   }
 }
 
-export default function Prereq({ prereqs }) {
+export default function Prereq({ name, prereqs }) {
   const [graph, setGraph] = useState(null);
 
   console.log('in prereq');
   useEffect(() => {
     if (!!prereqs) {
       let obj = prettyPrint(prereqs);
+      nodes = [];
+      edges = [];
+      rootname = name;
       setup(obj, 0);
       setGraph({
         nodes: nodes,

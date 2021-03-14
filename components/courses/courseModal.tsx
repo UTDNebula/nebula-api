@@ -26,31 +26,33 @@ const Modal: React.FunctionComponent<ModalProps> = (props) => {
         </span>
 
         <div
-          className="inline-block bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all align-middle"
+          className="inline-block bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all align-middle my-8"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {course ? (
-              Object.keys(course)
-                .sort()
-                .map((c) => (
-                  <div className="p-4" key={c}>
-                    <p>{c}</p>
-                    <input
-                      className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full shadow-md focus:outline-none ring-2 focus:ring-blue-600"
-                      value={course[c]}
-                      name={c}
-                      onChange={changeHandler}
-                    ></input>
-                  </div>
-                ))
-            ) : (
-              <></>
-            )}
+          <div className="max-w-2xl px-8">
+            <div className="bg-white pt-5 pb-4 sm:p-6 sm:pb-4 grid grid-cols-1 md:grid-cols-2">
+              {course ? (
+                Object.keys(course)
+                  .sort()
+                  .map((c) => (
+                    <div className="p-4" key={c}>
+                      <p>{c}</p>
+                      <input
+                        className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block w-full shadow-md focus:outline-none ring-2 focus:ring-blue-600"
+                        value={course[c]}
+                        name={c}
+                        onChange={changeHandler}
+                      ></input>
+                    </div>
+                  ))
+              ) : (
+                <></>
+              )}
+            </div>
+            {course ? <Prereq name={course.course} prereqs={course.prerequisites} /> : <></>}
           </div>
-          {course ? <Prereq prereqs={course.prerequisites} /> : <></>}
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             <button
               type="button"
