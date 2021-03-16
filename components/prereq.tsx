@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
 import Graph from 'react-graph-vis';
 import { prettyPrint } from './parser';
+import { verify } from './validator';
 
 // import "./styles.css";
 // need to import the vis network css in order to show tooltip
@@ -77,10 +77,10 @@ function setup(obj, level) {
 export default function Prereq({ name, prereqs }) {
   const [graph, setGraph] = useState(null);
 
-  console.log('in prereq');
   useEffect(() => {
     if (!!prereqs) {
       let obj = prettyPrint(prereqs);
+      console.log(verify(prereqs, ["CS 2340", "CS 2305", "CS 3333", "CS 2336"]));
       nodes = [];
       edges = [];
       rootname = name;

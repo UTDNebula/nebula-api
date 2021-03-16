@@ -49,18 +49,7 @@ const allTokens = [
 // create lexer instance
 const CalculatorLexer = new Lexer(allTokens);
 
-// combine array of expressions into object with "and" key
-// used to generate intuitive prerequisite graph
-function generateAnd(children) {
-  if (children.length > 1) return { and: children };
-  else return children;
-}
-
-// combine array of expressions into object with "or" key
-function generateOr(children) {
-  if (children.length > 1) return { or: children };
-  else return children;
-}
+let taken_courses = [];
 
 class Calculator extends EmbeddedActionsParser {
   constructor() {
@@ -68,38 +57,31 @@ class Calculator extends EmbeddedActionsParser {
     const $ = this;
 
     $.RULE('expression', () => {
-      let res = $.SUBRULE($.andExpression);
-      return res;
+      return $.SUBRULE($.andExpression);
     });
 
     $.RULE('andExpression', () => {
-      let value: any = []; // TODO
-      // parsing part
-      value.push($.SUBRULE($.orExpression));
+      let value: boolean = $.SUBRULE($.orExpression);
       $.MANY(() => {
-        // consuming 'AdditionOperator' will consume
-        // either Plus or Minus as they are subclasses of AdditionOperator
         $.CONSUME(And);
-        //  the index "2" in SUBRULE2 is needed to identify the unique
-        // position in the grammar during runtime
-        value.push($.SUBRULE2($.orExpression));
+        let res = $.SUBRULE2($.orExpression);
+        if (!res) 
+            value = false;
       });
 
-      return value.length === 1 ? value[0] : generateAnd(value);
+      return value;
     });
 
     $.RULE('orExpression', () => {
-      let value: any = [];
-
-      // parsing part
-      value.push($.SUBRULE($.atomicBooleanExpression));
+      let value: boolean = $.SUBRULE($.atomicBooleanExpression);
       $.MANY(() => {
         $.CONSUME(Or);
         let val = $.SUBRULE2($.atomicBooleanExpression);
-        value.push(val);
+        if(val)
+            value = true;
       });
 
-      return value.length === 1 ? value[0] : generateOr(value);
+      return value;
     });
 
     $.RULE('atomicBooleanExpression', () =>
@@ -110,39 +92,46 @@ class Calculator extends EmbeddedActionsParser {
         { ALT: () => $.SUBRULE($.courseExpression) },
         {
           ALT: () => {
-            let rand = $.CONSUME(RandomRequest).image;
-            return { course: rand, type: 'special' };
+            $.CONSUME(RandomRequest);
+            return true;
           },
         },
       ]),
     );
 
     $.RULE('courseExpression', () => {
-      let course;
-      let grade: any = -1;
-
-      course = $.CONSUME(Course);
+      let course = $.CONSUME(Course);
       $.OPTION(() => {
-        grade = $.CONSUME(Grade);
+        $.CONSUME(Grade);
       });
-
-      if (grade == -1) return { course: course.image, grade: '' };
-      return { course: course.image, grade: grade.image };
+      let courseNum = course.image.match(course.tokenType.PATTERN);
+      // check if this course is good or not
+      // depending on:
+      // 1. taken or not
+      // 2. grade meets minimum
+      if (courseNum != null) {
+        // do all checks here
+        for (let taken_course of taken_courses) {
+          if (courseNum[1].includes(taken_course)) {
+            console.log(courseNum[1] + ' satisfied');
+            return true;
+          }
+        }
+        return false;
+      }
+      return false;
     });
 
     $.RULE('parenthesisExpression', () => {
-      let expValue;
-      let grade = '';
-
       $.CONSUME(LParen);
-      expValue = $.SUBRULE($.andExpression);
+      let expValue = $.SUBRULE($.andExpression);
       $.CONSUME(RParen);
 
+      let grade = '';
       $.OPTION(() => {
         grade = $.CONSUME(Grade).image;
       });
-      let res = { courses: expValue, grade: grade };
-      return res;
+      return expValue;
     });
 
     // very important to call this after all the rules have been defined.
@@ -154,11 +143,13 @@ class Calculator extends EmbeddedActionsParser {
 
 const parser = new Calculator();
 
-export function parseInput(text) {
+export function parseInput(text, courses) {
+  taken_courses = courses;
   const lexingResult = CalculatorLexer.tokenize(text);
   // "input" is a setter which will reset the parser's state.
   parser.input = lexingResult.tokens;
   let res = parser.expression();
+  taken_courses = [];
 
   if (parser.errors.length > 0) {
     throw new Error('sad sad panda, Parsing errors detected');
@@ -166,9 +157,7 @@ export function parseInput(text) {
   return res;
 }
 
-export function prettyPrint(text) {
-  console.log(text);
-  let res = parseInput(text);
-  console.log(JSON.stringify(res, null, 2));
+export function verify(text, courses) {
+  let res = parseInput(text, courses);
   return res;
 }

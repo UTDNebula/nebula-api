@@ -16,7 +16,7 @@ const Home: React.FunctionComponent = () => {
   return (
     <div className="min-h-screen min-w-screen flex">
       <button
-        className="button py-2 px-4 rounded-md shadow-md bg-blue-600 hover:bg-blue-700 mx-auto place-self-center text-xl text-white"
+        className="btn1 mx-auto place-self-center"
         onClick={() => {
           var provider = new firebase.auth.GoogleAuthProvider();
           firebase
