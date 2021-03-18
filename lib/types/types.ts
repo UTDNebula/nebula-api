@@ -1,6 +1,6 @@
 export type announcementType = {
   id: string;
-  title: string;
+  announcement: string;
   link: string;
   description: string;
 };

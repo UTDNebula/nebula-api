@@ -18,7 +18,7 @@ const Announcement: React.FunctionComponent<announcementProps> = (props) => {
         <>
           <div className="pb-4">
             <h1 className="text-2xl text-light">
-              {announcement.title} ({announcement.id})
+              {announcement.announcement} ({announcement.id})
             </h1>
             <p className="text-md my-4">{announcement.description}</p>
             <a href={announcement.link} className="text-md my-4">
