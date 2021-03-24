@@ -22,6 +22,21 @@ An example replacement for `<id>` could be `403`.
 
 Note: routes that are not public can only be accessed on the admin console through Google OAuth login. Public routes are available to the public without any authentication.
 
+## Announcements
+
+Access and edit information related to announcement.
+
+1. `POST /api/announcements`: add a new announcement
+3. `GET /api/announcements/search?name=<name>`: get announcement info by name (public)
+4. `GET /api/announcements/<id>`: get announcement info by id (public)
+5. `GET /api/announcements`: get all announcements
+6. `PUT /api/announcements/<id>`: edit announcement with id
+7. `DELETE /api/announcements/<id>`: delete announcement with id
+
+An example for replacement for `<name>` could be `update`.
+
+Note: routes that are not public can only be accessed on the admin console through Google OAuth login. Public routes are available to the public without any authentication.
+
 ### Course format:
 
 ```javascript
