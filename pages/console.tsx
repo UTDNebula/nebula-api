@@ -2,8 +2,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../components/use-auth';
 import { useRouter } from 'next/router';
-import Courses from '../components/courses/courses';
-import Announcements from '../components/announcements/announcements';
+import Courses from './console/courses';
+import Announcements from './console/announcements';
 
 const AuthenticatedPage: React.FunctionComponent = () => {
   const [showCourses, setShowCourses] = useState(true);

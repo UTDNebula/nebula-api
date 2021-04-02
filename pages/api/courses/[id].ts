@@ -21,7 +21,7 @@ export function process_course(course: any) : courseType {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const id = parseInt(req.query.id as string);
+  const id: number = parseInt(req.query.id as string);
   if (req.method == 'GET')
     await getAll(collection, 'id', id).then((data) => {
       // process courses

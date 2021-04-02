@@ -9,7 +9,7 @@ const Home: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (auth.user) {
-      router.push('/console');
+      router.push('/console/courses');
     }
   });
 
@@ -23,7 +23,7 @@ const Home: React.FunctionComponent = () => {
             .auth()
             .signInWithPopup(provider)
             .then((result) => {
-              router.push('/console');
+              router.push('/console/courses');
             })
             .catch((error) => {
               console.error(error);
