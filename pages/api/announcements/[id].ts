@@ -1,13 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { authCheck } from '../auth';
-import { getAll, update, remove, post } from '../../../lib/handler/[id]';
+import { getByKey, update, remove, post } from '../../../lib/handler/[id]';
 
 const collection = 'announcements';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = parseInt(req.query.id as string);
   if (req.method == 'GET')
-    await getAll(collection, 'id', id).then((data) => {
+    await getByKey(collection, 'id', id).then((data) => {
       // process courses
       res.json(data);
     });

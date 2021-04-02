@@ -12,9 +12,8 @@ Access and edit information related to courses.
 2. `POST /api/courses`: add a new course
 3. `GET /api/courses/search?name=<name>`: get course info by name (public)
 4. `GET /api/courses/<id>`: get course info by id (public)
-5. `GET /api/courses`: get all courses
-6. `PUT /api/courses/<id>`: edit course with id
-7. `DELETE /api/courses/<id>`: delete course with id
+5. `PUT /api/courses/<id>`: edit course with id
+6. `DELETE /api/courses/<id>`: delete course with id
 
 An example for replacement for `<name>` could be `CS 3345`.
 

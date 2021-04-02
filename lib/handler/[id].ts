@@ -2,7 +2,24 @@ import { db, increment, decrement } from '../firebaseAdmin';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { authCheck } from './auth';
 
-export function getAll(collection: string, key: string, value: number) {
+export function getAll(collection: string) {
+  return db
+    .collection(collection)
+    .get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        return [];
+      } else {
+        const result = [];
+        snapshot.forEach((doc) => {
+          result.push(doc.data());
+        });
+        return result;
+      }
+    });
+}
+
+export function getByKey(collection: string, key: string, value: number) {
   return db
     .collection(collection)
     .where(key, '==', value)

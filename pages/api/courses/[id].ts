@@ -1,7 +1,7 @@
 import { db, increment, decrement } from '../../../lib/firebaseAdmin';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { authCheck } from '../auth';
-import { getAll, update, remove, post } from '../../../lib/handler/[id]';
+import { getByKey, update, remove, post } from '../../../lib/handler/[id]';
 import { courseType } from '../../../lib/types/types';
 
 const collection = 'courses';
@@ -23,7 +23,7 @@ export function process_course(course: any) : courseType {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id: number = parseInt(req.query.id as string);
   if (req.method == 'GET')
-    await getAll(collection, 'id', id).then((data) => {
+    await getByKey(collection, 'id', id).then((data) => {
       // process courses
       res.json(process_course(data));
     });
