@@ -58,70 +58,70 @@ const Announcements: React.FunctionComponent = () => {
     setMethod('');
   };
 
-  useEffect(() => {
-    if (!auth.user) {
-      router.push('/');
-    }
-  }, []);
-
   return (
-    <div>
-      <div className="bg-blue-100 px-8 py-4 flex">
-        <h1 className="text-xl font-bold flex-1 place-self-center">Admin Console</h1>
-        <Link href="/console/courses">
-          <button className="btn1 mr-4">Show Courses</button>
-        </Link>
-        <button
-          className="btn1"
-          onClick={() => {
-            auth.signout().then((_) => router.push('/'));
-          }}
-        >
-          Sign out
-        </button>
-      </div>
-      <div>
-        {open ? <Modal info={open} close={close} /> : <></>}
-        <div className="m-8">
-          <div className="flex mb-8">
-            <input
-              value={input}
-              className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block shadow-md focus:outline-none ring-2 focus:ring-blue-600"
-              placeholder="search term"
-              onInput={(e) => {
-                const value = e.currentTarget.value;
-                setInput(value);
+    <>
+      {!auth.user ? (
+        'Not logged in'
+      ) : (
+        <div>
+          <div className="bg-blue-100 px-8 py-4 flex">
+            <h1 className="text-xl font-bold flex-1 place-self-center">Admin Console</h1>
+            <Link href="/console/courses">
+              <button className="btn1 mr-4">Show Courses</button>
+            </Link>
+            <button
+              className="btn1"
+              onClick={() => {
+                auth.signout().then((_) => router.push('/'));
               }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') search();
-              }}
-            ></input>
-            <button className="btn1" onClick={search}>
-              Search
-            </button>
-            <button className="mx-4 btn1" onClick={addModal}>
-              Add Announcement
+            >
+              Sign out
             </button>
           </div>
-          <div className="mt-4 grid grid-cols-1 gap-8">
-            {data && data.length != 0 ? (
-              data.map((announcement) => {
-                return (
-                  <Announcement
-                    key={announcement.id}
-                    announcement={announcement}
-                    editAnnouncement={editAnnouncement}
-                    deleteAnnouncement={deleteAnnouncement}
-                  />
-                );
-              })
-            ) : (
-              <p className="text-center">{message}</p>
-            )}
+          <div>
+            {open ? <Modal info={open} close={close} /> : <></>}
+            <div className="m-8">
+              <div className="flex mb-8">
+                <input
+                  value={input}
+                  className="ring-blue-200 mr-4 py-2 px-4 bg-white rounded-lg placeholder-gray-400 text-gray-900 appearance-none inline-block shadow-md focus:outline-none ring-2 focus:ring-blue-600"
+                  placeholder="search term"
+                  onInput={(e) => {
+                    const value = e.currentTarget.value;
+                    setInput(value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') search();
+                  }}
+                ></input>
+                <button className="btn1" onClick={search}>
+                  Search
+                </button>
+                <button className="mx-4 btn1" onClick={addModal}>
+                  Add Announcement
+                </button>
+              </div>
+              <div className="mt-4 grid grid-cols-1 gap-8">
+                {data && data.length != 0 ? (
+                  data.map((announcement) => {
+                    return (
+                      <Announcement
+                        key={announcement.id}
+                        announcement={announcement}
+                        editAnnouncement={editAnnouncement}
+                        deleteAnnouncement={deleteAnnouncement}
+                      />
+                    );
+                  })
+                ) : (
+                  <p className="text-center">{message}</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
