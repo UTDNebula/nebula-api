@@ -80,7 +80,6 @@ export default function Prereq({ name, prereqs }) {
   useEffect(() => {
     if (!!prereqs) {
       let obj = prettyPrint(prereqs);
-      console.log(verify(prereqs, ["CS 2340", "CS 2305", "CS 3333", "CS 2336"]));
       nodes = [];
       edges = [];
       rootname = name;

@@ -1,4 +1,4 @@
-const chevrotain = require('chevrotain');
+import chevrotain from 'chevrotain';
 
 const createToken = chevrotain.createToken;
 const tokenMatcher = chevrotain.tokenMatcher;
@@ -26,12 +26,6 @@ const WhiteSpace = createToken({
 });
 
 const Comma = createToken({ name: 'Comma', pattern: /,/, group: Lexer.SKIPPED });
-
-// const IrrelevantWord = createToken({
-//     name: 'IrrelevantWord',
-//     pattern: /[^\s()]+/,
-//     group: Lexer.SKIPPED
-// });
 
 // define all tokens with their order of precedence
 const allTokens = [

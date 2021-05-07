@@ -7,11 +7,7 @@ type announcementProps = {
   deleteAnnouncement: (id: string) => any;
 };
 
-const Announcement: React.FunctionComponent<announcementProps> = (props) => {
-  const announcement = props.announcement;
-  const editAnnouncement = props.editAnnouncement;
-  const deleteAnnouncement = props.deleteAnnouncement;
-
+const Announcement: React.FunctionComponent<announcementProps> = ({ announcement, editAnnouncement, deleteAnnouncement }) => {
   return (
     <div className="p-8 bg-blue-200 rounded-2xl shadow-lg">
       {announcement ? (
