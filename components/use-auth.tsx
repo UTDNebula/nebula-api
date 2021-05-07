@@ -4,11 +4,17 @@ import nookies from 'nookies';
 
 const authContext = createContext(null);
 
+/**
+ * Auth provider for all front-end pages
+ */
 export default function ProvideAuth({ children }) {
   const auth = useProvideAuth();
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 }
 
+/**
+ * Provides auth context for components
+ */
 export const useAuth = () => {
   return useContext(authContext);
 };

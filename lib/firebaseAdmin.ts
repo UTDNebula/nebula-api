@@ -10,7 +10,14 @@ if (!admin.apps.length) {
   });
 }
 
+// database (firestore)
 export const db = admin.firestore();
+
+// firebase auth
 export const auth = admin.auth();
+
+// incrementing counter
 export const increment = admin.firestore.FieldValue.increment(1);
+
+// decrementing counter
 export const decrement = admin.firestore.FieldValue.increment(-1);

@@ -6,7 +6,12 @@ import { courseType } from '../../../lib/types/types';
 
 const collection = 'courses';
 
-export function process_course(course: any) : courseType {
+/**
+ * Converts course to appropriate format
+ * @param course input course structure
+ * @returns edited course
+ */
+export function process_course(course: any): courseType {
   return {
     id: course.id,
     course: course.course,
@@ -16,8 +21,8 @@ export function process_course(course: any) : courseType {
     corequisites: course.corequisites,
     hours: course.hours,
     inclass: course.inclass,
-    outclass: course.outclass
-  }
+    outclass: course.outclass,
+  };
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -46,5 +51,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .catch((_) => {
       res.json({ auth: false });
     });
-  return 0;
 }

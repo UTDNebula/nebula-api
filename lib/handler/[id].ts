@@ -2,6 +2,11 @@ import { db, increment, decrement } from '../firebaseAdmin';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { authCheck } from './auth';
 
+/**
+ * Get all documents from a collection
+ * @param collection collection name
+ * @returns all documents in that collection
+ */
 export function getAll(collection: string) {
   return db
     .collection(collection)
@@ -19,6 +24,13 @@ export function getAll(collection: string) {
     });
 }
 
+/**
+ * Find first snapshot in collection where key = value
+ * @param collection collection name
+ * @param key name of key to match
+ * @param value value corresponding to the key
+ * @returns
+ */
 export function getByKey(collection: string, key: string, value: number) {
   return db
     .collection(collection)
@@ -29,8 +41,17 @@ export function getByKey(collection: string, key: string, value: number) {
     });
 }
 
+/**
+ * Update collection entry
+ * @param collection collection name
+ * @param key key name
+ * @param value value corresponding to the key
+ * @param updated updated data
+ * @returns
+ */
 export function update(collection: string, key: string, value: number, updated: any) {
-  return db.collection(collection)
+  return db
+    .collection(collection)
     .where(key, '==', value)
     .get()
     .then((snapshot) => {
@@ -43,6 +64,13 @@ export function update(collection: string, key: string, value: number, updated: 
     });
 }
 
+/**
+ * Remove entry from collection
+ * @param collection collection name
+ * @param key key name
+ * @param value matching value
+ * @returns if delete was successful
+ */
 export function remove(collection: string, key: string, value: number) {
   const result = db.collection(collection).where(key, '==', value);
   return result.get().then(async (snapshot) => {
@@ -58,13 +86,16 @@ export function remove(collection: string, key: string, value: number) {
   });
 }
 
-export function post(
-  collection: string,
-  key: string,
-  value: number,
-  data: any,
-  titleName: string,
-) {
+/**
+ * Add new entry to collection
+ * @param collection collection name
+ * @param key key name
+ * @param value value for the key
+ * @param data data for the new entry
+ * @param titleName title of the document
+ * @returns post status
+ */
+export function post(collection: string, key: string, value: number, data: any, titleName: string) {
   // get counter to set new id
   const col = db.collection(collection);
   const counter = col.doc('_counter');
@@ -78,28 +109,3 @@ export function post(
     return { added: true };
   });
 }
-
-// export default async function all_handler(
-//   req: NextApiRequest,
-//   res: NextApiResponse,
-//   collection: string,
-//   titleName: string,
-// ) {
-//   const id = parseInt(req.query.id as string);
-//   if (req.method === 'GET') {
-//     return getAll(collection, 'id', id);
-//   }
-//   return authCheck(req)
-//     .then(async (x) => {
-//       if (req.method === 'PUT') {
-//         return update(collection, 'id', id, JSON.parse(req.body));
-//       } else if (req.method === 'DELETE') {
-//         return remove(collection, 'id', id);
-//       } else if (req.method === 'POST') {
-//         return post(collection, 'id', id, JSON.parse(req.body), titleName);
-//       }
-//     })
-//     .catch((_) => {
-//       return { auth: false, updated: false };
-//     });
-// }

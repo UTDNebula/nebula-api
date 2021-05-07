@@ -4,6 +4,12 @@ import { getByKey, update, remove, post } from '../../../lib/handler/[id]';
 
 const collection = 'announcements';
 
+/**
+ * Handles all routes for announcements
+ * @param req request
+ * @param res response
+ * @returns appropriate JSON response
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = parseInt(req.query.id as string);
   if (req.method == 'GET')

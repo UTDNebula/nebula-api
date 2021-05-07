@@ -7,11 +7,7 @@ type courseProps = {
   deleteCourse: (id: string) => any;
 };
 
-const Course: React.FunctionComponent<courseProps> = (props) => {
-  const course = props.course;
-  const editCourse = props.editCourse;
-  const deleteCourse = props.deleteCourse;
-
+const Course: React.FC<courseProps> = ({ course, editCourse, deleteCourse }: courseProps) => {
   return (
     <div className="p-8 bg-blue-200 rounded-2xl shadow-lg">
       {course ? (

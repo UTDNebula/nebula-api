@@ -74,12 +74,16 @@ function setup(obj, level) {
   }
 }
 
+/**
+ * Prerequisite visualization component using vis.js
+ */
 export default function Prereq({ name, prereqs }) {
   const [graph, setGraph] = useState(null);
 
   useEffect(() => {
-    if (!!prereqs) {
+    if (prereqs) {
       let obj = prettyPrint(prereqs);
+      console.log(verify(prereqs, ['CS 2340', 'CS 2305', 'CS 3333', 'CS 2336']));
       nodes = [];
       edges = [];
       rootname = name;
@@ -98,7 +102,7 @@ export default function Prereq({ name, prereqs }) {
           graph={graph}
           options={options}
           events={events}
-          style={{ height: "640px" }} 
+          style={{ height: '640px' }}
           getNetwork={(network) => {
             //  if you want access to vis.js network api you can set the state in a parent component using this property
           }}

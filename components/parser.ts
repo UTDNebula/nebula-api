@@ -1,62 +1,34 @@
-import chevrotain from 'chevrotain';
-
-const createToken = chevrotain.createToken;
-const tokenMatcher = chevrotain.tokenMatcher;
-const Lexer = chevrotain.Lexer;
-const EmbeddedActionsParser = chevrotain.EmbeddedActionsParser;
-
-// define the base cases, which are the components that make up expressions
-const And = createToken({ name: 'And', pattern: /and/ });
-const Or = createToken({ name: 'Or', pattern: /or/ });
-
-const LParen = createToken({ name: 'LParen', pattern: /\(/ });
-const RParen = createToken({ name: 'RParen', pattern: /\)/ });
-
-const Course = createToken({ name: 'Course', pattern: /([A-Z]+ [0-9][A-Z0-9][0-9]+)/ });
-const RandomRequest = createToken({ name: 'RandomRequest', pattern: /((?! and | or |\(|\)).)+/ });
-const Grade = createToken({
-  name: 'Grade',
-  pattern: /with a (?:minimum )*grade (of )*[ABC]-*\+*( or (?:higher|better))*/,
-});
-
-const WhiteSpace = createToken({
-  name: 'WhiteSpace',
-  pattern: /\s+/,
-  group: Lexer.SKIPPED,
-});
-
-const Comma = createToken({ name: 'Comma', pattern: /,/, group: Lexer.SKIPPED });
-
-// define all tokens with their order of precedence
-const allTokens = [
-  WhiteSpace,
-  Comma,
+const chevrotain = require('chevrotain');
+import {
+  allTokens,
   And,
   Or,
   Course,
   Grade,
   RandomRequest,
   LParen,
-  RParen, //, IrrelevantWord
-];
+  RParen,
+  CalculatorLexer,
+} from './tokens';
 
-// create lexer instance
-const CalculatorLexer = new Lexer(allTokens);
+/**
+ * Parses a prerequisite string into a tree structure.
+ */
+class PrereqParser extends chevrotain.EmbeddedActionsParser {
+  // combine array of expressions into object with "and" key
+  // used to generate intuitive prerequisite graph
+  generateAnd(children) {
+    if (children.length > 1) return { and: children };
+    else return children;
+  }
 
-// combine array of expressions into object with "and" key
-// used to generate intuitive prerequisite graph
-function generateAnd(children) {
-  if (children.length > 1) return { and: children };
-  else return children;
-}
+  // combine array of expressions into object with "or" key
+  generateOr(children) {
+    if (children.length > 1) return { or: children };
+    else return children;
+  }
 
-// combine array of expressions into object with "or" key
-function generateOr(children) {
-  if (children.length > 1) return { or: children };
-  else return children;
-}
-
-class Calculator extends EmbeddedActionsParser {
+  // constructs and defines expressions for parsing
   constructor() {
     super(allTokens);
     const $ = this;
@@ -79,7 +51,7 @@ class Calculator extends EmbeddedActionsParser {
         value.push($.SUBRULE2($.orExpression));
       });
 
-      return value.length === 1 ? value[0] : generateAnd(value);
+      return value.length === 1 ? value[0] : this.generateAnd(value);
     });
 
     $.RULE('orExpression', () => {
@@ -93,7 +65,7 @@ class Calculator extends EmbeddedActionsParser {
         value.push(val);
       });
 
-      return value.length === 1 ? value[0] : generateOr(value);
+      return value.length === 1 ? value[0] : this.generateOr(value);
     });
 
     $.RULE('atomicBooleanExpression', () =>
@@ -146,23 +118,22 @@ class Calculator extends EmbeddedActionsParser {
   }
 }
 
-const parser = new Calculator();
+// create new parser instance
+const parser = new PrereqParser();
 
-export function parseInput(text) {
+/**
+ * Parses a prerequisite string into JSON structure
+ * @param text prerequisite string
+ * @returns parsed structure
+ */
+export function prettyPrint(text) {
   const lexingResult = CalculatorLexer.tokenize(text);
-  // "input" is a setter which will reset the parser's state.
   parser.input = lexingResult.tokens;
   let res = parser.expression();
 
   if (parser.errors.length > 0) {
     throw new Error('sad sad panda, Parsing errors detected');
   }
-  return res;
-}
-
-export function prettyPrint(text) {
-  console.log(text);
-  let res = parseInput(text);
   console.log(JSON.stringify(res, null, 2));
   return res;
 }

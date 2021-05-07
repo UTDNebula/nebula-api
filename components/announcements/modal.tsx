@@ -6,6 +6,9 @@ type ModalProps = {
   close: (course: courseType | null, save: boolean) => any;
 };
 
+/**
+ * Generic modal popup for editing courses
+ */
 const Modal: React.FunctionComponent<ModalProps> = (props) => {
   const [course, setCourse] = useState(props.info);
 

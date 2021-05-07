@@ -1,54 +1,25 @@
 const chevrotain = require('chevrotain');
-
-const createToken = chevrotain.createToken;
-const tokenMatcher = chevrotain.tokenMatcher;
-const Lexer = chevrotain.Lexer;
-const EmbeddedActionsParser = chevrotain.EmbeddedActionsParser;
-
-// define the base cases, which are the components that make up expressions
-const And = createToken({ name: 'And', pattern: /and/ });
-const Or = createToken({ name: 'Or', pattern: /or/ });
-
-const LParen = createToken({ name: 'LParen', pattern: /\(/ });
-const RParen = createToken({ name: 'RParen', pattern: /\)/ });
-
-const Course = createToken({ name: 'Course', pattern: /([A-Z]+ [0-9][A-Z0-9][0-9]+)/ });
-const RandomRequest = createToken({ name: 'RandomRequest', pattern: /((?! and | or |\(|\)).)+/ });
-const Grade = createToken({
-  name: 'Grade',
-  pattern: /with a (?:minimum )*grade (of )*[ABC]-*\+*( or (?:higher|better))*/,
-});
-
-const WhiteSpace = createToken({
-  name: 'WhiteSpace',
-  pattern: /\s+/,
-  group: Lexer.SKIPPED,
-});
-
-const Comma = createToken({ name: 'Comma', pattern: /,/, group: Lexer.SKIPPED });
-
-// define all tokens with their order of precedence
-const allTokens = [
-  WhiteSpace,
-  Comma,
+import {
+  allTokens,
   And,
   Or,
   Course,
   Grade,
   RandomRequest,
   LParen,
-  RParen, //, IrrelevantWord
-];
+  RParen,
+  CalculatorLexer,
+} from './tokens';
 
-// create lexer instance
-const CalculatorLexer = new Lexer(allTokens);
-
-let taken_courses = [];
-
-class Calculator extends EmbeddedActionsParser {
-  constructor() {
+/**
+ * Validates prerequisite strings from the given list of courses
+ */
+class PrereqValidator extends chevrotain.EmbeddedActionsParser {
+  constructor(taken_courses) {
     super(allTokens);
     const $ = this;
+
+    $.taken_courses = taken_courses;
 
     $.RULE('expression', () => {
       return $.SUBRULE($.andExpression);
@@ -59,8 +30,7 @@ class Calculator extends EmbeddedActionsParser {
       $.MANY(() => {
         $.CONSUME(And);
         let res = $.SUBRULE2($.orExpression);
-        if (!res) 
-            value = false;
+        if (!res) value = false;
       });
 
       return value;
@@ -71,8 +41,7 @@ class Calculator extends EmbeddedActionsParser {
       $.MANY(() => {
         $.CONSUME(Or);
         let val = $.SUBRULE2($.atomicBooleanExpression);
-        if(val)
-            value = true;
+        if (val) value = true;
       });
 
       return value;
@@ -105,7 +74,7 @@ class Calculator extends EmbeddedActionsParser {
       // 2. grade meets minimum
       if (courseNum != null) {
         // do all checks here
-        for (let taken_course of taken_courses) {
+        for (let taken_course of $.taken_courses) {
           if (courseNum[1].includes(taken_course)) {
             console.log(courseNum[1] + ' satisfied');
             return true;
@@ -135,23 +104,19 @@ class Calculator extends EmbeddedActionsParser {
   }
 }
 
-const parser = new Calculator();
-
-export function parseInput(text, courses) {
-  taken_courses = courses;
+/**
+ * Checks to see if the given prerequisite string is satisfied by a given list of courses
+ * @param text prerequisite string
+ * @param courses array of courses taken so far
+ * @returns whether the prerequisite has been satisfied
+ */
+export function verify(text, courses) {
+  const parser = new PrereqValidator(courses);
   const lexingResult = CalculatorLexer.tokenize(text);
-  // "input" is a setter which will reset the parser's state.
   parser.input = lexingResult.tokens;
   let res = parser.expression();
-  taken_courses = [];
-
   if (parser.errors.length > 0) {
     throw new Error('sad sad panda, Parsing errors detected');
   }
-  return res;
-}
-
-export function verify(text, courses) {
-  let res = parseInput(text, courses);
   return res;
 }
