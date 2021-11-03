@@ -6,7 +6,8 @@
     "dev": "nodemon ./api/server.ts",
     "build": "tsc --project ./",
     "lint": "eslint --fix --ext .ts .",
-    "format": "prettier --write 'api/**/*.{tsx,ts,js}'"
+    "format": "prettier --write 'api/**/*.{tsx,ts,js}'",
+    "prepare": "husky install"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
@@ -17,12 +18,30 @@
     "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^11.2.6",
     "nodemon": "^2.0.14",
     "prettier": "^2.4.1",
     "prettier-eslint": "^13.0.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
+  },
+  "lint-staged": {
+    "*.{tsx,ts,js}": [
+      "eslint --cache --fix .",
+      "prettier --write src/**/*.{tsx,ts,js}"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog",
+      "disableSubjectLowerCase": true,
+      "maxHeaderWidth": 72,
+      "maxLineWidth": 80,
+      "defaultType": "chore"
+    }
   }
 }

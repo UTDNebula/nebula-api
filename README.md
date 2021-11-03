@@ -1,5 +1,7 @@
 # Nebula API
 
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 _A database for some really useful UTD data._
 
 Part of [Project Nebula](https://about.utdnebula.com)
