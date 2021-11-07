@@ -41,3 +41,4 @@ deploy_log.sh
 .idea/
 .vscode/
 .firebase/
+serviceAccountKey.json
