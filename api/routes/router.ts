@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../firestore';
+import bcrypt from 'bcryptjs';
 
 const router = express.Router();
 
@@ -7,7 +8,27 @@ router.route('/').get((req, res) => {
   res.json({ success: true });
 });
 
-router.route('/v1/sections/search/').get(async (req, res) => {
+router.use(async (req, res, next) => {
+  const apiHash = req.header('Authorization');
+  var verified: boolean = false;
+  if (!apiHash) {
+    res.status(403).json({ message: 'API key was not provided.' });
+    return;
+  }
+  const hashes = await db.collection('api_hashes').get();
+  hashes.forEach(hash => {
+    if (bcrypt.compareSync(apiHash.toString(), hash.id)) {
+      verified = true;
+    }
+  });
+  if (verified) {
+    next();
+  } else {
+    res.status(403).json({ message: 'Could not authenticate api key.' });
+  }
+});
+
+router.route('/v1/sections/search/').get(async (req, res, next) => {
   var query = db.collection('sections');
 
   // go through each http requested query and add them to the firestore query
@@ -42,7 +63,7 @@ router.route('/v1/sections/search/').get(async (req, res) => {
   res.status(200).json(sections);
 });
 
-router.route('/v1/sections/:id').get(async (req, res) => {
+router.route('/v1/sections/:id').get(async (req, res, next) => {
   const section = await db.collection('sections').doc(req.params.id).get();
   if (section.exists) {
     res.status(200).json(section.data());
