@@ -8,19 +8,28 @@ router.route('/').get((req, res) => {
   res.json({ success: true });
 });
 
+// ----------
+// MIDDLEWARE
+// ----------
+
 router.use(async (req, res, next) => {
   const apiHash = req.header('Authorization');
   var verified: boolean = false;
+
+  // stop the program before we get a read if there is no key
   if (!apiHash) {
     res.status(403).json({ message: 'API key was not provided.' });
     return;
   }
   const hashes = await db.collection('api_hashes').get();
+
+  // check each hash for a match
   hashes.forEach(hash => {
     if (bcrypt.compareSync(apiHash.toString(), hash.id)) {
       verified = true;
     }
   });
+
   if (verified) {
     next();
   } else {
@@ -28,16 +37,24 @@ router.use(async (req, res, next) => {
   }
 });
 
+// --------
+// SECTIONS
+// --------
+
 router.route('/v1/sections/search/').get(async (req, res, next) => {
   var query = db.collection('sections');
 
   // go through each http requested query and add them to the firestore query
   Object.keys(req.query).forEach(element => {
     var filter: string = req.query[element].toString();
-    if (element == 'times') { // converted from XX:XX_XX:XX to XX:XX - XX:XX
+
+    // converted from XX:XX_XX:XX to XX:XX - XX:XX
+    if (element == 'times') { 
       let times = filter.split('_');
       filter = times[0] + ' - ' + times[1];
-    } else if (element == 'days') { // converted from Monday_Wednesday to Monday & Wednesday
+
+    // converted from Monday_Wednesday to Monday & Wednesday
+    } else if (element == 'days') { 
       let days = filter.split('_');
       filter = '';
       days.forEach((day, i) => {
@@ -45,6 +62,7 @@ router.route('/v1/sections/search/').get(async (req, res, next) => {
         if (i != days.length - 1) filter += ' & ';
       });
     }
+
     query = query.where(element, '==', filter);
   });
 
