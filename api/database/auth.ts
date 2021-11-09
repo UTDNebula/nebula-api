@@ -4,8 +4,10 @@ const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestor
 var serviceAccount: object;
 
 try {
-  serviceAccount = require('../../serviceAccountKey.json');
+  serviceAccount = require('../../api/database/serviceAccountKey.json');
+  console.log('Starting application using Service Account.');
 } catch (error) {
+  console.log('Starting application using GCP.');
   serviceAccount = null;
 }
 
