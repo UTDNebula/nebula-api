@@ -12,23 +12,7 @@ router.route('/search').get(async (req, res, next) => {
   // go through each http requested query and add them to the firestore query
   var query = db.collection('sections');
   Object.keys(req.query).forEach(element => {
-    var filter: string = req.query[element].toString();
-
-    // converted from XX:XX_XX:XX to XX:XX - XX:XX
-    if (element == 'times') { 
-      let times = filter.split('_');
-      filter = times[0] + ' - ' + times[1];
-
-    // converted from Monday_Wednesday to Monday & Wednesday
-    } else if (element == 'days') { 
-      let days = filter.split('_');
-      filter = '';
-      days.forEach((day, i) => {
-        filter += day;
-        if (i != days.length - 1) filter += ' & ';
-      });
-    }
-    query = query.where(element, '==', filter);
+    query = query.where(element, '==', req.query[element].toString());
   });
 
   // get an array of matching sections
