@@ -1,36 +1,47 @@
 {
-  "name": "nebula-data-service",
+  "name": "nebula-api",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start -p $PORT",
-    "pretty": "prettier --write \"./**/*.{js,jsx,json,ts,tsx}\""
+    "dev": "nodemon ./api/server.ts",
+    "build": "tsc --project ./",
+    "lint": "eslint --fix --ext .ts .",
+    "format": "prettier --write 'api/**/*.{tsx,ts,js}'",
+    "prepare": "husky install"
   },
   "dependencies": {
-    "autoprefixer": "^10.2.3",
-    "chevrotain": "^8.0.1",
-    "firebase": "^8.2.4",
-    "firebase-admin": "^9.4.2",
-    "isomorphic-unfetch": "^3.1.0",
-    "js-cookie": "^2.2.1",
-    "next": "10.0.5",
-    "next-cookies": "^2.0.3",
-    "next-firebase-auth": "^0.10.0",
-    "nookies": "^2.5.2",
-    "postcss": "^8.2.4",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-firebaseui": "^4.1.0",
-    "react-graph-vis": "^1.0.7",
-    "swr": "^0.4.0",
-    "tailwindcss": "^2.0.2"
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
   },
   "devDependencies": {
-    "@types/react": "^17.0.3",
-    "@types/vis": "^4.21.21",
-    "prettier": "^2.2.1",
-    "typescript": "^4.2.2"
+    "@types/express": "^4.17.13",
+    "@types/node": "^16.11.6",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^11.2.6",
+    "nodemon": "^2.0.14",
+    "prettier": "^2.4.1",
+    "prettier-eslint": "^13.0.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
+  },
+  "lint-staged": {
+    "*.{tsx,ts,js}": [
+      "eslint --fix --ext .ts .",
+      "prettier --write 'api/**/*.{tsx,ts,js}'"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog",
+      "disableSubjectLowerCase": true,
+      "maxHeaderWidth": 72,
+      "maxLineWidth": 80,
+      "defaultType": "chore"
+    }
   }
 }
