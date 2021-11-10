@@ -80,7 +80,7 @@ class CoursebookScraper:
         # format query list as a proper query string
         query = 'action=search'
         for specifier in queryList:
-            query += '&s[]={0}'.format(specifier)
+            query += f'&s[]={specifier}'
 
         # specify CourseBook request header
         coursebookHeader = {
@@ -98,7 +98,6 @@ class CoursebookScraper:
         }
 
         # send CourseBook search query
-        # self.logger.info('Sending CourseBook query: {0}'.format(query))
         try:
             response = requests.post(
                 'https://coursebook.utdallas.edu/clips/clip-cb11-hat.zog',
@@ -107,14 +106,14 @@ class CoursebookScraper:
             )
             html = BeautifulSoup(response.content, 'html.parser')
         except:
-            self.logger.error('Failed to receive response from query: {0}'.format(query))
+            self.logger.error(f'Failed to receive response from query: {query}')
             return {}
 
         # parse response for items returned
         try:
             numItems = html.find_all('b')[0].__repr__().split('(')[1].split(')')[0].split(' ')[0] # this should probably be cleaned up
             if numItems == 'no':
-                self.logger.info('0 results obtained from query: {0}'.format(query))
+                self.logger.info(f'0 results obtained from query: {query}')
                 return {}
         except:
             self.logger.error(f'Failed to parse number of items returned from query: {query}')
@@ -202,12 +201,13 @@ if __name__ == '__main__':
     scraper = CoursebookScraper(os.environ['PTGSESSID'])
 
     # load default config
-    with open('configs/{}'.format(os.environ['CONFIG_FILE']), 'r') as file:
+    config_file_name = os.environ['CONFIG_FILE']
+    with open(f'configs/{config_file_name}', 'r') as file:
         scraper.configuration = json.load(file)
 
     # download data from coursebook
     result = scraper.downloadFromConfig()
 
     # write results to data.json
-    with open('data/{}.json'.format(int(time.time())),'w') as file:
+    with open(f'data/{int(time.time())}.json', 'w') as file:
         json.dump(result, file)

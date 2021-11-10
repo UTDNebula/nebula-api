@@ -41,3 +41,6 @@ deploy_log.sh
 .idea/
 .vscode/
 .firebase/
+
+# webscraper
+/scraper/.env
