@@ -13,6 +13,8 @@ from bs4 import BeautifulSoup
 # adjust recursion limit for parsing large files with Beautiful Soup
 sys.setrecursionlimit(10000) # default is 1000
 
+COURSEBOOK_URL = 'https://coursebook.utdallas.edu'
+
 class CoursebookScraper:
 
     def __init__(self, ptgsessid: str, congfiguration: dict = None, loggingFile: str = 'scraper.log'):
@@ -42,7 +44,7 @@ class CoursebookScraper:
         # obtain coursebook index page
         self.logger.info('Getting CourseBook index page')
         try:
-            r = requests.get('https://coursebook.utdallas.edu')
+            r = requests.get(COURSEBOOK_URL)
         except:
             self.logger.error('Failed to obtain CourseBook index page')
             return {}
@@ -82,7 +84,7 @@ class CoursebookScraper:
 
         # specify CourseBook request header
         coursebookHeader = {
-            'Cookie': 'PTGSESSID={0}'.format(self.ptgsessid),
+            'Cookie': f'PTGSESSID={self.ptgsessid}',
             'Content-Length': '46',
             'Accept': '*/*',
             'X-Requested_with': 'XMLHttpRequest',
@@ -115,7 +117,7 @@ class CoursebookScraper:
                 self.logger.info('0 results obtained from query: {0}'.format(query))
                 return {}
         except:
-            self.logger.error('Failed to parse number of items returned from query: {0}'.format(query))
+            self.logger.error(f'Failed to parse number of items returned from query: {query}')
             return {}
 
         # parse response for download link
@@ -126,11 +128,11 @@ class CoursebookScraper:
             else:
                 raise Exception()
         except:
-            self.logger.error('Failed to parse download link to {0} item(s) from query: {1}'.format(numItems, query))
+            self.logger.error(f'Failed to parse download link to {numItems} item(s) from query: {query}')
             return {}
 
         # create reportmonkey downloadURL from downloadID
-        downloadURL = 'https://coursebook.utdallas.edu/reportmonkey/cb11-export/{0}/{0}/json'.format(downloadID)
+        downloadURL = f'https://coursebook.utdallas.edu/reportmonkey/cb11-export/{downloadID}/{downloadID}/json'
 
         # specify reportmonkey request header
         reportmonkeyHeader = {
@@ -138,7 +140,7 @@ class CoursebookScraper:
             'Accept-Encoding': 'gzip, deflate, br',
             'Accept-Language': 'en-US,en;q=0.9',
             'Connection': 'keep-alive',
-            'Cookie': 'PTGSESSID={}'.format(self.ptgsessid),
+            'Cookie': f'PTGSESSID={self.ptgsessid}',
             'Referer': 'https://coursebook.utdallas.edu/',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
@@ -150,19 +152,18 @@ class CoursebookScraper:
         }
 
         # send coursemonkey download request for json
-        # self.logger.info('Sending ReportMonkey query: {0}'.format(query))
         try:
             download = requests.get(downloadURL, headers=reportmonkeyHeader)
             rawJSON = download.text
         except:
-            self.logger.error('Failed to download JSON response for query: {0}'.format(query))
+            self.logger.error(f'Failed to download JSON response for query: {query}')
             return {}
 
         # convert rawJSON to JSON object
         try:
             queryAsJSON = json.loads(rawJSON)
         except:
-            self.logger.error('Failed to convert JSON to dict for query: {0}'.format(query))
+            self.logger.error(f'Failed to convert JSON to dict for query: {query}')
             return {}
 
         # return content

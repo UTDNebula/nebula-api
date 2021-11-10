@@ -1,6 +1,7 @@
 import dotenv
 import json
 import os
+import sys
 
 import firebase_admin
 from firebase_admin import credentials
@@ -17,7 +18,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.Client()
 
 # import data from scraped json
-with open('data/1636133547.json', 'r') as file:
+with open(sys.argv[1], 'r') as file:
     data = json.load(file)
 
 # import data
