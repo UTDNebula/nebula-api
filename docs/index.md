@@ -10,9 +10,9 @@ Authorization: apikey
 ## Sections
 
 `/v1/sections/id`
-| Value | Description | Example |
-| ------------- | ------------- | ------------- |
-| id  | Section Name  | acct2301.001.21f |
+| Value         | Description   | Example          |
+| ------------- | ------------- | ---------------- |
+| id            | Section Name  | acct2301.001.21f |
 ```js
 Returns
 {
