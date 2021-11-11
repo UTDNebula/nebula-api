@@ -44,3 +44,5 @@ deploy_log.sh
 
 # webscraper
 /scraper/.env
+/scraper/credentials.json
+/scraper/scraper.log

@@ -11,7 +11,7 @@ from firebase_admin import firestore
 dotenv.load_dotenv()
 
 # Use the application default credentials
-cred = credentials.Certificate(os.environ('GOOGLE_APPLICATION_CREDENTIALS'))
+cred = credentials.Certificate(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 firebase_admin.initialize_app(cred)
 
 # create database reference

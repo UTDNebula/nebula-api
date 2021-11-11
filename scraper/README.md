@@ -7,6 +7,8 @@ To use the CourseBook Scraper:
 - `mkdir data`
 
 ## Usage
+**Firestore Credentials** - In the event that you decide to use the `dataToFirestore.py` data import script, be sure to change the name of your credentials file to `credentials.json` to ensure that such information is not accidentally committed to the repository. Otherwise, using the script is as simple as passing in the data `.json` file path to `dataToFirestore.py`. For example, `python dataToFirestore.py data/data.json`. 
+
 **PTGSESSID** - In all cases, the CourseBook Scraper requires that you obtain your PTGSESSID value from [CourseBook](https://coursebook.utdallas.edu). You must be signed in for this to work. After signing in, navigate to your browsers cookies and collect the PTGSESSID value. If you use the default configuration or provide your own configuration file, you can simply set your PTGSESSID in `.env`. 
 
 1. Nebula-API default configuation
