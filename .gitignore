@@ -41,3 +41,8 @@ deploy_log.sh
 .idea/
 .vscode/
 .firebase/
+
+# webscraper
+/scraper/.env
+/scraper/credentials.json
+/scraper/scraper.log
