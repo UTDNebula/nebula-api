@@ -6,28 +6,30 @@ import bcrypt from 'bcryptjs';
 // ----------
 
 async function middlewareController (req, res, next) {
-    const apiHash = req.header('Authorization');
-    var verified: boolean = false;
+  const apiHash = req.header('Authorization');
+  const API_HASHES_COLLECTION = 'api_hashes';
   
-    // stop the program before we get a read if there is no key
-    if (!apiHash) {
-      res.status(403).json({ message: 'API key was not provided.' });
-      return;
-    }
+  // Decline request if it is not authenticated
+  if (!apiHash) {
+    res.status(403).json({ message: 'API key was not provided.' });
+    return;
+  }
 
-    // check each hash for a match
-    const hashes = await db.collection('api_hashes').get();
-    hashes.forEach(hash => {
-      if (bcrypt.compareSync(apiHash.toString(), hash.id)) {
-        verified = true;
+  // Ensure API keys are valid
+  try {
+    const hashes = await db.collection(API_HASHES_COLLECTION).get();
+    for (const hash of hashes.docs) {
+      if (bcrypt.compareSync(apiHash.toString(), hash)) {
+        next();
+        return;
       }
-    });
-  
-    if (verified) {
-      next();
-    } else {
-      res.status(403).json({ message: 'Could not authenticate api key.' });
     }
+    res.status(403).json({ message: 'Could not authenticate API key.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error while processing API key.'});
+    console.error(error);
+    return;
+  }
 };
 
 export default middlewareController;
