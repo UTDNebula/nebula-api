@@ -3,16 +3,16 @@
 ## Authentication
 Every request to the Nebula Data API requires a valid API key included in the HTTP header `Authorization`.
 ```HTTP
-GET /v1/example/ HTTP/1.1
+GET /v1/sections HTTP/1.1
 Authorization: apikey
 ```
 
 ## Sections
 
 `/v1/sections/id`
-| Value | Description | Example |
-| ------------- | ------------- | ------------- |
-| id  | Section Name  | acct2301.001.21f |
+| Value         | Description   | Example          |
+| ------------- | ------------- | ---------------- |
+| id            | Section Name  | acct2301.001.21f |
 ```js
 Returns
 {
