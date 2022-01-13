@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "start": "npm run build && node ./build/server.js",
     "dev": "nodemon ./api/server.ts",
-    "build": "tsc --project ./",
+    "build": "tsc",
     "lint": "eslint --fix --ext .ts .",
-    "format": "prettier --write 'api/**/*.{tsx,ts,js}'",
+    "format": "prettier --write 'api/**/*.{tsx,ts}'",
     "prepare": "husky install"
   },
   "dependencies": {
