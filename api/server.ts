@@ -1,14 +1,17 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import express from 'express';
+import mongoose from 'mongoose';
 
-import * as router from './routes/router';
-
-const app = express();
+import course from './routes/course';
 
 dotenv.config();
 
-app.use('/', router.default);
+mongoose.connect(process.env.MONGODB_URI).then(() => {
+  const app = express();
 
-app.listen(process.env.PORT, () => {
-  console.log(`The server has started on port ${process.env.PORT}`);
+  app.use('/course', course);
+
+  app.listen(process.env.PORT, () => {
+    console.log(`The server has started on port ${process.env.PORT}`);
+  });
 });
