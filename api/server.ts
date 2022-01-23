@@ -1,3 +1,4 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -10,6 +11,10 @@ dotenv.config();
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   const app = express();
 
+  // application middleware
+  app.use(cors());
+
+  // application routes
   app.use('/course', course);
   app.use('/degree', degree);
 
