@@ -10,8 +10,8 @@ export interface Course {
   class_level: string;
   activity_type: string;
   grading: string;
-  prerequisite_courses: string;
-  corequisite_courses: string;
+  prerequisite_courses: object;
+  corequisite_courses: object;
 }
 
 const schema = new Schema<Course>({
@@ -24,8 +24,8 @@ const schema = new Schema<Course>({
   class_level: { type: String, required: true },
   activity_type: { type: String, required: true },
   grading: { type: String, required: true },
-  prerequisite_courses: { type: String, required: true },
-  corequisite_courses: { type: String, required: true },
+  prerequisite_courses: { type: Object, required: true },
+  corequisite_courses: { type: Object, required: true },
 });
 
 export const CourseModel = model<Course>('course', schema);

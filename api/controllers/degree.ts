@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 
-import { CourseModel } from '../models/course';
+import { DegreeModel } from '../models/degree';
 
-export const courseSearch = async (req: Request, res: Response) => {
-  CourseModel.find(req.query, {}, { strict: false }, (error, result) => {
+export const degreeSearch = async (req: Request, res: Response) => {
+  DegreeModel.find(req.query, {}, { strict: false }, (error, result) => {
     if (error) {
       return res.status(500).json({
         error: 'an internal server error occured',
@@ -14,14 +14,14 @@ export const courseSearch = async (req: Request, res: Response) => {
   });
 };
 
-export const courseById = async (req: Request, res: Response) => {
+export const degreeById = async (req: Request, res: Response) => {
   if (req.params.id === null) {
     res.status(400).json({
       error: 'request did not contain a course id',
     });
   }
 
-  CourseModel.findOne({ _id: req.params.id }, {}, {}, (error, result) => {
+  DegreeModel.findOne({ _id: req.params.id }, {}, {}, (error, result) => {
     if (error) {
       res.status(500).json({
         error: 'an internal server error occured',
