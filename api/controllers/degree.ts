@@ -31,3 +31,20 @@ export const degreeById = async (req: Request, res: Response) => {
     }
   });
 };
+
+export const degreeInsert = async (req: Request, res: Response) => {
+  const newDegree = new DegreeModel(req.body);
+  newDegree.validate(err => {
+    if (err) {
+      res.status(400).json(err);
+    } else {
+      newDegree.save(err => {
+        if (err) {
+          res.status(500).json(err);
+        } else {
+          res.status(200).json(newDegree);
+        }
+      });
+    }
+  });
+};

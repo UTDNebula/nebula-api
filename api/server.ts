@@ -9,6 +9,8 @@ dotenv.config();
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   const app = express();
+  
+  app.use(express.json());
 
   app.use('/course', course);
   app.use('/degree', degree);
