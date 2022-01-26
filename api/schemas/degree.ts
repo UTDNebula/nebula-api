@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema } from 'mongoose';
 
 export interface Degree {
   name: string;
@@ -7,11 +7,9 @@ export interface Degree {
   options: Array<object | string>;
 }
 
-const schema = new Schema<Degree>({
+export const DegreeSchema = new Schema<Degree>({
   name: { type: String, required: true },
   required: { type: Number, required: true },
   total: { type: Number, required: true },
   options: { type: Array, required: true },
 });
-
-export const DegreeModel = model<Degree>('degree', schema);
