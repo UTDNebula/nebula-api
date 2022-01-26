@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { CourseModel } from '../connections';
+import { CourseModel } from '../schemas/course';
 
 export const courseSearch = async (req: Request, res: Response) => {
   CourseModel.find(req.query, {}, { strict: false }, (error, result) => {

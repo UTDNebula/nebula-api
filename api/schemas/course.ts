@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, connection } from 'mongoose';
 
 export interface Course {
   name: string;
@@ -27,3 +27,6 @@ export const CourseSchema = new Schema<Course>({
   prerequisite_courses: { type: Object, required: true },
   corequisite_courses: { type: Object, required: true },
 });
+
+const courseDB = connection.useDb('courseDB');
+export const CourseModel = courseDB.model<Course>('course', CourseSchema);

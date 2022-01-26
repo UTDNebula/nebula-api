@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { DegreeModel } from '../connections';
+import { DegreeModel } from '../schemas/degree';
 
 export const degreeSearch = async (req: Request, res: Response) => {
   DegreeModel.find(req.query, {}, { strict: false }, (error, result) => {
