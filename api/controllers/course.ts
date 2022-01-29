@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-
 import { CourseModel } from '../models/course';
 
 export const courseSearch = async (req: Request, res: Response) => {

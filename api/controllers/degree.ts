@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-
 import { DegreeModel } from '../models/degree';
 
 export const degreeSearch = async (req: Request, res: Response) => {
