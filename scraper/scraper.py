@@ -7,6 +7,7 @@ import os
 import requests
 import sys
 import time
+import re
 
 from bs4 import BeautifulSoup
 
@@ -17,10 +18,10 @@ COURSEBOOK_URL = 'https://coursebook.utdallas.edu'
 
 class CoursebookScraper:
 
-    def __init__(self, ptgsessid: str, congfiguration: dict = None, loggingFile: str = 'scraper.log'):
+    def __init__(self, ptgsessid: str, configuration: dict = None, loggingFile: str = 'scraper.log'):
         # handle object variables
         self.ptgsessid = ptgsessid
-        self.configuration = congfiguration
+        self.configuration = configuration
         self.loggingFile = loggingFile
 
         # initialize logging for scraper
@@ -70,7 +71,7 @@ class CoursebookScraper:
                 options = [option['value'] for option in field.find_all('option')]
                 specifications[title] = options
             except:
-                self.logger.error('Failed to parse a search field from search search form')
+                self.logger.error('Failed to parse a search field from search form')
 
         # return obtained specifications
         return specifications
@@ -85,8 +86,8 @@ class CoursebookScraper:
         # specify CourseBook request header
         coursebookHeader = {
             'Cookie': f'PTGSESSID={self.ptgsessid}',
-            'Content-Length': '46',
-            'Accept': '*/*',
+            'Content-Length': f'{len(query)}',
+            'Accept': 'text/html',
             'X-Requested_with': 'XMLHttpRequest',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -104,14 +105,23 @@ class CoursebookScraper:
                 headers = coursebookHeader,
                 data = query,
             )
-            html = BeautifulSoup(response.content, 'html.parser')
         except:
             self.logger.error(f'Failed to receive response from query: {query}')
             return {}
 
-        # parse response for items returned
+        # make sure the response is actually usable
         try:
-            numItems = html.find_all('b')[0].__repr__().split('(')[1].split(')')[0].split(' ')[0] # this should probably be cleaned up
+            if not response.ok:
+                raise Exception()
+            html = BeautifulSoup(response.content, 'html.parser')
+        except:
+            self.logger.error(f'Bad response received from query: {query}')
+            return {}
+
+        # parse response for items returned
+        try: 
+            numItemsText = html.find_all('b')[0].__repr__()
+            numItems = re.search(r"([0-9]+|no) items", numItemsText).group(1) # Extract # of items via RegEx
             if numItems == 'no':
                 self.logger.info(f'0 results obtained from query: {query}')
                 return {}
@@ -135,7 +145,7 @@ class CoursebookScraper:
 
         # specify reportmonkey request header
         reportmonkeyHeader = {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Accept': 'application/json',
             'Accept-Encoding': 'gzip, deflate, br',
             'Accept-Language': 'en-US,en;q=0.9',
             'Connection': 'keep-alive',
