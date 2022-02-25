@@ -457,7 +457,7 @@ class CoursebookScraper extends FirefoxScraper {
         let TermButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.TERM);
         // Find the prefix buttons
         let PrefixButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.PREFIX);
-        // Scrape all terms by selecting the first term button
+        // Scrape current term by selecting the second term button
         await TermButtons[1].click();
         // Iterate over sections from every class prefix for every term
         for (let PrefixButton of PrefixButtons) {
