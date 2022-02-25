@@ -225,6 +225,16 @@ class CoursebookScraper extends FirefoxScraper {
         let MainTab: WebElement = await Section.findElement(By.css("#tab-section"));
         // Return to main tab
         await MainTab.click();
+        // Wait for main tab to load before continuing
+        let SectionTable: WebElement = null;
+        while (!SectionTable) {
+            try {
+                SectionTable = await Section.findElement(By.css("table.courseinfo__overviewtable"));
+            }
+            catch (error: NoSuchElementError) {
+                await this.Driver.sleep(1000);
+            }
+        }
     }
 
     async ParseSyllabus(sectionData: SectionData, TableData: WebElement[]) {
@@ -337,10 +347,16 @@ class CoursebookScraper extends FirefoxScraper {
         let courseData: CourseData = new CourseData();
         let sectionData: SectionData = new SectionData();
 
-        // Wait until the table loads fully
-        await this.Driver.wait(until.elementLocated(By.css("table.courseinfo__overviewtable")));
-        // Grab the full table
-        let SectionTable: WebElement = await Section.findElement(By.css("table.courseinfo__overviewtable"));
+        // Grab the section's full table, wait for page to load more if we can't find it yet
+        let SectionTable: WebElement = null;
+        while (!SectionTable) {
+            try {
+                SectionTable = await Section.findElement(By.css("table.courseinfo__overviewtable"));
+            }
+            catch (error: NoSuchElementError) {
+                await this.Driver.sleep(1000);
+            }
+        }
         // Get all of the useful table data elements
         let TableData = await SectionTable.findElements(By.css("th, td"));
         // Find, split, and parse the class/course numbers
@@ -442,7 +458,7 @@ class CoursebookScraper extends FirefoxScraper {
         // Find the prefix buttons
         let PrefixButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.PREFIX);
         // Scrape all terms by selecting the first term button
-        await TermButtons[0].click();
+        await TermButtons[1].click();
         // Iterate over sections from every class prefix for every term
         for (let PrefixButton of PrefixButtons) {
             await PrefixButton.click();
