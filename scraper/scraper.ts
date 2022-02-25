@@ -222,6 +222,18 @@ class CoursebookScraper extends FirefoxScraper {
         await MainTab.click();
     }
 
+    async ParseSyllabus(sectionData: SectionData, TableData: WebElement[]) {
+        let SyllabusBlock = await ParsingUtils.FindLabeledElement(TableData, "Syllabus:");
+        sectionData.SyllabusURI = await (SyllabusBlock.findElement(By.css("a")).then(
+            // Get href of syllabus link on successful find
+            async (SyllabusLink: WebElement) => {
+                return await SyllabusLink.getAttribute("href");
+            },
+            // Return null on fail
+            () => { return null; }
+        ));
+    }
+
     async ParseExams(sectionData: SectionData, SectionTable: WebElement) {
         try {
             let ExamBlock: WebElement = await SectionTable.findElement(By.css("#class_exams"));
@@ -385,7 +397,7 @@ class CoursebookScraper extends FirefoxScraper {
         await this.ParseExams(sectionData, SectionTable);
 
         // Get the URI to the section's syllabus
-        await this.ParseTextbooks(sectionData, Section);
+        await this.ParseSyllabus(sectionData, TableData);
 
         // Get the section's textbooks (do this last because switching to the textbook tab makes all previous elements stale)
         await this.ParseTextbooks(sectionData, Section);
