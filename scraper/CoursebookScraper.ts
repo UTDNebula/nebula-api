@@ -77,6 +77,11 @@ type Sections = {
     [ClassNum: number]: SectionData;
 }
 
+type Credentials = {
+    NetID: string,
+    Password: string
+}
+
 abstract class ParsingUtils {
     // Find an element out of a list of elements by matching a preceding element's text
     static async FindLabeledElement(ToSearch: WebElement[], Label: string): Promise<WebElement> | null {
@@ -409,10 +414,29 @@ class CoursebookScraper extends FirefoxScraper {
         console.log('\n');
     };
 
+    async Login(credentials: Credentials): Promise<void> {
+        // Navigate to login page
+        await this.Driver.get("https://coursebook.utdallas.edu/login/coursebook");
+        // Find netID input box
+        let NetIDBox: WebElement = await this.Driver.findElement(By.id("netid"));
+        // Enter the netID
+        await NetIDBox.sendKeys(credentials.NetID);
+        // Find the password input box
+        let PasswordBox: WebElement = await this.Driver.findElement(By.id("password"));
+        // Enter the password
+        await PasswordBox.sendKeys(credentials.Password);
+        // Submit and wait for page load
+        await PasswordBox.submit();
+        await this.Driver.wait(until.elementLocated(By.css("div.search-panel-form-div")));
+    }
+
     // Scrape everything
     async Scrape(): Promise<void> {
-        // Navigate to guided search page
-        await this.Driver.get("https://coursebook.utdallas.edu/guidedsearch");
+        // Log in with COURSEBOOK_AUTH credentials
+        await this.Login({
+            NetID: process.env.NETID,
+            Password: process.env.Password
+        });
         // Find the term buttons
         let TermButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.TERM);
         // Find the prefix buttons
