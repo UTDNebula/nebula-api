@@ -40,9 +40,11 @@ deploy_log.sh
 .gcloudignore
 .idea/
 .vscode/
+.vs/
 .firebase/
 
 # webscraper
 /scraper/.env
 /scraper/credentials.json
 /scraper/scraper.log
+/scraper/geckodriver*

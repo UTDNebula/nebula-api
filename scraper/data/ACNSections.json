@@ -1,0 +1,1336 @@
+{
+  "22728": {
+    "Section": "ACN6310.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 18,
+    "TotalEnrolled": "2 (ACN) + 4 (HCS)",
+    "Waitlisted": 0,
+    "Description": "ACN 6310 - Fundamentals of Functional Brain Imaging (3 semester credit hours) In-depth topics in brain imaging including neuroimaging detection systems (primarily MRI), experimental design, statistical techniques in image analysis, clinical applications of functional neuroimaging, and reviews of pertinent literature using functional brain imaging to illuminate various cognitive and perceptual processes, including language, memory, hearing, and vision. Corequisite: ACN 6110 or HCS 6110. Prerequisites: BBSC majors only and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Corequisite: ACN 6110 or HCS 6110. Prerequisite: BBSC majors only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Bart Rypma",
+        "Role": "Primary Instructor",
+        "EMail": "bpr061000@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Yuguang Zhao",
+        "Role": "Teaching Assistant",
+        "EMail": "yxz141730@utdallas.edu"
+      },
+      {
+        "Name": "Gayathri Batchalli Maruthy",
+        "Role": "Teaching Assistant",
+        "EMail": "gxb150930@utdallas.edu"
+      },
+      {
+        "Name": "Gayathri Batchalli Maruthy",
+        "Role": "Teaching Assistant",
+        "EMail": "gxb150930@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "2:30pm-3:45pm",
+    "Location": {
+      "Room": "GR 4.204",
+      "MapURI": "https://locator.utdallas.edu/GR_4.204"
+    },
+    "Exams": [
+      {
+        "Date": "May 10, 2022",
+        "Time": "2:00pm-4:45pm",
+        "Location": {
+          "Room": "GR 4.204",
+          "MapURI": "https://locator.utdallas.edu/GR_4.204"
+        }
+      }
+    ],
+    "SyllabusURI": null,
+    "TextBooks": [
+      {
+        "Title": "Functional Magnetic Resonance Imaging, Third Edition",
+        "Author": "Scott A. Huettel",
+        "ImageURI": "https://images-na.ssl-images-amazon.com/images/I/51QTSI2klNL.jpg",
+        "Price": "$139.50",
+        "Version": "Sinauer Associates, Inc. 3rd Edition 2013",
+        "ISBN": "9780878936274"
+      }
+    ]
+  },
+  "22729": {
+    "Section": "ACN6338.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 3,
+    "TotalEnrolled": "33 (ACN) + 11 (HCS) + 1 (PSYC)",
+    "Waitlisted": 0,
+    "Description": "ACN 6338 - Functional Neuroanatomy (3 semester credit hours) An introduction to human neuroanatomy organized by major brain system. Function of the neuroanatomy of each major system and relation to neurological disorders associated with damage to the neuroanatomy of the system. Prerequisites: BBSC majors only and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: BBSC majors only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Kristen Kennedy",
+        "Role": "Primary Instructor",
+        "EMail": "kmk082000@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Da Yeoun Moon",
+        "Role": "Teaching Assistant",
+        "EMail": "dxm190057@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "1:00pm-2:15pm",
+    "Location": {
+      "Room": "CRA 12.120",
+      "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+    },
+    "Exams": [
+      {
+        "Date": "May 12, 2022",
+        "Time": "2:00pm-4:45pm",
+        "Location": {
+          "Room": "CRA 12.120",
+          "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl117128",
+    "TextBooks": [
+      {
+        "Title": "The Human Brain in Photographs and Diagrams: With STUDENT CONSULT Online Access, 4e",
+        "Author": "John Nolte PhD\nPhD",
+        "ImageURI": "http://ecx.images-amazon.com/images/I/51pn2OzifvL.jpg",
+        "Price": "$51.75",
+        "Version": "Saunders 4th Edition 2013",
+        "ISBN": "9781455709618"
+      }
+    ]
+  },
+  "22730": {
+    "Section": "ACN6V71.013.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 1,
+    "Grading": "Pass/Fail",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Internship",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 13,
+    "TotalEnrolled": "17",
+    "Waitlisted": 0,
+    "Description": "ACN 6V71 - Industry Internship (1-6 semester credit hours) Pass/Fail only. May be repeated for credit (12 semester credit hours maximum). Prerequisites: BBSC majors only and department consent required. ([1-6]-0) S",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: BBSC Majors Only. Repeat Limit - ACN 6V71 may only be repeated for a maximum of 12 semester credit hours."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Richard Golden",
+        "Role": "Primary Instructor",
+        "EMail": "golden@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "",
+    "Times": "tbd-tbd",
+    "Location": {
+      "Room": "",
+      "MapURI": "https://locator.utdallas.edu/"
+    },
+    "Exams": [],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "22731": {
+    "Section": "ACN6V72.013.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 1,
+    "Grading": "Pass/Fail",
+    "Consent": "Instructor Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Internship",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 19,
+    "TotalEnrolled": "11",
+    "Waitlisted": 0,
+    "Description": "ACN 6V72 - Research Internship (1-6 semester credit hours) Pass/Fail only. May be repeated for credit (12 semester credit hours maximum). Prerequisites: BBSC majors only and instructor consent required. ([1-6]-0) S",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: BBSC Majors Only. Repeat Limit - ACN 6V72 may only be repeated for a maximum of 12 semester credit hours."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Richard Golden",
+        "Role": "Primary Instructor",
+        "EMail": "golden@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "",
+    "Times": "tbd-tbd",
+    "Location": {
+      "Room": "",
+      "MapURI": "https://locator.utdallas.edu/"
+    },
+    "Exams": [],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "22837": {
+    "Section": "ACN6313.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 8,
+    "TotalEnrolled": "7 (ACN) + 9 (PSYC) + 0 (HCS)",
+    "Waitlisted": 0,
+    "Description": "ACN 6313 - Research Methods in Behavioral and Brain Sciences - Part II (3 semester credit hours) This course focuses on applying, understanding, and interpreting regression and analysis of variance -related statistical techniques in a behavioral and brain science context. The course provides students with increased conceptual understanding of topics within regression and analysis of variance (e.g., hierarchical regression analysis, multiple regression with continuous and categorical predictors, regression diagnostics, fixed, random, and mixed effect models), along with computer skills required to interpret data analyses. Prerequisites: (ACN 6312 or HCS 6312 or PSYC 6312) and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: ACN 6312 or HCS 6312 or PSYC 6312."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Nancy Juhn",
+        "Role": "Primary Instructor",
+        "EMail": "njuhn@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Ziwei Zhang",
+        "Role": "Teaching Assistant",
+        "EMail": "zxz170009@utdallas.edu"
+      },
+      {
+        "Name": "Gayathri Batchalli Maruthy",
+        "Role": "Teaching Assistant",
+        "EMail": "gxb150930@utdallas.edu"
+      },
+      {
+        "Name": "Gayathri Batchalli Maruthy",
+        "Role": "Teaching Assistant",
+        "EMail": "gxb150930@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Wednesday",
+    "Times": "10:00am-12:45pm",
+    "Location": {
+      "Room": "JO 3.209",
+      "MapURI": "https://locator.utdallas.edu/JO_3.209"
+    },
+    "Exams": [
+      {
+        "Date": "May 11, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "JO 3.209",
+          "MapURI": "https://locator.utdallas.edu/JO_3.209"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl117538",
+    "TextBooks": [
+      {
+        "Title": "DISCOVERING STATISTICS USING IBM SPSS STATISTICS (TEXT ONLY)",
+        "Author": "FIELD",
+        "ImageURI": "https://dygz37jdyaml.cloudfront.net/images/blank-book-1.jpg",
+        "Price": "$77.00",
+        "Version": "5th Edition 2017",
+        "ISBN": "9781526436566"
+      }
+    ]
+  },
+  "22895": {
+    "Section": "ACN6333.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 3,
+    "TotalEnrolled": "1 (HCS) + 30 (ACN) + 3 (PSYC)",
+    "Waitlisted": 0,
+    "Description": "ACN 6333 - Memory (3 semester credit hours) Research and theory on the acquisition, representation, and retrieval of information by the mind/brain. Includes information processing, neuropsychological and cognitive neuroscience perspectives. Prerequisites: BBSC majors only and department consent required. (3-0) R",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: BBSC majors only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Chandramallika Basak",
+        "Role": "Primary Instructor",
+        "EMail": "cxb116130@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday",
+    "Times": "10:00am-12:45pm",
+    "Location": {
+      "Room": "CR 1.212",
+      "MapURI": "https://locator.utdallas.edu/CR_1.212"
+    },
+    "Exams": [
+      {
+        "Date": "May 10, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "CR 1.212",
+          "MapURI": "https://locator.utdallas.edu/CR_1.212"
+        }
+      }
+    ],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "22910": {
+    "Section": "ACN6342.0W1.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Online",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 11,
+    "TotalEnrolled": "34",
+    "Waitlisted": 0,
+    "Description": "ACN 6342 - Applied Human-Computer Interaction (3 semester credit hours) Broad overview of how human-computer interaction (HCI) informs the user-centered design (UCD) process. Practical experience in the core methods of user experience (UX) design and research throughout the product development lifecycle. Department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Erika Orrick",
+        "Role": "Primary Instructor",
+        "EMail": "edo042000@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "",
+    "Times": "tbd-tbd",
+    "Location": {
+      "Room": "No Meeting Room",
+      "MapURI": "https://locator.utdallas.edu/ONLINE"
+    },
+    "Exams": [],
+    "SyllabusURI": "https://dox.utdallas.edu/syl117472",
+    "TextBooks": []
+  },
+  "22929": {
+    "Section": "ACN6313.002.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 9,
+    "TotalEnrolled": "15 (HCS) + 0 (PSYC) + 0 (ACN)",
+    "Waitlisted": 0,
+    "Description": "ACN 6313 - Research Methods in Behavioral and Brain Sciences - Part II (3 semester credit hours) This course focuses on applying, understanding, and interpreting regression and analysis of variance -related statistical techniques in a behavioral and brain science context. The course provides students with increased conceptual understanding of topics within regression and analysis of variance (e.g., hierarchical regression analysis, multiple regression with continuous and categorical predictors, regression diagnostics, fixed, random, and mixed effect models), along with computer skills required to interpret data analyses. Prerequisites: (ACN 6312 or HCS 6312 or PSYC 6312) and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: ACN 6312 or HCS 6312 or PSYC 6312."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Robert Ackerman",
+        "Role": "Primary Instructor",
+        "EMail": "raa110030@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Desiree' Knoch",
+        "Role": "Teaching Assistant",
+        "EMail": "dxk170011@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "10:00am-11:15am",
+    "Location": {
+      "Room": "JO 3.209",
+      "MapURI": "https://locator.utdallas.edu/JO_3.209"
+    },
+    "Exams": [
+      {
+        "Date": "May 10, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "GR 4.204",
+          "MapURI": "https://locator.utdallas.edu/GR_4.204"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl115395",
+    "TextBooks": [
+      {
+        "Title": "Multiple Regression and Beyond: An Introduction to Multiple Regression and Structural Equation Modeling",
+        "Author": "Timothy Z. Keith",
+        "ImageURI": "https://images-na.ssl-images-amazon.com/images/I/41%2Bsk9Ep49L.jpg",
+        "Price": "$91.75",
+        "Version": "Routledge 2nd Edition 2014",
+        "ISBN": "9781138811959"
+      }
+    ]
+  },
+  "22932": {
+    "Section": "ACN6160.0W1.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 1,
+    "Grading": "Pass/Fail",
+    "Consent": "Department Consent Required",
+    "Method": "Online",
+    "ActivityType": "Independent Study",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 6,
+    "TotalEnrolled": "4",
+    "Waitlisted": 0,
+    "Description": "ACN 6160 - Neurobiology (1 semester credit hour) A self-paced course providing the neurobiological foundation for the study of speech-language pathology. Pass/Fail only. This course is offered in an online format only. Prerequisites: Speech-Language Pathology M.S. students only and department consent required. (1-0) S",
+    "Attributes": [
+      "No Audit Allowed"
+    ],
+    "Requisites": [
+      "Prerequisite: Speech-Language Pathology M.S. students only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Robert Stillman",
+        "Role": "Primary Instructor",
+        "EMail": "stillman@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "",
+    "Times": "tbd-tbd",
+    "Location": {
+      "Room": "No Meeting Room",
+      "MapURI": "https://locator.utdallas.edu/ONLINE"
+    },
+    "Exams": [],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "22938": {
+    "Section": "ACN7343.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 15,
+    "TotalEnrolled": "7 (HCS) + 26 (ACN)",
+    "Waitlisted": 0,
+    "Description": "ACN 7343 - Neuropharmacology (3 semester credit hours) Biology of neurotransmission in the central nervous system. Includes ionotropic and metabotropic coupling of all known classes of receptors to both their cellular and systemic effects. Clinical efficacy, side effects, and other issues related to drug use and abuse are covered. Prerequisites: (ACN 6340 or HCS 6340 or ACN 6346 or HCS 6346 or PSYC 6346) and department consent required. (3-0) T",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: (ACN 6340 or HCS 6340) or (ACN 6346 or HCS 6346 or PSYC 6346)."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Gregory Dussor",
+        "Role": "Primary Instructor",
+        "EMail": "gxd141130@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "10:00am-11:15am",
+    "Location": {
+      "Room": "CRA 12.120",
+      "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+    },
+    "Exams": [
+      {
+        "Date": "May 12, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "CRA 12.120",
+          "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl117003",
+    "TextBooks": [
+      {
+        "Title": "Molecular Neuropharmacology: A Foundation for Clinical Neuroscience, Third Edition",
+        "Author": "Eric Nestler",
+        "ImageURI": "http://ecx.images-amazon.com/images/I/51NHZ%2BYZdaL.jpg",
+        "Price": "$41.25",
+        "Version": "McGraw-Hill Education / Medical 3rd Edition 2015",
+        "ISBN": "9780071827690"
+      }
+    ]
+  },
+  "22955": {
+    "Section": "ACN6V71.091.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 1,
+    "Grading": "Pass/Fail",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Internship",
+    "SessionType": "Eight Week - Session Two",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 30,
+    "TotalEnrolled": "0",
+    "Waitlisted": 0,
+    "Description": "ACN 6V71 - Industry Internship (1-6 semester credit hours) Pass/Fail only. May be repeated for credit (12 semester credit hours maximum). Prerequisites: BBSC majors only and department consent required. ([1-6]-0) S",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: BBSC Majors Only. Repeat Limit - ACN 6V71 may only be repeated for a maximum of 12 semester credit hours."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Richard Golden",
+        "Role": "Primary Instructor",
+        "EMail": "golden@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "March 21, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "",
+    "Times": "tbd-tbd",
+    "Location": {
+      "Room": "",
+      "MapURI": "https://locator.utdallas.edu/"
+    },
+    "Exams": [],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "22959": {
+    "Section": "ACN6313.501.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 15,
+    "TotalEnrolled": "15 (ACN) + 0 (HCS) + 0 (PSYC)",
+    "Waitlisted": 0,
+    "Description": "ACN 6313 - Research Methods in Behavioral and Brain Sciences - Part II (3 semester credit hours) This course focuses on applying, understanding, and interpreting regression and analysis of variance -related statistical techniques in a behavioral and brain science context. The course provides students with increased conceptual understanding of topics within regression and analysis of variance (e.g., hierarchical regression analysis, multiple regression with continuous and categorical predictors, regression diagnostics, fixed, random, and mixed effect models), along with computer skills required to interpret data analyses. Prerequisites: (ACN 6312 or HCS 6312 or PSYC 6312) and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: ACN 6312 or HCS 6312 or PSYC 6312."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Herve Abdi",
+        "Role": "Primary Instructor",
+        "EMail": "herve@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Luke Moraglia",
+        "Role": "Teaching Assistant",
+        "EMail": "lem140330@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Monday, Wednesday",
+    "Times": "5:30pm-6:45pm",
+    "Location": {
+      "Room": "GR 4.204",
+      "MapURI": "https://locator.utdallas.edu/GR_4.204"
+    },
+    "Exams": [
+      {
+        "Date": "May 11, 2022",
+        "Time": "5:00pm-7:45pm",
+        "Location": {
+          "Room": "GR 4.204",
+          "MapURI": "https://locator.utdallas.edu/GR_4.204"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl115789",
+    "TextBooks": [
+      {
+        "Title": "Experimental Design & Analysis for Psychology",
+        "Author": "Herve Abdi",
+        "ImageURI": "http://ecx.images-amazon.com/images/I/5151yJofAvL.jpg",
+        "Price": "$65.50",
+        "Version": "Oxford University Press, USA 2008",
+        "ISBN": "9780199299881"
+      }
+    ]
+  },
+  "22972": {
+    "Section": "ACN6346.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 33,
+    "TotalEnrolled": "21 (ACN) + 3 (HCS) + 3 (PSYC)",
+    "Waitlisted": 0,
+    "Description": "ACN 6346 - Systems Neuroscience (3 semester credit hours) Integrative systems level study of the nervous system. Aspects of neural mechanisms and circuitry underlying regulation of motor behaviors, sensory and perceptual processing, biological homeostasis, and higher cognitive functions. Prerequisites: BBSC majors only and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: BBSC majors only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Rukhsana Sultana",
+        "Role": "Primary Instructor",
+        "EMail": "rxs170431@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Monday, Wednesday",
+    "Times": "8:30am-9:45am",
+    "Location": {
+      "Room": "CRA 12.110",
+      "MapURI": "https://locator.utdallas.edu/CRA_12.110"
+    },
+    "Exams": [
+      {
+        "Date": "May 13, 2022",
+        "Time": "8:00am-10:45am",
+        "Location": {
+          "Room": "CRA 12.110",
+          "MapURI": "https://locator.utdallas.edu/CRA_12.110"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl115434",
+    "TextBooks": [
+      {
+        "Title": "Neuroscience, Fifth Edition",
+        "Author": "Dale Purves",
+        "ImageURI": "http://ecx.images-amazon.com/images/I/51Wm1eOipDL.jpg",
+        "Price": "$127.25",
+        "Version": "Sinauer Associates, Inc. 5th Edition 2012",
+        "ISBN": "9780878936953"
+      },
+      {
+        "Title": "Principles of Neural Science, Fifth Edition (Principles of Neural Science (Kandel))",
+        "Author": "KANDEL",
+        "ImageURI": "http://ecx.images-amazon.com/images/I/51Qz4jvhdjL.jpg",
+        "Price": "$73.50",
+        "Version": "McGraw-Hill Professional 5th Edition 2013",
+        "ISBN": "9780071390118"
+      }
+    ]
+  },
+  "22973": {
+    "Section": "ACN6372.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 4,
+    "TotalEnrolled": "2 (HCS) + 24 (ACN)",
+    "Waitlisted": 0,
+    "Description": "ACN 6372 - The Neuroscience of Pain (3 semester credit hours) A systems-oriented course covering the anatomical and physiologic basis of pain. The course describes the basic features of neural processing of pain signals in the spinal cord and brain, the anatomy and the function of the descending systems that can control transmission of pain signals, and peripheral and central sensitization. The physiological and molecular basis for treatment of pain is discussed. Prerequisites: BBSC majors only and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: BBSC majors only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Benedict Kolber",
+        "Role": "Primary Instructor",
+        "EMail": "bjk200001@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday",
+    "Times": "4:00pm-6:45pm",
+    "Location": {
+      "Room": "CRA 12.120",
+      "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+    },
+    "Exams": [
+      {
+        "Date": "May 10, 2022",
+        "Time": "5:00pm-7:45pm",
+        "Location": {
+          "Room": "CRA 12.120",
+          "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+        }
+      }
+    ],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "23175": {
+    "Section": "ACN6110.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 1,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Laboratory - No Lab Fee",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 18,
+    "TotalEnrolled": "4 (HCS) + 2 (ACN)",
+    "Waitlisted": 0,
+    "Description": "ACN 6110 - Fundamentals of Functional Brain Imaging Lab (1 semester credit hour) This course covers applications of functional neuroimaging data collection and analysis methods focusing on methods of data collection, and experimental design, data analysis methods, and how they are related. Students work in the lab to develop proficiency with neuroimaging analysis software tools. Class meetings will consist of lectures, hands-on demonstrations, and work-through sessions with readily available data sets to learn the mechanics of basic fMRI data analysis. Corequisite: ACN 6310 or HCS 6310. Prerequisites: BBSC majors only and department consent required. (0-3) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Corequisite: ACN 6310 or HCS 6310. Prerequisite: BBSC majors only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Bart Rypma",
+        "Role": "Primary Instructor",
+        "EMail": "bpr061000@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Yuguang Zhao",
+        "Role": "Teaching Assistant",
+        "EMail": "yxz141730@utdallas.edu"
+      },
+      {
+        "Name": "Gayathri Batchalli Maruthy",
+        "Role": "Teaching Assistant",
+        "EMail": "gxb150930@utdallas.edu"
+      },
+      {
+        "Name": "Gayathri Batchalli Maruthy",
+        "Role": "Teaching Assistant",
+        "EMail": "gxb150930@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "4:00pm-5:15pm",
+    "Location": {
+      "Room": "JO 3.209",
+      "MapURI": "https://locator.utdallas.edu/JO_3.209"
+    },
+    "Exams": [
+      {
+        "Date": "May 12, 2022",
+        "Time": "5:00pm-7:45pm",
+        "Location": {
+          "Room": "JO 3.209",
+          "MapURI": "https://locator.utdallas.edu/JO_3.209"
+        }
+      }
+    ],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "23234": {
+    "Section": "ACN6331.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 2,
+    "TotalEnrolled": "2 (HCS) + 6 (PSYC) + 10 (ACN)",
+    "Waitlisted": 0,
+    "Description": "ACN 6331 - Cognitive Development (3 semester credit hours) Survey of cognitive development theories and research in a variety of domains including language, memory, social cognition, and learning. Prerequisites: BBSC majors only and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: BBSC majors only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Candice Mills",
+        "Role": "Primary Instructor",
+        "EMail": "cxm056000@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Monday",
+    "Times": "10:00am-12:45pm",
+    "Location": {
+      "Room": "CB3 1.312",
+      "MapURI": "https://locator.utdallas.edu/CB3_1.312"
+    },
+    "Exams": [
+      {
+        "Date": "May 13, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "CRA 12.125",
+          "MapURI": "https://locator.utdallas.edu/CRA_12.125"
+        }
+      }
+    ],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "23296": {
+    "Section": "ACN6313.003.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 11,
+    "TotalEnrolled": "13 (ACN) + 0 (HCS) + 0 (PSYC)",
+    "Waitlisted": 0,
+    "Description": "ACN 6313 - Research Methods in Behavioral and Brain Sciences - Part II (3 semester credit hours) This course focuses on applying, understanding, and interpreting regression and analysis of variance -related statistical techniques in a behavioral and brain science context. The course provides students with increased conceptual understanding of topics within regression and analysis of variance (e.g., hierarchical regression analysis, multiple regression with continuous and categorical predictors, regression diagnostics, fixed, random, and mixed effect models), along with computer skills required to interpret data analyses. Prerequisites: (ACN 6312 or HCS 6312 or PSYC 6312) and department consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: ACN 6312 or HCS 6312 or PSYC 6312."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Nancy Juhn",
+        "Role": "Primary Instructor",
+        "EMail": "njuhn@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Gayathri Batchalli Maruthy",
+        "Role": "Teaching Assistant",
+        "EMail": "gxb150930@utdallas.edu"
+      },
+      {
+        "Name": "Ziwei Zhang",
+        "Role": "Teaching Assistant",
+        "EMail": "zxz170009@utdallas.edu"
+      },
+      {
+        "Name": "Ziwei Zhang",
+        "Role": "Teaching Assistant",
+        "EMail": "zxz170009@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Wednesday",
+    "Times": "4:00pm-6:45pm",
+    "Location": {
+      "Room": "JO 3.209",
+      "MapURI": "https://locator.utdallas.edu/JO_3.209"
+    },
+    "Exams": [
+      {
+        "Date": "May 11, 2022",
+        "Time": "5:00pm-7:45pm",
+        "Location": {
+          "Room": "JO 3.209",
+          "MapURI": "https://locator.utdallas.edu/JO_3.209"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl117541",
+    "TextBooks": [
+      {
+        "Title": "DISCOVERING STATISTICS USING IBM SPSS STATISTICS (TEXT ONLY)",
+        "Author": "FIELD",
+        "ImageURI": "https://dygz37jdyaml.cloudfront.net/images/blank-book-1.jpg",
+        "Price": "$77.00",
+        "Version": "5th Edition 2017",
+        "ISBN": "9781526436566"
+      }
+    ]
+  },
+  "23331": {
+    "Section": "ACN7372.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "No Consent",
+    "Method": "Face-to-Face",
+    "ActivityType": "Seminar",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 13,
+    "TotalEnrolled": "14 (ACN) + 3 (HCS)",
+    "Waitlisted": 0,
+    "Description": "ACN 7372 - Seminar in Neuroscience (3 semester credit hours) Selected topics and current research in neuroscience. May be repeated for credit as topics vary (12 semester credit hours maximum). Prerequisite: BBSC majors only. (3-0) Y",
+    "Attributes": [
+      "Course Allows Subtitles"
+    ],
+    "Requisites": [
+      "Prerequisite: BBSC majors only. Repeat Limit - ACN 7372 may only be repeated for a maximum of 12 semester credit hours."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Michael Burton",
+        "Role": "Primary Instructor",
+        "EMail": "mdb150330@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "11:30am-12:45pm",
+    "Location": {
+      "Room": "CRA 12.120",
+      "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+    },
+    "Exams": [
+      {
+        "Date": "May 10, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "CRA 12.120",
+          "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+        }
+      }
+    ],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "27880": {
+    "Section": "ACN5314.501.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "CLOSED/FULL",
+    "AvailableSeats": -2,
+    "TotalEnrolled": "38 (ACN) + 4 (HCS)",
+    "Waitlisted": 0,
+    "Description": "ACN 5314 - Computational Modeling Methods in Behavioral and Brain Sciences (3 semester credit hours) Historical introduction to machine learning algorithms from a cognitive-neuroscience perspective. Includes an introduction to important and widely used computational modeling methodologies in psychology, neuroscience, and machine learning. No mathematical prerequisites and no computer programming prerequisites, but students will use the computer in simulation experiments. Prerequisites: BBSC majors only and department consent required. (3-0) T",
+    "Attributes": [
+      "No Audit Allowed"
+    ],
+    "Requisites": [
+      "Prerequisite: BBSC majors only."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Richard Golden",
+        "Role": "Primary Instructor",
+        "EMail": "golden@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Athul Sudheesh",
+        "Role": "Guest/Visiting Lecturer",
+        "EMail": "axs162731@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Monday",
+    "Times": "7:00pm-9:45pm",
+    "Location": {
+      "Room": "GR 4.301",
+      "MapURI": "https://locator.utdallas.edu/GR_4.301"
+    },
+    "Exams": [
+      {
+        "Date": "May 9, 2022",
+        "Time": "8:00pm-10:45pm",
+        "Location": {
+          "Room": "CRA 12.120",
+          "MapURI": "https://locator.utdallas.edu/CRA_12.120"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl118598",
+    "TextBooks": []
+  },
+  "28503": {
+    "Section": "ACN6V81.501.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 6,
+    "TotalEnrolled": "10",
+    "Waitlisted": 0,
+    "Description": "ACN 6V81 - Special Topics in Applied Cognition and Neuroscience (1-9 semester credit hours) May be repeated for credit as topics vary (12 semester credit hours maximum). Prerequisites: BBSC majors only and department consent required. ([1-9]-0) Y",
+    "Attributes": [
+      "Course Allows Subtitles"
+    ],
+    "Requisites": [
+      "Prerequisite: BBSC Majors Only. Repeat Limit - ACN 6V81 may only be repeated for a maximum of 12 semester credit hours."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Kathryn Overzet",
+        "Role": "Primary Instructor",
+        "EMail": "kmo053000@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Wednesday",
+    "Times": "5:30pm-8:15pm",
+    "Location": {
+      "Room": "GR 4.708",
+      "MapURI": "https://locator.utdallas.edu/GR_4.708"
+    },
+    "Exams": [
+      {
+        "Date": "May 11, 2022",
+        "Time": "5:00pm-7:45pm",
+        "Location": {
+          "Room": "GR 4.708",
+          "MapURI": "https://locator.utdallas.edu/GR_4.708"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl114005",
+    "TextBooks": [
+      {
+        "Title": "SURGICAL NEUROPHYSIOLOGY",
+        "Author": "JAHANGIRI",
+        "ImageURI": "https://dygz37jdyaml.cloudfront.net/images/blank-book-1.jpg",
+        "Price": "$108.75",
+        "Version": "2nd Edition 2012",
+        "ISBN": "9781475164985"
+      }
+    ]
+  },
+  "28508": {
+    "Section": "ACN6374.0H1.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "No Consent",
+    "Method": "Hybrid/Blended",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 2,
+    "TotalEnrolled": "22 (ACN) + 0 (HCS)",
+    "Waitlisted": 0,
+    "Description": "ACN 6374 - Intraoperative Neurophysiological Monitoring (IONM) Part II (3 semester credit hours) Covers recordings of neuro-electric brain potentials and their interpretation during high-risk surgical procedures and clinically for diagnostic and therapeutic purposes. The use of various neurophysiological methods for guiding implantation of stimulating electrodes deep in the brain and for assisting the surgeon in certain operations are also described. This course will cover an understanding of the various IONM techniques for different surgical procedures, including the brain, spine, and peripheral nerve surgeries. Students will be exposed to the basics and advance knowledge of neurophysiological monitoring techniques. IONM Part II, focusing on the national professional competencies, professional standards of practice, and evidence-based theory, is presented. The students will also learn to utilize research skills to explore the latest protocols and standards of practice. This c",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: ACN 6373 or HCS 6373."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Faisal Jahangiri",
+        "Role": "Primary Instructor",
+        "EMail": "frj190000@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Thursday",
+    "Times": "10:00am-12:45pm",
+    "Location": {
+      "Room": "CR 1.212",
+      "MapURI": "https://locator.utdallas.edu/CR_1.212"
+    },
+    "Exams": [
+      {
+        "Date": "May 12, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "CR 1.212",
+          "MapURI": "https://locator.utdallas.edu/CR_1.212"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl114609",
+    "TextBooks": [
+      {
+        "Title": "SURGICAL NEUROPHYSIOLOGY",
+        "Author": "JAHANGIRI",
+        "ImageURI": "https://dygz37jdyaml.cloudfront.net/images/blank-book-1.jpg",
+        "Price": "$108.75",
+        "Version": "2nd Edition 2012",
+        "ISBN": "9781475164985"
+      }
+    ]
+  },
+  "28713": {
+    "Section": "ACN7310.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "No Consent",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 19,
+    "TotalEnrolled": "5 (HCS) + 0 (ACN)",
+    "Waitlisted": 0,
+    "Description": "ACN 7310 - Advanced Research Methods (3 semester credit hours) Advanced methods of inquiry and analysis unique to cognition and neuroscience, communication sciences and disorders, or psychological sciences. May be repeated for credit as topics vary (12 semester credit hours maximum). Prerequisite: ACN 6313 or HCS 6313 or PSYC 6313 or instructor consent required. (3-0) Y",
+    "Attributes": [
+      "Course Allows Subtitles"
+    ],
+    "Requisites": [
+      "Prerequisite: ACN 6313 or HCS 6313 or PSYC 6313. Repeat Limit - ACN 7310 may only be repeated for a maximum of 12 semester credit hours."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Robert Ackerman",
+        "Role": "Primary Instructor",
+        "EMail": "raa110030@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Monday",
+    "Times": "10:00am-12:45pm",
+    "Location": {
+      "Room": "JO 3.209",
+      "MapURI": "https://locator.utdallas.edu/JO_3.209"
+    },
+    "Exams": [
+      {
+        "Date": "May 13, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "JO 3.209",
+          "MapURI": "https://locator.utdallas.edu/JO_3.209"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl115307",
+    "TextBooks": []
+  },
+  "28967": {
+    "Section": "ACN6V81.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Department Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 2,
+    "TotalEnrolled": "11 (COMD) + 4 (ACN)",
+    "Waitlisted": 0,
+    "Description": "ACN 6V81 - Special Topics in Applied Cognition and Neuroscience (1-9 semester credit hours) May be repeated for credit as topics vary (12 semester credit hours maximum). Prerequisites: BBSC majors only and department consent required. ([1-9]-0) Y",
+    "Attributes": [
+      "Course Allows Subtitles"
+    ],
+    "Requisites": [
+      "Prerequisite: BBSC Majors Only. Repeat Limit - ACN 6V81 may only be repeated for a maximum of 12 semester credit hours."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Julia Evans",
+        "Role": "Primary Instructor",
+        "EMail": "jle130030@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Thursday",
+    "Times": "4:00pm-6:45pm",
+    "Location": {
+      "Room": "CD1 A.229",
+      "MapURI": "https://locator.utdallas.edu/CD1_A.229"
+    },
+    "Exams": [
+      {
+        "Date": "May 12, 2022",
+        "Time": "5:00pm-7:45pm",
+        "Location": {
+          "Room": "CD1 A.229",
+          "MapURI": "https://locator.utdallas.edu/CD1_A.229"
+        }
+      }
+    ],
+    "SyllabusURI": null,
+    "TextBooks": []
+  },
+  "29118": {
+    "Section": "ACN6332.0H1.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "No Consent",
+    "Method": "Hybrid/Blended",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 1,
+    "TotalEnrolled": "34 (ACN) + 1 (HCS) + 0 (PSYC)",
+    "Waitlisted": 0,
+    "Description": "ACN 6332 - Perception (3 semester credit hours) Psychophysical, neurophysiological, and computational foundations of sensation and perception. Basic senses of vision, audition, chemoreception, and tactile processing, with emphasis on understanding the processes that take us from neurons to perception and action. (3-0) R",
+    "Attributes": [],
+    "Requisites": [],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Rachna Raman",
+        "Role": "Primary Instructor",
+        "EMail": "rxr076000@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Monday",
+    "Times": "1:00pm-2:15pm",
+    "Location": {
+      "Room": "CRA 12.110",
+      "MapURI": "https://locator.utdallas.edu/CRA_12.110"
+    },
+    "Exams": [
+      {
+        "Date": "May 13, 2022",
+        "Time": "2:00pm-4:45pm",
+        "Location": {
+          "Room": "CRA 12.110",
+          "MapURI": "https://locator.utdallas.edu/CRA_12.110"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl116857",
+    "TextBooks": [
+      {
+        "Title": "SENSATION & PERCEPTION",
+        "Author": "WOLFE",
+        "ImageURI": "https://dygz37jdyaml.cloudfront.net/images/blank-book-1.jpg",
+        "Price": "$152.75",
+        "Version": "6th Edition 2020",
+        "ISBN": "9781605359724"
+      }
+    ]
+  }
+}

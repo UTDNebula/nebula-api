@@ -1,0 +1,385 @@
+{
+  "20696": {
+    "Section": "ACTS4301.001.22S",
+    "Term": "22S",
+    "Level": "Undergraduate",
+    "Credits": 3,
+    "Grading": "Graded - Undergraduate",
+    "Consent": "No Consent",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 30,
+    "TotalEnrolled": "30",
+    "Waitlisted": 0,
+    "Description": "ACTS 4301 - Long Term Actuarial Mathematics I (3 semester credit hours) The purpose of this class is to develop the student's knowledge of the theoretical basis of life contingent actuarial models and the application of those models to insurance and other financial risks. Life contingencies, survival models, life insurances, annuities, and premiums will be studied. This class covers parts of SOA Exam LTAM. Prerequisites: STAT 4351 with a grade C- or higher and ACTS 4308 with a grade C- or higher. (3-0) T",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisites: STAT 4351 with a grade C- or higher and ACTS 4308 with a grade C- or higher."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Neha Makhijani",
+        "Role": "Primary Instructor",
+        "EMail": "nxm165130@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Qi Guo",
+        "Role": "Teaching Assistant",
+        "EMail": "qxg160330@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "1:00pm-2:15pm",
+    "Location": {
+      "Room": "GR 3.302",
+      "MapURI": "https://locator.utdallas.edu/GR_3.302"
+    },
+    "Exams": [
+      {
+        "Date": "May 12, 2022",
+        "Time": "2:00pm-4:45pm",
+        "Location": {
+          "Room": "GR 3.302",
+          "MapURI": "https://locator.utdallas.edu/GR_3.302"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl118561",
+    "TextBooks": []
+  },
+  "20697": {
+    "Section": "ACTS6303.501.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Instructor Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 11,
+    "TotalEnrolled": "5",
+    "Waitlisted": 0,
+    "Description": "ACTS 6303 - Principles of Actuarial Models: Long Term Actuarial Mathematics II (3 semester credit hours) The purpose of this class is to further develop the students' knowledge of the theoretical basis of life contingent actuarial models and the application of those models to insurance and other financial risks. Reserves for life insurances and life annuities, multiple-life models, multiple-decrement models, multi-state models, long-term insurance coverages, pension plans and retirement benefits, Markov chains, profit tests, and estimation of mortality rates will be studied. This class covers parts of SOA Exam LTAM. Prerequisite: ACTS 6301 or instructor consent required. (3-0) T",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: ACTS 6301."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Wenyi Lu",
+        "Role": "Primary Instructor",
+        "EMail": "wxl153330@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "5:30pm-6:45pm",
+    "Location": {
+      "Room": "CB 1.202",
+      "MapURI": "https://locator.utdallas.edu/CB_1.202"
+    },
+    "Exams": [
+      {
+        "Date": "May 10, 2022",
+        "Time": "5:00pm-7:45pm",
+        "Location": {
+          "Room": "CB 1.202",
+          "MapURI": "https://locator.utdallas.edu/CB_1.202"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl118643",
+    "TextBooks": [
+      {
+        "Title": "ASM STUDY MANUAL FOR LTAM 1ST EDITION, 3RD PRINTING",
+        "Author": "WEISHAUS",
+        "ImageURI": "https://dygz37jdyaml.cloudfront.net/images/blank-book-1.jpg",
+        "Price": "$186.75",
+        "Version": "",
+        "ISBN": "9781635885743"
+      }
+    ]
+  },
+  "20698": {
+    "Section": "ACTS6305.501.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Instructor Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 13,
+    "TotalEnrolled": "6",
+    "Waitlisted": 0,
+    "Description": "ACTS 6305 - Principles of Actuarial Models: Short Term Actuarial Mathematics II (3 semester credit hours) The purpose of this class is to further develop the students' knowledge of construction and selection of parametric models using the Maximum Likelihood Estimator (MLE) method, using the Bayesian estimation technique as well as model selection using hypothesis testing and score-based approaches. In addition, Loss estimation using credibility theory, insurance and reinsurance coverages, as well as rate making and loss reserving of property and casualty insurance will be discussed. This class covers parts of the SOA Exam STAM. Prerequisites: (STAT 5352 and ACTS 6304) or instructor consent required. (3-0) T",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisites: STAT 5352 and ACTS 6304."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Wenyi Lu",
+        "Role": "Primary Instructor",
+        "EMail": "wxl153330@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "7:00pm-8:15pm",
+    "Location": {
+      "Room": "CB 1.202",
+      "MapURI": "https://locator.utdallas.edu/CB_1.202"
+    },
+    "Exams": [
+      {
+        "Date": "May 12, 2022",
+        "Time": "8:00pm-10:45pm",
+        "Location": {
+          "Room": "CB 1.202",
+          "MapURI": "https://locator.utdallas.edu/CB_1.202"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl118644",
+    "TextBooks": [
+      {
+        "Title": "ACTEX STUDY MAN. FOR SOA EXAM STAM (W/STUDYPLUS ACC)",
+        "Author": "BROVERMAN",
+        "ImageURI": "https://dygz37jdyaml.cloudfront.net/images/blank-book-1.jpg",
+        "Price": "$187.50",
+        "Version": "2018",
+        "ISBN": "9781635883336"
+      }
+    ]
+  },
+  "20699": {
+    "Section": "ACTS6302.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "No Consent",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 22,
+    "TotalEnrolled": "8",
+    "Waitlisted": 0,
+    "Description": "ACTS 6302 - Investment and Financial Markets (3 semester credit hours) This course aims to develop students' knowledge of the theoretical basis of Corporate Finance and Financial Models, and their applications to insurance and other financial risks. The material exhibited includes introductory derivatives - forward contracts and futures, no-arbitrage pricing of financial derivatives, general properties of options, binomial asset pricing model, Black-Scholes option pricing model, analysis of option Greeks, mean-variance portfolio theory, asset pricing models, market efficiency and behavioral finance, and investment risk and project analysis. This class covers parts of CAS exam 3F and SOA exam IFM. Prerequisite: STAT 5351 or instructor consent required. (3-0) T",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: STAT 5351."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Liang Hong",
+        "Role": "Primary Instructor",
+        "EMail": "lxh019000@utdallas.edu"
+      }
+    ],
+    "Assistants": [],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Monday, Wednesday",
+    "Times": "2:30pm-3:45pm",
+    "Location": {
+      "Room": "CB 1.222",
+      "MapURI": "https://locator.utdallas.edu/CB_1.222"
+    },
+    "Exams": [
+      {
+        "Date": "May 13, 2022",
+        "Time": "2:00pm-4:45pm",
+        "Location": {
+          "Room": "CB 1.222",
+          "MapURI": "https://locator.utdallas.edu/CB_1.222"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl117917",
+    "TextBooks": []
+  },
+  "20700": {
+    "Section": "ACTS4302.001.22S",
+    "Term": "22S",
+    "Level": "Undergraduate",
+    "Credits": 3,
+    "Grading": "Graded - Undergraduate",
+    "Consent": "No Consent",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 28,
+    "TotalEnrolled": "32",
+    "Waitlisted": 0,
+    "Description": "ACTS 4302 - Investment and Financial Markets I (3 semester credit hours) This 3 semester credit hour course develops the student's knowledge of the theoretical basis of certain actuarial models and the application of those models to insurance and other financial risks. The topics discussed include mean-variance portfolio theory, asset pricing models, market efficiency and behavioral finance, investment risk and project analysis, capital structure, forwards and futures, and introduction to options. This class covers parts of CAS exam 3F and SOA exam IFM. Prerequisites: STAT 4351 with a grade C- or higher and ACTS 4308 with a grade C- or higher. (3-0) T",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisites: STAT 4351 with a grade C- or higher and ACTS 4308 with a grade C- or higher."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Natalia Humphreys",
+        "Role": "Primary Instructor",
+        "EMail": "nah103020@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Sabindra Singh Bal",
+        "Role": "Teaching Assistant",
+        "EMail": "sgb170130@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "10:00am-11:15am",
+    "Location": {
+      "Room": "GR 3.302",
+      "MapURI": "https://locator.utdallas.edu/GR_3.302"
+    },
+    "Exams": [
+      {
+        "Date": "May 12, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "GR 3.302",
+          "MapURI": "https://locator.utdallas.edu/GR_3.302"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl118543",
+    "TextBooks": []
+  },
+  "20701": {
+    "Section": "ACTS4305.001.22S",
+    "Term": "22S",
+    "Level": "Undergraduate",
+    "Credits": 3,
+    "Grading": "Graded - Undergraduate",
+    "Consent": "Instructor Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 15,
+    "TotalEnrolled": "25",
+    "Waitlisted": 0,
+    "Description": "ACTS 4305 - Short Term Actuarial Mathematics II (3 semester credit hours) The purpose of this class is to develop the students' knowledge of the construction and selection of parametric frequency and aggregate models. The students will understand and be able to construct and estimate parameters for parametric models using Maximum Likelihood estimation techniques and perform model selection using graphical procedures, hypothesis tests, including Chi-square goodness-of-fit, Kolmogorov-Smirnov and Likelihood ratio (LRT) tests. This class covers parts of SOA Exam STAM and CAS Exams MAS I, MAS II and 5. May be repeated for credit (6 semester credit hours maximum). Prerequisites: ACTS 4304 with a grade C- or higher or instructor consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [
+      "Prerequisite: ACTS 4304 with a grade C- or higher. Repeat Limit - ACTS 4305 may only be repeated for a maximum of 6 semester credit hours."
+    ],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Natalia Humphreys",
+        "Role": "Primary Instructor",
+        "EMail": "nah103020@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Sabindra Singh Bal",
+        "Role": "Teaching Assistant",
+        "EMail": "sgb170130@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Tuesday, Thursday",
+    "Times": "11:30am-12:45pm",
+    "Location": {
+      "Room": "FN 2.202",
+      "MapURI": "https://locator.utdallas.edu/FN_2.202"
+    },
+    "Exams": [
+      {
+        "Date": "May 10, 2022",
+        "Time": "11:00am-1:45pm",
+        "Location": {
+          "Room": "FN 2.202",
+          "MapURI": "https://locator.utdallas.edu/FN_2.202"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl118544",
+    "TextBooks": []
+  },
+  "20702": {
+    "Section": "ACTS6308.001.22S",
+    "Term": "22S",
+    "Level": "Graduate",
+    "Credits": 3,
+    "Grading": "Graded - Graduate",
+    "Consent": "Instructor Consent Required",
+    "Method": "Face-to-Face",
+    "ActivityType": "Lecture",
+    "SessionType": "Regular Academic Session",
+    "EnrollmentStatus": "OPEN",
+    "AvailableSeats": 6,
+    "TotalEnrolled": "10",
+    "Waitlisted": 0,
+    "Description": "ACTS 6308 - Actuarial Financial Mathematics (3 semester credit hours) The purpose of this course is to provide an understanding of the fundamental concepts of financial mathematics, and how those concepts are applied in calculating present and accumulated values for various streams of cash flows as a basis for future use in: reserving, valuation, pricing, asset liability management, investment income, capital budgeting, and valuing contingent cash flows. The topics discussed include loans, bonds, and annuities, as well as determinants of interest rates and interest rates swaps. This class covers parts of the CAS Exam 2 and the SOA Exam FM. Instructor consent required. (3-0) Y",
+    "Attributes": [],
+    "Requisites": [],
+    "CoreInfo": null,
+    "Instructors": [
+      {
+        "Name": "Neha Makhijani",
+        "Role": "Primary Instructor",
+        "EMail": "nxm165130@utdallas.edu"
+      }
+    ],
+    "Assistants": [
+      {
+        "Name": "Haopeng Yang",
+        "Role": "Teaching Assistant",
+        "EMail": "hxy161430@utdallas.edu"
+      }
+    ],
+    "StartDate": "January 18, 2022",
+    "EndDate": "May 5, 2022",
+    "MeetingDays": "Monday, Wednesday",
+    "Times": "1:00pm-2:15pm",
+    "Location": {
+      "Room": "SCI 2.225",
+      "MapURI": "https://locator.utdallas.edu/SCI_2.225"
+    },
+    "Exams": [
+      {
+        "Date": "May 11, 2022",
+        "Time": "2:00pm-4:45pm",
+        "Location": {
+          "Room": "CB 1.202",
+          "MapURI": "https://locator.utdallas.edu/CB_1.202"
+        }
+      }
+    ],
+    "SyllabusURI": "https://dox.utdallas.edu/syl118720",
+    "TextBooks": []
+  }
+}
