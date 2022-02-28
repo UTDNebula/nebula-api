@@ -1,7 +1,7 @@
 ﻿import 'dotenv/config';
 import 'fs';
 import { writeFileSync } from 'node:fs';
-import { Builder, By, Key, until, WebElement, NoSuchElementError, Origin, Button } from 'selenium-webdriver';
+import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox';
 
 type ClassLevel = "Undergraduate" | "Graduate";
@@ -161,30 +161,26 @@ class CoursebookScraper extends FirefoxScraper {
         let Dropdown: WebElement = await this.Driver.findElement(By.id(DropdownID));
         // Find all of the buttons in the dropdown
         let Buttons: WebElement[] = await Dropdown.findElements(By.css("option"));
+        // Get the text of all of the buttons in the dropdown
+        let ButtonsText: string[] = await ParsingUtils.GetElementStrings(Buttons);
+        // Filter out the divider buttons (the ones containing "-----") and blanks
+        for (let i: number = 0; i < Buttons.length; ++i) {
+            // Ignore dropdown button if it's blank or empty
+            if (ButtonsText[i] == "" || ButtonsText[i].match(/---+/g))
+                Buttons.splice(i, 1);
+            // Ignore dropdown button if it doesn't match a provided filter
+            if (Filter && !ButtonsText[i].match(Filter))
+                Buttons.splice(i, 1);
+        };
+        // Refresh ButtonsText
+        ButtonsText = await ParsingUtils.GetElementStrings(Buttons);
         // If StartIndex is a RegExp object, convert it to an integer index by finding the first button matching the pattern
-        if (typeof StartIndex == "object") {
+        if (StartIndex instanceof RegExp) {
             let Pattern: RegExp = StartIndex;
-            StartIndex = 0;
-            for (let i: number = 0; i < Buttons.length; ++i) {
-                let text: string = await Buttons[i].getText();
-                if (text.match(Pattern)) {
-                    StartIndex = i;
-                    break;
-                }
-            }
+            StartIndex = ButtonsText.findIndex((ButtonText: string) => { return ButtonText.match(Pattern) })
         }
         // Splice out the skipped indexes
         Buttons.splice(0, StartIndex);
-        // Filter out the divider buttons (the ones containing "-----") and blanks
-        for (let i: number = 0; i < Buttons.length; ++i) {
-            let text: string = await Buttons[i].getText();
-            // Ignore dropdown button if it's blank or empty
-            if (text == "" || text.match(/--+/g))
-                Buttons.splice(i, 1);
-            // Ignore dropdown button if it doesn't match a provided filter
-            if (Filter && !text.match(Filter))
-                Buttons.splice(i, 1);
-        };
         return Buttons;
     };
 
@@ -209,11 +205,8 @@ class CoursebookScraper extends FirefoxScraper {
         // Get all of the detail box buttons
         let DetailButtons: WebElement[] = await SectionList.findElements(By.css("div[data-action=info]"));
         // Click every other detail button in rapid succession to bypass ratelimit and expose data
-        for (let i: number = 0; i < DetailButtons.length; ++i) {
-            if (i % 2 != 1)
-                await DetailButtons[i].click();
-            ++i;
-        };
+        for (let i: number = 0; i < DetailButtons.length; i += 2)
+            await DetailButtons[i].click();
         // Return the individual section elements
         return await SectionList.findElements(By.className("expandedrow"));
     };
@@ -230,7 +223,7 @@ class CoursebookScraper extends FirefoxScraper {
                 TextbookNote = await Section.findElement(By.css("div.textbook-note"));
             }
             catch (error: NoSuchElementError) {
-                await this.Driver.sleep(1000);
+                await this.Driver.sleep(500);
             }
         }
         // Grab the textbook table, may not exist
@@ -382,13 +375,13 @@ class CoursebookScraper extends FirefoxScraper {
                 SectionTable = await Section.findElement(By.css("table.courseinfo__overviewtable"));
             }
             catch (error: NoSuchElementError) {
-                await this.Driver.sleep(1000);
+                await this.Driver.sleep(500);
             }
         }
         // Get all of the useful table data elements
         let TableData: WebElement[] = await SectionTable.findElements(By.css("th, td"));
+        // Get string versions of all of the table data elements (for FindLabeledText and FindLabeledElement)
         let TableDataStrings: string[] = await ParsingUtils.GetElementStrings(TableData);
-        console.log(TableDataStrings);
         // Find, split, and parse the class/course numbers
         let Nums: string = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Class/Course Number:");
         let SplitNums: string[] = Nums.split('/');
@@ -489,17 +482,22 @@ class CoursebookScraper extends FirefoxScraper {
         let PrefixButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.PREFIX, PrefixIndex, PrefixFilter);
         // Iterate over sections from every desired class prefix for every desired term
         for (let TermButton of TermButtons) {
+            // Click the desired term dropdown button
             await TermButton.click();
+            // Iterate over desired prefix buttons
             for (let PrefixButton of PrefixButtons) {
+                // Click the desired prefix dropdown button
                 await PrefixButton.click();
+                // Search for sections and parse them
                 let SectionList: WebElement[] = await this.FindSections();
                 for (let Section of SectionList)
                     await this.ParseSection(Section);
-                // Write section and course data to data output after every prefix
+                // Write section and course data to data output after all sections under the given prefix are parsed
                 writeFileSync("./data/Sections.json", JSON.stringify(this.GetSections(), null, '\t'), { flag: 'a+' });
                 writeFileSync("./data/Courses.json", JSON.stringify(this.GetCourses(), null, '\t'), { flag: 'a+' });
+                // Clear the buffer
                 this.Clear();
-            }
+            };
         };
     };
 
@@ -516,6 +514,6 @@ class CoursebookScraper extends FirefoxScraper {
 let options = new firefox.Options();
 let CBScraper = new CoursebookScraper(options);
 
-CBScraper.Scrape(1).then(() => {
+CBScraper.Scrape(/2022 Spring/g).then(() => {
     CBScraper.Kill();
 });
