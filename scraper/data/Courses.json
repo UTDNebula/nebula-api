@@ -1,0 +1,3082 @@
+{
+	"231": {
+		"Title": "EVOL USAF AIR SPACE POWER - Recitation",
+		"College": "Undergraduate Studies"
+	},
+	"237": {
+		"Title": "COOP ED AEROSPACE STUDIES",
+		"College": "Undergraduate Studies"
+	},
+	"243": {
+		"Title": "LEADERSHIP STUDIES - Recitation",
+		"College": "Undergraduate Studies"
+	},
+	"255": {
+		"Title": "NATIONAL SECURITY AFFAIRS - Recitation",
+		"College": "Undergraduate Studies"
+	},
+	"296": {
+		"Title": "Survey of Western Art History Ancient to Medieval",
+		"College": "School of Arts and Humanities"
+	},
+	"300": {
+		"Title": "Understanding Art - CV Honors",
+		"College": "School of Arts and Humanities"
+	},
+	"308": {
+		"Title": "Art in Historical Context - Constantinople: Art & Ritual",
+		"College": "School of Arts and Humanities"
+	},
+	"14375": {
+		"Title": "Modern Architecture",
+		"College": "School of Arts and Humanities"
+	},
+	"15509": {
+		"Title": "Foundations I Practices of Art History",
+		"College": "School of Arts and Humanities"
+	},
+	"15514": {
+		"Title": "Topics in Art History - The Social History of Art",
+		"College": "School of Arts and Humanities"
+	},
+	"15517": {
+		"Title": "Topics in Global Art Histories - Islamic & Mediterranean Worlds",
+		"College": "School of Arts and Humanities"
+	},
+	"15785": {
+		"Title": "Practicum",
+		"College": "School of Arts and Humanities"
+	},
+	"405": {
+		"Title": "American Studies for the Twenty-First Century",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"412": {
+		"Title": "American Cultures",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"425": {
+		"Title": "Interpersonal Communication",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"431": {
+		"Title": "American Ethnic Experience Immigrants After 1945",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"446": {
+		"Title": "Oral and Written Communication for the Classroom",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"450": {
+		"Title": "World History for Teachers",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"454": {
+		"Title": "Gender and Alcohol in America",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"456": {
+		"Title": "Special Topics in American Studies - 1960s Radicals, Revol & React",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"13502": {
+		"Title": "Crisis Communication",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"14359": {
+		"Title": "American Popular Culture - CV Honors",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"15600": {
+		"Title": "Motherhood and the Technological Womb",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"663": {
+		"Title": "Beginning Arabic I",
+		"College": "School of Arts and Humanities"
+	},
+	"664": {
+		"Title": "Beginning Arabic II",
+		"College": "School of Arts and Humanities"
+	},
+	"668": {
+		"Title": "Intermediate Arabic I",
+		"College": "School of Arts and Humanities"
+	},
+	"14377": {
+		"Title": "Topics in Values and Science - Values in Science Lab",
+		"College": "School of Arts and Humanities"
+	},
+	"14378": {
+		"Title": "Advanced Interdisciplinary Studies in the Arts and Humanities - Music in Games & Film",
+		"College": "School of Arts and Humanities"
+	},
+	"15859": {
+		"Title": "Team-Taught Interdisciplinary Seminar",
+		"College": "School of Arts and Humanities"
+	},
+	"718": {
+		"Title": "Exploration of the Arts",
+		"College": "School of Arts and Humanities"
+	},
+	"725": {
+		"Title": "Drawing Foundations",
+		"College": "School of Arts and Humanities"
+	},
+	"737": {
+		"Title": "Painting Foundations",
+		"College": "School of Arts and Humanities"
+	},
+	"753": {
+		"Title": "Digital Art",
+		"College": "School of Arts and Humanities"
+	},
+	"755": {
+		"Title": "Photography Design",
+		"College": "School of Arts and Humanities"
+	},
+	"762": {
+		"Title": "Visual Design Foundations",
+		"College": "School of Arts and Humanities"
+	},
+	"763": {
+		"Title": "Introduction to Sculpture",
+		"College": "School of Arts and Humanities"
+	},
+	"769": {
+		"Title": "Topics in Studio Art - Photo/video/performance",
+		"College": "School of Arts and Humanities"
+	},
+	"770": {
+		"Title": "Typography Technology Image - Design, Text, & Image",
+		"College": "School of Arts and Humanities"
+	},
+	"771": {
+		"Title": "Advanced Drawing",
+		"College": "School of Arts and Humanities"
+	},
+	"772": {
+		"Title": "Mixed Media",
+		"College": "School of Arts and Humanities"
+	},
+	"773": {
+		"Title": "Intermediate Painting",
+		"College": "School of Arts and Humanities"
+	},
+	"774": {
+		"Title": "Photography Black White - Experimental Darkroom",
+		"College": "School of Arts and Humanities"
+	},
+	"775": {
+		"Title": "Photography Color Concepts",
+		"College": "School of Arts and Humanities"
+	},
+	"776": {
+		"Title": "Printmaking - Monotype & Relief Printing",
+		"College": "School of Arts and Humanities"
+	},
+	"779": {
+		"Title": "Time-Based Art - New Genres",
+		"College": "School of Arts and Humanities"
+	},
+	"780": {
+		"Title": "Photography Altered Image",
+		"College": "School of Arts and Humanities"
+	},
+	"786": {
+		"Title": "Advanced Visual Arts",
+		"College": "School of Arts and Humanities"
+	},
+	"787": {
+		"Title": "Advanced Photography - Portfolio",
+		"College": "School of Arts and Humanities"
+	},
+	"12865": {
+		"Title": "Photography New Media",
+		"College": "School of Arts and Humanities"
+	},
+	"13088": {
+		"Title": "Figure Drawing",
+		"College": "School of Arts and Humanities"
+	},
+	"13765": {
+		"Title": "Figure Sculpture",
+		"College": "School of Arts and Humanities"
+	},
+	"14379": {
+		"Title": "Chinese Calligraphy",
+		"College": "School of Arts and Humanities"
+	},
+	"14380": {
+		"Title": "Studies in Contemporary Exhibitions",
+		"College": "School of Arts and Humanities"
+	},
+	"15134": {
+		"Title": "Silkscreen Printmaking",
+		"College": "School of Arts and Humanities"
+	},
+	"15352": {
+		"Title": "The Art of Tinkering Creating at the intersection of Art Science and Technology",
+		"College": "School of Arts and Humanities"
+	},
+	"15972": {
+		"Title": "Digital Drawing",
+		"College": "School of Arts and Humanities"
+	},
+	"814": {
+		"Title": "Digital Art and Design Foundations",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"816": {
+		"Title": "Design I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"817": {
+		"Title": "Principles of Digital Audio",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"819": {
+		"Title": "Modeling and Texturing I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"820": {
+		"Title": "Writing for ATEC",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"823": {
+		"Title": "Lighting and Composition I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"824": {
+		"Title": "Digital Video Production I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"825": {
+		"Title": "Game Design I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"827": {
+		"Title": "Internet Studio I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"828": {
+		"Title": "Interaction Design I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"829": {
+		"Title": "Virtual Environments I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"833": {
+		"Title": "Computer Animation I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"835": {
+		"Title": "Motion Capture Animation",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"839": {
+		"Title": "Lighting and Composition II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"840": {
+		"Title": "Strategic Design",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"841": {
+		"Title": "Game Design II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"843": {
+		"Title": "Topics in Animation - Collaborative Modeling",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"847": {
+		"Title": "Topics in Design - Lightsquad Studio",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"852": {
+		"Title": "Aesthetics of Interactive Arts",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"855": {
+		"Title": "Experimental Interactive Media",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"863": {
+		"Title": "Advanced Special Topics in Arts Technology and Emerging Communication - Posthuman Ethical Design",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"12751": {
+		"Title": "Topics in Critical Media Studies - CV Honors: Games & Social Just",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"12766": {
+		"Title": "Critical Media Theories",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"12790": {
+		"Title": "Emerging Media Studio",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13064": {
+		"Title": "Visual Story I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13066": {
+		"Title": "Digital Video Production II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13068": {
+		"Title": "Game Production Lab I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13218": {
+		"Title": "Special Topics in Arts Technology and Emerging Communication - Lightsquad Studio",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13623": {
+		"Title": "PhD Dissertation",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13770": {
+		"Title": "Motion Graphics I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13771": {
+		"Title": "Rigging I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13773": {
+		"Title": "Game Studies I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13774": {
+		"Title": "Sound Design for Games",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13776": {
+		"Title": "Digital Audio Processing",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13778": {
+		"Title": "Visual Effects",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13780": {
+		"Title": "Animation Lab I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"13783": {
+		"Title": "Internet Studio II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14382": {
+		"Title": "Audio Productions Lab I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14384": {
+		"Title": "Level Design I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14385": {
+		"Title": "Audio Productions Lab II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14386": {
+		"Title": "Computer Animation II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14491": {
+		"Title": "Modeling and Simulation",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14886": {
+		"Title": "Computer Animation III",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14888": {
+		"Title": "Digital Sculpting",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14890": {
+		"Title": "Scripting for Games I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14892": {
+		"Title": "First Year Seminar",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14964": {
+		"Title": "Scripting for Animation",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14966": {
+		"Title": "Design II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14967": {
+		"Title": "Political Economy of Digital Media",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14971": {
+		"Title": "Networked Identities",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14972": {
+		"Title": "Attitudes and Behaviors",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14974": {
+		"Title": "Project Management for Arts Technology and Emerging Communication I",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"14976": {
+		"Title": "Senior Seminar",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15002": {
+		"Title": "Reading Media Critically",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15255": {
+		"Title": "Design Research Methods",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15263": {
+		"Title": "Introduction to TechnoCulture",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15267": {
+		"Title": "Motion Graphics II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15268": {
+		"Title": "Privacy and Surveillance",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15271": {
+		"Title": "History of Animation",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15273": {
+		"Title": "ATEC Colloquium",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15278": {
+		"Title": "Ethics in New Media Technology and Communication",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15279": {
+		"Title": "Animation Creative Practices",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15289": {
+		"Title": "Experimental Publishing",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15291": {
+		"Title": "Critical Making",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15302": {
+		"Title": "Virtual Worlds and Communities",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15303": {
+		"Title": "Media and Cultural Studies Methods",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15556": {
+		"Title": "Graduate Critique Culture",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15567": {
+		"Title": "Character Effects",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15582": {
+		"Title": "Virtual Environments II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15605": {
+		"Title": "Game Production Lab II",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15716": {
+		"Title": "Visual Communication",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15757": {
+		"Title": "Animation and Game Fundamentals",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15775": {
+		"Title": "Qualifying Exam Preparation in Arts Technology and Emerging Communication",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15776": {
+		"Title": "Dissertation Proposal in Arts Technology and Emerging Communication",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15931": {
+		"Title": "Digital Art and Social Practice",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15933": {
+		"Title": "Time-Based Media",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15934": {
+		"Title": "Design Histories",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15935": {
+		"Title": "History of Games",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15937": {
+		"Title": "Experimental Lab",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15938": {
+		"Title": "Animation Studies",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15939": {
+		"Title": "Critical Media Studies Lab I - Current Events Podcast",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"15941": {
+		"Title": "Interactives Lab",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"16073": {
+		"Title": "Introduction to Ethnic Studies",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"16075": {
+		"Title": "Motion Graphics Lab",
+		"College": "School of Arts, Technology, and Emerging Communication"
+	},
+	"866": {
+		"Title": "Laboratory Procedures in Audiology and Hearing Science",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"870": {
+		"Title": "Speech Science",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"872": {
+		"Title": "Diagnostic Audiology",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"874": {
+		"Title": "Pediatric Audiology",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"882": {
+		"Title": "Theories Of Amplification",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"884": {
+		"Title": "Aural Habilitation Of Children With Hearing Impairments",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"891": {
+		"Title": "Physiologic Assessment of Vestibular System",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"894": {
+		"Title": "Individual Research in Audiology",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"895": {
+		"Title": "Doctoral Internship in Audiology",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14044": {
+		"Title": "Grand Rounds",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15132": {
+		"Title": "Auditory Pharmacology",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15608": {
+		"Title": "Tinnitus",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15612": {
+		"Title": "Issues in Mentoring and Counseling",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"934": {
+		"Title": "Special Topics - 4350 Global Mkt Entry Strategy",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15444": {
+		"Title": "Business in a Global World",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15455": {
+		"Title": "Making Choices in Free Market Systems",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15827": {
+		"Title": "Advanced Topics in Capitalism Ideas and Challenges That Shape Our World",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15831": {
+		"Title": "Managing Communications in Business",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15850": {
+		"Title": "Introduction to Professionalism and Communication in Business",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15851": {
+		"Title": "Professionalism and Communication in Business",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15831": {
+		"Title": "Managing Communications in Business",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15850": {
+		"Title": "Introduction to Professionalism and Communication in Business",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15851": {
+		"Title": "Professionalism and Communication in Business",
+		"College": "Naveen Jindal School of Management"
+	},
+	"1734": {
+		"Title": "Human Genetics",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1753": {
+		"Title": "Introduction to Modern Biology Workshop I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1754": {
+		"Title": "Introduction to Modern Biology Workshop II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1759": {
+		"Title": "Introductory Biology Laboratory",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1765": {
+		"Title": "Introduction to Modern Biology I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1766": {
+		"Title": "Introduction to Modern Biology II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1780": {
+		"Title": "Topics in Biological Sciences - Drug Dev to Clinical Trial",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1791": {
+		"Title": "Classical and Molecular Genetics Workshop",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1792": {
+		"Title": "Eukaryotic Molecular and Cell Biology Workshop",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1793": {
+		"Title": "Biochemistry Workshop I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1794": {
+		"Title": "Biochemistry Workshop II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1796": {
+		"Title": "Classical and Molecular Genetics",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1797": {
+		"Title": "Eukaryotic Molecular and Cell Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1799": {
+		"Title": "Forensic Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1807": {
+		"Title": "Biochemistry I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1808": {
+		"Title": "Biochemistry II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1809": {
+		"Title": "Exercise Physiology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1811": {
+		"Title": "Biochemistry Laboratory",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1812": {
+		"Title": "Human Anatomy and Physiology with Lab I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1813": {
+		"Title": "Human Anatomy and Physiology with Lab II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1828": {
+		"Title": "Developmental Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1830": {
+		"Title": "Advanced Research in Molecular and Cell Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1839": {
+		"Title": "Immunobiology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1840": {
+		"Title": "Medical Microbiology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1850": {
+		"Title": "Cell and Molecular Biology Laboratory",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1856": {
+		"Title": "Biophysical Chemistry",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1868": {
+		"Title": "Genomics",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1870": {
+		"Title": "Biochemistry",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1873": {
+		"Title": "Cell Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1877": {
+		"Title": "The Art of Scientific Presentation",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1892": {
+		"Title": "Topics in Cell Biology - Reg of Eukaryotic Protein Syn",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1904": {
+		"Title": "Current Research in Molecular Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1913": {
+		"Title": "Modern Biochemistry I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1914": {
+		"Title": "Modern Biochemistry II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1917": {
+		"Title": "Eukaryotic Molecular and Cell Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1921": {
+		"Title": "Biotechnology Laboratory",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"13531": {
+		"Title": "Computational Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14000": {
+		"Title": "Cellular Microbiology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14460": {
+		"Title": "Honey Bee Biology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14467": {
+		"Title": "Evolution and Development",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14848": {
+		"Title": "Oral Histology and Embryology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14858": {
+		"Title": "Molecular Genetics",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14889": {
+		"Title": "Macromolecules Structure Function and Dynamics",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"15074": {
+		"Title": "General Microbiology with Lab",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"15332": {
+		"Title": "Applied Genetics",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"15336": {
+		"Title": "Introduction to Microbiology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"15339": {
+		"Title": "Mammalian Physiology with Lab",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"15479": {
+		"Title": "Molecular Neuropathology II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"15480": {
+		"Title": "Molecular Neuropathology II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"15526": {
+		"Title": "Medical Histology",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"16000": {
+		"Title": "Introduction to Microbiology Lab",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"1941": {
+		"Title": "The Nature of Intellectual Inquiry",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"1948": {
+		"Title": "Internship",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"1958": {
+		"Title": "Co-op Education",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"12864": {
+		"Title": "Strategies for Diversity in Education",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"15613": {
+		"Title": "Library Research Skills",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"13833": {
+		"Title": "Business and Public Law",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13835": {
+		"Title": "International Law",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13262": {
+		"Title": "Physiology and Immunology for Engineers",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13263": {
+		"Title": "Genes Proteins and Cell Biology for Engineers",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13280": {
+		"Title": "Systems Biology",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13286": {
+		"Title": "Special Topics in Biomedical Engineering - Cancer: Pathology-therapeutics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13527": {
+		"Title": "Introduction to Bioengineering II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13528": {
+		"Title": "Statics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13543": {
+		"Title": "Biomedical Circuits and Instrumentation Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13544": {
+		"Title": "Engineering Physiology Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13546": {
+		"Title": "Biomedical Engineering Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13548": {
+		"Title": "Fluid Mechanics and Transport Processes in Biomedical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13549": {
+		"Title": "Thermodynamics and Physical Chemistry in Biomedical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13550": {
+		"Title": "Electrical and Electronic Circuits in Biomedical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13551": {
+		"Title": "Engineering Physiology of the Human Body",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13552": {
+		"Title": "Biomedical Feedback Systems Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13553": {
+		"Title": "Feedback Systems in Biomedical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13572": {
+		"Title": "Senior Design Project II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13574": {
+		"Title": "Undergraduate Topics in Biomedical Engineering - Introduction to Biophotonics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13703": {
+		"Title": "Biomedical Component and System Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13704": {
+		"Title": "Computational Biology",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14088": {
+		"Title": "Engineering Systems Modeling and Simulation",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14407": {
+		"Title": "Biomaterials and Medical Devices",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14769": {
+		"Title": "Advanced Seminars in Biomedical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14878": {
+		"Title": "Biomaterials and Medical Devices",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14883": {
+		"Title": "Advanced Computational Tools for Biomedical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15001": {
+		"Title": "Introductory Biomechanics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15017": {
+		"Title": "Dynamics of Complex Networks and Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15089": {
+		"Title": "Medical Imaging Systems and Methods",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15091": {
+		"Title": "Medical Imaging Techniques and Image Processing",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15191": {
+		"Title": "Advanced Seminars in Biomedical Engineering III",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15192": {
+		"Title": "Biomedical Image Processing",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15403": {
+		"Title": "Advanced Biomaterials Technologies and Applications to Medical Devices",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15467": {
+		"Title": "Image-Guided Drug Delivery",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15593": {
+		"Title": "Signals and Systems for Biomedical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15614": {
+		"Title": "Mechanics of Soft Tissues",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15616": {
+		"Title": "Finite Element Analysis in Biomedical Engineering - Finite Element Analysis in Bio",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15617": {
+		"Title": "Biomedical Image Processing",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15773": {
+		"Title": "Introduction to Engineered Biomaterials",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15905": {
+		"Title": "Electrical and Electronic Circuits in Biomedical Engineering Lab",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15907": {
+		"Title": "Cell and Molecular Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15910": {
+		"Title": "Introduction to Medical Device Development",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15911": {
+		"Title": "Departmental Seminar in Biomedical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15967": {
+		"Title": "Six Sigma Yellow Belt for Biomedical Engineers",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"16021": {
+		"Title": "Probability Theory and Statistics for Biomedical Engineers",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"1984": {
+		"Title": "Strategic Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"1991": {
+		"Title": "Strategic Leadership",
+		"College": "Naveen Jindal School of Management"
+	},
+	"1996": {
+		"Title": "Management and Organizational Consulting Theory and Practice",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13836": {
+		"Title": "Strategic Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15527": {
+		"Title": "Capstone Senior Project - Business",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14273": {
+		"Title": "Database Foundations for Business Analytics",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14493": {
+		"Title": "Analytics Practicum",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14505": {
+		"Title": "Business Analytics With SAS",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14800": {
+		"Title": "Applied Econometrics and Time Series Analysis",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14803": {
+		"Title": "Predictive Analytics Using SAS",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14805": {
+		"Title": "Prescriptive Analytics",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15033": {
+		"Title": "Organizing for Business Analytics Platforms",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15038": {
+		"Title": "Big Data",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15039": {
+		"Title": "Business Analytics With R",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15218": {
+		"Title": "Programming for Data Science",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15316": {
+		"Title": "Applied Machine Learning",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15852": {
+		"Title": "Applied Natural Language Processing",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15853": {
+		"Title": "Causal Analytics and A B Testing",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15854": {
+		"Title": "Advanced Statistics for Data Science",
+		"College": "Naveen Jindal School of Management"
+	},
+	"16028": {
+		"Title": "Web Analytics",
+		"College": "Naveen Jindal School of Management"
+	},
+	"16033": {
+		"Title": "Robotic Process Automation",
+		"College": "Naveen Jindal School of Management"
+	},
+	"2021": {
+		"Title": "Computer Science I",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2026": {
+		"Title": "Introduction to Digital Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2027": {
+		"Title": "Computer Science II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2035": {
+		"Title": "Electrical Network Analysis",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2038": {
+		"Title": "Electronic Devices",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2039": {
+		"Title": "Electronic Circuits",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2040": {
+		"Title": "Digital Circuits",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2043": {
+		"Title": "Software Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2045": {
+		"Title": "Undergraduate Topics in Computer Engineering - Applied Cryptography",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2048": {
+		"Title": "Computer Architecture",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2050": {
+		"Title": "Programming Language Paradigms",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2051": {
+		"Title": "Operating Systems Concepts",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2052": {
+		"Title": "Embedded Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2054": {
+		"Title": "Senior Design Project I",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2055": {
+		"Title": "Senior Design Project II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2056": {
+		"Title": "Computer Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2061": {
+		"Title": "Advanced Digital Logic",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2062": {
+		"Title": "Microprocessor and Embedded Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2064": {
+		"Title": "Computer Architecture",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2068": {
+		"Title": "Real-Time Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2070": {
+		"Title": "VLSI Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2077": {
+		"Title": "Design and Analysis of Reconfigurable Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2090": {
+		"Title": "Advanced VLSI Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"2092": {
+		"Title": "Individual Instruction in Computer Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13611": {
+		"Title": "Introduction to Electrical and Computer Engineering II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13612": {
+		"Title": "Discrete Mathematics for Computing I",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13617": {
+		"Title": "Data Structures and Introduction to Algorithmic Analysis",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15621": {
+		"Title": "Electrical and Computer Engineering Fundamentals-II Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15622": {
+		"Title": "Electrical and Computer Engineering Laboratory in Devices",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15623": {
+		"Title": "Electrical and Computer Engineering Fundamentals-I Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15685": {
+		"Title": "Electrical and Computer Engineering Laboratory in Power Electronics and Energy Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15861": {
+		"Title": "Applications of Machine Learning in Semiconductor IC Manufacturing and Test",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15862": {
+		"Title": "Hardware Security",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15919": {
+		"Title": "Social Issues and Ethics in Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15921": {
+		"Title": "Discrete-Time Signals and Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"16024": {
+		"Title": "Applied Machine Learning",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"2099": {
+		"Title": "Cognitive Science - CV Honors",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2104": {
+		"Title": "Historical Perspectives On Psychology Mind And Machines Since 1600",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2105": {
+		"Title": "Experimental Projects In Cognitive Science",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2107": {
+		"Title": "Cognitive Psychology",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2120": {
+		"Title": "Intelligent Systems Design",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2123": {
+		"Title": "Human-Computer Interaction Ii",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2126": {
+		"Title": "Cognitive Neuroscience",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2134": {
+		"Title": "Co-Op Fieldwork",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"13956": {
+		"Title": "Adult Development And Aging",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15135": {
+		"Title": "Honors Seminar",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15913": {
+		"Title": "Internship Preparation",
+		"College": "School of Behavioral and Brain Sciences"
+	}
+	"2153": {
+		"Title": "General Chemistry Laboratory I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2154": {
+		"Title": "General Chemistry Laboratory II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2156": {
+		"Title": "Honors Freshman Chemistry Laboratory II - CV Honors",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2164": {
+		"Title": "General Chemistry I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2165": {
+		"Title": "General Chemistry II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2167": {
+		"Title": "Honors Freshman Chemistry II - CV Honors",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2183": {
+		"Title": "Introductory Organic Chemistry Laboratory I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2184": {
+		"Title": "Introductory Organic Chemistry Laboratory II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2190": {
+		"Title": "Introductory Organic Chemistry I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2191": {
+		"Title": "Introductory Organic Chemistry II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2192": {
+		"Title": "Introductory Quantitative Methods in Chemistry",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2201": {
+		"Title": "Physical Chemistry I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2202": {
+		"Title": "Physical Chemistry II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2204": {
+		"Title": "Biochemistry I",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2205": {
+		"Title": "Biochemistry II",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2208": {
+		"Title": "Advanced Chemical Synthesis Laboratory",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2209": {
+		"Title": "Instrumental Analysis",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2214": {
+		"Title": "Polymer Chemistry",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2220": {
+		"Title": "Physical Measurements Laboratory",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2226": {
+		"Title": "Advanced Organic Chemistry Ii",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2233": {
+		"Title": "Special Topics in Organic Chemistry - Polymer Chemistry",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2234": {
+		"Title": "Special Topics in Inorganic Chemistry - In Situ Studies:inorg Mat Synt",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2240": {
+		"Title": "Physical Biochemistry",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2243": {
+		"Title": "Scientific Literature and Communication Skills",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"2244": {
+		"Title": "Research in Chemistry",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"12791": {
+		"Title": "Dissertation",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"13634": {
+		"Title": "Chemistry Department Seminar",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14931": {
+		"Title": "Honors Organic Chemistry II - CV Honors",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14933": {
+		"Title": "Honors Organic Chemistry Laboratory II - CV Honors",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"14934": {
+		"Title": "Introductory Organic Chemistry for Engineers",
+		"College": "School of Natural Sciences and Mathematics"
+	},
+	"15116": {
+		"Title": "Thesis",
+		"College": "School of Natural Sciences and Mathematics"
+	}
+	"2251": {
+		"Title": "Beginning Chinese I",
+		"College": "School of Arts and Humanities"
+	},
+	"2252": {
+		"Title": "Beginning Chinese II",
+		"College": "School of Arts and Humanities"
+	},
+	"2259": {
+		"Title": "Intermediate Chinese I",
+		"College": "School of Arts and Humanities"
+	},
+	"2260": {
+		"Title": "Intermediate Chinese II",
+		"College": "School of Arts and Humanities"
+	},
+	"12907": {
+		"Title": "Advanced Chinese I",
+		"College": "School of Arts and Humanities"
+	},
+	"15793": {
+		"Title": "Advanced Chinese Conversation",
+		"College": "School of Arts and Humanities"
+	}
+	"2727": {
+		"Title": "Normal Language Development",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2728": {
+		"Title": "Child Development",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2729": {
+		"Title": "Social And Personality Development",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2732": {
+		"Title": "Educational Psychology",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2733": {
+		"Title": "Exceptional Children",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2735": {
+		"Title": "Cognitive Development",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2738": {
+		"Title": "Research And Evaluation Methods",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2743": {
+		"Title": "Language Disorders In Children",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2744": {
+		"Title": "Lifespan Development",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2750": {
+		"Title": "Co-Op Fieldwork",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"12937": {
+		"Title": "Language And Literacy Development",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15136": {
+		"Title": "Honors Seminar",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15914": {
+		"Title": "Internship Preparation",
+		"College": "School of Behavioral and Brain Sciences"
+	}
+	"2904": {
+		"Title": "Voice Disorders",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2908": {
+		"Title": "Professional Issues in Speech Language Pathology",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2913": {
+		"Title": "Language Acquisition",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2922": {
+		"Title": "Motor Speech Disorders",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2945": {
+		"Title": "Neurogenic Communication Disorders I",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2946": {
+		"Title": "Neurogenic Communication Disorders II",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2990": {
+		"Title": "Public School Methods",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2996": {
+		"Title": "Advanced Topics In Adult Dysphagia",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"2998": {
+		"Title": "Neural Correlates Of Human Cognition",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"3011": {
+		"Title": "Hearing and Deafness",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"3022": {
+		"Title": "Social Communication In Early Childhood Disorders",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"3066": {
+		"Title": "Augmentative Communication",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"3069": {
+		"Title": "Developmental Neurobiology of Language and Cognition - Dev Neurobiol of Lang and Cog",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"12828": {
+		"Title": "Anatomy and Physiology of Speech and Hearing",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"12830": {
+		"Title": "Articulation Disorders",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"12831": {
+		"Title": "Bilingual Speech-Language Assessment and Intervention",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14059": {
+		"Title": "Childhood Apraxia of Speech",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14060": {
+		"Title": "Dysphagia in Public Schools",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14061": {
+		"Title": "Research in Pediatric TBI",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14066": {
+		"Title": "Professional Writing",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14067": {
+		"Title": "Medical SLP",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14069": {
+		"Title": "Dementia",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14071": {
+		"Title": "Pulmonary Issues",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14072": {
+		"Title": "Tracheostomy and Mechanical Ventilation",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14073": {
+		"Title": "Pediatric Feeding",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14534": {
+		"Title": "Preschool Intervention",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14667": {
+		"Title": "Articulation and Phonological Disorders",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14668": {
+		"Title": "Assessment and Intervention of Language Impairments in Preschool and School-Age Children",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"14669": {
+		"Title": "Pediatric Dysphagia",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15624": {
+		"Title": "Therapy Strategies for School-Age Children",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15625": {
+		"Title": "Counseling in Communication Disorders",
+		"College": "School of Behavioral and Brain Sciences"
+	},
+	"15626": {
+		"Title": "Bilingual Speech Assessment and Treatment",
+		"College": "School of Behavioral and Brain Sciences"
+	}
+	"3171": {
+		"Title": "Public Speaking - CV Honors",
+		"College": "School of Arts and Humanities"
+	},
+	"3190": {
+		"Title": "Advanced Topics in Communication - Gender",
+		"College": "School of Arts and Humanities"
+	},
+	"3195": {
+		"Title": "Persuasion and Interpersonal Influence",
+		"College": "School of Arts and Humanities"
+	},
+	"13112": {
+		"Title": "Small Group Communication",
+		"College": "School of Arts and Humanities"
+	},
+	"14173": {
+		"Title": "Survey of Oral and Technology-based Communication",
+		"College": "School of Arts and Humanities"
+	},
+	"14986": {
+		"Title": "Communication and Professionalism",
+		"College": "School of Arts and Humanities"
+	},
+	"15627": {
+		"Title": "Communications Law",
+		"College": "School of Arts and Humanities"
+	}
+	"3340": {
+		"Title": "Introduction to Criminal Justice",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3341": {
+		"Title": "Introduction to Crime and Criminology",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3342": {
+		"Title": "Crime and Civil Liberties",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3343": {
+		"Title": "Theories of Justice",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3344": {
+		"Title": "Advanced Criminology",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3345": {
+		"Title": "Advanced Criminal Justice",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3351": {
+		"Title": "Youth Crime and Justice",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3352": {
+		"Title": "Drugs and Crime",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3356": {
+		"Title": "Comparative Justice Systems",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3367": {
+		"Title": "Crime and Justice Policy",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3371": {
+		"Title": "Senior Research Seminar",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3375": {
+		"Title": "Selected Topics in Criminology - Community Reintegration",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3389": {
+		"Title": "Measures and Correlates of Crime",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3390": {
+		"Title": "Victimology",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3393": {
+		"Title": "Crime and Justice Policy",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"3396": {
+		"Title": "Violent Crime",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"12917": {
+		"Title": "Criminal Law",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"12919": {
+		"Title": "Police and Society",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"12921": {
+		"Title": "Corrections",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"12922": {
+		"Title": "Criminal Prosecution and Court Process",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"14529": {
+		"Title": "Evidence-Based Crime Prevention",
+		"College": "School of Economic, Political and Policy Sciences"
+	}
+	"3412": {
+		"Title": "Introduction to Creative Writing",
+		"College": "School of Arts and Humanities"
+	},
+	"3415": {
+		"Title": "Nonfiction Workshop",
+		"College": "School of Arts and Humanities"
+	},
+	"3416": {
+		"Title": "Poetry Workshop",
+		"College": "School of Arts and Humanities"
+	},
+	"3423": {
+		"Title": "Screenwriting Workshop",
+		"College": "School of Arts and Humanities"
+	},
+	"15350": {
+		"Title": "Translation Workshop",
+		"College": "School of Arts and Humanities"
+	},
+	"15922": {
+		"Title": "Fiction Workshop",
+		"College": "School of Arts and Humanities"
+	},
+	"16080": {
+		"Title": "Advanced Screenwriting Workshop - The Narrative Structure",
+		"College": "School of Arts and Humanities"
+	}
+	"3427": {
+		"Title": "Computer Science Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3432": {
+		"Title": "Programming Fundamentals",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3433": {
+		"Title": "Computer Science I",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3442": {
+		"Title": "Discrete Mathematics for Computing I",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3451": {
+		"Title": "Computer Science II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3480": {
+		"Title": "Discrete Mathematics for Computing II - Honors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3491": {
+		"Title": "Probability and Statistics in Computer Science and Software Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3492": {
+		"Title": "Data Structures and Introduction to Algorithmic Analysis",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3493": {
+		"Title": "Software Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3498": {
+		"Title": "Undergraduate Topics in Computer Science - Artificial Intelligence",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3499": {
+		"Title": "Undergraduate Research in Computer Science",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3501": {
+		"Title": "Digital Systems Laboratory - Honors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3509": {
+		"Title": "Intelligent Systems Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3512": {
+		"Title": "Numerical Analysis",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3514": {
+		"Title": "Programming Language Paradigms - Honors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3516": {
+		"Title": "Digital Logic and Computer Design - Honors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3519": {
+		"Title": "Database Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3520": {
+		"Title": "Operating Systems Concepts",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3521": {
+		"Title": "Advanced Algorithm Design and Analysis",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3523": {
+		"Title": "Human-Computer Interaction Ii",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3524": {
+		"Title": "Computer Graphics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3525": {
+		"Title": "Artificial Intelligence - Honors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3526": {
+		"Title": "Introduction to Machine Learning",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3527": {
+		"Title": "Object-Oriented Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3529": {
+		"Title": "Automata Theory - Honors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3531": {
+		"Title": "Compiler Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3533": {
+		"Title": "Computer Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3534": {
+		"Title": "Introduction to Computer Vision",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3536": {
+		"Title": "Computer and Network Security",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3538": {
+		"Title": "Human Language Technologies",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3539": {
+		"Title": "Networking Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3541": {
+		"Title": "Digital Forensics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3543": {
+		"Title": "Computer Science Project",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3560": {
+		"Title": "Special Topics in Computer Science - Sfs Seminar",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3585": {
+		"Title": "Computer Science II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3586": {
+		"Title": "Discrete Structures",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3591": {
+		"Title": "Algorithm Analysis and Data Structures",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3593": {
+		"Title": "Operating Systems Concepts",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3594": {
+		"Title": "Automata Theory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3599": {
+		"Title": "Computer Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3610": {
+		"Title": "Independent Study in Computer Science",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3613": {
+		"Title": "Computer Architecture",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3614": {
+		"Title": "Natural Language Processing",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3616": {
+		"Title": "Information Retrieval",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3617": {
+		"Title": "Information Security",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3620": {
+		"Title": "Network Security",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3623": {
+		"Title": "Compiler Construction",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3626": {
+		"Title": "Software Maintenance Evolution and Re-Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3629": {
+		"Title": "Object-Oriented Analysis and Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3630": {
+		"Title": "Database Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3631": {
+		"Title": "Advanced Requirements Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3633": {
+		"Title": "Design and Analysis of Computer Algorithms",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3634": {
+		"Title": "Artificial Intelligence",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3636": {
+		"Title": "Computer Graphics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3637": {
+		"Title": "Software Testing Validation and Verification",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3641": {
+		"Title": "Advanced Programming Languages",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3644": {
+		"Title": "Computational Logic",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3645": {
+		"Title": "Machine Learning",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3648": {
+		"Title": "Advanced Operating Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3650": {
+		"Title": "Distributed Computing",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3652": {
+		"Title": "Theory of Computation",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3654": {
+		"Title": "Computer Vision",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3655": {
+		"Title": "Algorithmic Aspects of Telecommunication Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3660": {
+		"Title": "Advanced Computer Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3666": {
+		"Title": "Real-Time Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3683": {
+		"Title": "Thesis",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"3684": {
+		"Title": "Dissertation",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12721": {
+		"Title": "Computer Science II for Non-majors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12802": {
+		"Title": "Computer Science I for Non-majors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12839": {
+		"Title": "Systems Programming in UNIX and Other Environments",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12877": {
+		"Title": "Introduction to Programming",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13705": {
+		"Title": "Data and Applications Security",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14001": {
+		"Title": "Professional Responsibility in Computer Science and Software Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14122": {
+		"Title": "Introduction to Programming Video Games",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14135": {
+		"Title": "Special Topics in Computer Science - Dev & Sec the Cloud, Edge, Iot",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14421": {
+		"Title": "Programming Fundamentals for Non-Majors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14422": {
+		"Title": "Computer Science Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14433": {
+		"Title": "Introduction to Programming for Biomedical Engineers",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14516": {
+		"Title": "Statistical Methods for Data Science",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14543": {
+		"Title": "Statistical Methods in AI and Machine Learning",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14544": {
+		"Title": "Big Data Management and Analytics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14672": {
+		"Title": "Human Computer Interactions",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14673": {
+		"Title": "Modeling and Simulation",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14675": {
+		"Title": "Virtual Reality",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14758": {
+		"Title": "Web Programming Languages",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15093": {
+		"Title": "Introduction to Big Data Management and Analytics for non CS-Majors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15109": {
+		"Title": "Special Topics in Computer Science - Cyber Attack and Defense Lab",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15573": {
+		"Title": "Capstone Project",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15575": {
+		"Title": "Wireless Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15758": {
+		"Title": "Computer Science II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15880": {
+		"Title": "Data Security and Privacy for Practitioners",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15882": {
+		"Title": "Cyber Physical Systems and Critical Infrastructure Security for Practitioners",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15883": {
+		"Title": "Computational Geometry",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15949": {
+		"Title": "Computer Architecture - CV Honors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"3796": {
+		"Title": "Understanding Dance",
+		"College": "School of Arts and Humanities"
+	},
+	"3858": {
+		"Title": "Dance Technique 1 - Dance Movement & Comp",
+		"College": "School of Arts and Humanities"
+	},
+	"3859": {
+		"Title": "Modern Dance 1",
+		"College": "School of Arts and Humanities"
+	},
+	"3860": {
+		"Title": "Jazz Dance 1",
+		"College": "School of Arts and Humanities"
+	},
+	"3861": {
+		"Title": "Ballet 1",
+		"College": "School of Arts and Humanities"
+	},
+	"3879": {
+		"Title": "Ballet 2",
+		"College": "School of Arts and Humanities"
+	},
+	"3882": {
+		"Title": "Dance Performance",
+		"College": "School of Arts and Humanities"
+	},
+	"12878": {
+		"Title": "Stretch Conditioning Alignment",
+		"College": "School of Arts and Humanities"
+	}
+	"4152": {
+		"Title": "Principles of Macroeconomics",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4153": {
+		"Title": "Principles of Microeconomics",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4158": {
+		"Title": "Intermediate Microeconomic Theory",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4159": {
+		"Title": "Intermediate Macroeconomic Theory",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4161": {
+		"Title": "Sports Economics",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4162": {
+		"Title": "Economics of Health",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4167": {
+		"Title": "Economics of Poverty and Inequality",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4180": {
+		"Title": "Game Theory",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4182": {
+		"Title": "Public Sector Economics",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4187": {
+		"Title": "Labor Economics and Human Resources",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4192": {
+		"Title": "Mathematical Economics",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4193": {
+		"Title": "Econometrics",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4199": {
+		"Title": "Business and Economic Forecasting - Business & Econ Forecasting",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4200": {
+		"Title": "Selected Topics in Economics - Economic History II",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4207": {
+		"Title": "Macroeconomic Theory for Applications",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4212": {
+		"Title": "Econometrics I",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4237": {
+		"Title": "Public Economics I",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4241": {
+		"Title": "Local Economic Development",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"4247": {
+		"Title": "Special Topics in Labor Economics - Economics of Education II",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13360": {
+		"Title": "Applied Econometrics",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13362": {
+		"Title": "Microeconomics Theory II",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13363": {
+		"Title": "Macroeconomics Theory II",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"14896": {
+		"Title": "Special Topics in Economics - Business & Econ Forecasting",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"15589": {
+		"Title": "Information Economics and Mechanism Design",
+		"College": "School of Economic, Political and Policy Sciences"
+	}
+	"4313": {
+		"Title": "Professional and Technical Communication - CV Honors",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"4318": {
+		"Title": "CS IPP Assignment",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4319": {
+		"Title": "ENG IPP Assignment",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4322": {
+		"Title": "CS IPP Assignment",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4323": {
+		"Title": "ENG IPP Assignment",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12841": {
+		"Title": "Professional Industrial Practice Program",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"4332": {
+		"Title": "The American Public School",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4333": {
+		"Title": "Children s Literature",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4339": {
+		"Title": "Educational Psychology for Teachers",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4340": {
+		"Title": "Math Concepts for Teachers",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4342": {
+		"Title": "Classroom Management Grades EC - 6",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4345": {
+		"Title": "Art Music and Physical Development Grades EC - 6",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4356": {
+		"Title": "Curriculum and Instruction in Social Studies",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4391": {
+		"Title": "Science Methods for Grades EC - 6",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4392": {
+		"Title": "Mathematics Methods for Elementary Teachers",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4393": {
+		"Title": "Social Studies Methods for Grades EC - 6",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4395": {
+		"Title": "ESL for K-12 Teachers",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4396": {
+		"Title": "Reading I Learning to Read",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4397": {
+		"Title": "Reading in Secondary Content",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4401": {
+		"Title": "Diagnostic Reading",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4402": {
+		"Title": "Chess I Using Chess in Schools",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4403": {
+		"Title": "Chess II Institutional and Cultural Contexts of Chess",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4405": {
+		"Title": "Classroom Management Secondary",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4409": {
+		"Title": "Educational Technology",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4451": {
+		"Title": "Student Teaching - Elementary",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4452": {
+		"Title": "Student Teaching Secondary",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"4477": {
+		"Title": "Supervised Teaching Internship",
+		"College": "School of Interdisciplinary Studies"
+	},
+	"12843": {
+		"Title": "Reading II ELAR Methods",
+		"College": "School of Interdisciplinary Studies"
+	}
+	"4558": {
+		"Title": "Introduction to Digital Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4580": {
+		"Title": "Electrical and Computer Engineering Fundamentals-I Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4585": {
+		"Title": "Electrical Network Analysis",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4586": {
+		"Title": "Signals and Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4587": {
+		"Title": "Electronic Devices",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4588": {
+		"Title": "Electronic Circuits",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4589": {
+		"Title": "Digital Circuits",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4596": {
+		"Title": "Undergraduate Topics in Electrical Engineering - Applied Cryptography",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4597": {
+		"Title": "Independent Study in Electrical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4614": {
+		"Title": "Electromagnetic Engineering I",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4616": {
+		"Title": "Computer Architecture",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4617": {
+		"Title": "Systems and Controls",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4619": {
+		"Title": "Introduction to VLSI Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4622": {
+		"Title": "Analog Integrated Circuit Analysis and Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4625": {
+		"Title": "Digital Communications",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4629": {
+		"Title": "Telecommunication Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4630": {
+		"Title": "RF Circuit Design Principles",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4631": {
+		"Title": "Embedded Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4640": {
+		"Title": "Senior Design Project I",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"4641": {
+		"Title": "Senior Design Project II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13610": {
+		"Title": "Introduction to Electrical and Computer Engineering II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14923": {
+		"Title": "Introduction to MEMS",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15629": {
+		"Title": "Electrical and Computer Engineering Fundamentals-II Laboratory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15630": {
+		"Title": "Electrical and Computer Engineering Laboratory in Devices",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15684": {
+		"Title": "Electrical and Computer Engineering Laboratory in Power Electronics and Energy Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15777": {
+		"Title": "Applied Machine Learning",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15920": {
+		"Title": "Social Issues and Ethics in Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"13089": {
+		"Title": "Physiology and Immunology for Engineers",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13090": {
+		"Title": "Genes Proteins and Cell Biology for Engineers",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"13030": {
+		"Title": "Linear Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14330": {
+		"Title": "Special Topics in Control Systems - Opt Estimation & Kalman Filtr",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14524": {
+		"Title": "Robust Control Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14527": {
+		"Title": "Dynamics of Complex Networks and Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"13014": {
+		"Title": "Analog Integrated Circuit Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13019": {
+		"Title": "Data Converters",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13245": {
+		"Title": "VLSI Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13247": {
+		"Title": "Advanced VLSI Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"13222": {
+		"Title": "Advanced Digital Logic",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13223": {
+		"Title": "Microprocessor and Embedded Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13228": {
+		"Title": "Design and Analysis of Reconfigurable Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13261": {
+		"Title": "Computer Architecture",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13272": {
+		"Title": "Real-Time Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15800": {
+		"Title": "Hardware Security",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15824": {
+		"Title": "Applications of Machine Learning in Semiconductor IC Manufacturing and Test",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"12964": {
+		"Title": "Research in Electrical Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"12946": {
+		"Title": "Active Semiconductor Devices",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12951": {
+		"Title": "Introduction to MEMS",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13127": {
+		"Title": "Plasma Science",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13266": {
+		"Title": "Semiconductor Processing Technology",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13269": {
+		"Title": "Electronic Optical and Magnetic Materials",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14550": {
+		"Title": "Semiconductor Device Characterization",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"14175": {
+		"Title": "Control Modeling and Simulation in Power Electronics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14177": {
+		"Title": "Renewable Energy Systems and Distributed Power Generation Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15697": {
+		"Title": "General Theory of Electric Machines",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"14175": {
+		"Title": "Control Modeling and Simulation in Power Electronics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14177": {
+		"Title": "Renewable Energy Systems and Distributed Power Generation Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15697": {
+		"Title": "General Theory of Electric Machines",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"12969": {
+		"Title": "RF and Microwave Circuits",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12970": {
+		"Title": "RF Integrated Circuit Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12972": {
+		"Title": "RF and Microwave Amplifier Design",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12974": {
+		"Title": "RF and Microwave Systems Engineering",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"12975": {
+		"Title": "Microwave Design and Measurement",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"13031": {
+		"Title": "Introduction to Telecommunications Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13033": {
+		"Title": "Detection and Estimation Theory",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13035": {
+		"Title": "Probability Random Variables and Statistics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13037": {
+		"Title": "Digital Communication Systems",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13039": {
+		"Title": "Digital Signal Processing I",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"14092": {
+		"Title": "Wireless Sensor Systems and Networks",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"13097": {
+		"Title": "Linear Algebra for Engineers",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13119": {
+		"Title": "Advanced Engineering Mathematics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"13123": {
+		"Title": "Probability Theory and Statistics",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"14680": {
+		"Title": "Energy Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14806": {
+		"Title": "Energy Joint Interest Accounting",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15632": {
+		"Title": "Managing Power and Renewable Energy Assets Sustainability",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15633": {
+		"Title": "Managing Carbon Assets Oil Gas and Coal",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15759": {
+		"Title": "Project Management in Engineering and Operations",
+		"College": "Naveen Jindal School of Management"
+	}
+	"5252": {
+		"Title": "Entrepreneurial Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5253": {
+		"Title": "Startup Launch I",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5254": {
+		"Title": "Innovation and Entrepreneurship",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5255": {
+		"Title": "Technology and New Product Development",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5260": {
+		"Title": "Business Model Innovation",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5262": {
+		"Title": "The Entrepreneurial Experience",
+		"College": "Naveen Jindal School of Management"
+	},
+	"12572": {
+		"Title": "Private Equity Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13074": {
+		"Title": "Special Topics in Entrepreneurship - Seed Fund Support",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13838": {
+		"Title": "Innovation and Entrepreneurship",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13839": {
+		"Title": "Start-up Launch I",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13840": {
+		"Title": "Entrepreneurial Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13842": {
+		"Title": "Entrepreneurial Strategy and Business Models",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13843": {
+		"Title": "Small Business Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13845": {
+		"Title": "Social Sector Entrepreneurship and Community Engagement",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14872": {
+		"Title": "Special Topics in Entrepreneurship - Ventures Fellows Course",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15146": {
+		"Title": "Digital and Internet Marketing",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15147": {
+		"Title": "Digital Prospecting",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15432": {
+		"Title": "Strategic Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15566": {
+		"Title": "Financial Modeling For Valuation",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15634": {
+		"Title": "Introduction to Real Estate",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15635": {
+		"Title": "International Business Management",
+		"College": "Naveen Jindal School of Management"
+	}
+	"15698": {
+		"Title": "Engineering Projects in Community Service II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15699": {
+		"Title": "Engineering Projects in Community Service",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"15698": {
+		"Title": "Engineering Projects in Community Service II",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	},
+	"15699": {
+		"Title": "Engineering Projects in Community Service",
+		"College": "Erik Jonsson School of Engineering and Computer Science"
+	}
+	"13351": {
+		"Title": "Introduction to Quantitative Methods",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13353": {
+		"Title": "Applied Regression",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13354": {
+		"Title": "Regression and Multivariate Analysis",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13355": {
+		"Title": "Evaluation Research Methods in the Economic Political and Policy Sciences",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13373": {
+		"Title": "Categorical and Limited Dependent Variables",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13375": {
+		"Title": "Survey Research",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"14368": {
+		"Title": "Research Design in the Social and Policy Sciences",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"14369": {
+		"Title": "Methods of Quantitative Analysis in the Social and Policy Sciences",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"15206": {
+		"Title": "Information Management",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"15207": {
+		"Title": "Knowledge Mining",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"16068": {
+		"Title": "Machine Learning for Socio-Economic and Geo-Referenced Data",
+		"College": "School of Economic, Political and Policy Sciences"
+	}
+	"5284": {
+		"Title": "Understanding Film - CV Honors",
+		"College": "School of Arts and Humanities"
+	},
+	"5286": {
+		"Title": "Film in Historical Context - The Film Musical",
+		"College": "School of Arts and Humanities"
+	},
+	"5289": {
+		"Title": "Topics in Film - Genocide on Screen",
+		"College": "School of Arts and Humanities"
+	},
+	"15243": {
+		"Title": "Transnational Film and Video",
+		"College": "School of Arts and Humanities"
+	}
+	"5300": {
+		"Title": "Financial Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5303": {
+		"Title": "Regulation of Business and Financial Markets",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5304": {
+		"Title": "Investment Theory and Practice",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5307": {
+		"Title": "Entrepreneurial Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5308": {
+		"Title": "Private Equity Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5314": {
+		"Title": "Derivatives Markets",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5328": {
+		"Title": "Topics in Theoretical Corporate Finance - Corporate Decision Theory",
+		"College": "Naveen Jindal School of Management"
+	},
+	"5329": {
+		"Title": "Topics in Empirical Corporate Finance - Empirical Test Methods",
+		"College": "Naveen Jindal School of Management"
+	},
+	"12777": {
+		"Title": "Introductory Mathematical Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13109": {
+		"Title": "Financial Modeling For Valuation",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13414": {
+		"Title": "Introduction to Real Estate",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13415": {
+		"Title": "Real Estate Finance and Investment",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13841": {
+		"Title": "Entrepreneurial Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13849": {
+		"Title": "Personal Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13850": {
+		"Title": "Business Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13851": {
+		"Title": "Personal Financial Planning",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13852": {
+		"Title": "Regulation of Business and Financial Markets",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13853": {
+		"Title": "Financial Markets and Institutions",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13854": {
+		"Title": "Principles of Risk Management and Insurance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13855": {
+		"Title": "Real Estate Finance and Principles",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13857": {
+		"Title": "International Financial Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13858": {
+		"Title": "Introduction to Financial Modeling",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13859": {
+		"Title": "Investment Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13860": {
+		"Title": "Intermediate Financial Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13866": {
+		"Title": "Options and Futures Markets",
+		"College": "Naveen Jindal School of Management"
+	},
+	"13869": {
+		"Title": "Domestic Fund Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14017": {
+		"Title": "Macroeconomics and Financial Markets",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14221": {
+		"Title": "Real Estate Principles",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14223": {
+		"Title": "Financial Information and Analysis",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14224": {
+		"Title": "Financial Information and Analysis",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14266": {
+		"Title": "Real Estate Law and Contracts",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14532": {
+		"Title": "Energy Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14695": {
+		"Title": "Energy Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14808": {
+		"Title": "Energy Joint Interest Accounting",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14824": {
+		"Title": "Business Valuation",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14943": {
+		"Title": "Enterprise Risk Management",
+		"College": "Naveen Jindal School of Management"
+	},
+	"14945": {
+		"Title": "Commercial Property Risk Management and Insurance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15148": {
+		"Title": "Financial Modeling and Valuation",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15436": {
+		"Title": "Mathematical Methods for Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15437": {
+		"Title": "Analytics of Finance",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15456": {
+		"Title": "Financial Technology and Blockchain",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15558": {
+		"Title": "Private Equity",
+		"College": "Naveen Jindal School of Management"
+	},
+	"15559": {
+		"Title": "Financial Decision-Making Processes for Risk Management",
+		"College": "Naveen Jindal School of Management"
+	}
+	"5339": {
+		"Title": "Beginning French II",
+		"College": "School of Arts and Humanities"
+	},
+	"5350": {
+		"Title": "Intermediate French II",
+		"College": "School of Arts and Humanities"
+	}
+	"15541": {
+		"Title": "Financial Technology and Analytics Internship",
+		"College": "Naveen Jindal School of Management"
+	}
+	"5422": {
+		"Title": "Principles of Geospatial Information Sciences",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"5425": {
+		"Title": "Urban Growth and Structure",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"5439": {
+		"Title": "Population and Development",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"13094": {
+		"Title": "Human Migration and Mobility Global Patterns",
+		"College": "School of Economic, Political and Policy Sciences"
+	},
+	"14437": {
+		"Title": "Urban Development",
+		"College": "School of Economic, Political and Policy Sciences"
+	}
+}

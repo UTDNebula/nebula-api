@@ -1,7 +1,7 @@
 ﻿import 'dotenv/config';
 import 'fs';
 import { writeFileSync } from 'node:fs';
-import { Builder, By, Key, until, WebElement, NoSuchElementError, Origin } from 'selenium-webdriver';
+import { Builder, By, Key, until, WebElement, NoSuchElementError, Origin, Button } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox';
 
 type ClassLevel = "Undergraduate" | "Graduate";
@@ -83,22 +83,29 @@ type Credentials = {
 }
 
 abstract class ParsingUtils {
+
+    // Convert a list of elements to their string representations
+    static async GetElementStrings(Elements: WebElement[]): Promise<string[]> {
+        let ConversionPromises: Promise<string>[] = Elements.map(async (Element: WebElement) => { return await Element.getText() });
+        return await Promise.all(ConversionPromises);
+    }
+
     // Find an element out of a list of elements by matching a preceding element's text
-    static async FindLabeledElement(ToSearch: WebElement[], Label: string): Promise<WebElement> | null {
-        for (let i: number = 0; i < ToSearch.length; ++i) {
-            if (await ToSearch[i].getText() == Label)
-                return ToSearch[i + 1];
-        };
-        return null;
+    static FindLabeledElement(ToSearch: WebElement[], ToSearchStrings: string[], Label: string): WebElement | null {
+        let LabelIndex = ToSearchStrings.findIndex((value: string) => { return value == Label });
+        if (LabelIndex >= 0)
+            return ToSearch[LabelIndex + 1];
+        else
+            return null;
     };
 
     // Implementation of FindLabeledElement for string data
-    static async FindLabeledText(ToSearch: WebElement[], Label: string): Promise<string> | null {
-        return await this.FindLabeledElement(ToSearch, Label).then(
-            async (Element: WebElement) => {
-                return Element ? await Element.getText() : null;
-            }
-        );
+    static FindLabeledText(ToSearch: WebElement[], ToSearchStrings: string[], Label: string): string | null {
+        let LabelIndex = ToSearchStrings.findIndex((value: string) => { return value == Label });
+        if (LabelIndex >= 0)
+            return ToSearchStrings[LabelIndex + 1];
+        else
+            return null;
     }
 
     // Hacky solution for getting inconsistently formatted text between other text, trims surrounding whitespace by default
@@ -148,16 +155,35 @@ class CoursebookScraper extends FirefoxScraper {
     private Sections: Sections = {};
 
     // Find the buttons corresponding to a dropdown element
-    private async FindDropdownButtons(DropdownID: string): Promise<WebElement[]> {
+    private async FindDropdownButtons(DropdownID: string, StartIndex: number | RegExp = 0, Filter: RegExp = null): Promise<WebElement[]> {
         // Find the correct dropdown box
+        await this.Driver.wait(until.elementLocated(By.id(DropdownID)));
         let Dropdown: WebElement = await this.Driver.findElement(By.id(DropdownID));
         // Find all of the buttons in the dropdown
         let Buttons: WebElement[] = await Dropdown.findElements(By.css("option"));
+        // If StartIndex is a RegExp object, convert it to an integer index by finding the first button matching the pattern
+        if (typeof StartIndex == "object") {
+            let Pattern: RegExp = StartIndex;
+            StartIndex = 0;
+            for (let i: number = 0; i < Buttons.length; ++i) {
+                let text: string = await Buttons[i].getText();
+                if (text.match(Pattern)) {
+                    StartIndex = i;
+                    break;
+                }
+            }
+        }
+        // Splice out the skipped indexes
+        Buttons.splice(0, StartIndex);
         // Filter out the divider buttons (the ones containing "-----") and blanks
-        for (let Button of Buttons) {
-            let text: string = await Button.getText();
+        for (let i: number = 0; i < Buttons.length; ++i) {
+            let text: string = await Buttons[i].getText();
+            // Ignore dropdown button if it's blank or empty
             if (text == "" || text.match(/--+/g))
-                Buttons.splice(Buttons.indexOf(Button), 1);
+                Buttons.splice(i, 1);
+            // Ignore dropdown button if it doesn't match a provided filter
+            if (Filter && !text.match(Filter))
+                Buttons.splice(i, 1);
         };
         return Buttons;
     };
@@ -167,11 +193,19 @@ class CoursebookScraper extends FirefoxScraper {
         // Find the class search button, then click it
         let SearchButton: WebElement = this.Driver.findElement(By.linkText("Search Classes"));
         await SearchButton.click();
-        let ListSelector = By.css("div.section-list");
-        // Wait for the section list to be loaded
-        await this.Driver.wait(until.elementLocated(ListSelector));
-        // Get the section list
-        let SectionList = await this.Driver.findElement(ListSelector);
+        // Wait for loading spinner to go away
+        let Selector = By.css("svg.uil-ring-alt");
+        await this.Driver.wait(until.stalenessOf(this.Driver.findElement(Selector)));
+        // Try to get the section list (may not exist)
+        Selector = By.css("div.section-list");
+        let SectionList;
+        try {
+             SectionList = await this.Driver.findElement(Selector);
+        }
+        // Return empty array if no section list found
+        catch (error: NoSuchElementError) {
+            return [];
+        };
         // Get all of the detail box buttons
         let DetailButtons: WebElement[] = await SectionList.findElements(By.css("div[data-action=info]"));
         // Click every other detail button in rapid succession to bypass ratelimit and expose data
@@ -189,11 +223,19 @@ class CoursebookScraper extends FirefoxScraper {
         let TextbooksTab: WebElement = await Section.findElement(By.css("#tab-textbooks"));
         // Click on textbooks tab
         await TextbooksTab.click();
-        // Wait for the textbook info to load
-        await this.Driver.wait(until.elementLocated(By.css("div.textbook-note")));
+        // Find the textbook info area, wait for page to load more if we can't find it yet
+        let TextbookNote: WebElement = null;
+        while (!TextbookNote) {
+            try {
+                TextbookNote = await Section.findElement(By.css("div.textbook-note"));
+            }
+            catch (error: NoSuchElementError) {
+                await this.Driver.sleep(1000);
+            }
+        }
         // Grab the textbook table, may not exist
         try {
-            let TextbookTable: WebElement = await this.Driver.findElement(By.css("div.textbook-table"));
+            let TextbookTable: WebElement = await Section.findElement(By.css("div.textbook-table"));
             // Get the individual textbook data blocks
             let TextbookBlocks: WebElement[] = await TextbookTable.findElements(By.css("td.textbook"));
             // Iterate through the textbook blocks
@@ -221,24 +263,10 @@ class CoursebookScraper extends FirefoxScraper {
                 });
             }
         } catch (error: NoSuchElementError) { };
-        // Find main tab
-        let MainTab: WebElement = await Section.findElement(By.css("#tab-section"));
-        // Return to main tab
-        await MainTab.click();
-        // Wait for main tab to load before continuing
-        let SectionTable: WebElement = null;
-        while (!SectionTable) {
-            try {
-                SectionTable = await Section.findElement(By.css("table.courseinfo__overviewtable"));
-            }
-            catch (error: NoSuchElementError) {
-                await this.Driver.sleep(1000);
-            }
-        }
     }
 
-    async ParseSyllabus(sectionData: SectionData, TableData: WebElement[]) {
-        let SyllabusBlock = await ParsingUtils.FindLabeledElement(TableData, "Syllabus:");
+    async ParseSyllabus(sectionData: SectionData, TableData: WebElement[], TableDataStrings: string[]) {
+        let SyllabusBlock = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Syllabus:");
         sectionData.SyllabusURI = await (SyllabusBlock.findElement(By.css("a")).then(
             // Get href of syllabus link on successful find
             async (SyllabusLink: WebElement) => {
@@ -287,8 +315,8 @@ class CoursebookScraper extends FirefoxScraper {
         };
     }
 
-    async ParseAssistants(sectionData: SectionData, TableData: WebElement[]) {
-        let AssistantBlock: WebElement = await ParsingUtils.FindLabeledElement(TableData, "TA/RA(s):");
+    async ParseAssistants(sectionData: SectionData, TableData: WebElement[], TableDataStrings: string[]) {
+        let AssistantBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "TA/RA(s):");
         let AssistantElements = await AssistantBlock.findElements(By.css("div > div"));
         // Iterate over all TAs/RAs
         for (let Element of AssistantElements) {
@@ -303,8 +331,8 @@ class CoursebookScraper extends FirefoxScraper {
         };
     }
 
-    async ParseInstructors(sectionData: SectionData, TableData: WebElement[]) {
-        let InstructorBlock: WebElement = await ParsingUtils.FindLabeledElement(TableData, "Instructor(s):");
+    async ParseInstructors(sectionData: SectionData, TableData: WebElement[], TableDataStrings: string[]) {
+        let InstructorBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Instructor(s):");
         let InstructorElements = await InstructorBlock.findElements(By.css("div > div"));
         // Iterate over potentially multiple instructors
         for (let Element of InstructorElements) {
@@ -319,8 +347,8 @@ class CoursebookScraper extends FirefoxScraper {
         }
     }
 
-    async ParseRequisites(sectionData: SectionData, TableData: WebElement[]) {
-        let RequisitesBlock: WebElement = await ParsingUtils.FindLabeledElement(TableData, "Enrollment Reqs:");
+    async ParseRequisites(sectionData: SectionData, TableData: WebElement[], TableDataStrings: string[]) {
+        let RequisitesBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Enrollment Reqs:");
         // Class requisites may not always be available (or not in the requisites block)
         if (RequisitesBlock != null) {
             let RequisiteElements = await RequisitesBlock.findElements(By.css("li"));
@@ -330,8 +358,8 @@ class CoursebookScraper extends FirefoxScraper {
         };
     }
 
-    async ParseAttributes(sectionData: SectionData, TableData: WebElement[]) {
-        let AttributesBlock: WebElement = await ParsingUtils.FindLabeledElement(TableData, "Class Attributes:");
+    async ParseAttributes(sectionData: SectionData, TableData: WebElement[], TableDataStrings: string[]) {
+        let AttributesBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Class Attributes:");
         // Class attributes may not always be available
         if (AttributesBlock != null) {
             let AttributeElements = await AttributesBlock.findElements(By.css("li"));
@@ -358,33 +386,35 @@ class CoursebookScraper extends FirefoxScraper {
             }
         }
         // Get all of the useful table data elements
-        let TableData = await SectionTable.findElements(By.css("th, td"));
+        let TableData: WebElement[] = await SectionTable.findElements(By.css("th, td"));
+        let TableDataStrings: string[] = await ParsingUtils.GetElementStrings(TableData);
+        console.log(TableDataStrings);
         // Find, split, and parse the class/course numbers
-        let Nums: string = await ParsingUtils.FindLabeledText(TableData, "Class/Course Number:");
+        let Nums: string = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Class/Course Number:");
         let SplitNums: string[] = Nums.split('/');
         let ClassNum = Number.parseInt(SplitNums[0]);
         let CourseNum = Number.parseInt(SplitNums[1]);
 
         // Find and set course data
-        courseData.Title = await ParsingUtils.FindLabeledText(TableData, "Course Title:");
-        courseData.College = await ParsingUtils.FindLabeledText(TableData, "College:");
+        courseData.Title = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Course Title:");
+        courseData.College = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "College:");
         this.Courses[CourseNum] = courseData;
 
         // Find and set section data
-        sectionData.Section = await ParsingUtils.FindLabeledText(TableData, "Class Section:");
-        sectionData.Level = await ParsingUtils.FindLabeledText(TableData, "Class Level:") as ClassLevel;
-        sectionData.Grading = await ParsingUtils.FindLabeledText(TableData, "Grading:");
-        sectionData.Consent = await ParsingUtils.FindLabeledText(TableData, "Add Consent:");
-        sectionData.Method = await ParsingUtils.FindLabeledText(TableData, "Instruction Mode:");
-        sectionData.ActivityType = await ParsingUtils.FindLabeledText(TableData, "Activity Type:");
-        sectionData.SessionType = await ParsingUtils.FindLabeledText(TableData, "Session Type:");
-        sectionData.Description = await ParsingUtils.FindLabeledText(TableData, "Description:");
-        sectionData.CoreInfo = await ParsingUtils.FindLabeledText(TableData, "Core:");
+        sectionData.Section = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Class Section:");
+        sectionData.Level = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Class Level:") as ClassLevel;
+        sectionData.Grading = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Grading:");
+        sectionData.Consent = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Add Consent:");
+        sectionData.Method = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Instruction Mode:");
+        sectionData.ActivityType = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Activity Type:");
+        sectionData.SessionType = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Session Type:");
+        sectionData.Description = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Description:");
+        sectionData.CoreInfo = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Core:");
 
         let TermText: string = await (await SectionTable.findElement(By.css("p.courseinfo__sectionterm"))).getText();
         sectionData.Term = ParsingUtils.GetTextBetween(TermText, "Term: ", "\n");
 
-        let Credits: string = await ParsingUtils.FindLabeledText(TableData, "Semester Credit Hours:");
+        let Credits: string = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Semester Credit Hours:");
         // Handle variable-credit courses that may list a non-integer # of credits
         try {
             sectionData.Credits = Number.parseInt(Credits);
@@ -393,23 +423,23 @@ class CoursebookScraper extends FirefoxScraper {
         };
 
         // There doesn't seem to be a consistent pattern for the status, so we use GetTextBetween() here
-        let StatusText: string = await ParsingUtils.FindLabeledText(TableData, "Status:");
+        let StatusText: string = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Status:");
         sectionData.EnrollmentStatus = ParsingUtils.GetTextBetween(StatusText, "Enrollment Status:", "Available");
         sectionData.AvailableSeats = Number.parseInt(ParsingUtils.GetTextBetween(StatusText, "Seats:", "Enrolled"));
         sectionData.TotalEnrolled = ParsingUtils.GetTextBetween(StatusText, "Total:", "Waitlist");
         sectionData.Waitlisted = Number.parseInt(StatusText.split("Waitlist:")[1]);
 
         // Get the section's attributes
-        await this.ParseAttributes(sectionData, TableData);
+        await this.ParseAttributes(sectionData, TableData, TableDataStrings);
 
         // Get the section's requisites
-        await this.ParseRequisites(sectionData, TableData);
+        await this.ParseRequisites(sectionData, TableData, TableDataStrings);
 
         // Get the section's instructors
-        await this.ParseInstructors(sectionData, TableData);
+        await this.ParseInstructors(sectionData, TableData, TableDataStrings);
 
         // Get the section's TAs/RAs
-        await this.ParseAssistants(sectionData, TableData);
+        await this.ParseAssistants(sectionData, TableData, TableDataStrings);
 
         // Get section's meeting times/dates and location data
         await this.ParseMeetingTimes(sectionData, SectionTable);
@@ -418,10 +448,10 @@ class CoursebookScraper extends FirefoxScraper {
         await this.ParseExams(sectionData, SectionTable);
 
         // Get the URI to the section's syllabus
-        await this.ParseSyllabus(sectionData, TableData);
+        await this.ParseSyllabus(sectionData, TableData, TableDataStrings);
 
         // Get the section's textbooks (do this last because switching to the textbook tab makes all previous elements stale)
-        await this.ParseTextbooks(sectionData, Section);
+        //await this.ParseTextbooks(sectionData, Section);
 
         // Add collected section data to section data cache
         this.Sections[ClassNum] = sectionData;
@@ -447,30 +477,35 @@ class CoursebookScraper extends FirefoxScraper {
     }
 
     // Scrape everything
-    async Scrape(): Promise<void> {
+    async Scrape(TermIndex: number | RegExp = 0, TermFilter: RegExp = null, PrefixIndex: number | RegExp = 0, PrefixFilter: RegExp = null): Promise<void> {
         // Log in with COURSEBOOK_AUTH credentials
         await this.Login({
             NetID: process.env.NETID,
             Password: process.env.Password
         });
         // Find the term buttons
-        let TermButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.TERM);
+        let TermButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.TERM, TermIndex, TermFilter);
         // Find the prefix buttons
-        let PrefixButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.PREFIX);
-        // Scrape current term by selecting the second term button
-        await TermButtons[1].click();
-        // Iterate over sections from every class prefix for every term
-        for (let PrefixButton of PrefixButtons) {
-            await PrefixButton.click();
-            let SectionList: WebElement[] = await this.FindSections();
-            for (let Section of SectionList)
-                await this.ParseSection(Section);
-        }
+        let PrefixButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.PREFIX, PrefixIndex, PrefixFilter);
+        // Iterate over sections from every desired class prefix for every desired term
+        for (let TermButton of TermButtons) {
+            await TermButton.click();
+            for (let PrefixButton of PrefixButtons) {
+                await PrefixButton.click();
+                let SectionList: WebElement[] = await this.FindSections();
+                for (let Section of SectionList)
+                    await this.ParseSection(Section);
+                // Write section and course data to data output after every prefix
+                writeFileSync("./data/Sections.json", JSON.stringify(this.GetSections(), null, '\t'), { flag: 'a+' });
+                writeFileSync("./data/Courses.json", JSON.stringify(this.GetCourses(), null, '\t'), { flag: 'a+' });
+                this.Clear();
+            }
+        };
     };
 
     Clear(): void {
-        this.Courses = [];
-        this.Sections = [];
+        this.Courses = {};
+        this.Sections = {};
     }
 
     GetCourses(): Courses { return this.Courses; };
@@ -481,9 +516,6 @@ class CoursebookScraper extends FirefoxScraper {
 let options = new firefox.Options();
 let CBScraper = new CoursebookScraper(options);
 
-CBScraper.Scrape().then(() => {
-    writeFileSync("./data/Sections.json", JSON.stringify(CBScraper.GetSections(), null, '\t'), { flag: 'a+' });
-    writeFileSync("./data/Courses.json", JSON.stringify(CBScraper.GetCourses(), null, '\t'), { flag: 'a+' });
-    CBScraper.Clear();
+CBScraper.Scrape(1).then(() => {
     CBScraper.Kill();
 });
