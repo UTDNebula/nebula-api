@@ -368,6 +368,9 @@ class CoursebookScraper extends FirefoxScraper {
         let courseData: CourseData = new CourseData();
         let sectionData: SectionData = new SectionData();
 
+        // Scroll the section element into view (seems to help page loading)
+        await this.Driver.executeScript("arguments[0].scrollIntoView();", Section);
+
         // Grab the section's full table, wait for page to load more if we can't find it yet
         let SectionTable: WebElement = null;
         while (!SectionTable) {
