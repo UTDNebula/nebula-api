@@ -35,12 +35,7 @@ type Textbook = {
 class CourseData {
     Title: string = "";
     College: string = "";
-    constructor() { };
 };
-
-type Courses = {
-    [CourseNum: number]: CourseData;
-}
 
 class SectionData {
     Section: string = "";
@@ -70,8 +65,11 @@ class SectionData {
     Exams: Exam[] = [];
     SyllabusURI: string = "";
     TextBooks: Textbook[] = []
-    constructor() { };
 };
+
+type Courses = {
+    [CourseNum: number]: CourseData;
+}
 
 type Sections = {
     [ClassNum: number]: SectionData;
@@ -411,13 +409,10 @@ class CoursebookScraper extends FirefoxScraper {
         sectionData.Term = ParsingUtils.GetTextBetween(TermText, "Term: ", "\n");
 
         let Credits: string = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Semester Credit Hours:");
-        // Handle variable-credit courses that may list a non-integer # of credits
-        try {
-            sectionData.Credits = Number.parseInt(Credits);
-        } catch {
+        // Handle variable-credit courses that may list a non-numerical # of credits
+        sectionData.Credits = Number.parseInt(Credits);
+        if (isNaN(sectionData.Credits))
             sectionData.Credits = -1;
-        };
-
         // There doesn't seem to be a consistent pattern for the status, so we use GetTextBetween() here
         let StatusText: string = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Status:");
         sectionData.EnrollmentStatus = ParsingUtils.GetTextBetween(StatusText, "Enrollment Status:", "Available");
