@@ -15,6 +15,7 @@ Professor = {
     "office": Location,
     "profile_uri": string,
     "office_hours": Array<Meeting>,
+    "sections": Array<ObjectId>,
 }
 ```
 
@@ -80,3 +81,9 @@ Professor = {
 > **Type**: Array<Meeting>
 >
 > A list of all office hours of the professor.
+
+> `.sections`
+> 
+> **Type**: Array<ObjectId>
+>
+> A list of references to sections a professor is currently teaching or has taught. This will be sorted in descending order with respect to `end_date` in the section's `academic_session`.
