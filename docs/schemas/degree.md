@@ -49,7 +49,7 @@ Degree = {
 >
 > The academic year to which this degree corresponds to.
 >
-> **Example**: 2021
+> **Example**: 2021-2022
 
 > `.abbreviation`
 >
