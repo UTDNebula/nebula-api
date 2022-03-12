@@ -4,7 +4,7 @@ import { courseSearch, courseById } from '../controllers/course';
 
 const router = express.Router();
 
-router.get('/search?', courseSearch);
+router.get('/', courseSearch);
 router.get('/:id', courseById);
 
 export default router;
