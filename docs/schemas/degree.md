@@ -5,11 +5,12 @@ A `Degree` represents either a major, minor, or concentration received from The 
 
 ## Object Representation
 ```ts
-DegreeSubtype = "major" | "minor" | "concentration"
+DegreeSubtype = "major" | "minor" | "concentration" | "prescribed double major"
 
 Degree = {
     "_id": ObjectId,
     "subtype": DegreeSubtype,
+    "school": string,
     "name": string,
     "year": string,
     "abbreviation": string,
@@ -34,6 +35,14 @@ Degree = {
 > The subtype of degree that this object represents.
 >
 > **Example**: Major
+
+> `.school`
+>
+> **Type**: string
+>
+> The school that the `degree` belongs to.
+>
+> **Example**: School of Natural Sciences and Mathematics
 
 > `.name`
 >
