@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 
 import course from './routes/course';
 import degree from './routes/degree';
+import professor from './routes/professor';
 import section from './routes/section';
 import token from './controllers/token';
 import exam from './routes/exam';
@@ -19,6 +20,7 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
 
   app.use('/course', course);
   app.use('/degree', degree);
+  app.use('/professor', professor);
   app.use('/exam', exam);
   app.use('/section', section);
 
