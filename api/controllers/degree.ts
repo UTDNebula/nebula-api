@@ -2,6 +2,11 @@ import { Request, Response } from 'express';
 import { DegreeModel } from '../models/degree';
 
 export const degreeSearch = async (req: Request, res: Response) => {
+  if (Object.keys(req.query).length < 1) {
+    return res.status(400).json({
+      error: 'request did not contain any query parameters',
+    });
+  }
   DegreeModel.find(req.query, {}, { strict: false }, (error, result) => {
     if (error) {
       return res.status(500).json({
