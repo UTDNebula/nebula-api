@@ -93,6 +93,14 @@ Section = {
 > 
 > An array of the locations and times that this section meets.
 
+> `.core_flags`
+> 
+> **Type**: Array<string>
+> 
+> An array of core requirement codes this section fulfills. 
+>
+> **Example**: ["020", "050", ...]
+
 > `.syllabus_uri`
 > 
 > **Type**: string
