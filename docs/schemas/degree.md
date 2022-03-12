@@ -11,6 +11,7 @@ Degree = {
     "_id": ObjectId,
     "subtype": DegreeSubtype,
     "name": string,
+    "year": string,
     "abbreviation": string,
     "minimum_credit_hours": number,
     "requirements": CollectionRequirement,
@@ -41,6 +42,14 @@ Degree = {
 > The full name of the degree.
 >
 > **Example**: Bachelor of Science in Computer Science
+
+> `.year`
+> 
+> **Type**: string
+>
+> The academic year to which this degree corresponds to.
+>
+> **Example**: 2021-2022
 
 > `.abbreviation`
 >
