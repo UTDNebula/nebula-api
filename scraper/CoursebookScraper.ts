@@ -1,4 +1,4 @@
-﻿import 'dotenv/config';
+import 'dotenv/config';
 import 'fs';
 import { writeFileSync } from 'node:fs';
 import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
@@ -112,24 +112,17 @@ abstract class ParsingUtils {
     }
 }
 
-abstract class FirefoxScraper {
+export abstract class FirefoxScraper {
 
     protected Driver;
 
-    constructor(options) {
-        this.Start(options);
+    constructor(options, service) {
+      this.Driver = new Builder()
+          .forBrowser('firefox')
+          .setFirefoxService(service)
+          .setFirefoxOptions(options)
+          .build();
     };
-
-    // Start scraper process
-    async Start(options) {
-        // Init Selenium firefox webdriver for scraper
-        let service = new firefox.ServiceBuilder(process.env.SELENIUM_DRIVER);
-        this.Driver = new Builder()
-            .forBrowser('firefox')
-            .setFirefoxService(service)
-            .setFirefoxOptions(options)
-            .build();
-    }
 
     // End scraper process
     async Kill() {
@@ -509,9 +502,11 @@ class CoursebookScraper extends FirefoxScraper {
 };
 
 // Load Selenium config
+/*
 let options = new firefox.Options();
-let CBScraper = new CoursebookScraper(options);
+const service = new firefox.ServiceBuilder(process.env.SELENIUM_DRIVER);
+let CBScraper = new CoursebookScraper(options, service);
 
 CBScraper.Scrape(/2022 Spring/g).then(() => {
     CBScraper.Kill();
-});
+});*/
