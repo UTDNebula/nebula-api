@@ -14,6 +14,7 @@ Professor = {
     "phone_number": string,
     "office": Location,
     "profile_uri": string,
+    "image_uri": string,
     "office_hours": Array<Meeting>,
     "sections": Array<ObjectId>,
 }
@@ -75,6 +76,12 @@ Professor = {
 > **Type**: string
 >
 > A hyperlink pointing to the professor's official university profile.
+
+> `.image_uri`
+>
+> **Type**: string
+> 
+> A link to the image used for the professor on the professor's official university profile.
 
 > `.office_hours`
 >
