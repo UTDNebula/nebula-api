@@ -1,31 +1,39 @@
 import { Schema, connection } from 'mongoose';
 
 export interface Course {
-  name: string;
-  subject: string;
-  number: string;
+  course_number: string;
+  subject_prefix: string;
+  title: string;
   description: string;
-  credit_hours: number;
   school: string;
+  credit_hours: string;
   class_level: string;
   activity_type: string;
   grading: string;
-  prerequisite_courses: object;
-  corequisite_courses: object;
+  internal_course_number: string;
+  prerequisites: object;
+  corequisites: object;
+  lecture_contact_hours: string;
+  laboratory_contact_hours: string;
+  attributes: object;
 }
 
 export const CourseSchema = new Schema<Course>({
-  name: { type: String, required: true },
-  subject: { type: String, required: true },
-  number: { type: String, required: true },
+  course_number: { type: String, required: true },
+  subject_prefix: { type: String, required: true },
+  title: { type: String, required: true },
   description: { type: String, required: true },
-  credit_hours: { type: Number, required: true },
   school: { type: String, required: true },
+  credit_hours: { type: String, required: true },
   class_level: { type: String, required: true },
   activity_type: { type: String, required: true },
   grading: { type: String, required: true },
-  prerequisite_courses: { type: Object, required: true },
-  corequisite_courses: { type: Object, required: true },
+  internal_course_number: { type: String, required: true },
+  prerequisites: { type: Object, required: true },
+  corequisites: { type: Object, required: true },
+  lecture_contact_hours: { type: String, required: true },
+  laboratory_contact_hours: { type: String, required: true },
+  attributes: { type: Object, required: true }
 });
 
 const courseDB = connection.useDb('courseDB');

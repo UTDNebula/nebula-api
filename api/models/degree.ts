@@ -1,17 +1,21 @@
 import { Schema, connection } from 'mongoose';
 
+type DegreeSubtype = "major" | "minor" | "concentration";
+
 export interface Degree {
+  subtype: DegreeSubtype;
   name: string;
-  required: number;
-  total: number;
-  options: Array<object | string>;
+  abbreviation: string;
+  minimum_credit_hours: number;
+  requirements: object;
 }
 
 export const DegreeSchema = new Schema<Degree>({
+  subtype: { type: String, required: true },
   name: { type: String, required: true },
-  required: { type: Number, required: true },
-  total: { type: Number, required: true },
-  options: { type: Array, required: true },
+  abbreviation: { type: String, required: true },
+  minimum_credit_hours: { type: Number, required: true },
+  requirements: { type: Object, required: true }
 });
 
 const degreeDB = connection.useDb('degreeDB');
