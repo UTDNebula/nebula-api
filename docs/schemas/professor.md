@@ -9,7 +9,7 @@ Professor = {
     "_id": ObjectId,
     "first_name": string,
     "last_name": string,
-    "title": string,
+    "titles": Array<string>,
     "email": string,
     "phone_number": string,
     "office": Location,
@@ -44,13 +44,13 @@ Professor = {
 >
 > **Example**: Doe
 
-> `.title`
+> `.titles`
 >
 > **Type**: string
 >
-> The professor's title.
+> The professor's titles.
 >
-> **Example**: Senior Mathematics Lecturer
+> **Example**: ["Senior Mathematics Lecturer"], ["Lars Magnus Ericsson Chair", "Dean – Erik Jonsson School of Engineering and Computer Science"]
 
 > `.email`
 >
