@@ -560,6 +560,7 @@ class CoursebookScraper extends FirefoxScraper {
                 writeFileSync("./data/Sections.json", JSON.stringify(this.GetSections(), null, '\t'), { flag: 'a' });
                 writeFileSync("./data/Courses.json", JSON.stringify(this.GetCourses(), null, '\t'), { flag: 'a' });
                 writeFileSync("./data/Professors.json", JSON.stringify(this.GetProfs(), null, '\t'), { flag: 'w' });
+                this.Clear();
             };
         };
     };
