@@ -4,7 +4,7 @@ module schemas {
 
     export type RequirementType = "course" | "section" | "exam" | "major" | "minor" | "gpa" | "consent" | "collection" | "hours" | "other"
 
-    abstract class Requirement {
+    export abstract class Requirement {
         readonly "type": RequirementType;
         constructor(type: RequirementType) { this.type = type }
     }
@@ -66,17 +66,17 @@ module schemas {
         constructor() { super("collection") }
     }
 
-    type MongoStored = {
+    export interface MongoStored {
         _id: mongoose.Types.ObjectId;
     }
 
-    export type AcademicSession = {
+    export interface AcademicSession {
         name: string,
         start_date: string,
         end_date: string
     }
 
-    export type Course = MongoStored & {
+    export interface Course extends MongoStored {
         course_number: string,
         subject_prefix: string,
         title: string,
@@ -96,7 +96,7 @@ module schemas {
         attributes: Object
     }
 
-    export type Section = MongoStored & {
+    export interface Section extends MongoStored {
         section_number: string,
         course_reference: mongoose.Types.ObjectId,
         section_corequisites: CollectionRequirement,
@@ -114,8 +114,8 @@ module schemas {
 
     export type DegreeSubtype = "major" | "minor" | "concentration" | "prescribed double major";
 
-    export type Degree = MongoStored & {
-        subtype: DegreeSubtype,
+    export interface Degree extends MongoStored {
+        subinterface: DegreeSubtype,
         school: string,
         name: string,
         year: string,
@@ -124,7 +124,7 @@ module schemas {
         requirements: CollectionRequirement
     }
 
-    export type Location = {
+    export interface Location {
         building: string,
         room: string,
         map_uri: string
@@ -132,30 +132,30 @@ module schemas {
 
     export type ModalityType = "pending" | "traditional" | "hybrid" | "flexible" | "remote" | "online";
 
-    export type Meeting = {
+    export interface Meeting {
         start_date: string,
         end_date: string,
         meeting_days: Array<string>,
         start_time: string,
         end_time: string,
-        modality: ModalityType,
+        modality: ModalityType, // Deprecate?
         location: Location
     }
 
-    export type Professor = MongoStored & {
+    export interface Professor extends MongoStored {
         first_name: string,
         last_name: string,
-        title: string,
+        titles: Array<string>,
         email: string,
         phone_number: string,
         office: Location,
         profile_uri: string,
         image_uri: string,
         office_hours: Array<Meeting>,
-        section_references: Array<mongoose.Types.ObjectId>
+        sections: Array<mongoose.Types.ObjectId>
     }
 
-    export type Assistant = {
+    export interface Assistant {
         first_name: string,
         last_name: string,
         role: string,

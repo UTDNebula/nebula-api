@@ -5,14 +5,6 @@ import firefox from 'selenium-webdriver/firefox';
 import schemas from '../api/schemas';
 import mongoose from 'mongoose';
 
-type Courses = {
-    [CourseNum: number]: schemas.Course;
-}
-
-type Sections = {
-    [ClassNum: number]: schemas.Section;
-}
-
 type Credentials = {
     NetID: string,
     Password: string
@@ -80,11 +72,11 @@ class CoursebookScraper extends FirefoxScraper {
     };
 
     // Grab professor data obtained from profile scraper
-    private ScrapedProfessors: schemas.Professor[] = JSON.parse(readFileSync("./Professors.json", { encoding: "utf-8" }));
+    private ScrapedProfessors: schemas.Professor[] = JSON.parse(readFileSync("./data/Professors.json", { encoding: "utf-8" }));
 
     // Caches for the scraped course/section data
-    private Courses: Courses = {};
-    private Sections: Sections = {};
+    private Courses: Map<string, schemas.Course> = new Map<string, schemas.Course>();
+    private Sections: Map<string, schemas.Section> = new Map<string, schemas.Section>();
 
     // Find the buttons corresponding to a dropdown element
     private async FindDropdownButtons(DropdownID: string, StartIndex: number | RegExp = 0, Filter: RegExp = null): Promise<WebElement[]> {
@@ -120,16 +112,16 @@ class CoursebookScraper extends FirefoxScraper {
     private async FindSections(): Promise<WebElement[]> {
 
         // Check if a reCaptcha has been triggered
-        let CaptchaBox: WebElement = null;
+        let CaptchaIFrame: WebElement = null;
         try {
-            CaptchaBox = await this.Driver.findElement(By.id("recaptcha_v2_here"));
+            let CaptchaBox = await this.Driver.findElement(By.id("recaptcha_v2_here"));
+            CaptchaIFrame = await CaptchaBox.findElement(By.css("iframe"));
         } catch (error: NoSuchElementError) {
             // Continue without action
         }
 
         // If captcha box found, wait for the user to solve it before continuing
-        if (CaptchaBox) {
-            let CaptchaIFrame: WebElement = await CaptchaBox.findElement(By.css("iframe"));
+        if (CaptchaIFrame) {
             // Switch active frame to the captcha's iframe
             this.Driver.switchTo().frame(CaptchaIFrame);
             let CheckedBox: WebElement = null;
@@ -253,79 +245,102 @@ class CoursebookScraper extends FirefoxScraper {
             MeetingData.start_time = Times[0] ?? null;
             MeetingData.end_time = Times[1] ?? null;
             MeetingData.meeting_days = MeetingChunks[1].split(', ');
+            // Nullify meeting_days if incorrectly formatted
+            if (MeetingData.meeting_days[0] == "")
+                MeetingData.meeting_days = null;
             let LocationElement: WebElement = MeetingBlock.findElement(By.css("a"));
             let LocationChunks: string[] = (await LocationElement.getText()).split(' ');
+            // Nullify location data if incorrectly formatted
+            if (LocationChunks.length != 2)
+                LocationChunks = [null, null];
             MeetingData.location = {
-                building: LocationChunks[0] ?? null,
-                room: LocationChunks[1] ?? null,
+                building: LocationChunks[0],
+                room: LocationChunks[1],
                 map_uri: await LocationElement.getAttribute("href")
             };
+            // Push meeting information
+            SectionData.meetings.push(MeetingData);
         };
     }
 
     async ParseInstructors(SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
-        let InstructorBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Instructor(s):");
-        let InstructorElements = await InstructorBlock.findElements(By.css("div > div"));
-        // Iterate over potentially multiple instructors
-        for (let Element of InstructorElements) {
-            // Unfortunately, string splitting is pretty much the best way to do this part
-            let InstructorText: string[] = (await Element.getText()).split(" ・ ");
-            // Derive some instructor data from split string
-            let Names: string[] = InstructorText[0].split(' ');
-            // Find the matching professor in the raw professor data
-            let Professor: schemas.Professor = this.ScrapedProfessors.find((professor: schemas.Professor) => {
-                professor.first_name == Names[0]
-                    &&
-                professor.last_name == Names[1]
-            });
-            // If we found the matching professor, add its id to this section's professor list
-            if (Professor) {
-                if (!SectionData.professors)
-                    SectionData.professors = [Professor._id];
-                else
+        let InstructorInstance: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Instructor(s):");
+        try {
+            InstructorInstance = await InstructorInstance.findElement(By.css("div"));
+        } catch (error: NoSuchElementError) { return };
+        // Iterate by updating the InstructorElement with recursive searches until search fails
+        while (true) {
+            try {
+                let NestedDivs: WebElement[] = await InstructorInstance.findElements(By.css("div"));
+                let InstructorElement: WebElement = NestedDivs[0];
+                // Unfortunately, string splitting is pretty much the best way to do this part
+                let InstructorText: string[] = (await InstructorElement.getText()).split(" ・ ");
+                // Derive some instructor data from split string
+                let Names: string[] = InstructorText[0].split(' ');
+                //let Role: string = InstructorText[1];
+                let Email: string = InstructorText[2];
+                // Find the matching professor in the professor data
+                let Professor: schemas.Professor = this.ScrapedProfessors.find((professor: schemas.Professor) => {
+                    return (
+                        professor.first_name == Names[0]
+                        &&
+                        professor.last_name == Names[1]
+                    )
+                });
+                // If we found the matching professor, add its id to this section's professor list
+                if (Professor) {
+                    // Set professor's email since it's not currently found properly by the professor scraper
+                    Professor.email = Email;
+                    // Add a reference to this section
+                    Professor.sections.push(SectionData._id);
                     SectionData.professors.push(Professor._id);
-            } 
+                }
+                InstructorInstance = NestedDivs[1];
+            } catch { break }
         }
     }
 
     async ParseAssistants(SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
-        let AssistantBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "TA/RA(s):");
-        let AssistantElements = await AssistantBlock.findElements(By.css("div > div"));
-        // Iterate over all TAs/RAs
-        for (let Element of AssistantElements) {
-            // Unfortunately, string splitting is pretty much the best way to do this part
-            let AssistantText: string[] = (await Element.getText()).split(" ・ ");
-            let Names: string[] = AssistantText[0].split(' ');
-            // Push assistant data
-            if (SectionData.teaching_assistants)
+        let AssistantInstance: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "TA/RA(s):");
+        try {
+            AssistantInstance = await AssistantInstance.findElement(By.css("div"));
+        } catch (error: NoSuchElementError) { return };
+        // Iterate by updating the AssistantElement with recursive searches until search fails
+        while (true) {
+            try {
+                let NestedDivs: WebElement[] = await AssistantInstance.findElements(By.css("div"));
+                let AssistantElement: WebElement = NestedDivs[0];
+                // Unfortunately, string splitting is pretty much the best way to do this part
+                let AssistantText: string[] = (await AssistantElement.getText()).split(" ・ ");
+                let Names: string[] = AssistantText[0].split(' ');
+                // Push assistant data
                 SectionData.teaching_assistants.push({
                     first_name: Names[0],
                     last_name: Names[1],
                     role: AssistantText[1],
                     email: AssistantText[2]
                 });
-            else
-                SectionData.teaching_assistants = [{
-                    first_name: Names[0],
-                    last_name: Names[1],
-                    role: AssistantText[1],
-                    email: AssistantText[2]
-                }];
-        };
+                AssistantInstance = NestedDivs[1];
+            } catch { break }
+        }
     }
 
-    async ParseCourseRequisites(CourseData: schemas.Course, TableData: WebElement[], TableDataStrings: string[]) {
-        let RequisitesBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Enrollment Reqs:");
-        // Class requisites may not always be available (or not in the requisites block)
-        if (RequisitesBlock != null) {
-            let RequisiteElements = await RequisitesBlock.findElements(By.css("li"));
-            for (let Element of RequisiteElements) {
-                //SectionData.Requisites.push(await Element.getText());
-            };
-        };
-    }
+    //ParseRequisiteString(ReqString: string, CourseData: schemas.Course, SectionData: schemas.Section): void {
+    //    let ChunkedString: string[] = ReqString.split('.');
+    //}
 
-    async ParseSectionRequisites(SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
+    async ParseRequisites(CourseData: schemas.Course, SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
+        //let RequisitesBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Enrollment Reqs:");
+        //// Class requisites may not always be available (or not in the requisites block)
+        //if (RequisitesBlock != null) {
+        //    let RequisiteElements = await RequisitesBlock.findElements(By.css("li"));
+        //    for (let Element of RequisiteElements) {
+        //        //SectionData.Requisites.push(await Element.getText());
+        //        let ReqString: string = await Element.getText();
+        //        this.ParseRequisiteString(ReqString, CourseData, SectionData);
+        //    };
+        //};
+        // Add the section's consent requirement
         let ConsentReq: schemas.ConsentRequirement = new schemas.ConsentRequirement();
         ConsentReq.granter = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Add Consent:");
         SectionData.section_corequisites.options.push(ConsentReq);
@@ -336,12 +351,8 @@ class CoursebookScraper extends FirefoxScraper {
         // Class attributes may not always be available
         if (AttributesBlock != null) {
             let AttributeElements = await AttributesBlock.findElements(By.css("li"));
-            for (let Element of AttributeElements) {
-                if (!SectionData.attributes)
-                    SectionData.attributes = {RawAttributes: [await Element.getText()]};
-                else
-                    SectionData.attributes["RawAttributes"].push(await Element.getText());
-            };
+            for (let Element of AttributeElements)
+                SectionData.attributes["raw_attributes"].push(await Element.getText());
         };
     }
 
@@ -364,13 +375,15 @@ class CoursebookScraper extends FirefoxScraper {
             lecture_contact_hours: null,
             laboratory_contact_hours: null,
             offering_frequency: null,
-            attributes: null
+            attributes: {}
         }
         CourseData.title = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Course Title:");
         CourseData.description = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Description:");
-        let SplitDescription: string[] = CourseData.description.split(' ');
-        CourseData.subject_prefix = SplitDescription[0];
-        CourseData.course_number = SplitDescription[1];
+        // Split the section's text to obtain the subject_prefix and course_number
+        let SplitSectionText: string[] = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Class Section:").split('.');
+        let TextMatches: RegExpMatchArray = SplitSectionText[0].match(/([A-z]+)([0-9]V?[0-9]+)/);
+        CourseData.subject_prefix = TextMatches[1];
+        CourseData.course_number = TextMatches[2];
         CourseData.school = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "College:");
 
         let Credits: string = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Semester Credit Hours:");
@@ -382,9 +395,8 @@ class CoursebookScraper extends FirefoxScraper {
         CourseData.grading = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Grading:");
         CourseData.internal_course_number = CourseNum.trim();
 
-        // Get the course's requisites
-        await this.ParseCourseRequisites(CourseData, TableData, TableDataStrings);
-
+        // Split the course's description into words
+        let SplitDescription: string[] = CourseData.description.split(' ');
         // Get just the last two elements of SplitDescription for contact hours and frequency
         SplitDescription = SplitDescription.slice(-2);
         // Grab the contact hours via regex match
@@ -439,15 +451,17 @@ class CoursebookScraper extends FirefoxScraper {
             course_reference: null,
             section_corequisites: new schemas.CollectionRequirement(),
             academic_session: null,
-            professors: null,
-            teaching_assistants: null,
+            professors: [],
+            teaching_assistants: [],
             internal_class_number: null,
             instruction_mode: null,
-            meetings: null,
-            core_flags: null,
+            meetings: [],
+            core_flags: [],
             syllabus_uri: null,
-            grade_distribution: null,
-            attributes: null
+            grade_distribution: [],
+            attributes: {
+                raw_attributes: []
+            }
         }
 
         let CourseData: schemas.Course = this.Courses[CourseNum];
@@ -463,8 +477,6 @@ class CoursebookScraper extends FirefoxScraper {
         SectionData.section_number = SplitSectionText[1];
         // Reference the course associated with this section
         SectionData.course_reference = CourseData._id;
-        // Get the sections's requisites
-        await this.ParseSectionRequisites(SectionData, TableData, TableDataStrings);
         // Parse the section's academic session
         let TermText: string = await (await SectionTable.findElement(By.css("p.courseinfo__sectionterm"))).getText();
         SectionData.academic_session = {
@@ -481,15 +493,13 @@ class CoursebookScraper extends FirefoxScraper {
         // Get section's meeting times/dates and location data
         await this.ParseMeetings(SectionData, SectionTable);
         // Parse the section's core flags (may not exist)
-        let FlagMatches: RegExpMatchArray = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Core:")?.match(/[0-9]{3}/);
-        if (FlagMatches) {
-            FlagMatches.splice(0, 1);
-            SectionData.core_flags = FlagMatches;
-        }
+        SectionData.core_flags = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Core:")?.match(/[0-9]{3}/g) ?? [];
         // Get the URI to the section's syllabus
         await this.ParseSyllabus(SectionData, TableData, TableDataStrings);
         // Get the section's attributes
         await this.ParseAttributes(SectionData, TableData, TableDataStrings);
+
+        await this.ParseRequisites(CourseData, SectionData, TableData, TableDataStrings);
 
         // Get the section's textbooks (do this last because switching to the textbook tab makes all previous elements stale)
         //await this.ParseTextbooks(SectionData, Section);
@@ -547,29 +557,29 @@ class CoursebookScraper extends FirefoxScraper {
                 for (let Section of SectionList)
                     await this.ParseSection(Section);
                 // Write section and course data to data output after all sections under the given prefix are parsed
-                writeFileSync("./data/Sections.json", JSON.stringify(this.GetSections(), null, '\t'), { flag: 'a+' });
-                writeFileSync("./data/Courses.json", JSON.stringify(this.GetCourses(), null, '\t'), { flag: 'a+' });
-                // Clear the buffer
-                this.Clear();
+                writeFileSync("./data/Sections.json", JSON.stringify(this.GetSections(), null, '\t'), { flag: 'a' });
+                writeFileSync("./data/Courses.json", JSON.stringify(this.GetCourses(), null, '\t'), { flag: 'a' });
+                writeFileSync("./data/Professors.json", JSON.stringify(this.GetProfs(), null, '\t'), { flag: 'w' });
             };
         };
     };
 
     Clear(): void {
-        this.Courses = {};
-        this.Sections = {};
+        this.Courses.clear();
+        this.Sections.clear();
     }
 
-    GetCourses(): Courses { return this.Courses; };
-    GetSections(): Sections { return this.Sections; };
+    GetCourses(): schemas.Course[] { return Object.values(this.Courses) };
+    GetSections(): schemas.Section[] { return Object.values(this.Sections) };
+    GetProfs(): schemas.Professor[] { return this.ScrapedProfessors };
 };
 
 // Load Selenium config
 
 const options = new firefox.Options();
 const service = new firefox.ServiceBuilder(process.env.SELENIUM_DRIVER);
-let CBScraper = new CoursebookScraper(options, service);
 
+let CBScraper = new CoursebookScraper(options, service);
 CBScraper.Scrape(/2022 Spring/g).then(() => {
     CBScraper.Kill();
 });
