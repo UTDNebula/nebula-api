@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-﻿import 'dotenv/config';
-import { readFileSync, writeFileSync } from 'fs';
-=======
 import 'dotenv/config';
-import 'fs';
-import { writeFileSync } from 'node:fs';
->>>>>>> a55c3a2194e63a880a62acd4f0e685f3407d6978
+import { readFileSync, writeFileSync } from 'fs';
 import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox';
 import schemas from '../api/schemas';
@@ -571,11 +565,11 @@ class CoursebookScraper extends FirefoxScraper {
 };
 
 // Load Selenium config
-/*
-let options = new firefox.Options();
+
+const options = new firefox.Options();
 const service = new firefox.ServiceBuilder(process.env.SELENIUM_DRIVER);
 let CBScraper = new CoursebookScraper(options, service);
 
 CBScraper.Scrape(/2022 Spring/g).then(() => {
     CBScraper.Kill();
-});*/
+});
