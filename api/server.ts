@@ -14,12 +14,10 @@ dotenv.config();
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   const app = express();
-  
-  app.use(express.json());
-
-  app.use(token);
 
   // application middleware
+  app.use(express.json());
+  app.use(token);
   app.use(cors());
 
   // application routes

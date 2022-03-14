@@ -33,7 +33,7 @@ export const CourseSchema = new Schema<Course>({
   corequisites: { type: Object, required: true },
   lecture_contact_hours: { type: String, required: true },
   laboratory_contact_hours: { type: String, required: true },
-  attributes: { type: Object, required: true }
+  attributes: { type: Object, required: true },
 });
 
 const courseDB = connection.useDb('courseDB');
