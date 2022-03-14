@@ -1,27 +1,27 @@
 import { Schema, connection } from 'mongoose';
 
-type AcademicSession = {
+export type AcademicSession = {
   name: string;
   start_date: string;
   end_date: string;
-}
+};
 
-type Assistant = { 
+export type Assistant = {
   first_name: string;
   last_name: string;
   role: string;
   email: string;
-}
+};
 
-type Location = {
+export type Location = {
   building: string;
   room: string;
   map_uri: string;
-}
+};
 
-type ModalityType = "pending" | "traditional" | "hybrid" | "flexible" | "remote" | "online";
+type ModalityType = 'pending' | 'traditional' | 'hybrid' | 'flexible' | 'remote' | 'online';
 
-type Meeting = {
+export type Meeting = {
   start_date: string;
   end_date: string;
   meeting_days: Array<string>;
@@ -29,7 +29,7 @@ type Meeting = {
   end_time: string;
   modality: ModalityType;
   location: Location;
-}
+};
 
 export interface Section {
   section_number: string;
@@ -58,7 +58,7 @@ export const SectionSchema = new Schema<Section>({
   meetings: { type: [Object], required: true },
   syllabus_uri: { type: String, required: true },
   grade_distribution: { type: [Number], required: true },
-  attributes: { type: Object, required: true }
+  attributes: { type: Object, required: true },
 });
 
 const sectionDB = connection.useDb('sectionDB');
