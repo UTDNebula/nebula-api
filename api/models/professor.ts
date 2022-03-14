@@ -24,7 +24,7 @@ export const ProfessorSchema = new Schema<Professor>({
   profile_uri: { type: String, required: true },
   image_uri: { type: String, required: true },
   office_hours: { type: [Object], required: true },
-  sections: { type: [Schema.Types.ObjectId], required: true }
+  sections: { type: [Schema.Types.ObjectId], required: true },
 });
 
 const professorDB = connection.useDb('professorDB');

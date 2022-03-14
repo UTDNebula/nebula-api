@@ -1,6 +1,6 @@
 import { Schema, connection } from 'mongoose';
 
-type ExamType = "AP" | "ALEKS" | "CLEP" | "IB" | "CS placement";
+type ExamType = 'AP' | 'ALEKS' | 'CLEP' | 'IB' | 'CS placement';
 
 export interface Exam {
   type: ExamType;
@@ -9,7 +9,7 @@ export interface Exam {
 
 export const ExamSchema = new Schema<Exam>({
   type: { type: String, required: true },
-  yields: { type: Object, required: true }
+  yields: { type: Object, required: true },
 });
 
 const examDB = connection.useDb('examDB');
