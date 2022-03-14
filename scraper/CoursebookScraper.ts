@@ -154,9 +154,11 @@ class CoursebookScraper extends FirefoxScraper {
         };
         // Get all of the detail box buttons
         let DetailButtons: WebElement[] = await SectionList.findElements(By.css("div[data-action=info]"));
-        // Click every other detail button in rapid succession to bypass ratelimit and expose data
-        for (let i: number = 0; i < DetailButtons.length; i += 2)
+        // Click every other detail button with a 6 second delay to somewhat diminish Cousebook's stupid ratelimits
+        for (let i: number = 0; i < DetailButtons.length; i += 2) {
             await DetailButtons[i].click();
+            await this.Driver.sleep(6000);
+        }
         // Return the individual section elements
         return await SectionList.findElements(By.className("expandedrow"));
     };
@@ -554,8 +556,9 @@ class CoursebookScraper extends FirefoxScraper {
                 await PrefixButton.click();
                 // Search for sections and parse them
                 let SectionList: WebElement[] = await this.FindSections();
-                for (let Section of SectionList)
+                for (let Section of SectionList) {
                     await this.ParseSection(Section);
+                }
                 // Write section and course data to data output after all sections under the given prefix are parsed
                 writeFileSync("./data/Sections.json", JSON.stringify(this.GetSections(), null, '\t'), { flag: 'a' });
                 writeFileSync("./data/Courses.json", JSON.stringify(this.GetCourses(), null, '\t'), { flag: 'a' });
@@ -579,8 +582,8 @@ class CoursebookScraper extends FirefoxScraper {
 
 const options = new firefox.Options();
 const service = new firefox.ServiceBuilder(process.env.SELENIUM_DRIVER);
-
 let CBScraper = new CoursebookScraper(options, service);
+
 CBScraper.Scrape(/2022 Spring/g).then(() => {
     CBScraper.Kill();
 });
