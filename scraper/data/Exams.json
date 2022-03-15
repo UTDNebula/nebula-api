@@ -1,0 +1,2255 @@
+[
+    {
+        "type": "AP",
+        "exams": [
+            {
+                "examType": "AP",
+                "name": "History of Art",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "AHST",
+                            "number": 2331
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "AHST",
+                            "number": 2331
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Studio Art: 2-D Design",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "ARTS",
+                            "number": 2380
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "ARTS",
+                            "number": 2380
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Studio Art: Drawing",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "ARTS",
+                            "number": 1316
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "ARTS",
+                            "number": 1316
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "General Biology",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2281
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "General Chemistry",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "Lab"
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "Labs"
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Chinese Language & Culture",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "CHIN",
+                            "number": 1311
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "CHIN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHIN",
+                            "number": 1312
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "CHIN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHIN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHIN",
+                            "number": 2311
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Computer Science A",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "CS",
+                            "number": 1336
+                        },
+                        {
+                            "prefix": "CS",
+                            "number": 1337
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "CS",
+                            "number": 1336
+                        },
+                        {
+                            "prefix": "CS",
+                            "number": 1337
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Macroeconomics",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Microeconomics",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "ECON",
+                            "number": 2302
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "ECON",
+                            "number": 2302
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "English Language and Composition",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "English Literature and Composition",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "LIT",
+                            "number": 2331
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "LIT",
+                            "number": 2331
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "French Language",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 2311
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Human Geography",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "GEOG",
+                            "number": 2303
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "GEOG",
+                            "number": 2303
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "GEOG",
+                            "number": 2303
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "German Language",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 1312
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 2311
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Comp Government and Politics",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "US Government and Politics",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "GOVT",
+                            "number": 2305
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "GOVT",
+                            "number": 2305
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "GOVT",
+                            "number": 2305
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "United States History",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "HIST",
+                            "number": 1301
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "HIST",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "HIST",
+                            "number": 1302
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "HIST",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "HIST",
+                            "number": 1302
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Japanese Language & Culture",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "JAPN",
+                            "number": 1311
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "JAPN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "JAPN",
+                            "number": 1312
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "JAPN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "JAPN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "JAPN",
+                            "number": 2311
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Calculus AB",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Calculus BC",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1326
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2414
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1326
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2414
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Music Theory",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "MUSI",
+                            "number": 2328
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "MUSI",
+                            "number": 2328
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "MUSI",
+                            "number": 2328
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Physics B (non-calculus)",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Physics 1",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Physics 2",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Physics C: Mechanics",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 2325
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2125
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 2325
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2125
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Physics C: Electrical and Magnetic",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 2326,
+                            "special": "Physics Majors: Credit for 2326 + 2126 is applied only if PHYS 3416 is passed with a grade of C or higher; otherwise you earn 4 SCH of free electives."
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2126
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 2326,
+                            "special": "Physics Majors: Credit for 2326 + 2126 is applied only if PHYS 3416 is passed with a grade of C or higher; otherwise you earn 4 SCH of free electives."
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2126
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "General Psychology",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "PSY",
+                            "number": 2301
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "PSY",
+                            "number": 2301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Spanish Language & Culture",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Spanish Literature & Culture",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "AP",
+                "name": "Statistics",
+                "yields": {
+                    "3": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH free electives"
+                        }
+                    ],
+                    "4": [
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "type": "CLEP",
+        "exams": [
+            {
+                "examType": "CLEP",
+                "name": "College French Level 1 (2 semesters)",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "College Level French Level 2 (4 semesters)",
+                "yields": {
+                    "58": [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 2312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "College German Level 1 (2 semesters)",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 1312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "College Level German Level 2 (4 semesters)",
+                "yields": {
+                    "58": [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 2312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "College Spanish Level 1 (2 semesters)*",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "College Spanish Level 2 (3 semesters)",
+                "yields": {
+                    "60": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "College Spanish with Writing (4 semesters)",
+                "yields": {
+                    "65": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "American Government",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": "GOVT",
+                            "number": 2305
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "American History I: Early Colonization to 1877",
+                "yields": {
+                    "60": [
+                        {
+                            "prefix": "HIST",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "American History II: 1865 to Present",
+                "yields": {
+                    "60": [
+                        {
+                            "prefix": "HIST",
+                            "number": 1302
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Human Growth and Development",
+                "yields": {
+                    "57": [
+                        {
+                            "prefix": "PSY",
+                            "number": 2314
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Introduction to Educational Psychology",
+                "yields": {
+                    "57": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH Psychology elective credit"
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Introductory Macroeconomics",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Introductory Microeconomics",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": "ECON",
+                            "number": 2302
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Introductory Psychology",
+                "yields": {
+                    "57": [
+                        {
+                            "prefix": "PSY",
+                            "number": 2301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Western Civilization I: Ancient Near East to 1648",
+                "yields": {
+                    "60": [
+                        {
+                            "prefix": "HUMA",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Western Civilization II: 1648 to Present",
+                "yields": {
+                    "60": [
+                        {
+                            "prefix": "HUMA",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Calculus with Elementary Functions",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ],
+                    "61": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "College Algebra",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "General Biology",
+                "yields": {
+                    "56": [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "General Chemistry",
+                "yields": {
+                    "60": [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        }
+                    ],
+                    "70": [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1112
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Pre-calculus",
+                "yields": {
+                    "58": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "CLEP",
+                "name": "Information Systems and Computer Applications",
+                "yields": {
+                    "50": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH Business Computer Information Systems elective credit"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "type": "IB",
+        "exams": [
+            {
+                "examType": "IB",
+                "name": "Biology",
+                "level": "Standard",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "BIOL",
+                            "number": 1300
+                        }
+                    ],
+                    "7": [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Biology",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "BIOL",
+                            "number": 1300
+                        }
+                    ],
+                    "6": [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Chemistry",
+                "level": "Standard",
+                "yields": {
+                    "7": [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1112
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Chemistry",
+                "level": "Higher",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1112
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Computer Science",
+                "level": "Higher",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": "CS",
+                            "number": 1336
+                        },
+                        {
+                            "prefix": "CS",
+                            "number": 1136
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Computer Science",
+                "level": "Standard",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": "CS",
+                            "number": 1334
+                        },
+                        {
+                            "prefix": "CS",
+                            "number": 1134
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Economics",
+                "level": "Standard",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Economics",
+                "level": "Higher",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        },
+                        {
+                            "prefix": "ECON",
+                            "number": 2302
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Language A: Literature",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "LIT",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Language A: Literature",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "LIT",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Language A: Language and Literature",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "LIT",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Language A: Language and Literature",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "LIT",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Environmental Systems and Societies",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH Geoscience elective credit"
+                        }
+                    ],
+                    "6": [
+                        {
+                            "prefix": "GEOS",
+                            "number": 2302
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Geography",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH Geography elective credit"
+                        }
+                    ],
+                    "5": [
+                        {
+                            "prefix": "GEOG",
+                            "number": 2303
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "History (Any Regional Area)",
+                "level": "Higher",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "6 SCH History elective Credit"
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Any B languange offered by UTD",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": null,
+                            "number": null,
+                            "special": "3 SCH Language elective Credit"
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Arabic B",
+                "level": "Higher",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "ARAB",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "ARAB",
+                            "number": 1312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Chinese B",
+                "level": "Higher",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "CHIN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHIN",
+                            "number": 1312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Frence B",
+                "level": "Higher",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Spanish (A or B)",
+                "level": "Standard",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Spanish (A or B)",
+                "level": "Higher",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Mathematics",
+                "level": "Standard",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        }
+                    ],
+                    "7": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Mathematics",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ],
+                    "6": [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1326
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Mathematics Analysis and Approaches",
+                "level": "Higher",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1326
+                        }
+                    ],
+                    "6": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ],
+                    "7": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Mathematics Analysis and Approaches",
+                "level": "Standard",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ],
+                    "6": [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Mathematics Applications and Interpretations",
+                "level": "Higher",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1316
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Mathematics Applications and Interpretations",
+                "level": "Standard",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Further Mathematics",
+                "level": "Higher",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2333
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ],
+                    "7": [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2333
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 2332
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Music",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "MUSI",
+                            "number": 1306
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Music",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "MUSI",
+                            "number": 1306
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Philosophy",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "PHIL",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Philosophy",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "PHIL",
+                            "number": 1301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Physics",
+                "level": "Standard",
+                "yields": {
+                    "7": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2125
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2126
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Physics",
+                "level": "Higher",
+                "yields": {
+                    "6": [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2125
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2126
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Psychology",
+                "level": "Higher",
+                "yields": {
+                    "5": [
+                        {
+                            "prefix": "PSY",
+                            "number": 2301
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Theatre",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "THEA",
+                            "number": 1310
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Theatre",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "THEA",
+                            "number": 1310
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Visual Arts",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "AHST",
+                            "number": 2331
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Visual Arts",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "AHST",
+                            "number": 2331
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Film",
+                "level": "Standard",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "FILM",
+                            "number": 2332
+                        }
+                    ]
+                }
+            },
+            {
+                "examType": "IB",
+                "name": "Film",
+                "level": "Higher",
+                "yields": {
+                    "4": [
+                        {
+                            "prefix": "FILM",
+                            "number": 2332
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "examType": "ALEKS",
+        "placement": {
+            "35": [
+                {
+                    "prefix": "MATH",
+                    "number": 1306
+                }
+            ],
+            "50": [
+                {
+                    "prefix": "MATH",
+                    "number": 1314
+                },
+                {
+                    "prefix": "MATH",
+                    "number": 1316
+                }
+            ],
+            "70": [
+                {
+                    "prefix": "MATH",
+                    "number": 1325
+                },
+                {
+                    "prefix": "MATH",
+                    "number": 2306
+                },
+                {
+                    "prefix": "MATH",
+                    "number": 2312
+                }
+            ],
+            "80": [
+                {
+                    "prefix": "MATH",
+                    "number": 2370
+                },
+                {
+                    "prefix": "MATH",
+                    "number": 2423
+                }
+            ],
+            "85": [
+                {
+                    "prefix": "MATH",
+                    "number": 2417
+                }
+            ]
+        }
+    }
+]
