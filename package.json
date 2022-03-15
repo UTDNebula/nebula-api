@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm run build && node ./build/server.js",
+    "start": "node ./build/server.js",
     "dev": "nodemon ./api/server.ts",
     "build": "tsc",
     "lint": "eslint --fix --ext .ts .",
