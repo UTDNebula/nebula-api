@@ -5,7 +5,7 @@ A `Degree` represents either a major, minor, or concentration received from The 
 
 ## Object Representation
 ```ts
-DegreeSubtype = "major" | "minor" | "concentration" | "prescribed double major"
+DegreeSubtype = "major" | "minor" | "concentration" | "prescribed double major" | "certificate" | "track"
 
 Degree = {
     "_id": ObjectId,
