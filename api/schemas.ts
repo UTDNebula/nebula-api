@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 module schemas {
 
-    export type RequirementType = "course" | "section" | "exam" | "major" | "minor" | "gpa" | "consent" | "collection" | "hours" | "other"
+    export type RequirementType = "course" | "section" | "exam" | "major" | "minor" | "gpa" | "consent" | "collection" | "hours" | "choice" | "limit" | "core" | "other"
 
     export abstract class Requirement {
         readonly "type": RequirementType;
@@ -53,6 +53,22 @@ module schemas {
         constructor() { super("hours") }
     }
 
+    export class ChoiceRequirement extends Requirement {
+        "choices": CollectionRequirement;
+        constructor() { super("choice") }
+    }
+
+    export class LimitRequirement extends Requirement {
+        "max_hours": number;
+        constructor() { super("limit") }
+    }
+
+    export class CoreRequirement extends Requirement {
+        "core_flag": string;
+        "hours": number;
+        constructor() { super("core") }
+    }
+
     export class OtherRequirement extends Requirement {
         "description": string;
         "condition": string;
@@ -89,6 +105,28 @@ module schemas {
         internal_course_number: string,
         prerequisites: CollectionRequirement,
         corequisites: CollectionRequirement,
+        co_or_pre_requisites: CollectionRequirement,
+        sections: Array<mongoose.Types.ObjectId>,
+        lecture_contact_hours: string,
+        laboratory_contact_hours: string,
+        offering_frequency: string,
+        attributes: Object
+    }
+
+    export interface PsuedoCourse extends MongoStored {
+        course_number: string,
+        subject_prefix: string,
+        title: string,
+        description: string,
+        school: string,
+        credit_hours: string,
+        class_level: string,
+        activity_type: string,
+        grading: string,
+        internal_course_number: string,
+        prerequisites: Array<string>,
+        corequisites: Array<string>,
+        co_or_pre_requisites: Array<string>,
         sections: Array<mongoose.Types.ObjectId>,
         lecture_contact_hours: string,
         laboratory_contact_hours: string,

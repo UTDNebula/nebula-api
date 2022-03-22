@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
-import firefox from 'selenium-webdriver/firefox';
+import { FirefoxScraper, ParsingUtils } from './Utils';
 import schemas from '../api/schemas';
 import mongoose from 'mongoose';
 
@@ -10,60 +10,7 @@ type Credentials = {
     Password: string
 }
 
-export abstract class ParsingUtils {
-
-    // Convert a list of elements to their string representations
-    static async GetElementStrings(Elements: WebElement[]): Promise<string[]> {
-        let ConversionPromises: Promise<string>[] = Elements.map(async (Element: WebElement) => { return await Element.getText() });
-        return await Promise.all(ConversionPromises);
-    }
-
-    // Find an element out of a list of elements by matching a preceding element's text
-    static FindLabeledElement(ToSearch: WebElement[], ToSearchStrings: string[], Label: string): WebElement | null {
-        let LabelIndex = ToSearchStrings.findIndex((value: string) => { return value == Label });
-        if (LabelIndex >= 0)
-            return ToSearch[LabelIndex + 1];
-        else
-            return null;
-    };
-
-    // Implementation of FindLabeledElement for string data
-    static FindLabeledText(ToSearch: WebElement[], ToSearchStrings: string[], Label: string): string | null {
-        let LabelIndex = ToSearchStrings.findIndex((value: string) => { return value == Label });
-        if (LabelIndex >= 0)
-            return ToSearchStrings[LabelIndex + 1];
-        else
-            return null;
-    }
-
-    // Hacky solution for getting inconsistently formatted text between other text, trims surrounding whitespace by default
-    static GetTextBetween(Text: string, Back: string, Front: string, TrimWhitespace: Boolean = true): string {
-        return TrimWhitespace ? Text.split(Back, 2)[1].split(Front, 2)[0].trim() : Text.split(Back, 2)[1].split(Front, 2)[0];
-    }
-}
-
-export abstract class FirefoxScraper {
-
-    protected Driver;
-
-    constructor(options, service) {
-      this.Driver = new Builder()
-          .forBrowser('firefox')
-          .setFirefoxService(service)
-          .setFirefoxOptions(options)
-          .build();
-    };
-
-    // End scraper process
-    async Kill() {
-        await this.Driver.quit();
-    };
-
-    abstract Scrape(): Promise<void>;
-    abstract Clear(): void;
-};
-
-class CoursebookScraper extends FirefoxScraper {
+export class CoursebookScraper extends FirefoxScraper {
 
     // Enum of IDs for the combo boxes
     static DropdownIDs = {
@@ -72,14 +19,24 @@ class CoursebookScraper extends FirefoxScraper {
     };
 
     // Grab professor data obtained from profile scraper
-    private ScrapedProfessors: schemas.Professor[] = JSON.parse(readFileSync("./data/Professors.json", { encoding: "utf-8" }));
+    private ScrapedProfessors: schemas.Professor[] = [];
 
     // Caches for the scraped course/section data
-    private Courses: Map<string, schemas.Course> = new Map<string, schemas.Course>();
-    private Sections: Map<string, schemas.Section> = new Map<string, schemas.Section>();
+    private Courses: Map<string, schemas.PsuedoCourse> = new Map<string, schemas.PsuedoCourse>();
+    private CourseReqs: Map<string, string[]> = new Map<string, string[]>();
+    private Sections: schemas.Section[] = [];
+
+    constructor(options, service) {
+        super(options, service);
+        // Load existing professors and courses if they exist
+        if (existsSync("./data/Professors.json"))
+            this.ScrapedProfessors = JSON.parse(readFileSync("./data/Professors.json", { encoding: "utf-8" }));
+        if (existsSync("./data/Courses.json"))
+            this.Courses = JSON.parse(readFileSync("./data/Courses.json", { encoding: "utf-8" }));
+    }
 
     // Find the buttons corresponding to a dropdown element
-    private async FindDropdownButtons(DropdownID: string, StartIndex: number | RegExp = 0, Filter: RegExp = null): Promise<WebElement[]> {
+    private async FindDropdownButtons(DropdownID: string, StartIndex: number | RegExp = 0, EndIndex: number | RegExp = null): Promise<WebElement[]> {
         // Find the correct dropdown box
         await this.Driver.wait(until.elementLocated(By.id(DropdownID)));
         let Dropdown: WebElement = await this.Driver.findElement(By.id(DropdownID));
@@ -92,19 +49,21 @@ class CoursebookScraper extends FirefoxScraper {
             // Ignore dropdown button if it's blank or empty
             if (ButtonsText[i] == "" || ButtonsText[i].match(/---+/g))
                 Buttons.splice(i, 1);
-            // Ignore dropdown button if it doesn't match a provided filter
-            if (Filter && !ButtonsText[i].match(Filter))
-                Buttons.splice(i, 1);
         };
         // Refresh ButtonsText
         ButtonsText = await ParsingUtils.GetElementStrings(Buttons);
-        // If StartIndex is a RegExp object, convert it to an integer index by finding the first button matching the pattern
+        // If the start/end indexes are RegExp objects, convert them to integer indices by finding the first button matching the pattern
         if (StartIndex instanceof RegExp) {
-            let Pattern: RegExp = StartIndex;
-            StartIndex = ButtonsText.findIndex((ButtonText: string) => { return ButtonText.match(Pattern) })
+            StartIndex = ButtonsText.findIndex((ButtonText: string) => { return ButtonText.match(StartIndex as RegExp) })
         }
-        // Splice out the skipped indexes
+        if (EndIndex instanceof RegExp) {
+            EndIndex = ButtonsText.findIndex((ButtonText: string) => { return ButtonText.match(EndIndex as RegExp) })
+        }
+        // Splice out the skipped indices
         Buttons.splice(0, StartIndex);
+        // Splice out indices past EndIndex, if one is provided
+        if (EndIndex)
+            Buttons.splice(EndIndex + 1)
         return Buttons;
     };
 
@@ -154,62 +113,14 @@ class CoursebookScraper extends FirefoxScraper {
         };
         // Get all of the detail box buttons
         let DetailButtons: WebElement[] = await SectionList.findElements(By.css("div[data-action=info]"));
-        // Click every other detail button with a 6 second delay to somewhat diminish Cousebook's stupid ratelimits
+        // Click every other detail button
         for (let i: number = 0; i < DetailButtons.length; i += 2) {
             await DetailButtons[i].click();
-            await this.Driver.sleep(6000);
+            //await this.Driver.sleep(6000);
         }
         // Return the individual section elements
         return await SectionList.findElements(By.className("expandedrow"));
     };
-
-    // NOTE: Removed indefinitely
-    //async ParseTextbooks(SectionData: schemas.Section, Section: WebElement) {
-    //    // Grab the textbooks tab
-    //    let TextbooksTab: WebElement = await Section.findElement(By.css("#tab-textbooks"));
-    //    // Click on textbooks tab
-    //    await TextbooksTab.click();
-    //    // Find the textbook info area, wait for page to load more if we can't find it yet
-    //    let TextbookNote: WebElement = null;
-    //    while (!TextbookNote) {
-    //        try {
-    //            TextbookNote = await Section.findElement(By.css("div.textbook-note"));
-    //        }
-    //        catch (error: NoSuchElementError) {
-    //            await this.Driver.sleep(500);
-    //        }
-    //    }
-    //    // Grab the textbook table, may not exist
-    //    try {
-    //        let TextbookTable: WebElement = await Section.findElement(By.css("div.textbook-table"));
-    //        // Get the individual textbook data blocks
-    //        let TextbookBlocks: WebElement[] = await TextbookTable.findElements(By.css("td.textbook"));
-    //        // Iterate through the textbook blocks
-    //        for (let BookBlock of TextbookBlocks) {
-    //            let Title: string = await(await BookBlock.findElement(By.css("div.booktitle"))).getText();
-    //            let ImageURI: string = await(await BookBlock.findElement(By.css("img"))).getAttribute("src");
-    //            // Author is used for more than just the author of the book, so we'll get a list
-    //            let AuthorElements: WebElement[] = await BookBlock.findElements(By.css("div.author"));
-    //            // The actual author info will be in the first author element
-    //            let Author: string = await(await AuthorElements[0].findElement(By.css("a"))).getText();
-    //            // Price data is stored in the third author element
-    //            let Price: string = await(await AuthorElements[2].findElement(By.css("b"))).getText();
-    //            // The version of the book is stored in the 4th author element
-    //            let Version: string = await AuthorElements[3].getText();
-    //            let ISBNElement: WebElement = await BookBlock.findElement(By.css("div.isbn"));
-    //            let ISBN: string = await(await ISBNElement.findElement(By.css("a"))).getText();
-
-    //            SectionData.TextBooks.push({
-    //                Title: Title,
-    //                Author: Author,
-    //                ImageURI: ImageURI,
-    //                Price: Price,
-    //                Version: Version,
-    //                ISBN: ISBN
-    //            });
-    //        }
-    //    } catch (error: NoSuchElementError) { };
-    //}
 
     async ParseSyllabus(SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
         let SyllabusBlock = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Syllabus:");
@@ -296,6 +207,25 @@ class CoursebookScraper extends FirefoxScraper {
                     // Add a reference to this section
                     Professor.sections.push(SectionData._id);
                     SectionData.professors.push(Professor._id);
+                } else { // If no matching professor found, create a new professor object with the data we could find
+                    let NewProf: schemas.Professor = {
+                        _id: new mongoose.Types.ObjectId(),
+                        first_name: Names[0],
+                        last_name: Names[1],
+                        titles: [],
+                        email: Email,
+                        phone_number: null,
+                        office: null,
+                        profile_uri: null,
+                        image_uri: null,
+                        office_hours: [],
+                        sections: [SectionData._id]
+                    }
+                    // Update professors.json with new professor
+                    writeFileSync('./data/Professors.json', JSON.stringify(this.ScrapedProfessors, null, '\t'), { flag: 'w' });
+                    // Add references to new professor
+                    this.ScrapedProfessors.push(NewProf);
+                    SectionData.professors.push(NewProf._id);
                 }
                 InstructorInstance = NestedDivs[1];
             } catch { break }
@@ -327,25 +257,27 @@ class CoursebookScraper extends FirefoxScraper {
         }
     }
 
-    //ParseRequisiteString(ReqString: string, CourseData: schemas.Course, SectionData: schemas.Section): void {
-    //    let ChunkedString: string[] = ReqString.split('.');
-    //}
-
-    async ParseRequisites(CourseData: schemas.Course, SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
-        //let RequisitesBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Enrollment Reqs:");
-        //// Class requisites may not always be available (or not in the requisites block)
-        //if (RequisitesBlock != null) {
-        //    let RequisiteElements = await RequisitesBlock.findElements(By.css("li"));
-        //    for (let Element of RequisiteElements) {
-        //        //SectionData.Requisites.push(await Element.getText());
-        //        let ReqString: string = await Element.getText();
-        //        this.ParseRequisiteString(ReqString, CourseData, SectionData);
-        //    };
-        //};
-        // Add the section's consent requirement
-        let ConsentReq: schemas.ConsentRequirement = new schemas.ConsentRequirement();
-        ConsentReq.granter = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Add Consent:");
-        SectionData.section_corequisites.options.push(ConsentReq);
+    async ParseRequisites(CourseData: schemas.PsuedoCourse, SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
+        let RequisitesBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Enrollment Reqs:");
+        // Course requisites may not always be available (or not in the requisites block)
+        if (RequisitesBlock != null) {
+            // Push raw requisite strings to psuedo-course for later processing by the requisite parser into true courses
+            let RequisiteElements: WebElement[] = await RequisitesBlock.findElements(By.css("li"));
+            // Split requisite string into chunks, then filter into prerequisite or corequisite grouping
+            let RequisiteText: string = await RequisiteElements[0].getText();
+            let RequisiteChunks: string[] = RequisiteText.split(/\.\D/);
+            for (let Chunk of RequisiteChunks) {
+                let ParseableChunk = Chunk.replace(/.+:/, "");
+                if (Chunk.match(/Corequisites? or Prerequisites?|Prerequisites? or Corequisites?/i)) {
+                    CourseData.co_or_pre_requisites.push(ParseableChunk);
+                }
+                else if (Chunk.match(/Prerequisites?/i)) {
+                    CourseData.prerequisites.push(ParseableChunk);
+                } else {
+                    CourseData.corequisites.push(ParseableChunk);
+                }
+            }
+        };
     }
 
     async ParseAttributes(SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
@@ -358,9 +290,9 @@ class CoursebookScraper extends FirefoxScraper {
         };
     }
 
-    async ParseCourse(CourseNum: string, TableData: WebElement[], TableDataStrings: string[]): Promise<schemas.Course> {
-        let CourseData: schemas.Course = {
-            _id: new mongoose.Types.ObjectId(parseInt(CourseNum)),
+    async ParseCourse(CourseNum: string, TableData: WebElement[], TableDataStrings: string[]): Promise<schemas.PsuedoCourse> {
+        let CourseData: schemas.PsuedoCourse = {
+            _id: new mongoose.Types.ObjectId(),
             course_number: null,
             subject_prefix: null,
             title: null,
@@ -371,8 +303,9 @@ class CoursebookScraper extends FirefoxScraper {
             activity_type: null,
             grading: null,
             internal_course_number: null,
-            prerequisites: new schemas.CollectionRequirement(),
-            corequisites: new schemas.CollectionRequirement(),
+            prerequisites: [],
+            corequisites: [],
+            co_or_pre_requisites: [],
             sections: [],
             lecture_contact_hours: null,
             laboratory_contact_hours: null,
@@ -413,7 +346,7 @@ class CoursebookScraper extends FirefoxScraper {
             CourseData.laboratory_contact_hours = ContactHours[2];
         };
         // Store course data in the buffer
-        this.Courses[CourseNum] = CourseData;
+        this.Courses.set(CourseNum, CourseData);
         // Return the collected course data
         return CourseData;
     }
@@ -442,13 +375,13 @@ class CoursebookScraper extends FirefoxScraper {
 
         // Find, split, and parse the class/course numbers
         let Nums: string = ParsingUtils.FindLabeledText(TableData, TableDataStrings, "Class/Course Number:");
-        let SplitNums: string[] = Nums.split('/');
+        let SplitNums: string[] = Nums.split(' / ');
         let ClassNum: string = SplitNums[0];
         let CourseNum: string = SplitNums[1];
 
         // Init the section data objects
         let SectionData: schemas.Section = {
-            _id: new mongoose.Types.ObjectId(parseInt(ClassNum)),
+            _id: new mongoose.Types.ObjectId(),
             section_number: null,
             course_reference: null,
             section_corequisites: new schemas.CollectionRequirement(),
@@ -466,7 +399,8 @@ class CoursebookScraper extends FirefoxScraper {
             }
         }
 
-        let CourseData: schemas.Course = this.Courses[CourseNum];
+        console.log(CourseNum);
+        let CourseData: schemas.PsuedoCourse = this.Courses.get(CourseNum);
 
         // Find and set course data, if not already found
         if (!CourseData)
@@ -507,10 +441,10 @@ class CoursebookScraper extends FirefoxScraper {
         //await this.ParseTextbooks(SectionData, Section);
 
         // Add collected section data to section data cache
-        this.Sections[ClassNum] = SectionData;
+        this.Sections.push(SectionData);
 
         // Add this section's ID to the course's sections list
-        this.Courses[CourseNum].sections.push(SectionData._id);
+        this.Courses.get(CourseNum).sections.push(SectionData._id);
 
         // Print the collected course data
         console.log(JSON.stringify(CourseData, null, '\t'));
@@ -536,16 +470,16 @@ class CoursebookScraper extends FirefoxScraper {
     }
 
     // Scrape everything
-    async Scrape(TermIndex: number | RegExp = 0, TermFilter: RegExp = null, PrefixIndex: number | RegExp = 0, PrefixFilter: RegExp = null): Promise<void> {
+    async Scrape(TermIndexStart: number | RegExp = 0, TermIndexEnd: number | RegExp = null, PrefixIndexStart: number | RegExp = 0, PrefixIndexEnd: number | RegExp = null): Promise<void> {
         // Log in with COURSEBOOK_AUTH credentials
         await this.Login({
             NetID: process.env.NETID,
             Password: process.env.Password
         });
         // Find the term buttons
-        let TermButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.TERM, TermIndex, TermFilter);
+        let TermButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.TERM, TermIndexStart, TermIndexEnd);
         // Find the prefix buttons
-        let PrefixButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.PREFIX, PrefixIndex, PrefixFilter);
+        let PrefixButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.PREFIX, PrefixIndexStart, PrefixIndexEnd);
         // Iterate over sections from every desired class prefix for every desired term
         for (let TermButton of TermButtons) {
             // Click the desired term dropdown button
@@ -561,7 +495,7 @@ class CoursebookScraper extends FirefoxScraper {
                 }
                 // Write section and course data to data output after all sections under the given prefix are parsed
                 writeFileSync("./data/Sections.json", JSON.stringify(this.GetSections(), null, '\t'), { flag: 'a' });
-                writeFileSync("./data/Courses.json", JSON.stringify(this.GetCourses(), null, '\t'), { flag: 'a' });
+                writeFileSync("./data/Courses.json", JSON.stringify(this.GetCourses(), null, '\t'), { flag: 'w' });
                 writeFileSync("./data/Professors.json", JSON.stringify(this.GetProfs(), null, '\t'), { flag: 'w' });
                 this.Clear();
             };
@@ -569,21 +503,10 @@ class CoursebookScraper extends FirefoxScraper {
     };
 
     Clear(): void {
-        this.Courses.clear();
-        this.Sections.clear();
+        this.Sections = [];
     }
 
-    GetCourses(): schemas.Course[] { return Object.values(this.Courses) };
-    GetSections(): schemas.Section[] { return Object.values(this.Sections) };
+    GetCourses(): schemas.PsuedoCourse[] { return Array.from(this.Courses.values()) };
+    GetSections(): schemas.Section[] { return this.Sections };
     GetProfs(): schemas.Professor[] { return this.ScrapedProfessors };
 };
-
-// Load Selenium config
-
-const options = new firefox.Options();
-const service = new firefox.ServiceBuilder(process.env.SELENIUM_DRIVER);
-let CBScraper = new CoursebookScraper(options, service);
-
-CBScraper.Scrape(/2022 Spring/g).then(() => {
-    CBScraper.Kill();
-});

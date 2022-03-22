@@ -1,11 +1,10 @@
-import { FirefoxScraper } from './CoursebookScraper';
-import { By, WebElement, NoSuchElementError } from 'selenium-webdriver';
-import firefox from 'selenium-webdriver/firefox';
 import { writeFileSync } from 'fs';
+import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
+import { FirefoxScraper, ParsingUtils } from './Utils';
 import schemas from '../api/schemas';
 import mongoose from 'mongoose';
 
-class ProfilesScraper extends FirefoxScraper {
+export class ProfilesScraper extends FirefoxScraper {
     private BASE_URL = 'https://profiles.utdallas.edu/browse?page=';
 
     // Cache for the scraped professor data
@@ -172,12 +171,3 @@ class ProfilesScraper extends FirefoxScraper {
         return this.professors;
     }
 }
-
-// Load Selenium config
-const options = new firefox.Options();
-const service = new firefox.ServiceBuilder(process.env.SELENIUM_DRIVER);
-const profiles_scraper = new ProfilesScraper(options, service);
-
-profiles_scraper.Scrape().then(() => {
-    profiles_scraper.Kill();
-});
