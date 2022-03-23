@@ -9,7 +9,9 @@ Section = {
     "_id": ObjectId,
     "section_number": string,
     "course_reference": ObjectId,
-    "section_corequisites": CollectionRequirement,
+    "prerequisites": CollectionRequirement,
+    "corequisites": CollectionRequirement,
+    "co_or_pre_requisites": CollectionRequirement,
     "academic_session": AcademicSession,
     "professors": Array<ObjectId>,
     "teaching_assistants": Array<Assistant>,
@@ -48,11 +50,23 @@ Section = {
 > 
 > **Example**:
 
-> `.section_corequisites`
+> `.prerequisites`
+>
+> **Type**: CollectionRequirement
+>
+> A collection of requirements that must be met before a student may enroll in this section.
+
+> `.corequisites`
+>
+> **Type**: CollectionRequirement
+>
+> A collection of requirements that must be met while a student enrolls in this section.
+
+> `.co_or_pre_requisites`
 > 
 > **Type**: CollectionRequirement
 > 
-> A collection of all sections that must be taken alongside this section such as specific labs and exam sections.
+> A collection of requirements that must be met either before or while a student enrolls in this section.
 
 > `.academic_session`
 > 
