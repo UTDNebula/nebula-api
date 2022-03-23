@@ -15,6 +15,7 @@ Degree = {
     "year": string,
     "abbreviation": string,
     "minimum_credit_hours": number,
+    "catalog_uri": string,
     "requirements": CollectionRequirement,
 }
 ```
@@ -75,6 +76,14 @@ Degree = {
 > The minimum credit hours required for the degree, which can be found on the UTD catalog.
 >
 > **Example**: 124
+
+> `.catalog_uri`
+>
+> **Type**: string
+>
+> A link to the listing of the degree and its requirements in the UTD catalog.
+>
+> **Example**: https://catalog.utdallas.edu/2021/undergraduate/programs/ah/philosophy
 
 > `.requirements`
 >
