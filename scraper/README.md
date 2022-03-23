@@ -10,4 +10,4 @@ To use the CourseBook Scraper:
 - Set your NetID password in .env as `PASSWORD=`
 
 ## Usage
-Run CoursebookScraper.ts
+Run Run.ts with your typescript transpiler of choice.

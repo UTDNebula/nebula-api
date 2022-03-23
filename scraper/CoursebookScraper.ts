@@ -32,7 +32,9 @@ export class CoursebookScraper extends FirefoxScraper {
         if (existsSync("./data/Professors.json"))
             this.ScrapedProfessors = JSON.parse(readFileSync("./data/Professors.json", { encoding: "utf-8" }));
         if (existsSync("./data/Courses.json"))
-            this.Courses = JSON.parse(readFileSync("./data/Courses.json", { encoding: "utf-8" }));
+            JSON.parse(readFileSync("./data/Courses.json", { encoding: "utf-8" })).forEach((CourseObj: schemas.PsuedoCourse) => {
+                this.Courses.set(CourseObj.course_number, CourseObj);
+            });
     }
 
     // Find the buttons corresponding to a dropdown element
@@ -257,7 +259,7 @@ export class CoursebookScraper extends FirefoxScraper {
         }
     }
 
-    async ParseRequisites(CourseData: schemas.PsuedoCourse, SectionData: schemas.Section, TableData: WebElement[], TableDataStrings: string[]) {
+    async ParseRequisites(CourseData: schemas.PsuedoCourse, TableData: WebElement[], TableDataStrings: string[]) {
         let RequisitesBlock: WebElement = ParsingUtils.FindLabeledElement(TableData, TableDataStrings, "Enrollment Reqs:");
         // Course requisites may not always be available (or not in the requisites block)
         if (RequisitesBlock != null) {
@@ -345,6 +347,9 @@ export class CoursebookScraper extends FirefoxScraper {
             CourseData.lecture_contact_hours = ContactHours[1];
             CourseData.laboratory_contact_hours = ContactHours[2];
         };
+
+        // Parse this course's requisites
+        await this.ParseRequisites(CourseData, TableData, TableDataStrings);
         // Store course data in the buffer
         this.Courses.set(CourseNum, CourseData);
         // Return the collected course data
@@ -434,8 +439,6 @@ export class CoursebookScraper extends FirefoxScraper {
         await this.ParseSyllabus(SectionData, TableData, TableDataStrings);
         // Get the section's attributes
         await this.ParseAttributes(SectionData, TableData, TableDataStrings);
-
-        await this.ParseRequisites(CourseData, SectionData, TableData, TableDataStrings);
 
         // Get the section's textbooks (do this last because switching to the textbook tab makes all previous elements stale)
         //await this.ParseTextbooks(SectionData, Section);
