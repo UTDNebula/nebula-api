@@ -43,6 +43,18 @@ As a more real example, consider the prerequisites for the course CS 3305. It re
 
 An `HoursRequirement` represents the need to have taken some number of credit hours from a list of `CourseRequirement`s to satisfy the requirement.
 
+### Choice Requirement
+
+A `ChoiceRequirement` represents the need to choose to receive credit from a specific number of courses out of a list of possible courses. This is represented by a `CollectionRequirement` of `CourseRequirement`s, of which you may choose to receive credit from only `CollectionRequirement.required` of the listed courses.
+
+### Limit Requirement
+
+A `LimitRequirement` represents a limit on the number of credit hours that a course may be repeated for.
+
+### Core Requirement
+
+A `CoreRequirement` represents the need to have taken a course fulfilling a specific core code, and potentially also for a minimum number of credit hours.
+
 ### Other Requirement
 
 An `OtherRequirement` represents some miscellaneous need to satisfy the requirement.
@@ -110,6 +122,22 @@ HoursRequirement extends Requirement = {
     "type": "hours",
     "required": number,
     "options": Array<CourseRequirement>,
+}
+
+ChoiceRequirement extends Requirement {
+    "type": "choice",
+    "choices": CollectionRequirement
+}
+
+LimitRequirement extends Requirement {
+    "type": "limit",
+    "max_hours": number
+}
+
+CoreRequirement extends Requirement {
+    "type": "core",
+    "core_flag": string,
+    "hours": number
 }
 ```
 
@@ -219,3 +247,33 @@ HoursRequirement extends Requirement = {
 > A list of all the options that can contribute to satisfying the requirement.
 >
 > **Example**: [CourseRequirement1, CourseRequirement2, CourseRequirement3, CourseRequirement4, CollectionRequirement1]
+
+> `.choices`
+>
+> **Type**: CollectionRequirement
+>
+> A `CollectionRequirement` of `CourseRequirement`s, from which only `CollectionRequirement.required` courses can be chosen for credit.
+
+> `.max_hours`
+>
+> **Type**: number
+>
+> The maximum number of credit hours that a course may be repeated for.
+>
+> **Example**: 3
+
+> `.core_flag`
+>
+> **Type**: string
+>
+> The core flag that a course meeting this requirement must fulfill.
+>
+> **Example**: "060"
+
+> `.hours`
+>
+> **Type**: number
+>
+> The minimum number of credit hours that a course meeting this requirement must fulfill. 
+>
+> **Example**: 3
