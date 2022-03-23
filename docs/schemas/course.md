@@ -17,8 +17,6 @@ Course = {
     "activity_type": string,
     "grading": string,
     "internal_course_number": string,
-    "prerequisites": CollectionRequirement,
-    "corequisites": CollectionRequirement,
     "lecture_contact_hours": string,
     "laboratory_contact_hours": string,
     "offering_frequency": string,
@@ -114,18 +112,6 @@ Course = {
 > The internal (university) number used to reference this course.
 >
 > **Example**: 008613
-
-> `.prerequisites`
->
-> **Type**: CollectionRequirement
->
-> A collection of prerequisites that must be met before a student may enroll in a section of this course.
-
-> `.corequisites`
->
-> **Type**: CollectionRequirement
->
-> A collection of all course requirements that must be met either before or while a student enrolls in a section of this course.
 
 > `.lecture_contact_hours`
 >
