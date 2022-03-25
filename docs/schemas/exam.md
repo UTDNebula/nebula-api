@@ -11,7 +11,7 @@ ExamType = "AP" | "ALEKS" | "CLEP" | "IB" | "CS placement"
 
 type Outcome = {
   requirement: Requirement,
-  outcome: Array<Array<ObjectId>>
+  outcome: Array<Array<ObjectId | Credit>>
 }
 
 abstract Exam = {
@@ -117,9 +117,9 @@ CSPlacementExam extends Exam = {
 
 > `.outcome`
 >
-> **Type**: Array<Array<ObjectId>>
+> **Type**: Array<Array<ObjectId | Credit>>
 >
-> The set of sets of `Course`s and/or `Credit`s which can result (awarded/placed into) should the requirement be met.
+> The set of sets of `Course`s and `Credit`s which can result (awarded/placed into) should the requirement be met.
 > The outer array contains the possible choices.
 >
 > **Example**: [[MATH2312._id, MATH 1325._id], [MATH2312._id, MATH2413._id]]
