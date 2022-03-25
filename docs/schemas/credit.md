@@ -20,10 +20,10 @@ Credit = {
 > **Type**: string
 >
 > The catergory of the credit hours.
-> If there is no category associated with the credit,
-> the value is "general"
+> If there is no category associated with the credit, the value is "general".
+> "free" is a valid category.
 >
-> **Example**: MATH
+> **Example**: "Geosciences", "Business Computer Information Systems", "free"
 
 > `.credit_hours`
 >
