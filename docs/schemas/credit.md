@@ -8,26 +8,19 @@ The `Credit` object represents an amount of 'semester credit hours' given by The
 
 ```ts
 Credit = {
-  "_id": ObjectId
-  "subject_prefix": string,
+  "category": string,
   "credit_hours": number,
 };
 ```
 
 ## Properties
 
-> `._id`
->
-> **Type**: ObjectId
->
-> The MongoDB database id for the `Credit` object.
->
-> `.subject_prefix`
+> `.category`
 >
 > **Type**: string
 >
-> The subject prefix for the credit hours.
-> If there is no specific subject associated with the credit,
+> The catergory of the credit hours.
+> If there is no category associated with the credit,
 > the value is "general"
 >
 > **Example**: MATH
