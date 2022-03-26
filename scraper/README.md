@@ -10,7 +10,7 @@ To use the scrapers:
 - Set your NetID password in .env as `PASSWORD=`
 
 ## Usage
-Run ScrapeProfiles.ts to obtain base professor profile information
-Run ScrapeCoursebook.ts to obtain course/section information as well as further professor info (i.e. sections taught)
-Run Parse.ts to parse requisites after all relevant sections/courses have been obtained
-All data is output as JSON files in ./data
+- Run ScrapeProfiles.ts to obtain base professor profile information
+- Run ScrapeCoursebook.ts to obtain course/section information as well as further professor info (i.e. sections taught)
+- Run Parse.ts to parse requisites after all relevant sections/courses have been obtained
+- All data is output as JSON files in ./data

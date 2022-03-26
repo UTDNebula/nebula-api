@@ -52,17 +52,21 @@ export class CoursebookScraper extends FirefoxScraper {
         await this.Driver.wait(until.elementLocated(By.id(DropdownID)));
         let Dropdown: WebElement = await this.Driver.findElement(By.id(DropdownID));
         // Find all of the buttons in the dropdown
-        let Buttons: WebElement[] = await Dropdown.findElements(By.css("option"));
+        let Buttons = await Dropdown.findElements(By.css("option"));
         // Get the text of all of the buttons in the dropdown
-        let ButtonsText: string[] = await ParsingUtils.GetElementStrings(Buttons);
-        // Filter out the divider buttons (the ones containing "-----") and blanks
-        for (let i: number = 0; i < Buttons.length; ++i) {
-            // Ignore dropdown button if it's blank or empty
-            if (ButtonsText[i] == "" || ButtonsText[i].match(/---+/g))
-                Buttons.splice(i, 1);
-        };
-        // Refresh ButtonsText
-        ButtonsText = await ParsingUtils.GetElementStrings(Buttons);
+        Buttons = await Promise.all(Buttons.map(async (Button: WebElement) => {
+            let ButtonText = await Button.getText();
+            if (ButtonText == "" || ButtonText.match(/---+/))
+                return null;
+            else
+                return Button;
+        }));
+        Buttons = Buttons.filter((Button: WebElement) => {
+            return (Button != null);
+        });
+        let ButtonsText: string[] = await Promise.all(Buttons.map(async (Button: WebElement) => {
+            return await Button.getText();
+        }));
         // If the start/end indexes are RegExp objects, convert them to integer indices by finding the first button matching the pattern
         if (StartIndex instanceof RegExp) {
             StartIndex = ButtonsText.findIndex((ButtonText: string) => { return ButtonText.match(StartIndex as RegExp) })
