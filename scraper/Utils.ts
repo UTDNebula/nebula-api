@@ -1,6 +1,5 @@
 import 'dotenv/config';
-import { Schema } from 'inspector';
-import { exit } from 'process';
+import { readFileSync, writeFileSync } from 'fs';
 import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
 import schemas from '../api/schemas';
 
@@ -47,7 +46,7 @@ export abstract class ParsingUtils {
     // In this case, because of the aforementioned order of operations, the parser will default to interpreting it as "(A or B) and C" since ANDs are processed first. There is not much that can be done about this.
     private static ReqPatternMap: Array<[RegExp, (ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]) => schemas.Requirement]> = [
         [/cannot be received for/i, ParsingUtils.ParseChoice],
-        [/grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?) in(?: either)?((?: [A-z]+ [V0-9]{4}(?: or| and)?(?: in| equivalent)?)+)/i, ParsingUtils.ParseGrade],
+        [/grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?) in(?: either)?((?: [A-z]+ [V0-9]{4}(?: or| and)?(?: in| equivalent)?)+)/i, ParsingUtils.ParseGradeChoice],
         // TODO: Revise pattern matching to only evaluate and/or if other patterns are found
         [/ and /i, ParsingUtils.ParseAnd],
         [/ or (?!better|higher)/i, ParsingUtils.ParseOr],
@@ -55,7 +54,8 @@ export abstract class ParsingUtils {
         [/[A-z]+ minors only/i, ParsingUtils.ParseMinor],
         [/(?:([0-9]+) semester credit hour )?([0-9]{3}).* core/i, ParsingUtils.ParseCore],
         [/repeated for a maximum of ([0-9]+) semester credit hours/i, ParsingUtils.ParseLimit],
-        [/\W*[A-z]+ [V0-9]{4}\W*/i, ParsingUtils.ParseCourse],
+        [/(.+) with a grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i, ParsingUtils.ParseGradeList],
+        [/^\W*[A-z]+ [V0-9]{4}\W*$/i, ParsingUtils.ParseCourse],
         [/GPA of|grade point average/i, ParsingUtils.ParseGPA],
         [/consent (?=required|of)/i, ParsingUtils.ParseConsent]
     ];
@@ -143,7 +143,7 @@ export abstract class ParsingUtils {
         return Requirement;
     }
 
-    private static ParseGrade(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.Requirement {
+    private static ParseGradeChoice(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.Requirement {
         let GradeMatches: RegExpMatchArray = ReqText.match(/(?:a )?grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?) in(?: either)?((?: [A-z]+ [V0-9]{4}(?: or| and)?(?: in| equivalent)?)+)/i);
         let Requirement: schemas.Requirement = ParsingUtils.ParsePattern(GradeMatches[2], Courses, Sections, Groups);
         if (Requirement instanceof schemas.CollectionRequirement) {
@@ -158,6 +158,19 @@ export abstract class ParsingUtils {
         return Requirement;
     }
 
+    private static ParseGradeList(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.Requirement {
+        let GradeMatches: RegExpMatchArray = ReqText.match(/(.+) with a grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i);
+        let Requirement: schemas.Requirement = ParsingUtils.ParsePattern(GradeMatches[1], Courses, Sections, Groups);
+        if (Requirement instanceof schemas.CollectionRequirement) {
+            for (let Option of Requirement.options)
+                if (Option.type == "course")
+                    (Option as schemas.CourseRequirement).minimum_grade = GradeMatches[2];
+        } else if (Requirement instanceof schemas.CourseRequirement) {
+            Requirement.minimum_grade = GradeMatches[2];
+        }
+        return Requirement;
+    }
+
     private static ParseCourse(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.CourseRequirement {
         let Requirement: schemas.CourseRequirement = new schemas.CourseRequirement();
         let Matches: RegExpMatchArray = ReqText.match(/([A-z]+) ([V0-9]{4})/); // Find the subject prefix and number
@@ -165,10 +178,6 @@ export abstract class ParsingUtils {
             return (Course.subject_prefix == Matches[1] && Course.course_number == Matches[2]);
         });
         Requirement.class_reference = MatchingCourse?._id ?? null; // Set reference to null if no matching course found
-        // Check for a minimum grade requirement and add it, if found
-        let MinGradeMatches: RegExpMatchArray = ReqText.match(/grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i);
-        if (MinGradeMatches)
-            Requirement.minimum_grade = MinGradeMatches[1];
         return Requirement;
     }
 
@@ -238,6 +247,29 @@ export abstract class ParsingUtils {
         for (let pos = 0; pos < Groups.length; ++pos) // Parse groups individually, then combine
             Groups[pos] = ParsingUtils.ParsePattern(Groups[pos], Courses, Sections, Groups);
         return Groups[Groups.length - 1]; // Return last group, as it represents the overall parsed req
+    }
+
+    static ParseAllReqs() {
+        let PsuedoCourses: schemas.PsuedoCourse[] = JSON.parse(readFileSync("./data/PsuedoCourses.json", { encoding: 'utf-8' }));
+        let Sections: schemas.Section[] = JSON.parse(readFileSync("./data/Sections.json", { encoding: 'utf-8' }));
+        let ParsedCourses: schemas.Course[] = [];
+        for (let Course of PsuedoCourses) {
+            let ParsedCourse: object = Course;
+            let PreReqs: schemas.CollectionRequirement = new schemas.CollectionRequirement();
+            PreReqs.options = Course.prerequisites.map((Req: string) => { return ParsingUtils.ParseReq(Req, PsuedoCourses, Sections) });
+            PreReqs.required = PreReqs.options.length;
+            let CoReqs: schemas.CollectionRequirement = new schemas.CollectionRequirement();
+            CoReqs.options = Course.corequisites.map((Req: string) => { return ParsingUtils.ParseReq(Req, PsuedoCourses, Sections) });
+            CoReqs.required = CoReqs.options.length;
+            let CoOrPreReqs: schemas.CollectionRequirement = new schemas.CollectionRequirement();
+            CoOrPreReqs.options = Course.co_or_pre_requisites.map((Req: string) => { return ParsingUtils.ParseReq(Req, PsuedoCourses, Sections) });
+            CoOrPreReqs.required = CoOrPreReqs.options.length;
+            ParsedCourse["prerequisites"] = PreReqs;
+            ParsedCourse["corequisites"] = CoReqs;
+            ParsedCourse["co_or_pre_requisites"] = CoOrPreReqs;
+            ParsedCourses.push(ParsedCourse as schemas.Course);
+        }
+        writeFileSync("./data/Courses.json", JSON.stringify(ParsedCourses, null, '\t'), { flag: 'w' });
     }
 
 }

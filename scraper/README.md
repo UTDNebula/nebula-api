@@ -1,7 +1,7 @@
-# CourseBook Scraper
+# Scrapers
 
 ## Installation
-To use the CourseBook Scraper:
+To use the scrapers:
 - Download geckodriver for your OS from [here](https://github.com/mozilla/geckodriver/releases)
 - Unzip the driver somewhere
 - Set the path to the driver in .env as `SELENIUM_DRIVER=`
@@ -10,4 +10,7 @@ To use the CourseBook Scraper:
 - Set your NetID password in .env as `PASSWORD=`
 
 ## Usage
-Run Run.ts with your typescript transpiler of choice.
+Run ScrapeProfiles.ts to obtain base professor profile information
+Run ScrapeCoursebook.ts to obtain course/section information as well as further professor info (i.e. sections taught)
+Run Parse.ts to parse requisites after all relevant sections/courses have been obtained
+All data is output as JSON files in ./data
