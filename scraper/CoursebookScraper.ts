@@ -403,7 +403,7 @@ export class CoursebookScraper extends FirefoxScraper {
                 }
                 catch (error: NoSuchElementError) {
                     let DeltaT: number = Date.now() - LastT;
-                    if (DeltaT > 300000) { // If we've been waiting over 5 minutes, return false to restart parsing
+                    if (DeltaT > 600000) { // If we've been waiting over 10 minutes, return false to restart parsing
                         return false;
                     }
                     else

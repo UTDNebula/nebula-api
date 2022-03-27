@@ -54,7 +54,7 @@ export abstract class ParsingUtils {
         [/[A-z]+ minors only/i, ParsingUtils.ParseMinor],
         [/(?:([0-9]+) semester credit hour )?([0-9]{3}).* core/i, ParsingUtils.ParseCore],
         [/repeated for a maximum of ([0-9]+) semester credit hours/i, ParsingUtils.ParseLimit],
-        [/(.+) with a grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i, ParsingUtils.ParseGradeList],
+        [/(.+) with a (?:minimum )grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i, ParsingUtils.ParseGradeList],
         [/^\W*[A-z]+ [V0-9]{4}\W*$/i, ParsingUtils.ParseCourse],
         [/GPA of|grade point average/i, ParsingUtils.ParseGPA],
         [/consent (?=required|of)/i, ParsingUtils.ParseConsent]
@@ -159,7 +159,7 @@ export abstract class ParsingUtils {
     }
 
     private static ParseGradeList(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.Requirement {
-        let GradeMatches: RegExpMatchArray = ReqText.match(/(.+) with a grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i);
+        let GradeMatches: RegExpMatchArray = ReqText.match(/(.+) with a (?:minimum )grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i);
         let Requirement: schemas.Requirement = ParsingUtils.ParsePattern(GradeMatches[1], Courses, Sections, Groups);
         if (Requirement instanceof schemas.CollectionRequirement) {
             for (let Option of Requirement.options)
@@ -207,8 +207,10 @@ export abstract class ParsingUtils {
             RelevantText = ReqText.split(', ')[1]; // Get relevant text after the comma
         else if (ReqText.includes(':'))
             RelevantText = ReqText.split(':')[1]; // Get relevant text after the colon
-        else
+        else if (ReqText.includes('both'))
             RelevantText = ReqText.split('both')[1]; // Get relevant text after "both"
+        else
+            RelevantText = ReqText.split("for")[1]; // Get relevant text after "for"
         let Requirement: schemas.ChoiceRequirement = new schemas.ChoiceRequirement();
         // Parse pattern of relevant text, should always be a CollectionRequirement
         Requirement.choices = ParsingUtils.ParsePattern(RelevantText, Courses, Sections, Groups) as schemas.CollectionRequirement;
