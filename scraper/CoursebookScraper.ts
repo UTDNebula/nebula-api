@@ -148,7 +148,7 @@ export class CoursebookScraper extends FirefoxScraper {
         // Click every other detail button
         for (let i: number = 0; i < DetailButtons.length; i += 2) {
             await DetailButtons[i].click();
-            //await this.Driver.sleep(3000);
+            await this.Driver.sleep(3000);
         }
         // Return the individual section elements
         return await SectionList.findElements(By.className("expandedrow"));

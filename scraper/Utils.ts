@@ -132,13 +132,13 @@ export abstract class ParsingUtils {
 
     private static ParseGPA(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.GPARequirement {
         let Requirement: schemas.GPARequirement = new schemas.GPARequirement();
-        if (ReqText.includes("university grade point average")) { // Handle university GPA
-            Requirement.minimum = Number.parseFloat(ReqText.match(/[0-9]\.[0-9]+/)[0]);
-            Requirement.subset = "university";
-        } else {
+        if (ReqText.includes("or better in")) {
             let GPAMatches: RegExpMatchArray = ReqText.match(/GPA of ([0-9]\.[0-9]+) or better in (.+)/i);
             Requirement.minimum = Number.parseFloat(GPAMatches[1]);
             Requirement.subset = GPAMatches[2];
+        } else { // Handle university GPA
+                Requirement.minimum = Number.parseFloat(ReqText.match(/[0-9]\.[0-9]+/)[0]);
+                Requirement.subset = "university";
         }
         return Requirement;
     }
