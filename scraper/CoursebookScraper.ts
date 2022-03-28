@@ -517,7 +517,7 @@ export class CoursebookScraper extends FirefoxScraper {
         // Log in with COURSEBOOK_AUTH credentials
         await this.Login({
             NetID: process.env.NETID,
-            Password: process.env.Password
+            Password: process.env.PASSWORD
         });
         // Find the term buttons
         let TermButtons = await this.FindDropdownButtons(CoursebookScraper.DropdownIDs.TERM, TermIndexStart, TermIndexEnd);
