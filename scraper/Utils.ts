@@ -54,7 +54,7 @@ export abstract class ParsingUtils {
         [/[A-z]+ minors only/i, ParsingUtils.ParseMinor],
         [/(?:([0-9]+) semester credit hour )?([0-9]{3}).* core/i, ParsingUtils.ParseCore],
         [/repeated for a maximum of ([0-9]+) semester credit hours/i, ParsingUtils.ParseLimit],
-        [/(.+) with a (?:minimum )grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i, ParsingUtils.ParseGradeList],
+        [/(.+) with a (?:minimum )?grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i, ParsingUtils.ParseGradeList],
         [/^\W*[A-z]+ [V0-9]{4}\W*$/i, ParsingUtils.ParseCourse],
         [/GPA of|grade point average/i, ParsingUtils.ParseGPA],
         [/consent (?=required|of)/i, ParsingUtils.ParseConsent]
@@ -159,7 +159,7 @@ export abstract class ParsingUtils {
     }
 
     private static ParseGradeList(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.Requirement {
-        let GradeMatches: RegExpMatchArray = ReqText.match(/(.+) with a (?:minimum )grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i);
+        let GradeMatches: RegExpMatchArray = ReqText.match(/(.+) with a (?:minimum )?grade (?:of )?(?:at least )?(?:a )?([A-f][+-]?)/i);
         let Requirement: schemas.Requirement = ParsingUtils.ParsePattern(GradeMatches[1], Courses, Sections, Groups);
         if (Requirement instanceof schemas.CollectionRequirement) {
             for (let Option of Requirement.options)
@@ -183,7 +183,7 @@ export abstract class ParsingUtils {
 
     private static ParseOr(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.CollectionRequirement {
         let Requirement: schemas.CollectionRequirement = new schemas.CollectionRequirement();
-        let Options: string[] = ReqText.split(' or '); // Split text into options
+        let Options: string[] = ReqText.split(/ or /i); // Split text into options
         for (let Option of Options)
             if (!Option.match(/better|higher/i)) // Filter out erroneous text
                 Requirement.options.push(ParsingUtils.ParsePattern(Option, Courses, Sections, Groups));
@@ -193,7 +193,7 @@ export abstract class ParsingUtils {
 
     private static ParseAnd(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[], Groups: any[]): schemas.CollectionRequirement {
         let Requirement: schemas.CollectionRequirement = new schemas.CollectionRequirement();
-        let Options: string[] = ReqText.split(' and '); // Split text into options
+        let Options: string[] = ReqText.split(/ and /i); // Split text into options
         for (let Option of Options) {
             Requirement.options.push(ParsingUtils.ParsePattern(Option, Courses, Sections, Groups));
         }
@@ -243,6 +243,7 @@ export abstract class ParsingUtils {
     }
 
     static ParseReq(ReqText: string, Courses: schemas.PsuedoCourse[], Sections: schemas.Section[]): schemas.Requirement {
+        console.log(ReqText);
         let Groups: any[] = ParsingUtils.ParseGroups(ReqText); // Split text into parse-able sub-texts
         if (!Groups) // Set entire text as only group if no groups found
             Groups = [ReqText];
@@ -252,26 +253,26 @@ export abstract class ParsingUtils {
     }
 
     static ParseAllReqs() {
-        let PsuedoCourses: schemas.PsuedoCourse[] = JSON.parse(readFileSync("./data/PsuedoCourses.json", { encoding: 'utf-8' }));
-        let Sections: schemas.Section[] = JSON.parse(readFileSync("./data/Sections.json", { encoding: 'utf-8' }));
+        let PsuedoCourses: schemas.PsuedoCourse[] = JSON.parse(readFileSync("./data/CombinedPsuedoCourses.json", { encoding: 'utf-8' }));
+        let Sections: schemas.Section[] = JSON.parse(readFileSync("./data/CombinedSections.json", { encoding: 'utf-8' }));
         let ParsedCourses: schemas.Course[] = [];
         for (let Course of PsuedoCourses) {
             let ParsedCourse: object = Course;
             let PreReqs: schemas.CollectionRequirement = new schemas.CollectionRequirement();
-            PreReqs.options = Course.prerequisites.map((Req: string) => { return ParsingUtils.ParseReq(Req, PsuedoCourses, Sections) });
+            PreReqs.options = Course.prerequisites.map((Req: string) => { return ParsingUtils.ParseReq(Req.trim(), PsuedoCourses, Sections) });
             PreReqs.required = PreReqs.options.length;
             let CoReqs: schemas.CollectionRequirement = new schemas.CollectionRequirement();
-            CoReqs.options = Course.corequisites.map((Req: string) => { return ParsingUtils.ParseReq(Req, PsuedoCourses, Sections) });
+            CoReqs.options = Course.corequisites.map((Req: string) => { return ParsingUtils.ParseReq(Req.trim(), PsuedoCourses, Sections) });
             CoReqs.required = CoReqs.options.length;
             let CoOrPreReqs: schemas.CollectionRequirement = new schemas.CollectionRequirement();
-            CoOrPreReqs.options = Course.co_or_pre_requisites.map((Req: string) => { return ParsingUtils.ParseReq(Req, PsuedoCourses, Sections) });
+            CoOrPreReqs.options = Course.co_or_pre_requisites.map((Req: string) => { return ParsingUtils.ParseReq(Req.trim(), PsuedoCourses, Sections) });
             CoOrPreReqs.required = CoOrPreReqs.options.length;
             ParsedCourse["prerequisites"] = PreReqs;
             ParsedCourse["corequisites"] = CoReqs;
             ParsedCourse["co_or_pre_requisites"] = CoOrPreReqs;
             ParsedCourses.push(ParsedCourse as schemas.Course);
         }
-        writeFileSync("./data/Courses.json", JSON.stringify(ParsedCourses, null, '\t'), { flag: 'w' });
+        writeFileSync("./data/CombinedCourses.json", JSON.stringify(ParsedCourses, null, '\t'), { flag: 'w' });
     }
 
 }
