@@ -1,7 +1,7 @@
-import { Schema, connection } from 'mongoose';
+import { Schema, connection, Types } from 'mongoose';
 
 export interface Course {
-  _id: string;
+  _id: Types.ObjectId;
   course_number: string;
   subject_prefix: string;
   title: string;
@@ -15,7 +15,7 @@ export interface Course {
   prerequisites: object;
   corequisites: object;
   co_or_pre_requisites: object;
-  sections: string[];
+  sections: Types.ObjectId[];
   lecture_contact_hours: string;
   laboratory_contact_hours: string;
   offering_frequency: string;
@@ -23,7 +23,7 @@ export interface Course {
 }
 
 export const CourseSchema = new Schema<Course>({
-  _id: { type: String, required: true },
+  _id: { type: Types.ObjectId, required: true },
   course_number: { type: String, required: true },
   subject_prefix: { type: String, required: true },
   title: { type: String, required: true },
@@ -37,11 +37,11 @@ export const CourseSchema = new Schema<Course>({
   prerequisites: { type: Object, required: true },
   corequisites: { type: Object, required: true },
   co_or_pre_requisites: { type: Object, required: true },
-  sections: { type: [String], required: true },
-  lecture_contact_hours: { type: String, required: true },
-  laboratory_contact_hours: { type: String, required: true },
-  offering_frequency: { type: String, required: true },
-  attributes: { type: Object, required: true },
+  sections: { type: [Types.ObjectId], required: true },
+  lecture_contact_hours: { type: String, required: false },
+  laboratory_contact_hours: { type: String, required: false },
+  offering_frequency: { type: String, required: false },
+  attributes: { type: Object, required: true }
 });
 
 const courseDB = connection.useDb('combinedDB');
