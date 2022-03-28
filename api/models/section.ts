@@ -32,6 +32,7 @@ export type Meeting = {
 };
 
 export interface Section {
+  _id: string;
   section_number: string;
   course_reference: Schema.Types.ObjectId;
   section_corequisites: object; // i was too lazy and did not code all the requirements, but it should still work with object
@@ -41,12 +42,14 @@ export interface Section {
   internal_class_number: string;
   instruction_mode: string;
   meetings: Array<Meeting>;
+  core_flags: Array<string>;
   syllabus_uri: string;
   grade_distribution: Array<number>;
   attributes: object;
 }
 
 export const SectionSchema = new Schema<Section>({
+  _id: { type: String, required: true },
   section_number: { type: String, required: true },
   course_reference: { type: Schema.Types.ObjectId, required: true },
   section_corequisites: { type: Object, required: true },
@@ -56,10 +59,11 @@ export const SectionSchema = new Schema<Section>({
   internal_class_number: { type: String, required: true },
   instruction_mode: { type: String, required: true },
   meetings: { type: [Object], required: true },
+  core_flags: { type: [String], required: true },
   syllabus_uri: { type: String, required: true },
   grade_distribution: { type: [Number], required: true },
   attributes: { type: Object, required: true },
 });
 
-const sectionDB = connection.useDb('sectionDB');
+const sectionDB = connection.useDb('combinedDB');
 export const SectionModel = sectionDB.model<Section>('section', SectionSchema);
