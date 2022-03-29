@@ -66,6 +66,7 @@ const req = https.request(options, (res) => {
 
   const chunks: Uint8Array[] = [];
 
+  // get all the semester's grade data in chunks and convert
   res.on('data', (chunk) => {
     chunks.push(chunk);
   });
@@ -88,6 +89,7 @@ req.end();
 
 const processData = async (data: GradeSection[]) => {
   await mongoose.connect(process.env.MONGODB_URI);
+  // get all of the specified semester's sections
   const semesterData: ConciseSection[] = await SectionModel.aggregate([
     {
       $match: {
@@ -114,7 +116,7 @@ const processData = async (data: GradeSection[]) => {
       },
     },
   ]);
-
+  // go through all grade data and find its counterpart in the mongoDB sections
   for (const sect of data) {
     const matchedSection: ConciseSection = semesterData.find(
       (section) =>
@@ -128,6 +130,7 @@ const processData = async (data: GradeSection[]) => {
       );
       continue;
     }
+    // update the grade data for the DB section
     const update = await SectionModel.updateOne(
       { _id: matchedSection._id },
       { grade_distribution: processGrades(sect.grades) },
@@ -140,6 +143,7 @@ const processData = async (data: GradeSection[]) => {
   await mongoose.disconnect();
 };
 
+// convert grade object to an array for schema
 const processGrades = (gradesObject: object) => {
   const gradesArray: number[] = Array(14).fill(0); // A+ A A- B+ B B- C+ C C- D+ D D- F W
   for (const grade in gradesObject) {
