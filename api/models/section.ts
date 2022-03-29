@@ -1,4 +1,4 @@
-import { Schema, connection } from 'mongoose';
+import { Schema, connection, Types } from 'mongoose';
 
 export type AcademicSession = {
   name: string;
@@ -32,12 +32,12 @@ export type Meeting = {
 };
 
 export interface Section {
-  _id: string;
+  _id: Types.ObjectId;
   section_number: string;
-  course_reference: Schema.Types.ObjectId;
-  section_corequisites: object; // i was too lazy and did not code all the requirements, but it should still work with object
+  course_reference: Types.ObjectId;
+  section_corequisites: object;
   academic_session: AcademicSession;
-  professors: Array<Schema.Types.ObjectId>;
+  professors: Array<Types.ObjectId>;
   teaching_assistants: Array<Assistant>;
   internal_class_number: string;
   instruction_mode: string;
@@ -49,20 +49,20 @@ export interface Section {
 }
 
 export const SectionSchema = new Schema<Section>({
-  _id: { type: String, required: true },
+  _id: { type: Types.ObjectId, required: true },
   section_number: { type: String, required: true },
-  course_reference: { type: Schema.Types.ObjectId, required: true },
+  course_reference: { type: Types.ObjectId, required: true },
   section_corequisites: { type: Object, required: true },
   academic_session: { type: Object, required: true },
-  professors: { type: [Schema.Types.ObjectId], required: true },
+  professors: { type: [Types.ObjectId], required: true },
   teaching_assistants: { type: [Object], required: true },
   internal_class_number: { type: String, required: true },
   instruction_mode: { type: String, required: true },
   meetings: { type: [Object], required: true },
   core_flags: { type: [String], required: true },
-  syllabus_uri: { type: String, required: true },
+  syllabus_uri: { type: String, required: false },
   grade_distribution: { type: [Number], required: true },
-  attributes: { type: Object, required: true },
+  attributes: { type: Object, required: true }
 });
 
 const sectionDB = connection.useDb('combinedDB');
