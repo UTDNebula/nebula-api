@@ -90,7 +90,7 @@ req.end();
 
 const processData = async (data: GradeSection[]) => {
   if (!fs.existsSync('./parser/logs')) fs.mkdirSync('./parser/logs');
-  const logger = fs.createWriteStream(__dirname + `/logs/debug.txt`, { flags: 'w' });
+  const logger = fs.createWriteStream(__dirname + `/logs/${SESH}.txt`, { flags: 'w' });
   await mongoose.connect(process.env.MONGODB_URI);
   // get all of the specified semester's sections
   const semesterData: ConciseSection[] = await SectionModel.aggregate([
