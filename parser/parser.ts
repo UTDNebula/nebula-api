@@ -63,8 +63,7 @@ const options = {
 
 const req = https.request(options, (res) => {
   if (!SESH) return req.destroy(new Error('Argument for session was not provided.'));
-  console.log('Getting data from ' + options.hostname + options.path);
-  console.log(`statusCode: ${res.statusCode}`);
+  console.log('Fetching grade data from ' + options.hostname + options.path);
 
   const chunks: Uint8Array[] = [];
 
@@ -122,6 +121,7 @@ const processData = async (data: GradeSection[]) => {
     },
   ]);
   let count = 0;
+  console.log('Mapping grade data to database sections...');
   // go through all grade data and find its counterpart in the mongoDB sections
   for (const sect of data) {
     updateProgress(count++, data.length);
