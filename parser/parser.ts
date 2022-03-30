@@ -130,7 +130,7 @@ const processData = async (data: GradeSection[]) => {
     );
     if (!matchedSection) {
       logger.write(
-        `Couldn't find section ${sect.subj}.${sect.num}.${sect.sect} in DB from grade data.\n`,
+        `Couldn't find section ${sect.subj}.${sect.num}.${sect.sect} in DB from grade data for ${SESH}.\n`,
       );
       continue;
     }
@@ -141,7 +141,11 @@ const processData = async (data: GradeSection[]) => {
     );
     if (update.modifiedCount == 0)
       logger.write(
-        `An error occured while inserting grade data of section ${sect.subj}.${sect.num}.${sect.sect} (${matchedSection._id}).\n`,
+        `${sect.subj}.${sect.num}.${sect.sect} (${matchedSection._id}) was NOT modified in the DB.\n`,
+      );
+    else
+      logger.write(
+        `${sect.subj}.${sect.num}.${sect.sect} (${matchedSection._id}) was modified in the DB.\n`,
       );
     updateProgress(count++, semesterData.length);
   }
