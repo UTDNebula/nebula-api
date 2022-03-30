@@ -51,6 +51,7 @@ type ConciseSection = {
     course_number: string;
     subject_prefix: string;
   };
+  grade_distribution: number[];
 };
 
 const options = {
@@ -116,12 +117,14 @@ const processData = async (data: GradeSection[]) => {
         section_number: 1,
         'courses.course_number': 1,
         'courses.subject_prefix': 1,
+        grade_distribution: 1,
       },
     },
   ]);
   let count = 0;
   // go through all grade data and find its counterpart in the mongoDB sections
   for (const sect of data) {
+    updateProgress(count++, data.length);
     const matchedSection: ConciseSection = semesterData.find(
       (section) =>
         section.courses.course_number == sect.num &&
@@ -139,15 +142,13 @@ const processData = async (data: GradeSection[]) => {
       { _id: matchedSection._id },
       { grade_distribution: processGrades(sect.grades) },
     );
-    if (update.modifiedCount == 0)
+    if (
+      update.modifiedCount == 0 &&
+      !compareGrades(matchedSection.grade_distribution, processGrades(sect.grades))
+    )
       logger.write(
-        `${sect.subj}.${sect.num}.${sect.sect} (${matchedSection._id}) was NOT modified in the DB.\n`,
+        `Error occured updating section ${sect.subj}.${sect.num}.${sect.sect} (${matchedSection._id}) grades in the DB.\n`,
       );
-    else
-      logger.write(
-        `${sect.subj}.${sect.num}.${sect.sect} (${matchedSection._id}) was modified in the DB.\n`,
-      );
-    updateProgress(count++, semesterData.length);
   }
   await mongoose.disconnect();
   logger.close();
@@ -169,4 +170,12 @@ async function updateProgress(sectionNum, maxSections) {
   const empty = ' '.repeat(left);
 
   process.stdout.write(`\r[${dots}${empty}] ${i * 5}%`);
+}
+
+function compareGrades(dbGrades: number[], utdGrades: number[]) {
+  if (dbGrades.length != utdGrades.length) return false;
+  for (let i = 0; i < dbGrades.length; i++) {
+    if (dbGrades[i] != utdGrades[i]) return false;
+  }
+  return true;
 }
