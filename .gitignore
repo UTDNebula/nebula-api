@@ -46,3 +46,6 @@ deploy_log.sh
 /scraper/.env
 /scraper/credentials.json
 /scraper/scraper.log
+
+# parser
+/parser/logs

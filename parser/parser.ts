@@ -5,6 +5,7 @@ ex. npx ts-node ./parser/parser.ts /acmutd/utd-grades/master/data/Fall%202019/Fa
 
 import https from 'https';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import mongoose, { Types } from 'mongoose';
 
 import { SectionModel } from '../api/models/section';
@@ -88,6 +89,8 @@ req.on('error', (error) => {
 req.end();
 
 const processData = async (data: GradeSection[]) => {
+  if (!fs.existsSync('./parser/logs')) fs.mkdirSync('./parser/logs');
+  const logger = fs.createWriteStream(__dirname + `/logs/debug.txt`, { flags: 'w' });
   await mongoose.connect(process.env.MONGODB_URI);
   // get all of the specified semester's sections
   const semesterData: ConciseSection[] = await SectionModel.aggregate([
@@ -116,6 +119,7 @@ const processData = async (data: GradeSection[]) => {
       },
     },
   ]);
+  let count = 0;
   // go through all grade data and find its counterpart in the mongoDB sections
   for (const sect of data) {
     const matchedSection: ConciseSection = semesterData.find(
@@ -125,8 +129,8 @@ const processData = async (data: GradeSection[]) => {
         section.section_number == sect.sect,
     );
     if (!matchedSection) {
-      console.log(
-        `Couldn't find section ${sect.subj}.${sect.num}.${sect.sect} in DB from grade data.`,
+      logger.write(
+        `Couldn't find section ${sect.subj}.${sect.num}.${sect.sect} in DB from grade data.\n`,
       );
       continue;
     }
@@ -136,11 +140,13 @@ const processData = async (data: GradeSection[]) => {
       { grade_distribution: processGrades(sect.grades) },
     );
     if (update.modifiedCount == 0)
-      console.log(
-        `An error occured while inserting grade data of section ${sect.subj}.${sect.num}.${sect.sect}`,
+      logger.write(
+        `An error occured while inserting grade data of section ${sect.subj}.${sect.num}.${sect.sect} (${matchedSection._id}).\n`,
       );
+    updateProgress(count++, semesterData.length);
   }
   await mongoose.disconnect();
+  logger.close();
 };
 
 // convert grade object to an array for schema
@@ -151,3 +157,12 @@ const processGrades = (gradesObject: object) => {
   }
   return gradesArray;
 };
+
+async function updateProgress(sectionNum, maxSections) {
+  const i = Math.round((20 * sectionNum) / maxSections);
+  const dots = '.'.repeat(i);
+  const left = 20 - i;
+  const empty = ' '.repeat(left);
+
+  process.stdout.write(`\r[${dots}${empty}] ${i * 5}%`);
+}
