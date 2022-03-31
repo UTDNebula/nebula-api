@@ -1,7 +1,8 @@
-import { Schema, connection } from 'mongoose';
+import { Schema, connection, Types } from 'mongoose';
 import { Location, Meeting } from './section'; // dependency will be resolved with section pull request
 
 export interface Professor {
+  _id: Types.ObjectId;
   first_name: string;
   last_name: string;
   titles: Array<string>;
@@ -15,17 +16,18 @@ export interface Professor {
 }
 
 export const ProfessorSchema = new Schema<Professor>({
+  _id: { type: Types.ObjectId, required: true },
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
-  titles: { type: [String], required: true },
-  email: { type: String, required: true },
-  phone_number: { type: String, required: true },
-  office: { type: Object, required: true },
-  profile_uri: { type: String, required: true },
-  image_uri: { type: String, required: true },
-  office_hours: { type: [Object], required: true },
-  sections: { type: [Schema.Types.ObjectId], required: true },
+  titles: { type: [String], required: false },
+  email: { type: String, required: false },
+  phone_number: { type: String, required: false },
+  office: { type: Object, required: false },
+  profile_uri: { type: String, required: false },
+  image_uri: { type: String, required: false },
+  office_hours: { type: [Object], required: false },
+  sections: { type: [Types.ObjectId], required: true }
 });
 
-const professorDB = connection.useDb('professorDB');
+const professorDB = connection.useDb('combinedDB');
 export const ProfessorModel = professorDB.model<Professor>('professor', ProfessorSchema);
