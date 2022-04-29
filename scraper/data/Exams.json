@@ -1,13 +1,17 @@
 [
 	{
-		"_id": "623f8ef656965e1884291c17",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c17"
+		},
 		"type": "AP",
 		"name": "History of Art",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c17",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c17"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -22,7 +26,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c17",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c17"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -36,7 +42,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c17",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c17"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -50,14 +58,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c18",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c18"
+		},
 		"type": "AP",
 		"name": "Studio Art: 2-D Design",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c18",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c18"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -72,7 +84,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c18",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c18"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -86,7 +100,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c18",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c18"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -100,14 +116,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c19",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c19"
+		},
 		"type": "AP",
 		"name": "Studio Art: Drawing",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c19",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c19"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -122,7 +142,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c19",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c19"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -136,7 +158,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c19",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c19"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -150,14 +174,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c1a",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c1a"
+		},
 		"type": "AP",
 		"name": "General Biology",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1a",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1a"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -172,7 +200,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1a",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1a"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -195,7 +225,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1a",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1a"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -221,14 +253,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c1b",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c1b"
+		},
 		"type": "AP",
 		"name": "General Chemistry",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1b"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -243,7 +279,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1b"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -260,7 +298,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1b"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -283,14 +323,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c1c",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c1c"
+		},
 		"type": "AP",
 		"name": "Chinese Language & Culture",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1c"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -304,7 +348,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1c"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -321,7 +367,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1c"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -341,14 +389,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c1d",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c1d"
+		},
 		"type": "AP",
 		"name": "Computer Science A",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1d"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -363,7 +415,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1d"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -380,7 +434,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1d"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -397,14 +453,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c1e",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c1e"
+		},
 		"type": "AP",
 		"name": "Macroeconomics",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1e"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -419,7 +479,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1e"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -433,7 +495,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1e"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -447,14 +511,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c1f",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c1f"
+		},
 		"type": "AP",
 		"name": "Microeconomics",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1f"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -469,7 +537,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1f"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -483,7 +553,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c1f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c1f"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -497,14 +569,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c20",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c20"
+		},
 		"type": "AP",
 		"name": "English Language and Composition",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c20",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c20"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -519,7 +595,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c20",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c20"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -533,7 +611,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c20",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c20"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -547,14 +627,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c21",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c21"
+		},
 		"type": "AP",
 		"name": "English Literature and Composition",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c21",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c21"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -569,7 +653,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c21",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c21"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -583,7 +669,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c21",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c21"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -597,14 +685,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c22",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c22"
+		},
 		"type": "AP",
 		"name": "French Language",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c22",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c22"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -618,7 +710,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c22",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c22"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -635,7 +729,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c22",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c22"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -655,14 +751,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c23",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c23"
+		},
 		"type": "AP",
 		"name": "Human Geography",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c23",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c23"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -676,7 +776,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c23",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c23"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -690,7 +792,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c23",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c23"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -704,14 +808,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c24",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c24"
+		},
 		"type": "AP",
 		"name": "German Language",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c24",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c24"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -725,7 +833,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c24",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c24"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -742,7 +852,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c24",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c24"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -762,14 +874,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c25",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c25"
+		},
 		"type": "AP",
 		"name": "Comp Government and Politics",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c25",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c25"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -784,7 +900,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c25",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c25"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -799,7 +917,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c25",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c25"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -814,14 +934,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c26",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c26"
+		},
 		"type": "AP",
 		"name": "US Government and Politics",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c26",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c26"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -835,7 +959,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c26",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c26"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -849,7 +975,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c26",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c26"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -863,14 +991,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c27",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c27"
+		},
 		"type": "AP",
 		"name": "United States History",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c27",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c27"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -884,7 +1016,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c27",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c27"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -901,7 +1035,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c27",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c27"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -918,14 +1054,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c28",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c28"
+		},
 		"type": "AP",
 		"name": "Japanese Language & Culture",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c28",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c28"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -939,7 +1079,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c28",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c28"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -956,7 +1098,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c28",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c28"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -976,7 +1120,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c29",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c29"
+		},
 		"type": "AP",
 		"name": "Calculus AB",
 		"yields": [
@@ -988,7 +1134,9 @@
 					"options": [
 						{
 							"type": "exam",
-							"examReference": "623f8ef656965e1884291c29",
+							"examReference": {
+								"$oid": "623f8ef656965e1884291c29"
+							},
 							"minimumscore": 3
 						},
 						{
@@ -1014,7 +1162,9 @@
 					"options": [
 						{
 							"type": "exam",
-							"examReference": "623f8ef656965e1884291c29",
+							"examReference": {
+								"$oid": "623f8ef656965e1884291c29"
+							},
 							"minimumscore": 4
 						},
 						{
@@ -1051,7 +1201,9 @@
 					"options": [
 						{
 							"type": "exam",
-							"examReference": "623f8ef656965e1884291c29",
+							"examReference": {
+								"$oid": "623f8ef656965e1884291c29"
+							},
 							"minimumscore": 5
 						},
 						{
@@ -1083,7 +1235,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c2a",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c2a"
+		},
 		"type": "AP",
 		"name": "Calculus BC",
 		"yields": [
@@ -1095,7 +1249,9 @@
 					"options": [
 						{
 							"type": "exam",
-							"examReference": "623f8ef656965e1884291c2a",
+							"examReference": {
+								"$oid": "623f8ef656965e1884291c2a"
+							},
 							"minimumscore": 3
 						},
 						{
@@ -1137,7 +1293,9 @@
 					"options": [
 						{
 							"type": "exam",
-							"examReference": "623f8ef656965e1884291c2a",
+							"examReference": {
+								"$oid": "623f8ef656965e1884291c2a"
+							},
 							"minimumscore": 4
 						},
 						{
@@ -1182,7 +1340,9 @@
 					"options": [
 						{
 							"type": "exam",
-							"examReference": "623f8ef656965e1884291c2a",
+							"examReference": {
+								"$oid": "623f8ef656965e1884291c2a"
+							},
 							"minimumscore": 5
 						},
 						{
@@ -1222,14 +1382,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c2b",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c2b"
+		},
 		"type": "AP",
 		"name": "Music Theory",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2b"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1243,7 +1407,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2b"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1257,7 +1423,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2b"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1271,14 +1439,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c2c",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c2c"
+		},
 		"type": "AP",
 		"name": "Physics B (non-calculus)",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2c"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1293,7 +1465,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2c"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1311,7 +1485,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2c"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1329,14 +1505,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c2d",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c2d"
+		},
 		"type": "AP",
 		"name": "Physics 1",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2d"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1351,7 +1531,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2d"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1369,7 +1551,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2d"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1387,14 +1571,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c2e",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c2e"
+		},
 		"type": "AP",
 		"name": "Physics 2",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2e"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1409,7 +1597,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2e"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1427,7 +1617,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2e"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1445,14 +1637,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c2f",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c2f"
+		},
 		"type": "AP",
 		"name": "Physics C: Mechanics",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2f"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1467,7 +1663,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2f"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1484,7 +1682,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c2f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c2f"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1501,14 +1701,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c30",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c30"
+		},
 		"type": "AP",
 		"name": "Physics C: Electrical and Magnetic",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c30",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c30"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1559,7 +1763,9 @@
 						},
 						{
 							"type": "exam",
-							"examReference": "623f8ef656965e1884291c30",
+							"examReference": {
+								"$oid": "623f8ef656965e1884291c30"
+							},
 							"minimumscore": 4
 						}
 					]
@@ -1620,7 +1826,9 @@
 						},
 						{
 							"type": "exam",
-							"examReference": "623f8ef656965e1884291c30",
+							"examReference": {
+								"$oid": "623f8ef656965e1884291c30"
+							},
 							"minimumscore": 5
 						}
 					]
@@ -1645,14 +1853,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c31",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c31"
+		},
 		"type": "AP",
 		"name": "General Psychology",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c31",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c31"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1667,7 +1879,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c31",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c31"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1681,7 +1895,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c31",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c31"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1695,14 +1911,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c32",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c32"
+		},
 		"type": "AP",
 		"name": "Spanish Language & Culture",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c32",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c32"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1719,7 +1939,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c32",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c32"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1739,7 +1961,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c32",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c32"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1762,14 +1986,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c33",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c33"
+		},
 		"type": "AP",
 		"name": "Spanish Literature & Culture",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c33",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c33"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1789,7 +2017,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c33",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c33"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1812,7 +2042,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c33",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c33"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1835,14 +2067,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c34",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c34"
+		},
 		"type": "AP",
 		"name": "Statistics",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c34",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c34"
+					},
 					"minimumscore": 3
 				},
 				"outcome": [
@@ -1857,7 +2093,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c34",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c34"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -1871,7 +2109,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c34",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c34"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -1885,14 +2125,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c35",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c35"
+		},
 		"type": "CLEP",
 		"name": "College French Level 1 (2 semesters)",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c35",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c35"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -1909,14 +2153,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c36",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c36"
+		},
 		"type": "CLEP",
 		"name": "College Level French Level 2 (4 semesters)",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c36",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c36"
+					},
 					"minimumscore": 58
 				},
 				"outcome": [
@@ -1939,14 +2187,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c37",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c37"
+		},
 		"type": "CLEP",
 		"name": "College German Level 1 (2 semesters)",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c37",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c37"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -1963,14 +2215,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c38",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c38"
+		},
 		"type": "CLEP",
 		"name": "College Level German Level 2 (4 semesters)",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c38",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c38"
+					},
 					"minimumscore": 58
 				},
 				"outcome": [
@@ -1993,14 +2249,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c39",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c39"
+		},
 		"type": "CLEP",
 		"name": "College Spanish Level 1 (2 semesters)*",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c39",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c39"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -2017,14 +2277,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c3a",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c3a"
+		},
 		"type": "CLEP",
 		"name": "College Spanish Level 2 (3 semesters)",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c3a",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c3a"
+					},
 					"minimumscore": 60
 				},
 				"outcome": [
@@ -2044,14 +2308,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c3b",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c3b"
+		},
 		"type": "CLEP",
 		"name": "College Spanish with Writing (4 semesters)",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c3b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c3b"
+					},
 					"minimumscore": 65
 				},
 				"outcome": [
@@ -2074,14 +2342,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c3c",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c3c"
+		},
 		"type": "CLEP",
 		"name": "American Government",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c3c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c3c"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -2095,14 +2367,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c3d",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c3d"
+		},
 		"type": "CLEP",
 		"name": "American History I: Early Colonization to 1877",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c3d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c3d"
+					},
 					"minimumscore": 60
 				},
 				"outcome": [
@@ -2116,14 +2392,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c3e",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c3e"
+		},
 		"type": "CLEP",
 		"name": "American History II: 1865 to Present",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c3e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c3e"
+					},
 					"minimumscore": 60
 				},
 				"outcome": [
@@ -2137,14 +2417,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c3f",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c3f"
+		},
 		"type": "CLEP",
 		"name": "Human Growth and Development",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c3f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c3f"
+					},
 					"minimumscore": 57
 				},
 				"outcome": [
@@ -2158,14 +2442,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c40",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c40"
+		},
 		"type": "CLEP",
 		"name": "Introduction to Educational Psychology",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c40",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c40"
+					},
 					"minimumscore": 57
 				},
 				"outcome": [
@@ -2180,14 +2468,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c41",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c41"
+		},
 		"type": "CLEP",
 		"name": "Introductory Macroeconomics",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c41",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c41"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -2201,14 +2493,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c42",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c42"
+		},
 		"type": "CLEP",
 		"name": "Introductory Microeconomics",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c42",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c42"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -2222,14 +2518,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c43",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c43"
+		},
 		"type": "CLEP",
 		"name": "Introductory Psychology",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c43",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c43"
+					},
 					"minimumscore": 57
 				},
 				"outcome": [
@@ -2243,14 +2543,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c44",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c44"
+		},
 		"type": "CLEP",
 		"name": "Western Civilization I: Ancient Near East to 1648",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c44",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c44"
+					},
 					"minimumscore": 60
 				},
 				"outcome": [
@@ -2264,14 +2568,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c45",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c45"
+		},
 		"type": "CLEP",
 		"name": "Western Civilization II: 1648 to Present",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c45",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c45"
+					},
 					"minimumscore": 60
 				},
 				"outcome": [
@@ -2285,14 +2593,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c46",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c46"
+		},
 		"type": "CLEP",
 		"name": "Calculus with Elementary Functions",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c46",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c46"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -2309,7 +2621,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c46",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c46"
+					},
 					"minimumscore": 61
 				},
 				"outcome": [
@@ -2326,14 +2640,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c47",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c47"
+		},
 		"type": "CLEP",
 		"name": "College Algebra",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c47",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c47"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -2347,14 +2665,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c48",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c48"
+		},
 		"type": "CLEP",
 		"name": "General Biology",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c48",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c48"
+					},
 					"minimumscore": 56
 				},
 				"outcome": [
@@ -2377,14 +2699,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c49",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c49"
+		},
 		"type": "CLEP",
 		"name": "General Chemistry",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c49",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c49"
+					},
 					"minimumscore": 60
 				},
 				"outcome": [
@@ -2401,7 +2727,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c49",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c49"
+					},
 					"minimumscore": 70
 				},
 				"outcome": [
@@ -2424,14 +2752,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c4a",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c4a"
+		},
 		"type": "CLEP",
 		"name": "Pre-calculus",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c4a",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c4a"
+					},
 					"minimumscore": 58
 				},
 				"outcome": [
@@ -2445,14 +2777,18 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c4b",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c4b"
+		},
 		"type": "CLEP",
 		"name": "Information Systems and Computer Applications",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c4b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c4b"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -2467,7 +2803,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c4c",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c4c"
+		},
 		"type": "IB",
 		"name": "Biology",
 		"level": "Standard",
@@ -2475,7 +2813,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c4c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c4c"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -2490,7 +2830,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c4c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c4c"
+					},
 					"minimumscore": 7
 				},
 				"outcome": [
@@ -2513,7 +2855,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c4d",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c4d"
+		},
 		"type": "IB",
 		"name": "Biology",
 		"level": "Higher",
@@ -2521,7 +2865,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c4d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c4d"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -2536,7 +2882,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c4d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c4d"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -2559,7 +2907,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c4e",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c4e"
+		},
 		"type": "IB",
 		"name": "Chemistry",
 		"level": "Standard",
@@ -2567,7 +2917,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c4e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c4e"
+					},
 					"minimumscore": 7
 				},
 				"outcome": [
@@ -2590,7 +2942,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c4f",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c4f"
+		},
 		"type": "IB",
 		"name": "Chemistry",
 		"level": "Higher",
@@ -2598,7 +2952,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c4f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c4f"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -2621,7 +2977,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c50",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c50"
+		},
 		"type": "IB",
 		"name": "Computer Science",
 		"level": "Higher",
@@ -2629,7 +2987,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c50",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c50"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -2646,7 +3006,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c51",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c51"
+		},
 		"type": "IB",
 		"name": "Computer Science",
 		"level": "Standard",
@@ -2654,7 +3016,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c51",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c51"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -2671,7 +3035,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c52",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c52"
+		},
 		"type": "IB",
 		"name": "Economics",
 		"level": "Standard",
@@ -2679,7 +3045,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c52",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c52"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -2693,7 +3061,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c53",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c53"
+		},
 		"type": "IB",
 		"name": "Economics",
 		"level": "Higher",
@@ -2701,7 +3071,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c53",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c53"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -2718,7 +3090,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c54",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c54"
+		},
 		"type": "IB",
 		"name": "Language A: Literature",
 		"level": "Standard",
@@ -2726,7 +3100,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c54",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c54"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -2740,7 +3116,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c54",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c54"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -2757,7 +3135,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c55",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c55"
+		},
 		"type": "IB",
 		"name": "Language A: Literature",
 		"level": "Higher",
@@ -2765,7 +3145,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c55",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c55"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -2779,7 +3161,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c55",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c55"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -2796,7 +3180,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c56",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c56"
+		},
 		"type": "IB",
 		"name": "Language A: Language and Literature",
 		"level": "Standard",
@@ -2804,7 +3190,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c56",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c56"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -2818,7 +3206,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c56",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c56"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -2835,7 +3225,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c57",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c57"
+		},
 		"type": "IB",
 		"name": "Language A: Language and Literature",
 		"level": "Higher",
@@ -2843,7 +3235,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c57",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c57"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -2857,7 +3251,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c57",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c57"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -2874,7 +3270,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c58",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c58"
+		},
 		"type": "IB",
 		"name": "Environmental Systems and Societies",
 		"level": "Standard",
@@ -2882,7 +3280,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c58",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c58"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -2897,7 +3297,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c58",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c58"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -2911,7 +3313,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c59",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c59"
+		},
 		"type": "IB",
 		"name": "Geography",
 		"level": "Higher",
@@ -2919,7 +3323,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c59",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c59"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -2934,7 +3340,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c59",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c59"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -2948,7 +3356,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c5a",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c5a"
+		},
 		"type": "IB",
 		"name": "History (Any Regional Area)",
 		"level": "Higher",
@@ -2956,7 +3366,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c5a",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c5a"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -2971,7 +3383,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c5b",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c5b"
+		},
 		"type": "IB",
 		"name": "Any B languange offered by UTD",
 		"level": "Standard",
@@ -2979,7 +3393,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c5b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c5b"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -2994,7 +3410,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c5c",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c5c"
+		},
 		"type": "IB",
 		"name": "Arabic B",
 		"level": "Higher",
@@ -3002,7 +3420,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c5c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c5c"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -3019,7 +3439,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c5d",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c5d"
+		},
 		"type": "IB",
 		"name": "Chinese B",
 		"level": "Higher",
@@ -3027,7 +3449,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c5d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c5d"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -3044,7 +3468,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c5e",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c5e"
+		},
 		"type": "IB",
 		"name": "Frence B",
 		"level": "Higher",
@@ -3052,7 +3478,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c5e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c5e"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -3069,7 +3497,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c5f",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c5f"
+		},
 		"type": "IB",
 		"name": "Spanish (A or B)",
 		"level": "Standard",
@@ -3077,7 +3507,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c5f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c5f"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -3097,7 +3529,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c60",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c60"
+		},
 		"type": "IB",
 		"name": "Spanish (A or B)",
 		"level": "Higher",
@@ -3105,7 +3539,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c60",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c60"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -3128,7 +3564,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c61",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c61"
+		},
 		"type": "IB",
 		"name": "Mathematics",
 		"level": "Standard",
@@ -3136,7 +3574,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c61",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c61"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -3150,7 +3590,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c61",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c61"
+					},
 					"minimumscore": 7
 				},
 				"outcome": [
@@ -3167,7 +3609,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c62",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c62"
+		},
 		"type": "IB",
 		"name": "Mathematics",
 		"level": "Higher",
@@ -3175,7 +3619,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c62",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c62"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3189,7 +3635,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c62",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c62"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -3209,7 +3657,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c63",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c63"
+		},
 		"type": "IB",
 		"name": "Mathematics Analysis and Approaches",
 		"level": "Higher",
@@ -3217,7 +3667,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c63",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c63"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -3236,7 +3688,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c63",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c63"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -3250,7 +3704,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c63",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c63"
+					},
 					"minimumscore": 7
 				},
 				"outcome": [
@@ -3264,7 +3720,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c64",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c64"
+		},
 		"type": "IB",
 		"name": "Mathematics Analysis and Approaches",
 		"level": "Standard",
@@ -3272,7 +3730,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c64",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c64"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -3286,7 +3746,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c64",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c64"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -3300,7 +3762,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c65",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c65"
+		},
 		"type": "IB",
 		"name": "Mathematics Applications and Interpretations",
 		"level": "Higher",
@@ -3308,7 +3772,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c65",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c65"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -3327,7 +3793,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c66",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c66"
+		},
 		"type": "IB",
 		"name": "Mathematics Applications and Interpretations",
 		"level": "Standard",
@@ -3335,7 +3803,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c66",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c66"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -3349,7 +3819,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c67",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c67"
+		},
 		"type": "IB",
 		"name": "Further Mathematics",
 		"level": "Higher",
@@ -3357,7 +3829,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c67",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c67"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -3380,7 +3854,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c67",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c67"
+					},
 					"minimumscore": 7
 				},
 				"outcome": [
@@ -3406,7 +3882,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c68",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c68"
+		},
 		"type": "IB",
 		"name": "Music",
 		"level": "Standard",
@@ -3414,7 +3892,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c68",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c68"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3428,7 +3908,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c69",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c69"
+		},
 		"type": "IB",
 		"name": "Music",
 		"level": "Higher",
@@ -3436,7 +3918,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c69",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c69"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3450,7 +3934,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c6a",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c6a"
+		},
 		"type": "IB",
 		"name": "Philosophy",
 		"level": "Standard",
@@ -3458,7 +3944,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c6a",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c6a"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3472,7 +3960,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c6b",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c6b"
+		},
 		"type": "IB",
 		"name": "Philosophy",
 		"level": "Higher",
@@ -3480,7 +3970,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c6b",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c6b"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3494,7 +3986,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c6c",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c6c"
+		},
 		"type": "IB",
 		"name": "Physics",
 		"level": "Standard",
@@ -3502,7 +3996,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c6c",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c6c"
+					},
 					"minimumscore": 7
 				},
 				"outcome": [
@@ -3525,7 +4021,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c6d",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c6d"
+		},
 		"type": "IB",
 		"name": "Physics",
 		"level": "Higher",
@@ -3533,7 +4031,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c6d",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c6d"
+					},
 					"minimumscore": 6
 				},
 				"outcome": [
@@ -3556,7 +4056,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c6e",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c6e"
+		},
 		"type": "IB",
 		"name": "Psychology",
 		"level": "Higher",
@@ -3564,7 +4066,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c6e",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c6e"
+					},
 					"minimumscore": 5
 				},
 				"outcome": [
@@ -3578,7 +4082,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c6f",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c6f"
+		},
 		"type": "IB",
 		"name": "Theatre",
 		"level": "Standard",
@@ -3586,7 +4092,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c6f",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c6f"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3600,7 +4108,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c70",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c70"
+		},
 		"type": "IB",
 		"name": "Theatre",
 		"level": "Higher",
@@ -3608,7 +4118,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c70",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c70"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3622,7 +4134,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c71",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c71"
+		},
 		"type": "IB",
 		"name": "Visual Arts",
 		"level": "Standard",
@@ -3630,7 +4144,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c71",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c71"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3644,7 +4160,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c72",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c72"
+		},
 		"type": "IB",
 		"name": "Visual Arts",
 		"level": "Higher",
@@ -3652,7 +4170,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c72",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c72"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3666,7 +4186,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c73",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c73"
+		},
 		"type": "IB",
 		"name": "Film",
 		"level": "Standard",
@@ -3674,7 +4196,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c73",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c73"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3688,7 +4212,9 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c74",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c74"
+		},
 		"type": "IB",
 		"name": "Film",
 		"level": "Higher",
@@ -3696,7 +4222,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c74",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c74"
+					},
 					"minimumscore": 4
 				},
 				"outcome": [
@@ -3710,13 +4238,17 @@
 		]
 	},
 	{
-		"_id": "623f8ef656965e1884291c75",
+		"_id": {
+			"$oid": "623f8ef656965e1884291c75"
+		},
 		"type": "ALEKS",
 		"yields": [
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c75",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c75"
+					},
 					"minimumscore": 35
 				},
 				"outcome": [
@@ -3730,7 +4262,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c75",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c75"
+					},
 					"minimumscore": 50
 				},
 				"outcome": [
@@ -3747,7 +4281,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c75",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c75"
+					},
 					"minimumscore": 70
 				},
 				"outcome": [
@@ -3767,7 +4303,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c75",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c75"
+					},
 					"minimumscore": 80
 				},
 				"outcome": [
@@ -3784,7 +4322,9 @@
 			{
 				"requirement": {
 					"type": "exam",
-					"examReference": "623f8ef656965e1884291c75",
+					"examReference": {
+						"$oid": "623f8ef656965e1884291c75"
+					},
 					"minimumscore": 85
 				},
 				"outcome": [
