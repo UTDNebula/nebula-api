@@ -1,0 +1,4625 @@
+[
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c17"
+        },
+        "type": "AP",
+        "name": "History of Art",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c17"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c17"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "AHST",
+                            "number": 2331
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c17"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "AHST",
+                            "number": 2331
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c18"
+        },
+        "type": "AP",
+        "name": "Studio Art: 2-D Design",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c18"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c18"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ARTS",
+                            "number": 2380
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c18"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ARTS",
+                            "number": 2380
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c19"
+        },
+        "type": "AP",
+        "name": "Studio Art: Drawing",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c19"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c19"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ARTS",
+                            "number": 1316
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c19"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ARTS",
+                            "number": 1316
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c1a"
+        },
+        "type": "AP",
+        "name": "General Biology",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1a"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1a"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1a"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2281
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c1b"
+        },
+        "type": "AP",
+        "name": "General Chemistry",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1b"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1b"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1b"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1112
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c1c"
+        },
+        "type": "AP",
+        "name": "Chinese Language & Culture",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1c"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHIN",
+                            "number": 1311
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1c"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHIN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHIN",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1c"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHIN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHIN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHIN",
+                            "number": 2311
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c1d"
+        },
+        "type": "AP",
+        "name": "Computer Science A",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1d"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1d"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CS",
+                            "number": 1336
+                        },
+                        {
+                            "prefix": "CS",
+                            "number": 1337
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1d"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CS",
+                            "number": 1336
+                        },
+                        {
+                            "prefix": "CS",
+                            "number": 1337
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c1e"
+        },
+        "type": "AP",
+        "name": "Macroeconomics",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1e"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1e"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1e"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c1f"
+        },
+        "type": "AP",
+        "name": "Microeconomics",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1f"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1f"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ECON",
+                            "number": 2302
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c1f"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ECON",
+                            "number": 2302
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c20"
+        },
+        "type": "AP",
+        "name": "English Language and Composition",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c20"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c20"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c20"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c21"
+        },
+        "type": "AP",
+        "name": "English Literature and Composition",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c21"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c21"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "LIT",
+                            "number": 2331
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c21"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "LIT",
+                            "number": 2331
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c22"
+        },
+        "type": "AP",
+        "name": "French Language",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c22"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c22"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c22"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 2311
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c23"
+        },
+        "type": "AP",
+        "name": "Human Geography",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c23"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GEOG",
+                            "number": 2303
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c23"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GEOG",
+                            "number": 2303
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c23"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GEOG",
+                            "number": 2303
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c24"
+        },
+        "type": "AP",
+        "name": "German Language",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c24"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c24"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c24"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 2311
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c25"
+        },
+        "type": "AP",
+        "name": "Comp Government and Politics",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c25"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c25"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c25"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c26"
+        },
+        "type": "AP",
+        "name": "US Government and Politics",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c26"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GOVT",
+                            "number": 2305
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c26"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GOVT",
+                            "number": 2305
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c26"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GOVT",
+                            "number": 2305
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c27"
+        },
+        "type": "AP",
+        "name": "United States History",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c27"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "HIST",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c27"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "HIST",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "HIST",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c27"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "HIST",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "HIST",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c28"
+        },
+        "type": "AP",
+        "name": "Japanese Language & Culture",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c28"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "JAPN",
+                            "number": 1311
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c28"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "JAPN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "JAPN",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c28"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "JAPN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "JAPN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "JAPN",
+                            "number": 2311
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c29"
+        },
+        "type": "AP",
+        "name": "Calculus AB",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "collection",
+                    "name": "AP Calculus BC",
+                    "required": 2,
+                    "options": [
+                        {
+                            "type": "exam",
+                            "examReference": {
+                                "$oid": "623f8ef656965e1884291c29"
+                            },
+                            "minimumscore": 3
+                        },
+                        {
+                            "type": "other",
+                            "description": "AP Math Exam Credit",
+                            "condition": "Students can receive credit for only one AP Math exam"
+                        }
+                    ]
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "collection",
+                    "name": "AP Calculus BC",
+                    "required": 2,
+                    "options": [
+                        {
+                            "type": "exam",
+                            "examReference": {
+                                "$oid": "623f8ef656965e1884291c29"
+                            },
+                            "minimumscore": 4
+                        },
+                        {
+                            "type": "other",
+                            "description": "AP Math Exam Credit",
+                            "condition": "Students can receive credit for only one AP Math exam"
+                        }
+                    ]
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "collection",
+                    "name": "AP Calculus BC",
+                    "required": 2,
+                    "options": [
+                        {
+                            "type": "exam",
+                            "examReference": {
+                                "$oid": "623f8ef656965e1884291c29"
+                            },
+                            "minimumscore": 5
+                        },
+                        {
+                            "type": "other",
+                            "description": "AP Math Exam Credit",
+                            "condition": "Students can receive credit for only one AP Math exam"
+                        }
+                    ]
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c2a"
+        },
+        "type": "AP",
+        "name": "Calculus BC",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "collection",
+                    "name": "AP Calculus BC",
+                    "required": 3,
+                    "options": [
+                        {
+                            "type": "exam",
+                            "examReference": {
+                                "$oid": "623f8ef656965e1884291c2a"
+                            },
+                            "minimumscore": 3
+                        },
+                        {
+                            "type": "other",
+                            "description": "AP Math Exam Credit",
+                            "condition": "Students can receive credit for only one AP Math exam"
+                        },
+                        {
+                            "type": "other",
+                            "description": "AP Calculus BC: AB subscore",
+                            "condition": "Requires an AB subscore of 4 or 5."
+                        }
+                    ]
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "collection",
+                    "name": "AP Calculus BC",
+                    "required": 2,
+                    "options": [
+                        {
+                            "type": "exam",
+                            "examReference": {
+                                "$oid": "623f8ef656965e1884291c2a"
+                            },
+                            "minimumscore": 4
+                        },
+                        {
+                            "type": "other",
+                            "description": "AP Math Exam Credit",
+                            "condition": "Students can receive credit for only one AP Math exam"
+                        }
+                    ]
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1326
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2414
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "collection",
+                    "name": "AP Calculus BC",
+                    "required": 2,
+                    "options": [
+                        {
+                            "type": "exam",
+                            "examReference": {
+                                "$oid": "623f8ef656965e1884291c2a"
+                            },
+                            "minimumscore": 5
+                        },
+                        {
+                            "type": "other",
+                            "description": "AP Math Exam Credit",
+                            "condition": "Students can receive credit for only one AP Math exam"
+                        }
+                    ]
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1326
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2414
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c2b"
+        },
+        "type": "AP",
+        "name": "Music Theory",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2b"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MUSI",
+                            "number": 2328
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2b"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MUSI",
+                            "number": 2328
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2b"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MUSI",
+                            "number": 2328
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c2c"
+        },
+        "type": "AP",
+        "name": "Physics B (non-calculus)",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2c"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2c"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2c"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c2d"
+        },
+        "type": "AP",
+        "name": "Physics 1",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2d"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2d"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2d"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c2e"
+        },
+        "type": "AP",
+        "name": "Physics 2",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2e"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2e"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2e"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1101
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c2f"
+        },
+        "type": "AP",
+        "name": "Physics C: Mechanics",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2f"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2f"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 2325
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2125
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c2f"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 2325
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2125
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c30"
+        },
+        "type": "AP",
+        "name": "Physics C: Electrical and Magnetic",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c30"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "collection",
+                    "name": "AP Physics C: Electrical and Magnetic",
+                    "required": 2,
+                    "options": [
+                        {
+                            "type": "collection",
+                            "name": "AP Physics C: Electrical and Magnetic for Physics Majors",
+                            "required": 1,
+                            "options": [
+                                {
+                                    "type": "collection",
+                                    "name": "AP Physics C: Electrical and Magnetic for Physics Majors",
+                                    "required": 2,
+                                    "options": [
+                                        {
+                                            "type": "major",
+                                            "major": "Physics"
+                                        },
+                                        {
+                                            "type": "course",
+                                            "class_reference": {
+                                                "prefix": "PHYS",
+                                                "number": 3416
+                                            },
+                                            "minimum_grade": "C"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "major",
+                                    "major": "Physics",
+                                    "exclude": true
+                                }
+                            ]
+                        },
+                        {
+                            "type": "exam",
+                            "examReference": {
+                                "$oid": "623f8ef656965e1884291c30"
+                            },
+                            "minimumscore": 4
+                        }
+                    ]
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 2326,
+                            "special": "Physics Majors: Credit for 2326 + 2126 is applied only if PHYS 3416 is passed with a grade of C or higher; otherwise you earn 4 SCH of free electives."
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2126
+                        }
+                    ],
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 4
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "collection",
+                    "name": "AP Physics C: Electrical and Magnetic",
+                    "required": 2,
+                    "options": [
+                        {
+                            "type": "collection",
+                            "name": "AP Physics C: Electrical and Magnetic for Physics Majors",
+                            "required": 1,
+                            "options": [
+                                {
+                                    "type": "collection",
+                                    "name": "AP Physics C: Electrical and Magnetic for Physics Majors",
+                                    "required": 2,
+                                    "options": [
+                                        {
+                                            "type": "major",
+                                            "major": "Physics"
+                                        },
+                                        {
+                                            "type": "course",
+                                            "class_reference": {
+                                                "prefix": "PHYS",
+                                                "number": 3416
+                                            },
+                                            "minimum_grade": "C"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "major",
+                                    "major": "Physics",
+                                    "exclude": true
+                                }
+                            ]
+                        },
+                        {
+                            "type": "exam",
+                            "examReference": {
+                                "$oid": "623f8ef656965e1884291c30"
+                            },
+                            "minimumscore": 5
+                        }
+                    ]
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 2326,
+                            "special": "Physics Majors: Credit for 2326 + 2126 is applied only if PHYS 3416 is passed with a grade of C or higher; otherwise you earn 4 SCH of free electives."
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2126
+                        }
+                    ],
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 4
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c31"
+        },
+        "type": "AP",
+        "name": "General Psychology",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c31"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c31"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PSY",
+                            "number": 2301
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c31"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PSY",
+                            "number": 2301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c32"
+        },
+        "type": "AP",
+        "name": "Spanish Language & Culture",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c32"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c32"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c32"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c33"
+        },
+        "type": "AP",
+        "name": "Spanish Literature & Culture",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c33"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c33"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c33"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c34"
+        },
+        "type": "AP",
+        "name": "Statistics",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c34"
+                    },
+                    "minimumscore": 3
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "free",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c34"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c34"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c35"
+        },
+        "type": "CLEP",
+        "name": "College French Level 1 (2 semesters)",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c35"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c36"
+        },
+        "type": "CLEP",
+        "name": "College Level French Level 2 (4 semesters)",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c36"
+                    },
+                    "minimumscore": 58
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c37"
+        },
+        "type": "CLEP",
+        "name": "College German Level 1 (2 semesters)",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c37"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c38"
+        },
+        "type": "CLEP",
+        "name": "College Level German Level 2 (4 semesters)",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c38"
+                    },
+                    "minimumscore": 58
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GERM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "GERM",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c39"
+        },
+        "type": "CLEP",
+        "name": "College Spanish Level 1 (2 semesters)*",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c39"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c3a"
+        },
+        "type": "CLEP",
+        "name": "College Spanish Level 2 (3 semesters)",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c3a"
+                    },
+                    "minimumscore": 60
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c3b"
+        },
+        "type": "CLEP",
+        "name": "College Spanish with Writing (4 semesters)",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c3b"
+                    },
+                    "minimumscore": 65
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c3c"
+        },
+        "type": "CLEP",
+        "name": "American Government",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c3c"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GOVT",
+                            "number": 2305
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c3d"
+        },
+        "type": "CLEP",
+        "name": "American History I: Early Colonization to 1877",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c3d"
+                    },
+                    "minimumscore": 60
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "HIST",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c3e"
+        },
+        "type": "CLEP",
+        "name": "American History II: 1865 to Present",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c3e"
+                    },
+                    "minimumscore": 60
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "HIST",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c3f"
+        },
+        "type": "CLEP",
+        "name": "Human Growth and Development",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c3f"
+                    },
+                    "minimumscore": 57
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PSY",
+                            "number": 2314
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c40"
+        },
+        "type": "CLEP",
+        "name": "Introduction to Educational Psychology",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c40"
+                    },
+                    "minimumscore": 57
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "Psychology",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c41"
+        },
+        "type": "CLEP",
+        "name": "Introductory Macroeconomics",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c41"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c42"
+        },
+        "type": "CLEP",
+        "name": "Introductory Microeconomics",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c42"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ECON",
+                            "number": 2302
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c43"
+        },
+        "type": "CLEP",
+        "name": "Introductory Psychology",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c43"
+                    },
+                    "minimumscore": 57
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PSY",
+                            "number": 2301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c44"
+        },
+        "type": "CLEP",
+        "name": "Western Civilization I: Ancient Near East to 1648",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c44"
+                    },
+                    "minimumscore": 60
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "HUMA",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c45"
+        },
+        "type": "CLEP",
+        "name": "Western Civilization II: 1648 to Present",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c45"
+                    },
+                    "minimumscore": 60
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "HUMA",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c46"
+        },
+        "type": "CLEP",
+        "name": "Calculus with Elementary Functions",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c46"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c46"
+                    },
+                    "minimumscore": 61
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c47"
+        },
+        "type": "CLEP",
+        "name": "College Algebra",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c47"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c48"
+        },
+        "type": "CLEP",
+        "name": "General Biology",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c48"
+                    },
+                    "minimumscore": 56
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c49"
+        },
+        "type": "CLEP",
+        "name": "General Chemistry",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c49"
+                    },
+                    "minimumscore": 60
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c49"
+                    },
+                    "minimumscore": 70
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1112
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c4a"
+        },
+        "type": "CLEP",
+        "name": "Pre-calculus",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c4a"
+                    },
+                    "minimumscore": 58
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c4b"
+        },
+        "type": "CLEP",
+        "name": "Information Systems and Computer Applications",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c4b"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "Business Computer Information Systems",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c4c"
+        },
+        "type": "IB",
+        "name": "Biology",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c4c"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "BIOL",
+                            "number": 1300
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c4c"
+                    },
+                    "minimumscore": 7
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c4d"
+        },
+        "type": "IB",
+        "name": "Biology",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c4d"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "BIOL",
+                            "number": 1300
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c4d"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "BIOL",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2111
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "BIOL",
+                            "number": 2112
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c4e"
+        },
+        "type": "IB",
+        "name": "Chemistry",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c4e"
+                    },
+                    "minimumscore": 7
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1112
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c4f"
+        },
+        "type": "IB",
+        "name": "Chemistry",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c4f"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHEM",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1111
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "CHEM",
+                            "number": 1112
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c50"
+        },
+        "type": "IB",
+        "name": "Computer Science",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c50"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CS",
+                            "number": 1336
+                        },
+                        {
+                            "prefix": "CS",
+                            "number": 1136
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c51"
+        },
+        "type": "IB",
+        "name": "Computer Science",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c51"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CS",
+                            "number": 1334
+                        },
+                        {
+                            "prefix": "CS",
+                            "number": 1134
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c52"
+        },
+        "type": "IB",
+        "name": "Economics",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c52"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c53"
+        },
+        "type": "IB",
+        "name": "Economics",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c53"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ECON",
+                            "number": 2301
+                        },
+                        {
+                            "prefix": "ECON",
+                            "number": 2302
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c54"
+        },
+        "type": "IB",
+        "name": "Language A: Literature",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c54"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c54"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "LIT",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c55"
+        },
+        "type": "IB",
+        "name": "Language A: Literature",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c55"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c55"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "LIT",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c56"
+        },
+        "type": "IB",
+        "name": "Language A: Language and Literature",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c56"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c56"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "LIT",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c57"
+        },
+        "type": "IB",
+        "name": "Language A: Language and Literature",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c57"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c57"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "RHET",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "LIT",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c58"
+        },
+        "type": "IB",
+        "name": "Environmental Systems and Societies",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c58"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "Geoscience",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c58"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GEOS",
+                            "number": 2302
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c59"
+        },
+        "type": "IB",
+        "name": "Geography",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c59"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "Geography",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c59"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "GEOG",
+                            "number": 2303
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c5a"
+        },
+        "type": "IB",
+        "name": "History (Any Regional Area)",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c5a"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "History",
+                            "credit_hours": 6
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c5b"
+        },
+        "type": "IB",
+        "name": "Any B languange offered by UTD",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c5b"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "category": "Language",
+                            "credit_hours": 3
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c5c"
+        },
+        "type": "IB",
+        "name": "Arabic B",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c5c"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "ARAB",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "ARAB",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c5d"
+        },
+        "type": "IB",
+        "name": "Chinese B",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c5d"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "CHIN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "CHIN",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c5e"
+        },
+        "type": "IB",
+        "name": "Frence B",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c5e"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "FREN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "FREN",
+                            "number": 1312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c5f"
+        },
+        "type": "IB",
+        "name": "Spanish (A or B)",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c5f"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c60"
+        },
+        "type": "IB",
+        "name": "Spanish (A or B)",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c60"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "SPAN",
+                            "number": 1311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 1312
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2311
+                        },
+                        {
+                            "prefix": "SPAN",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c61"
+        },
+        "type": "IB",
+        "name": "Mathematics",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c61"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c61"
+                    },
+                    "minimumscore": 7
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c62"
+        },
+        "type": "IB",
+        "name": "Mathematics",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c62"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c62"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1326
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c63"
+        },
+        "type": "IB",
+        "name": "Mathematics Analysis and Approaches",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c63"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1326
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c63"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c63"
+                    },
+                    "minimumscore": 7
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c64"
+        },
+        "type": "IB",
+        "name": "Mathematics Analysis and Approaches",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c64"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c64"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c65"
+        },
+        "type": "IB",
+        "name": "Mathematics Applications and Interpretations",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c65"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ],
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1316
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c66"
+        },
+        "type": "IB",
+        "name": "Mathematics Applications and Interpretations",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c66"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c67"
+        },
+        "type": "IB",
+        "name": "Further Mathematics",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c67"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2333
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c67"
+                    },
+                    "minimumscore": 7
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2333
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 1342
+                        },
+                        {
+                            "prefix": "STAT",
+                            "number": 2332
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c68"
+        },
+        "type": "IB",
+        "name": "Music",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c68"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MUSI",
+                            "number": 1306
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c69"
+        },
+        "type": "IB",
+        "name": "Music",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c69"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MUSI",
+                            "number": 1306
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c6a"
+        },
+        "type": "IB",
+        "name": "Philosophy",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c6a"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHIL",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c6b"
+        },
+        "type": "IB",
+        "name": "Philosophy",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c6b"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHIL",
+                            "number": 1301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c6c"
+        },
+        "type": "IB",
+        "name": "Physics",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c6c"
+                    },
+                    "minimumscore": 7
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2125
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2126
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c6d"
+        },
+        "type": "IB",
+        "name": "Physics",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c6d"
+                    },
+                    "minimumscore": 6
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PHYS",
+                            "number": 1301
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2125
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 1302
+                        },
+                        {
+                            "prefix": "PHYS",
+                            "number": 2126
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c6e"
+        },
+        "type": "IB",
+        "name": "Psychology",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c6e"
+                    },
+                    "minimumscore": 5
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "PSY",
+                            "number": 2301
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c6f"
+        },
+        "type": "IB",
+        "name": "Theatre",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c6f"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "THEA",
+                            "number": 1310
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c70"
+        },
+        "type": "IB",
+        "name": "Theatre",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c70"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "THEA",
+                            "number": 1310
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c71"
+        },
+        "type": "IB",
+        "name": "Visual Arts",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c71"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "AHST",
+                            "number": 2331
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c72"
+        },
+        "type": "IB",
+        "name": "Visual Arts",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c72"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "AHST",
+                            "number": 2331
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c73"
+        },
+        "type": "IB",
+        "name": "Film",
+        "level": "Standard",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c73"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "FILM",
+                            "number": 2332
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c74"
+        },
+        "type": "IB",
+        "name": "Film",
+        "level": "Higher",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c74"
+                    },
+                    "minimumscore": 4
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "FILM",
+                            "number": 2332
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "623f8ef656965e1884291c75"
+        },
+        "type": "ALEKS",
+        "yields": [
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c75"
+                    },
+                    "minimumscore": 35
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1306
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c75"
+                    },
+                    "minimumscore": 50
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1314
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 1316
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c75"
+                    },
+                    "minimumscore": 70
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 1325
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2306
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2312
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c75"
+                    },
+                    "minimumscore": 80
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2370
+                        },
+                        {
+                            "prefix": "MATH",
+                            "number": 2413
+                        }
+                    ]
+                ]
+            },
+            {
+                "requirement": {
+                    "type": "exam",
+                    "examReference": {
+                        "$oid": "623f8ef656965e1884291c75"
+                    },
+                    "minimumscore": 85
+                },
+                "outcome": [
+                    [
+                        {
+                            "prefix": "MATH",
+                            "number": 2417
+                        }
+                    ]
+                ]
+            }
+        ]
+    }
+]
