@@ -62,7 +62,7 @@ export const SectionSchema = new Schema<Section>({
   core_flags: { type: [String], required: true },
   syllabus_uri: { type: String, required: false },
   grade_distribution: { type: [Number], required: true },
-  attributes: { type: Object, required: true }
+  attributes: { type: Object, required: true },
 });
 
 const sectionDB = connection.useDb('combinedDB');
