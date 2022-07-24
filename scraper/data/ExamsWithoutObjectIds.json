@@ -9,7 +9,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c17"
                     },
                     "minimum_score": 3
@@ -26,7 +26,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c17"
                     },
                     "minimum_score": 4
@@ -43,7 +43,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c17"
                     },
                     "minimum_score": 5
@@ -69,7 +69,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c18"
                     },
                     "minimum_score": 3
@@ -86,7 +86,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c18"
                     },
                     "minimum_score": 4
@@ -103,7 +103,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c18"
                     },
                     "minimum_score": 5
@@ -129,7 +129,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c19"
                     },
                     "minimum_score": 3
@@ -146,7 +146,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c19"
                     },
                     "minimum_score": 4
@@ -163,7 +163,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c19"
                     },
                     "minimum_score": 5
@@ -189,7 +189,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1a"
                     },
                     "minimum_score": 3
@@ -206,7 +206,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1a"
                     },
                     "minimum_score": 4
@@ -235,7 +235,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1a"
                     },
                     "minimum_score": 5
@@ -277,7 +277,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1b"
                     },
                     "minimum_score": 3
@@ -294,7 +294,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1b"
                     },
                     "minimum_score": 4
@@ -315,7 +315,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1b"
                     },
                     "minimum_score": 5
@@ -353,7 +353,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1c"
                     },
                     "minimum_score": 3
@@ -370,7 +370,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1c"
                     },
                     "minimum_score": 4
@@ -391,7 +391,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1c"
                     },
                     "minimum_score": 5
@@ -425,7 +425,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1d"
                     },
                     "minimum_score": 3
@@ -442,7 +442,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1d"
                     },
                     "minimum_score": 4
@@ -463,7 +463,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1d"
                     },
                     "minimum_score": 5
@@ -493,7 +493,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1e"
                     },
                     "minimum_score": 3
@@ -510,7 +510,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1e"
                     },
                     "minimum_score": 4
@@ -527,7 +527,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1e"
                     },
                     "minimum_score": 5
@@ -553,7 +553,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1f"
                     },
                     "minimum_score": 3
@@ -570,7 +570,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1f"
                     },
                     "minimum_score": 4
@@ -587,7 +587,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c1f"
                     },
                     "minimum_score": 5
@@ -613,7 +613,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c20"
                     },
                     "minimum_score": 3
@@ -630,7 +630,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c20"
                     },
                     "minimum_score": 4
@@ -647,7 +647,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c20"
                     },
                     "minimum_score": 5
@@ -673,7 +673,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c21"
                     },
                     "minimum_score": 3
@@ -690,7 +690,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c21"
                     },
                     "minimum_score": 4
@@ -707,7 +707,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c21"
                     },
                     "minimum_score": 5
@@ -733,7 +733,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c22"
                     },
                     "minimum_score": 3
@@ -750,7 +750,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c22"
                     },
                     "minimum_score": 4
@@ -771,7 +771,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c22"
                     },
                     "minimum_score": 5
@@ -805,7 +805,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c23"
                     },
                     "minimum_score": 3
@@ -822,7 +822,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c23"
                     },
                     "minimum_score": 4
@@ -839,7 +839,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c23"
                     },
                     "minimum_score": 5
@@ -865,7 +865,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c24"
                     },
                     "minimum_score": 3
@@ -882,7 +882,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c24"
                     },
                     "minimum_score": 4
@@ -903,7 +903,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c24"
                     },
                     "minimum_score": 5
@@ -937,7 +937,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c25"
                     },
                     "minimum_score": 3
@@ -954,7 +954,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c25"
                     },
                     "minimum_score": 4
@@ -971,7 +971,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c25"
                     },
                     "minimum_score": 5
@@ -997,7 +997,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c26"
                     },
                     "minimum_score": 3
@@ -1014,7 +1014,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c26"
                     },
                     "minimum_score": 4
@@ -1031,7 +1031,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c26"
                     },
                     "minimum_score": 5
@@ -1057,7 +1057,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c27"
                     },
                     "minimum_score": 3
@@ -1074,7 +1074,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c27"
                     },
                     "minimum_score": 4
@@ -1095,7 +1095,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c27"
                     },
                     "minimum_score": 5
@@ -1125,7 +1125,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c28"
                     },
                     "minimum_score": 3
@@ -1142,7 +1142,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c28"
                     },
                     "minimum_score": 4
@@ -1163,7 +1163,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c28"
                     },
                     "minimum_score": 5
@@ -1202,7 +1202,7 @@
                     "options": [
                         {
                             "type": "exam",
-                            "examReference": {
+                            "exam_reference": {
                                 "$oid": "623f8ef656965e1884291c29"
                             },
                             "minimum_score": 3
@@ -1231,7 +1231,7 @@
                     "options": [
                         {
                             "type": "exam",
-                            "examReference": {
+                            "exam_reference": {
                                 "$oid": "623f8ef656965e1884291c29"
                             },
                             "minimum_score": 4
@@ -1274,7 +1274,7 @@
                     "options": [
                         {
                             "type": "exam",
-                            "examReference": {
+                            "exam_reference": {
                                 "$oid": "623f8ef656965e1884291c29"
                             },
                             "minimum_score": 5
@@ -1326,7 +1326,7 @@
                     "options": [
                         {
                             "type": "exam",
-                            "examReference": {
+                            "exam_reference": {
                                 "$oid": "623f8ef656965e1884291c2a"
                             },
                             "minimum_score": 3
@@ -1374,7 +1374,7 @@
                     "options": [
                         {
                             "type": "exam",
-                            "examReference": {
+                            "exam_reference": {
                                 "$oid": "623f8ef656965e1884291c2a"
                             },
                             "minimum_score": 4
@@ -1427,7 +1427,7 @@
                     "options": [
                         {
                             "type": "exam",
-                            "examReference": {
+                            "exam_reference": {
                                 "$oid": "623f8ef656965e1884291c2a"
                             },
                             "minimum_score": 5
@@ -1484,7 +1484,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2b"
                     },
                     "minimum_score": 3
@@ -1501,7 +1501,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2b"
                     },
                     "minimum_score": 4
@@ -1518,7 +1518,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2b"
                     },
                     "minimum_score": 5
@@ -1544,7 +1544,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2c"
                     },
                     "minimum_score": 3
@@ -1561,7 +1561,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2c"
                     },
                     "minimum_score": 4
@@ -1582,7 +1582,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2c"
                     },
                     "minimum_score": 5
@@ -1612,7 +1612,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2d"
                     },
                     "minimum_score": 3
@@ -1629,7 +1629,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2d"
                     },
                     "minimum_score": 4
@@ -1650,7 +1650,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2d"
                     },
                     "minimum_score": 5
@@ -1680,7 +1680,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2e"
                     },
                     "minimum_score": 3
@@ -1697,7 +1697,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2e"
                     },
                     "minimum_score": 4
@@ -1718,7 +1718,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2e"
                     },
                     "minimum_score": 5
@@ -1748,7 +1748,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2f"
                     },
                     "minimum_score": 3
@@ -1765,7 +1765,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2f"
                     },
                     "minimum_score": 4
@@ -1786,7 +1786,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c2f"
                     },
                     "minimum_score": 5
@@ -1816,7 +1816,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c30"
                     },
                     "minimum_score": 3
@@ -1869,7 +1869,7 @@
                         },
                         {
                             "type": "exam",
-                            "examReference": {
+                            "exam_reference": {
                                 "$oid": "623f8ef656965e1884291c30"
                             },
                             "minimum_score": 4
@@ -1935,7 +1935,7 @@
                         },
                         {
                             "type": "exam",
-                            "examReference": {
+                            "exam_reference": {
                                 "$oid": "623f8ef656965e1884291c30"
                             },
                             "minimum_score": 5
@@ -1974,7 +1974,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c31"
                     },
                     "minimum_score": 3
@@ -1991,7 +1991,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c31"
                     },
                     "minimum_score": 4
@@ -2008,7 +2008,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c31"
                     },
                     "minimum_score": 5
@@ -2034,7 +2034,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c32"
                     },
                     "minimum_score": 3
@@ -2055,7 +2055,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c32"
                     },
                     "minimum_score": 4
@@ -2080,7 +2080,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c32"
                     },
                     "minimum_score": 5
@@ -2118,7 +2118,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c33"
                     },
                     "minimum_score": 3
@@ -2143,7 +2143,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c33"
                     },
                     "minimum_score": 4
@@ -2172,7 +2172,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c33"
                     },
                     "minimum_score": 5
@@ -2210,7 +2210,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c34"
                     },
                     "minimum_score": 3
@@ -2227,7 +2227,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c34"
                     },
                     "minimum_score": 4
@@ -2244,7 +2244,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c34"
                     },
                     "minimum_score": 5
@@ -2270,7 +2270,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c35"
                     },
                     "minimum_score": 50
@@ -2300,7 +2300,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c36"
                     },
                     "minimum_score": 58
@@ -2338,7 +2338,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c37"
                     },
                     "minimum_score": 50
@@ -2368,7 +2368,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c38"
                     },
                     "minimum_score": 58
@@ -2406,7 +2406,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c39"
                     },
                     "minimum_score": 50
@@ -2436,7 +2436,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c3a"
                     },
                     "minimum_score": 60
@@ -2470,7 +2470,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c3b"
                     },
                     "minimum_score": 65
@@ -2508,7 +2508,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c3c"
                     },
                     "minimum_score": 50
@@ -2534,7 +2534,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c3d"
                     },
                     "minimum_score": 60
@@ -2560,7 +2560,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c3e"
                     },
                     "minimum_score": 60
@@ -2586,7 +2586,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c3f"
                     },
                     "minimum_score": 57
@@ -2612,7 +2612,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c40"
                     },
                     "minimum_score": 57
@@ -2638,7 +2638,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c41"
                     },
                     "minimum_score": 50
@@ -2664,7 +2664,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c42"
                     },
                     "minimum_score": 50
@@ -2690,7 +2690,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c43"
                     },
                     "minimum_score": 57
@@ -2716,7 +2716,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c44"
                     },
                     "minimum_score": 60
@@ -2742,7 +2742,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c45"
                     },
                     "minimum_score": 60
@@ -2768,7 +2768,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c46"
                     },
                     "minimum_score": 50
@@ -2789,7 +2789,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c46"
                     },
                     "minimum_score": 61
@@ -2819,7 +2819,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c47"
                     },
                     "minimum_score": 50
@@ -2845,7 +2845,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c48"
                     },
                     "minimum_score": 56
@@ -2883,7 +2883,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c49"
                     },
                     "minimum_score": 60
@@ -2904,7 +2904,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c49"
                     },
                     "minimum_score": 70
@@ -2942,7 +2942,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c4a"
                     },
                     "minimum_score": 58
@@ -2968,7 +2968,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c4b"
                     },
                     "minimum_score": 50
@@ -2995,7 +2995,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c4c"
                     },
                     "minimum_score": 5
@@ -3012,7 +3012,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c4c"
                     },
                     "minimum_score": 7
@@ -3051,7 +3051,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c4d"
                     },
                     "minimum_score": 4
@@ -3068,7 +3068,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c4d"
                     },
                     "minimum_score": 6
@@ -3107,7 +3107,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c4e"
                     },
                     "minimum_score": 7
@@ -3146,7 +3146,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c4f"
                     },
                     "minimum_score": 6
@@ -3185,7 +3185,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c50"
                     },
                     "minimum_score": 6
@@ -3216,7 +3216,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c51"
                     },
                     "minimum_score": 6
@@ -3247,7 +3247,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c52"
                     },
                     "minimum_score": 5
@@ -3274,7 +3274,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c53"
                     },
                     "minimum_score": 5
@@ -3305,7 +3305,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c54"
                     },
                     "minimum_score": 4
@@ -3322,7 +3322,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c54"
                     },
                     "minimum_score": 5
@@ -3353,7 +3353,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c55"
                     },
                     "minimum_score": 4
@@ -3370,7 +3370,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c55"
                     },
                     "minimum_score": 5
@@ -3401,7 +3401,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c56"
                     },
                     "minimum_score": 4
@@ -3418,7 +3418,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c56"
                     },
                     "minimum_score": 5
@@ -3449,7 +3449,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c57"
                     },
                     "minimum_score": 4
@@ -3466,7 +3466,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c57"
                     },
                     "minimum_score": 5
@@ -3497,7 +3497,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c58"
                     },
                     "minimum_score": 4
@@ -3514,7 +3514,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c58"
                     },
                     "minimum_score": 6
@@ -3541,7 +3541,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c59"
                     },
                     "minimum_score": 4
@@ -3558,7 +3558,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c59"
                     },
                     "minimum_score": 5
@@ -3585,7 +3585,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c5a"
                     },
                     "minimum_score": 6
@@ -3612,7 +3612,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c5b"
                     },
                     "minimum_score": 4
@@ -3639,7 +3639,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c5c"
                     },
                     "minimum_score": 5
@@ -3670,7 +3670,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c5d"
                     },
                     "minimum_score": 5
@@ -3701,7 +3701,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c5e"
                     },
                     "minimum_score": 5
@@ -3732,7 +3732,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c5f"
                     },
                     "minimum_score": 5
@@ -3767,7 +3767,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c60"
                     },
                     "minimum_score": 5
@@ -3806,7 +3806,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c61"
                     },
                     "minimum_score": 6
@@ -3823,7 +3823,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c61"
                     },
                     "minimum_score": 7
@@ -3854,7 +3854,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c62"
                     },
                     "minimum_score": 4
@@ -3871,7 +3871,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c62"
                     },
                     "minimum_score": 6
@@ -3906,7 +3906,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c63"
                     },
                     "minimum_score": 5
@@ -3929,7 +3929,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c63"
                     },
                     "minimum_score": 6
@@ -3946,7 +3946,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c63"
                     },
                     "minimum_score": 7
@@ -3973,7 +3973,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c64"
                     },
                     "minimum_score": 5
@@ -3990,7 +3990,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c64"
                     },
                     "minimum_score": 6
@@ -4017,7 +4017,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c65"
                     },
                     "minimum_score": 6
@@ -4050,7 +4050,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c66"
                     },
                     "minimum_score": 6
@@ -4077,7 +4077,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c67"
                     },
                     "minimum_score": 6
@@ -4106,7 +4106,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c67"
                     },
                     "minimum_score": 7
@@ -4149,7 +4149,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c68"
                     },
                     "minimum_score": 4
@@ -4176,7 +4176,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c69"
                     },
                     "minimum_score": 4
@@ -4203,7 +4203,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c6a"
                     },
                     "minimum_score": 4
@@ -4230,7 +4230,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c6b"
                     },
                     "minimum_score": 4
@@ -4257,7 +4257,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c6c"
                     },
                     "minimum_score": 7
@@ -4296,7 +4296,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c6d"
                     },
                     "minimum_score": 6
@@ -4335,7 +4335,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c6e"
                     },
                     "minimum_score": 5
@@ -4362,7 +4362,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c6f"
                     },
                     "minimum_score": 4
@@ -4389,7 +4389,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c70"
                     },
                     "minimum_score": 4
@@ -4416,7 +4416,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c71"
                     },
                     "minimum_score": 4
@@ -4443,7 +4443,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c72"
                     },
                     "minimum_score": 4
@@ -4470,7 +4470,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c73"
                     },
                     "minimum_score": 4
@@ -4497,7 +4497,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c74"
                     },
                     "minimum_score": 4
@@ -4522,7 +4522,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c75"
                     },
                     "minimum_score": 35
@@ -4539,7 +4539,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c75"
                     },
                     "minimum_score": 50
@@ -4560,7 +4560,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c75"
                     },
                     "minimum_score": 70
@@ -4585,7 +4585,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c75"
                     },
                     "minimum_score": 80
@@ -4606,7 +4606,7 @@
             {
                 "requirement": {
                     "type": "exam",
-                    "examReference": {
+                    "exam_reference": {
                         "$oid": "623f8ef656965e1884291c75"
                     },
                     "minimum_score": 85
