@@ -1,3 +1,4 @@
+```
 NEBULA-API
 ├───api             - API
 │   ├───.env        - API developer environment variables (MONGODB_URI)
@@ -18,7 +19,7 @@ NEBULA-API
     ├───configs
     ├───data
     └───scripts
-
+```
 
 To connect to your Mongo database, in /api/.env: set MONGODB_URI accordingly.
 
