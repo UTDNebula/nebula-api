@@ -29,7 +29,7 @@ Clone the repository.
 
 #### API (Under construction)
 
-The API uses Golang (bundled into the project) and Gin for its endpoints.
+The API uses Golang with Gin and the MongoDB Golang Driver.
 
 ### Deployment
 
