@@ -9,17 +9,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c17"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c17"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -33,17 +26,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c17"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c17"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -56,17 +42,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c17"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c17"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -88,17 +67,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c18"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c18"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -112,17 +84,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c18"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c18"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -135,17 +100,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c18"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c18"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -167,17 +125,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c19"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c19"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -191,17 +142,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c19"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c19"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -214,17 +158,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c19"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c19"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -246,17 +183,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1a"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1a"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -270,17 +200,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1a"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1a"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -302,17 +225,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1a"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1a"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -346,17 +262,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1b"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1b"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -370,17 +279,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1b"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1b"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -396,17 +298,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1b"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1b"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -437,17 +332,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1c"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1c"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -460,17 +348,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1c"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1c"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -486,17 +367,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1c"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1c"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -524,17 +398,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1d"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1d"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -548,17 +415,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1d"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1d"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -574,17 +434,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1d"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1d"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -609,17 +462,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1e"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1e"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -633,17 +479,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1e"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1e"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -656,17 +495,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1e"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1e"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -688,17 +520,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1f"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1f"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -712,17 +537,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1f"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1f"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -735,17 +553,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c1f"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c1f"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -767,17 +578,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c20"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c20"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -791,17 +595,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c20"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c20"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -814,17 +611,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c20"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c20"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -846,17 +636,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c21"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c21"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -870,17 +653,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c21"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c21"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -893,17 +669,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c21"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c21"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -925,17 +694,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c22"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c22"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -948,17 +710,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c22"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c22"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -974,17 +729,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c22"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c22"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1012,17 +760,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c23"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c23"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1035,17 +776,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c23"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c23"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1058,17 +792,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c23"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c23"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1090,17 +817,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c24"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c24"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1113,17 +833,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c24"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c24"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1139,17 +852,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c24"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c24"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1177,17 +883,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c25"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c25"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1201,17 +900,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c25"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c25"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1225,17 +917,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c25"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c25"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1258,17 +943,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c26"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c26"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1281,17 +959,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c26"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c26"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1304,17 +975,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c26"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c26"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1336,17 +1000,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c27"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c27"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1359,17 +1016,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c27"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c27"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1385,17 +1035,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c27"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c27"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1420,17 +1063,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c28"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c28"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1443,17 +1079,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c28"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c28"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1469,17 +1098,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c28"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c28"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1512,17 +1134,10 @@
 					"options": [
 						{
 							"type": "exam",
-<<<<<<< HEAD
-							"examReference": {
-								"$oid": "623f8ef656965e1884291c29"
-							},
-							"minimumscore": 3
-=======
 							"exam_reference": {
 								"$oid": "623f8ef656965e1884291c29"
 							},
 							"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 						},
 						{
 							"type": "other",
@@ -1547,17 +1162,10 @@
 					"options": [
 						{
 							"type": "exam",
-<<<<<<< HEAD
-							"examReference": {
-								"$oid": "623f8ef656965e1884291c29"
-							},
-							"minimumscore": 4
-=======
 							"exam_reference": {
 								"$oid": "623f8ef656965e1884291c29"
 							},
 							"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 						},
 						{
 							"type": "other",
@@ -1593,17 +1201,10 @@
 					"options": [
 						{
 							"type": "exam",
-<<<<<<< HEAD
-							"examReference": {
-								"$oid": "623f8ef656965e1884291c29"
-							},
-							"minimumscore": 5
-=======
 							"exam_reference": {
 								"$oid": "623f8ef656965e1884291c29"
 							},
 							"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 						},
 						{
 							"type": "other",
@@ -1648,17 +1249,10 @@
 					"options": [
 						{
 							"type": "exam",
-<<<<<<< HEAD
-							"examReference": {
-								"$oid": "623f8ef656965e1884291c2a"
-							},
-							"minimumscore": 3
-=======
 							"exam_reference": {
 								"$oid": "623f8ef656965e1884291c2a"
 							},
 							"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 						},
 						{
 							"type": "other",
@@ -1699,17 +1293,10 @@
 					"options": [
 						{
 							"type": "exam",
-<<<<<<< HEAD
-							"examReference": {
-								"$oid": "623f8ef656965e1884291c2a"
-							},
-							"minimumscore": 4
-=======
 							"exam_reference": {
 								"$oid": "623f8ef656965e1884291c2a"
 							},
 							"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 						},
 						{
 							"type": "other",
@@ -1753,17 +1340,10 @@
 					"options": [
 						{
 							"type": "exam",
-<<<<<<< HEAD
-							"examReference": {
-								"$oid": "623f8ef656965e1884291c2a"
-							},
-							"minimumscore": 5
-=======
 							"exam_reference": {
 								"$oid": "623f8ef656965e1884291c2a"
 							},
 							"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 						},
 						{
 							"type": "other",
@@ -1811,17 +1391,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2b"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2b"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1834,17 +1407,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2b"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2b"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1857,17 +1423,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2b"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2b"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1889,17 +1448,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2c"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2c"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1913,17 +1465,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2c"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2c"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1940,17 +1485,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2c"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2c"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -1976,17 +1514,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2d"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2d"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2000,17 +1531,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2d"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2d"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2027,17 +1551,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2d"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2d"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2063,17 +1580,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2e"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2e"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2087,17 +1597,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2e"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2e"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2114,17 +1617,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2e"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2e"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2150,17 +1646,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2f"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2f"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2174,17 +1663,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2f"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2f"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2200,17 +1682,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c2f"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c2f"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2235,17 +1710,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c30"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c30"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2295,17 +1763,10 @@
 						},
 						{
 							"type": "exam",
-<<<<<<< HEAD
-							"examReference": {
-								"$oid": "623f8ef656965e1884291c30"
-							},
-							"minimumscore": 4
-=======
 							"exam_reference": {
 								"$oid": "623f8ef656965e1884291c30"
 							},
 							"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 						}
 					]
 				},
@@ -2365,17 +1826,10 @@
 						},
 						{
 							"type": "exam",
-<<<<<<< HEAD
-							"examReference": {
-								"$oid": "623f8ef656965e1884291c30"
-							},
-							"minimumscore": 5
-=======
 							"exam_reference": {
 								"$oid": "623f8ef656965e1884291c30"
 							},
 							"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 						}
 					]
 				},
@@ -2408,17 +1862,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c31"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c31"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2432,17 +1879,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c31"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c31"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2455,17 +1895,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c31"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c31"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2487,17 +1920,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c32"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c32"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2513,17 +1939,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c32"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c32"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2542,17 +1961,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c32"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c32"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2583,17 +1995,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c33"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c33"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2612,17 +2017,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c33"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c33"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2644,17 +2042,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c33"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c33"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2685,17 +2076,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c34"
-					},
-					"minimumscore": 3
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c34"
 					},
 					"minimum_score": 3
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2709,17 +2093,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c34"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c34"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2732,17 +2109,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c34"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c34"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2764,17 +2134,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c35"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c35"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2799,17 +2162,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c36"
-					},
-					"minimumscore": 58
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c36"
 					},
 					"minimum_score": 58
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2840,17 +2196,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c37"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c37"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2875,17 +2224,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c38"
-					},
-					"minimumscore": 58
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c38"
 					},
 					"minimum_score": 58
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2916,17 +2258,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c39"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c39"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2951,17 +2286,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c3a"
-					},
-					"minimumscore": 60
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c3a"
 					},
 					"minimum_score": 60
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -2989,17 +2317,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c3b"
-					},
-					"minimumscore": 65
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c3b"
 					},
 					"minimum_score": 65
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3030,17 +2351,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c3c"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c3c"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3062,17 +2376,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c3d"
-					},
-					"minimumscore": 60
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c3d"
 					},
 					"minimum_score": 60
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3094,17 +2401,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c3e"
-					},
-					"minimumscore": 60
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c3e"
 					},
 					"minimum_score": 60
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3126,17 +2426,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c3f"
-					},
-					"minimumscore": 57
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c3f"
 					},
 					"minimum_score": 57
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3158,17 +2451,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c40"
-					},
-					"minimumscore": 57
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c40"
 					},
 					"minimum_score": 57
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3191,17 +2477,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c41"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c41"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3223,17 +2502,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c42"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c42"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3255,17 +2527,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c43"
-					},
-					"minimumscore": 57
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c43"
 					},
 					"minimum_score": 57
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3287,17 +2552,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c44"
-					},
-					"minimumscore": 60
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c44"
 					},
 					"minimum_score": 60
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3319,17 +2577,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c45"
-					},
-					"minimumscore": 60
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c45"
 					},
 					"minimum_score": 60
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3351,17 +2602,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c46"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c46"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3377,17 +2621,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c46"
-					},
-					"minimumscore": 61
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c46"
 					},
 					"minimum_score": 61
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3412,17 +2649,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c47"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c47"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3444,17 +2674,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c48"
-					},
-					"minimumscore": 56
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c48"
 					},
 					"minimum_score": 56
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3485,17 +2708,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c49"
-					},
-					"minimumscore": 60
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c49"
 					},
 					"minimum_score": 60
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3511,17 +2727,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c49"
-					},
-					"minimumscore": 70
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c49"
 					},
 					"minimum_score": 70
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3552,17 +2761,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c4a"
-					},
-					"minimumscore": 58
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c4a"
 					},
 					"minimum_score": 58
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3584,17 +2786,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c4b"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c4b"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3618,17 +2813,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c4c"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c4c"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3642,17 +2830,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c4c"
-					},
-					"minimumscore": 7
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c4c"
 					},
 					"minimum_score": 7
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3684,17 +2865,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c4d"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c4d"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3708,17 +2882,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c4d"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c4d"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3750,17 +2917,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c4e"
-					},
-					"minimumscore": 7
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c4e"
 					},
 					"minimum_score": 7
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3792,17 +2952,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c4f"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c4f"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3834,17 +2987,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c50"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c50"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3870,17 +3016,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c51"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c51"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3906,17 +3045,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c52"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c52"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3939,17 +3071,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c53"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c53"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3975,17 +3100,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c54"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c54"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -3998,17 +3116,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c54"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c54"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4034,17 +3145,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c55"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c55"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4057,17 +3161,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c55"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c55"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4093,17 +3190,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c56"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c56"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4116,17 +3206,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c56"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c56"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4152,17 +3235,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c57"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c57"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4175,17 +3251,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c57"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c57"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4211,17 +3280,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c58"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c58"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4235,17 +3297,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c58"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c58"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4268,17 +3323,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c59"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c59"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4292,17 +3340,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c59"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c59"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4325,17 +3366,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c5a"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c5a"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4359,17 +3393,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c5b"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c5b"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4393,17 +3420,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c5c"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c5c"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4429,17 +3449,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c5d"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c5d"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4465,17 +3478,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c5e"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c5e"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4501,17 +3507,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c5f"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c5f"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4540,17 +3539,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c60"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c60"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4582,17 +3574,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c61"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c61"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4605,17 +3590,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c61"
-					},
-					"minimumscore": 7
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c61"
 					},
 					"minimum_score": 7
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4641,17 +3619,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c62"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c62"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4664,17 +3635,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c62"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c62"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4703,17 +3667,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c63"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c63"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4731,17 +3688,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c63"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c63"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4754,17 +3704,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c63"
-					},
-					"minimumscore": 7
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c63"
 					},
 					"minimum_score": 7
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4787,17 +3730,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c64"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c64"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4810,17 +3746,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c64"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c64"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4843,17 +3772,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c65"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c65"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4881,17 +3803,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c66"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c66"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4914,17 +3829,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c67"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c67"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4946,17 +3854,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c67"
-					},
-					"minimumscore": 7
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c67"
 					},
 					"minimum_score": 7
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -4991,17 +3892,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c68"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c68"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5024,17 +3918,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c69"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c69"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5057,17 +3944,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c6a"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c6a"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5090,17 +3970,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c6b"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c6b"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5123,17 +3996,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c6c"
-					},
-					"minimumscore": 7
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c6c"
 					},
 					"minimum_score": 7
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5165,17 +4031,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c6d"
-					},
-					"minimumscore": 6
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c6d"
 					},
 					"minimum_score": 6
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5207,17 +4066,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c6e"
-					},
-					"minimumscore": 5
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c6e"
 					},
 					"minimum_score": 5
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5240,17 +4092,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c6f"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c6f"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5273,17 +4118,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c70"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c70"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5306,17 +4144,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c71"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c71"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5339,17 +4170,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c72"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c72"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5372,17 +4196,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c73"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c73"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5405,17 +4222,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c74"
-					},
-					"minimumscore": 4
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c74"
 					},
 					"minimum_score": 4
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5436,17 +4246,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c75"
-					},
-					"minimumscore": 35
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c75"
 					},
 					"minimum_score": 35
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5459,17 +4262,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c75"
-					},
-					"minimumscore": 50
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c75"
 					},
 					"minimum_score": 50
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5485,17 +4281,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c75"
-					},
-					"minimumscore": 70
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c75"
 					},
 					"minimum_score": 70
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5514,17 +4303,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c75"
-					},
-					"minimumscore": 80
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c75"
 					},
 					"minimum_score": 80
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5540,17 +4322,10 @@
 			{
 				"requirement": {
 					"type": "exam",
-<<<<<<< HEAD
-					"examReference": {
-						"$oid": "623f8ef656965e1884291c75"
-					},
-					"minimumscore": 85
-=======
 					"exam_reference": {
 						"$oid": "623f8ef656965e1884291c75"
 					},
 					"minimum_score": 85
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
 				},
 				"outcome": [
 					[
@@ -5562,8 +4337,4 @@
 			}
 		]
 	}
-<<<<<<< HEAD
 ]
-=======
-]
->>>>>>> 264490913cc22240d666974f206b9ef7058d5257
