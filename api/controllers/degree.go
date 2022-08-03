@@ -73,7 +73,7 @@ func DegreeById() gin.HandlerFunc {
 		}
 
 		// find and parse matching degree
-		err := degreeCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&degree)
+		err = degreeCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&degree)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.DegreeResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return

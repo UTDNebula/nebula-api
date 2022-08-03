@@ -73,7 +73,7 @@ func SectionById() gin.HandlerFunc {
 		}
 
 		// find and parse matching section
-		err := sectionCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
+		err = sectionCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.SectionResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return

@@ -73,7 +73,7 @@ func ProfessorById() gin.HandlerFunc {
 		}
 
 		// find and parse matching professor
-		err := professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
+		err = professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return

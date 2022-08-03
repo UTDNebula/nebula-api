@@ -73,7 +73,7 @@ func ExamById() gin.HandlerFunc {
 		}
 
 		// find and parse matching exam
-		err := examCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&exam)
+		err = examCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&exam)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
