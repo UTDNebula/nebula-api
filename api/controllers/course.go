@@ -63,12 +63,15 @@ func CourseById() gin.HandlerFunc {
 		// var course models.Course
 		var course map[string]interface{}
 
-
 		// parse object id from id parameter
-		objId, _ := primitive.ObjectIDFromHex(courseId)
+		objId, err := primitive.ObjectIDFromHex(courseId)
+		if err != nil{
+			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			return
+		}
 
 		// find and parse matching course
-		err := courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
+		err = courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.CourseResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
