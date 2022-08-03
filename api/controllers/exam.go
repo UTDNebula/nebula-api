@@ -66,7 +66,11 @@ func ExamById() gin.HandlerFunc {
 		defer cancel()
 
 		// parse object id from id parameter
-		objId, _ := primitive.ObjectIDFromHex(examId)
+		objId, err := primitive.ObjectIDFromHex(courseId)
+		if err != nil{
+			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			return
+		}
 
 		// find and parse matching exam
 		err := examCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&exam)

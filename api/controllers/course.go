@@ -23,12 +23,11 @@ func CourseSearch() gin.HandlerFunc {
 		queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
 		// @TODO: Fix with model - There is NO typechecking!
 		// var courses []models.Course
 		var courses []map[string]interface{}
-
-		defer cancel()
 
 		// build query key value pairs (only one value per key)
 		query := bson.M{}
@@ -56,6 +55,7 @@ func CourseSearch() gin.HandlerFunc {
 func CourseById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
 		courseId := c.Param("id")
 
@@ -63,7 +63,6 @@ func CourseById() gin.HandlerFunc {
 		// var course models.Course
 		var course map[string]interface{}
 
-		defer cancel()
 
 		// parse object id from id parameter
 		objId, _ := primitive.ObjectIDFromHex(courseId)
