@@ -41,7 +41,7 @@ export const CourseSchema = new Schema<Course>({
   lecture_contact_hours: { type: String, required: false },
   laboratory_contact_hours: { type: String, required: false },
   offering_frequency: { type: String, required: false },
-  attributes: { type: Object, required: true }
+  attributes: { type: Object, required: true },
 });
 
 const courseDB = connection.useDb('combinedDB');

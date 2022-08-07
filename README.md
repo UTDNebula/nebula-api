@@ -12,6 +12,7 @@ Part of [Project Nebula](https://about.utdnebula.com)
 
 - Node.js 12 (or higher) and NPM
 - Python 3.5 (or higher)
+- Golang 1.18.4 (or higher)
 
 ### Development
 
@@ -28,7 +29,7 @@ Clone the repository.
 
 #### API (Under construction)
 
-The API uses TypeScript (bundled into the project) and Express.js for its endpoints.
+The API uses Golang with Gin and the MongoDB Golang Driver.
 
 ### Deployment
 
