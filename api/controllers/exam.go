@@ -66,7 +66,7 @@ func ExamById() gin.HandlerFunc {
 		defer cancel()
 
 		// parse object id from id parameter
-		objId, err := primitive.ObjectIDFromHex(courseId)
+		objId, err := primitive.ObjectIDFromHex(examId)
 		if err != nil{
 			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
