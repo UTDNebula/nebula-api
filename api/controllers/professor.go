@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
+	"github.com/UTDNebula/nebula-api/api/models"
 	"github.com/UTDNebula/nebula-api/api/responses"
 
 	"github.com/gin-gonic/gin"
@@ -24,9 +25,7 @@ func ProfessorSearch() gin.HandlerFunc {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		// @TODO: Fix with model - There is NO typechecking!
-		// var professors []models.Professor
-		var professors []map[string]interface{}
+		var professors []models.Professor
 
 		defer cancel()
 
@@ -59,15 +58,13 @@ func ProfessorById() gin.HandlerFunc {
 
 		professorId := c.Param("id")
 
-		// @TODO: Fix with model - There is NO typechecking!
-		// var professor models.Professor
-		var professor map[string]interface{}
+		var professor models.Professor
 
 		defer cancel()
 
 		// parse object id from id parameter
 		objId, err := primitive.ObjectIDFromHex(professorId)
-		if err != nil{
+		if err != nil {
 			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
