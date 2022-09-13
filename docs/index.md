@@ -26,7 +26,7 @@ To connect to your Mongo database, in /api/.env: set MONGODB_URI accordingly:
 MONGODB_URI=<insert_connection_string_here>
 ```
 
-To start the api server in your local environment from /nebula-api/:
+To start the api server in your local environment from /nebula-api/api/:
 ```
-go run ./api/server.go
+go run server.go
 ```
