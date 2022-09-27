@@ -1,0 +1,15 @@
+# @TODO: Fix DB and make profiles data required (!)
+
+type Professor {
+    _id: ID!
+    first_name: String!
+    last_name: String!
+    titles: [String!]!
+    email: String!
+    phone_number: String
+    office: Location
+    profile_uri: String
+    image_uri: String
+    office_hours: [Meeting!]!
+    sections: [Section!]!
+}
