@@ -1,0 +1,21 @@
+type Course {
+    _id: ID!
+    course_number: String!
+    subject_prefix: String!
+    title: String!
+    description: String!
+    school: String!
+    credit_hours: String!
+    class_level: String!
+    activity_type: String!
+    grading: String!
+    internal_course_number: String!
+    prerequisites: CollectionRequirement!
+    corequisites: CollectionRequirement!
+    co_or_pre_requisites: CollectionRequirement!
+    sections: [Section!]!
+    lecture_contact_hours: String!
+    laboratory_contact_hours: String!
+    offering_frequency: String!
+    # attributes: Attributes # @TODO: Doesn't exist in DB, remove and update docs, or fix DB
+}

@@ -1,0 +1,40 @@
+union Outcome = Course | Credit 
+
+# @TODO: Update Exam docs
+type PossibleOutcomes {
+    requirement: Requirement
+    possible_outcomes: [[Outcome!]!]!
+}
+
+interface Exam {
+    _id: ID!
+}
+
+type APExam implements Exam {
+    _id: ID!
+    name: String!
+    yields: [PossibleOutcomes!]!
+}
+
+type ALEKSExam implements Exam {
+    _id: ID!
+    placement: [PossibleOutcomes!]!
+}
+
+type CLEPExam implements Exam {
+    _id: ID!
+    name: String!
+    yields: [PossibleOutcomes!]!
+}
+
+type IBExam implements Exam {
+    _id: ID!
+    name: String!
+    level: String!
+    yields: [PossibleOutcomes!]!
+}
+
+type CSPlacementExam implements Exam {
+    _id: ID!
+    yields: [PossibleOutcomes!]!
+}

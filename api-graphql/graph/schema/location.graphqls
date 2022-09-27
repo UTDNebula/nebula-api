@@ -1,0 +1,5 @@
+type Location {
+    building: String!
+    room: String!
+    map_uri: String!
+}

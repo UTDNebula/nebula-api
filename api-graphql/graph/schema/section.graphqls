@@ -1,0 +1,20 @@
+type Section {
+    _id: ID!
+    section_number: String!
+    course_reference: Course!
+    section_corequisites: CollectionRequirement!
+    academic_session: AcademicSession!
+    professors: [Professor!]!
+    teaching_assistants: [Assistant!]!
+    internal_class_number: String!
+    instruction_mode: String!
+    meetings: [Meeting!]!
+    core_flags: [String!]!
+    syllabus_uri: String!
+    grade_distribution: [Int!]!
+    attributes: Attributes!
+}
+
+type Attributes {
+    raw_attributes: [String!]!
+}
