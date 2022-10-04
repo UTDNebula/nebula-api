@@ -10,7 +10,7 @@ import (
 func EnvMongoURI() string {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file: %v", err)
+		log.Fatalf("Error loading .env file: %v", err)
 	}
 
 	return os.Getenv("MONGODB_URI")
