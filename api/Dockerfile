@@ -4,14 +4,9 @@ FROM golang:1.18-alpine
 
 WORKDIR /app
     
-COPY go.mod ./
-COPY go.sum ./
+COPY . .
 RUN go mod download
 
-ADD . /app
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o go-api
 
-RUN go build -o /api
-
-EXPOSE 8080
-
-CMD [ "/api" ]
+CMD [ "/app/go-api" ]

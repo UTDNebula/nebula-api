@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 
@@ -27,5 +30,13 @@ func main() {
 	// 	c.String(http.StatusOK, "Hello World!")
 	// })
 
-	http.ListenAndServe(":8080", router)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), router)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
