@@ -83,3 +83,29 @@ func ExamById() gin.HandlerFunc {
 		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: exam})
 	}
 }
+
+func ExamAll() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+		// @TODO: Fix with model - There is NO typechecking!
+		var courses []map[string]interface{}
+
+		defer cancel();
+
+		// returns ALL yeilds.outcome in the collection
+		cursor, err := examCollection.Find(ctx, bson.M{})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			return
+		}
+
+		// retrieve and parse all valid documents
+		err = cursor.All(ctx, &courses); if err != nil {
+			panic(err)
+		}
+
+		//return result
+		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: courses})
+	}
+}
