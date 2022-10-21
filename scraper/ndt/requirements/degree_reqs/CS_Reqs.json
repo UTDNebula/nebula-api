@@ -1,0 +1,62 @@
+[
+	{"comment": "These will override matching degree values set in the CLI.", "Subtype": "BS", "School": "ECS"},
+	[
+		"or",
+		["and", "RHET 1302", "ECS 3390"],
+		["core", "COM_CORE", 6]
+	],
+	[
+		"or",
+		["or", "MATH 2413, 2417"],
+		["core", "MATH_CORE", 3]
+	],
+	[
+		"or",
+		["and", "PHYS 2325, 2326"],
+		["core", "LPHY_CORE", 6]
+	],
+	["core", "LPC_CORE", 3],
+	["core", "CA_CORE", 3],
+	["core", "AH_CORE", 6],
+	[
+		"or",
+		["and", "GOVT 2305, 2306"],
+		["core", "GOV_CORE", 6]
+	],
+	["core", "SBS_CORE", 3],
+	[
+		"or",
+		[
+			"and",
+			["or", "MATH 2413, 2417"],
+			"MATH 2419",
+			"PHYS 2125"
+		],
+		["CORE", "CAO_CORE", 6]
+	],
+	"ECS 1100",
+	"CS 1200, 1136, 1336, 1337, 2305, 2336, 2340",
+	[
+		"or",
+		["and", "MATH 2413", "MATH 2414"],
+		["and", "MATH 2417", "MATH 2419"]
+	],
+	"MATH 2418",
+	"PHYS 2125, 2126, 2325, 2326",
+	"CS 3162, 3305, 3341, 3345, 3354, 3377",
+	"ECS 3390",
+	"CS 4141, 4337, 4341, 4347...4349, 4384, 4485",
+	[
+		"or",
+		[
+			"hours",
+			9,
+			{"comment": "There's an example of a very helpful course range below..."},
+			"CS 4314, 4315, 4334, 4336, 4352, 4353, 4361, 4365, 4375, 4376, 4386, 4389...4399",
+			"EE 4325",
+			"SE 4351, 4352, 4367, 4381"
+		],
+		["other", "Any other organized CS 4300-level courses", "A total of 9 credit hours"]
+	],
+	["other", "Elective Requirements", "A total of 10 elective credit hours"]
+]
