@@ -93,7 +93,7 @@ func ExamAll() gin.HandlerFunc {
 
 		defer cancel();
 
-		// returns ALL elements in the collection
+		// get cursor for all exams in the collection
 		cursor, err := examCollection.Find(ctx, bson.M{})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
@@ -105,7 +105,7 @@ func ExamAll() gin.HandlerFunc {
 			panic(err)
 		}
 
-		//return result
+		// return result
 		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: courses})
 	}
 }
