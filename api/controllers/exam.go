@@ -108,8 +108,19 @@ func ExamAll() gin.HandlerFunc {
 
 		defer cancel();
 
+		var offset int64; var err error
+		if c.Query("offset") == "" {
+			offset = 0 	// default value for offset
+		} else {
+			offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
+			if err != nil {
+				c.JSON(http.StatusConflict, responses.ExamResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+				return
+			}
+		}
+
 		// get cursor for all exams in the collection
-		cursor, err := examCollection.Find(ctx, bson.M{})
+		cursor, err := examCollection.Find(ctx, bson.M{}, options.Find().SetSkip(offset).SetLimit(configs.Limit))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
