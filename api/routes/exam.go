@@ -11,5 +11,6 @@ func ExamRoute(router *gin.Engine) {
 	examGroup := router.Group("/exam")
 
 	examGroup.GET("/", controllers.ExamSearch())
+	examGroup.GET("/all", controllers.ExamAll())
 	examGroup.GET("/:id", controllers.ExamById())
 }
