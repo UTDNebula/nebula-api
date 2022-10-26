@@ -39,6 +39,7 @@ func CourseSearch() gin.HandlerFunc {
 
 		delete(query, "offset") // offset not in query because it is for pagination not searching
 
+		// parses offset if included in the query
 		var offset int64; var err error
 		if c.Query("offset") == "" {
 			offset = 0 	// default value for offset
