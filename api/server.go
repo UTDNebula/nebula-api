@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
@@ -14,6 +15,13 @@ import (
 
 func main() {
 	router := gin.Default()
+
+	// enable corse
+	corsConfig := cors.DefaultConfig()
+
+	corsConfig.AllowAllOrigins = true
+
+	router.Use(cors.New(corsConfig))
 
 	// connect to database
 	configs.ConnectDB()
