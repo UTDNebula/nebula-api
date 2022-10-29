@@ -16,7 +16,7 @@ import (
 func main() {
 	router := gin.Default()
 
-	// enable corse
+	// enable cors
 	corsConfig := cors.DefaultConfig()
 
 	corsConfig.AllowAllOrigins = true
