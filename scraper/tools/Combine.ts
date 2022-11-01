@@ -1,7 +1,11 @@
+/////////////////////////////////
+//	Script for combining semesters' data. Should run this after you're finished scraping with CoursebookScraper.
+////////////////////////////////
+
 import { readFileSync, writeFileSync, readdirSync, Dirent } from 'fs';
 import { exit } from 'process';
 import mongoose from 'mongoose';
-import schemas from '../api/schemas';
+import schemas from '../../api/ts/schemas';
 
 // Get all semester directories in ./data dir
 const SemesterDirectories: Dirent[] = readdirSync("./data", { withFileTypes: true }).filter((entry: Dirent) => {
@@ -20,7 +24,7 @@ for (let directory of SemesterDirectories) {
     Professors.push(...(JSON.parse(readFileSync(`./data/${directory.name}/Professors.json`, { encoding: "utf-8" })) as schemas.Professor[]));
 };
 
-// Combine courses together
+// Combine PsuedoCourses together, validate sections
 let CombinedCourses: Map<string, schemas.PsuedoCourse> | schemas.PsuedoCourse[] = new Map<string, schemas.PsuedoCourse>();
 for (let CourseObj of Courses) {
     let ValidSections = [];
@@ -37,10 +41,10 @@ for (let CourseObj of Courses) {
         CombinedCourses.get(CourseObj.internal_course_number).sections.push(...CourseObj.sections);
 }
 
-// Convert combinedcourses to array
+// Convert CombinedCourses to array for future use
 CombinedCourses = Array.from(CombinedCourses.values());
 
-// Combine professors together
+// Combine professors together, validate sections
 let CombinedProfessors: schemas.Professor[] = [];
 for (let Professor of Professors) {
     let ValidSections = [];
@@ -60,7 +64,7 @@ for (let Professor of Professors) {
         CombinedProfessors.push(Professor);
 }
 
-// Verify validity of section course and prof references
+// Verify validity of every section's course and prof references, convert PsuedoCourses to Courses
 for (let Section of Sections) {
     let ReferencedCourse = Courses.find((course: schemas.PsuedoCourse) => { return course._id == Section.course_reference });
     if (!ReferencedCourse) {

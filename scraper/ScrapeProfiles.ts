@@ -1,4 +1,8 @@
-import { ProfilesScraper } from './ProfilesScraper';
+/////////////////////////////////
+//	Runs the ProfilesScraper.
+////////////////////////////////
+
+import { ProfilesScraper } from './scrapers/ProfilesScraper';
 import firefox from 'selenium-webdriver/firefox';
 
 // Load Selenium config

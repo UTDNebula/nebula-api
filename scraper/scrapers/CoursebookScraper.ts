@@ -1,8 +1,12 @@
+/////////////////////////////////
+//	Scrapes coursebook for sections, courses, and professor data. Should run this after running the profile scraper so that full professor data is available.
+////////////////////////////////
+
 import 'dotenv/config';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
-import { FirefoxScraper, ParsingUtils } from './Utils';
-import schemas from '../api/schemas';
+import { FirefoxScraper, ParsingUtils } from '../Utils';
+import schemas from '../../api/ts/schemas';
 import mongoose from 'mongoose';
 
 type Credentials = {
@@ -18,7 +22,7 @@ export class CoursebookScraper extends FirefoxScraper {
         "PREFIX": "combobox_cp"
     };
 
-    // Grab professor data obtained from profile scraper
+    // Stores professor data obtained from profile scraper
     private ScrapedProfessors: schemas.Professor[] = [];
 
     // Caches for the scraped course/section data

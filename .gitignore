@@ -44,7 +44,5 @@ deploy_log.sh
 .firebase/
 
 # webscraper
-/scraper/.env
-/scraper/credentials.json
-/scraper/scraper.log
 /scraper/geckodriver*
+/scraper/data/*

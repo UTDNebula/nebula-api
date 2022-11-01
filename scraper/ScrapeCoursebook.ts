@@ -1,4 +1,8 @@
-import { CoursebookScraper } from './CoursebookScraper';
+/////////////////////////////////
+//	Runs the CoursebookScraper.
+////////////////////////////////
+
+import { CoursebookScraper } from './scrapers/CoursebookScraper';
 import firefox from 'selenium-webdriver/firefox';
 
 const args = process.argv.slice(2);

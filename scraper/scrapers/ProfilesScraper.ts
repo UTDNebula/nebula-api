@@ -1,7 +1,11 @@
+/////////////////////////////////
+//	Scrapes profiles.utdallas.edu for professor profile data. Should run before CoursebookScraper to ensure full professor data is available.
+////////////////////////////////
+
 import { writeFileSync } from 'fs';
 import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
-import { FirefoxScraper, ParsingUtils } from './Utils';
-import schemas from '../api/schemas';
+import { FirefoxScraper, ParsingUtils } from '../Utils';
+import schemas from '../../api/ts/schemas';
 import mongoose from 'mongoose';
 
 export class ProfilesScraper extends FirefoxScraper {

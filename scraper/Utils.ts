@@ -1,7 +1,10 @@
-import 'dotenv/config';
+/////////////////////////////////
+//	Provides various parsing utilities for the scrapers and tools.
+////////////////////////////////
+
 import { readFileSync, writeFileSync } from 'fs';
 import { Builder, By, until, WebElement, NoSuchElementError } from 'selenium-webdriver';
-import schemas from '../api/schemas';
+import schemas from '../api/ts/schemas';
 
 export abstract class ParsingUtils {
 
