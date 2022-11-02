@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
@@ -14,7 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var courseCollection *mongo.Collection = configs.GetCollection(configs.DB, "courses")
@@ -37,22 +35,13 @@ func CourseSearch() gin.HandlerFunc {
 			query[key] = c.Query(key)
 		}
 
-		delete(query, "offset") // offset not in query because it is for pagination not searching
-
-		// parses offset if included in the query
-		var offset int64; var err error
-		if c.Query("offset") == "" {
-			offset = 0 	// default value for offset
-		} else {
-			offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
-			if err != nil {
-				c.JSON(http.StatusConflict, responses.CourseResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
-				return
-			}
+		optionLimit, err := configs.GetOptionLimit(&query, c); if err != nil {
+			c.JSON(http.StatusConflict, responses.CourseResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			return
 		}
 
 		// get cursor for query results
-		cursor, err := courseCollection.Find(ctx, query, options.Find().SetSkip(offset).SetLimit(configs.Limit))
+		cursor, err := courseCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.CourseResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
