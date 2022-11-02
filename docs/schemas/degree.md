@@ -5,14 +5,17 @@ A `Degree` represents either a major, minor, or concentration received from The 
 
 ## Object Representation
 ```ts
-DegreeSubtype = "major" | "minor" | "concentration"
+DegreeSubtype = "major" | "minor" | "concentration" | "prescribed double major" | "certificate" | "track"
 
 Degree = {
     "_id": ObjectId,
     "subtype": DegreeSubtype,
+    "school": string,
     "name": string,
+    "year": string,
     "abbreviation": string,
     "minimum_credit_hours": number,
+    "catalog_uri": string,
     "requirements": CollectionRequirement,
 }
 ```
@@ -34,6 +37,14 @@ Degree = {
 >
 > **Example**: Major
 
+> `.school`
+>
+> **Type**: string
+>
+> The school that the `degree` belongs to.
+>
+> **Example**: School of Natural Sciences and Mathematics
+
 > `.name`
 >
 > **Type**: string
@@ -41,6 +52,14 @@ Degree = {
 > The full name of the degree.
 >
 > **Example**: Bachelor of Science in Computer Science
+
+> `.year`
+> 
+> **Type**: string
+>
+> The academic year to which this degree corresponds to.
+>
+> **Example**: 2021-2022
 
 > `.abbreviation`
 >
@@ -57,6 +76,14 @@ Degree = {
 > The minimum credit hours required for the degree, which can be found on the UTD catalog.
 >
 > **Example**: 124
+
+> `.catalog_uri`
+>
+> **Type**: string
+>
+> A link to the listing of the degree and its requirements in the UTD catalog.
+>
+> **Example**: https://catalog.utdallas.edu/2021/undergraduate/programs/ah/philosophy
 
 > `.requirements`
 >

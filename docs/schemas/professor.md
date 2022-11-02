@@ -9,11 +9,12 @@ Professor = {
     "_id": ObjectId,
     "first_name": string,
     "last_name": string,
-    "title": string,
+    "titles": Array<string>,
     "email": string,
     "phone_number": string,
     "office": Location,
     "profile_uri": string,
+    "image_uri": string,
     "office_hours": Array<Meeting>,
     "sections": Array<ObjectId>,
 }
@@ -44,13 +45,13 @@ Professor = {
 >
 > **Example**: Doe
 
-> `.title`
+> `.titles`
 >
 > **Type**: string
 >
-> The professor's title.
+> The professor's titles.
 >
-> **Example**: Senior Mathematics Lecturer
+> **Example**: ["Senior Mathematics Lecturer"], ["Lars Magnus Ericsson Chair", "Dean – Erik Jonsson School of Engineering and Computer Science"]
 
 > `.email`
 >
@@ -75,6 +76,12 @@ Professor = {
 > **Type**: string
 >
 > A hyperlink pointing to the professor's official university profile.
+
+> `.image_uri`
+>
+> **Type**: string
+> 
+> A link to the image used for the professor on the professor's official university profile.
 
 > `.office_hours`
 >

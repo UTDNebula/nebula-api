@@ -16,6 +16,7 @@ Section = {
     "internal_class_number": string,
     "instruction_mode": string,
     "meetings": Array<Meeting>,
+    "core_flags": Array<string>,
     "syllabus_uri": string,
     "grade_distribution": Array<number>,
     "attributes": Object,
@@ -92,6 +93,14 @@ Section = {
 > **Type**: Array<Meeting>
 > 
 > An array of the locations and times that this section meets.
+
+> `.core_flags`
+> 
+> **Type**: Array<string>
+> 
+> An array of core requirement codes this section fulfills. 
+>
+> **Example**: ["020", "050", ...]
 
 > `.syllabus_uri`
 > 

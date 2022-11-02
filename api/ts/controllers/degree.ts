@@ -2,6 +2,11 @@ import { Request, Response } from 'express';
 import { DegreeModel } from '../models/degree';
 
 export const degreeSearch = async (req: Request, res: Response) => {
+  if (Object.keys(req.query).length < 1) {
+    return res.status(400).json({
+      error: 'request did not contain any query parameters',
+    });
+  }
   DegreeModel.find(req.query, {}, { strict: false }, (error, result) => {
     if (error) {
       return res.status(500).json({
@@ -33,11 +38,11 @@ export const degreeById = async (req: Request, res: Response) => {
 
 export const degreeInsert = async (req: Request, res: Response) => {
   const newDegree = new DegreeModel(req.body);
-  newDegree.validate(err => {
+  newDegree.validate((err) => {
     if (err) {
       res.status(400).json(err);
     } else {
-      newDegree.save(err => {
+      newDegree.save((err) => {
         if (err) {
           res.status(500).json(err);
         } else {
