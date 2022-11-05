@@ -1,5 +1,5 @@
 [
-	{"comment": "These will override matching degree values set in the CLI.", "Subtype": "BS", "School": "ECS"},
+	{"comment": "These will override matching degree values set in the CLI.", "subtype": "BS", "school": "ECS"},
 	[
 		"or",
 		["and", "RHET 1302", "ECS 3390"],

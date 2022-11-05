@@ -57,9 +57,9 @@ func parseMap(deg *Degree, m map[string]interface{}) {
 	degType := reflect.TypeOf(*deg)
 	for i := 0; i < degType.NumField(); i++ {
 		field := degType.Field(i)
-		val, hasVal := m[field.Name]
+		val, hasVal := m[strings.ToLower(field.Name)]
 		if hasVal {
-			reflect.ValueOf(deg).Elem().FieldByName(field.Name).Set(reflect.ValueOf(val))
+				reflect.ValueOf(deg).Elem().FieldByName(field.Name).Set(reflect.ValueOf(val).Convert(field.Type))
 		}
 	}
 }
