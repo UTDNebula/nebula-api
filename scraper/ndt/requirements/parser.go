@@ -59,7 +59,12 @@ func parseMap(deg *Degree, m map[string]interface{}) {
 		field := degType.Field(i)
 		val, hasVal := m[strings.ToLower(field.Name)]
 		if hasVal {
-				reflect.ValueOf(deg).Elem().FieldByName(field.Name).Set(reflect.ValueOf(val).Convert(field.Type))
+				value := reflect.ValueOf(val)
+				if value.CanConvert(field.Type) {
+					reflect.ValueOf(deg).Elem().FieldByName(field.Name).Set(value.Convert(field.Type))
+				} else {
+					panic(fmt.Sprintf("Invalid value \"%v\" of type \"%s\" provided for field \"%s\" of type \"%s\" in map %v", value, value.Type().Name(), field.Name, field.Type.Name(), m))
+				}
 		}
 	}
 }
