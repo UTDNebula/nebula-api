@@ -49,7 +49,9 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 		delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
 
 		// parses offset if included in the query
-		var offset int64; var err error
+		var offset int64;
+		var err error
+		
 		if c.Query("offset") == "" {
 			offset = 0 	// default value for offset
 		} else {
