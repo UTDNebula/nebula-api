@@ -10,6 +10,7 @@ func CourseRoute(router *gin.Engine) {
 	// All routes related to courses come here
 	courseGroup := router.Group("/course")
 
-	courseGroup.GET("/", controllers.CourseSearch())
-	courseGroup.GET("/:id", controllers.CourseById())
+	courseGroup.OPTIONS("", controllers.Preflight)
+	courseGroup.GET("", controllers.CourseSearch())
+	courseGroup.GET(":id", controllers.CourseById())
 }
