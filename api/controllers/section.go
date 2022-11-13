@@ -41,8 +41,9 @@ func SectionSearch() gin.HandlerFunc {
 				} else {
 					query[key] = objId
 				}
+			} else {
+				query[key] = c.Query(key)
 			}
-			query[key] = c.Query(key)
 		}
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
