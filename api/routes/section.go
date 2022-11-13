@@ -10,6 +10,7 @@ func SectionRoute(router *gin.Engine) {
 	// All routes related to sections come here
 	sectionGroup := router.Group("/section")
 
-	sectionGroup.GET("/", controllers.SectionSearch())
-	sectionGroup.GET("/:id", controllers.SectionById())
+	sectionGroup.OPTIONS("", controllers.Preflight)
+	sectionGroup.GET("", controllers.SectionSearch())
+	sectionGroup.GET(":id", controllers.SectionById())
 }

@@ -10,6 +10,7 @@ func DegreeRoute(router *gin.Engine) {
 	// All routes related to degrees come here
 	degreeGroup := router.Group("/degree")
 
-	degreeGroup.GET("/", controllers.DegreeSearch())
-	degreeGroup.GET("/:id", controllers.DegreeById())
+	degreeGroup.OPTIONS("", controllers.Preflight)
+	degreeGroup.GET("", controllers.DegreeSearch())
+	degreeGroup.GET(":id", controllers.DegreeById())
 }
