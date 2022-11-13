@@ -8,9 +8,9 @@ import (
 
 func DegreeRoute(router *gin.Engine) {
 	// All routes related to degrees come here
+	router.OPTIONS("/degree", controllers.Preflight)
 	degreeGroup := router.Group("/degree")
 
-	degreeGroup.OPTIONS("", controllers.Preflight)
 	degreeGroup.GET("", controllers.DegreeSearch())
 	degreeGroup.GET(":id", controllers.DegreeById())
 }

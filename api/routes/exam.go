@@ -8,9 +8,9 @@ import (
 
 func ExamRoute(router *gin.Engine) {
 	// All routes related to exams come here
+	router.OPTIONS("/exam", controllers.Preflight)
 	examGroup := router.Group("/exam")
 
-	examGroup.OPTIONS("", controllers.Preflight)
 	examGroup.GET("", controllers.ExamSearch())
 	examGroup.GET("all", controllers.ExamAll())
 	examGroup.GET(":id", controllers.ExamById())
