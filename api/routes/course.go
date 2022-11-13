@@ -8,9 +8,9 @@ import (
 
 func CourseRoute(router *gin.Engine) {
 	// All routes related to courses come here
-	router.OPTIONS("/course", controllers.Preflight)
 	courseGroup := router.Group("/course")
 
+	courseGroup.OPTIONS("", controllers.Preflight)
 	courseGroup.GET("", controllers.CourseSearch())
 	courseGroup.GET(":id", controllers.CourseById())
 }

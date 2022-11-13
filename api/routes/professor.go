@@ -8,9 +8,9 @@ import (
 
 func ProfessorRoute(router *gin.Engine) {
 	// All routes related to professors come here
-	router.OPTIONS("/professor", controllers.Preflight)
 	professorGroup := router.Group("/professor")
 
+	professorGroup.OPTIONS("", controllers.Preflight)
 	professorGroup.GET("", controllers.ProfessorSearch())
 	professorGroup.GET(":id", controllers.ProfessorById())
 }
