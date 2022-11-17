@@ -81,7 +81,7 @@ func NewOtherRequirement(description, condition string) *OtherRequirement {
 }
 
 type CollectionRequirement struct {
-	Requirement `bson:"inline" json:"inline"`
+	Requirement `bson:"inline"`
 	Name        string        `bson:"name" json:"name"`
 	Required    int           `bson:"required" json:"required"`
 	Options     []interface{} `bson:"options" json:"options"`
@@ -92,50 +92,72 @@ func NewCollectionRequirement(name string, required int, options []interface{}) 
 }
 
 type HoursRequirement struct {
-	Requirement
-	Required int                  `bson:"required" json:"required"`
-	Options  []*CourseRequirement `bson:"options" json:"options"`
+	Requirement `bson:"inline"`
+	MinHours    int           `bson:"min_hours" json:"min_hours"`
+	MaxHours    int           `bson:"max_hours" json:"max_hours"`
+	Options     []interface{} `bson:"options" json:"options"`
 }
 
-func NewHoursRequirement(required int, options []*CourseRequirement) *HoursRequirement {
-	return &HoursRequirement{Requirement{"hours"}, required, options}
+func NewHoursRequirement(minHours int, maxHours int, options []interface{}) *HoursRequirement {
+	return &HoursRequirement{Requirement{"hours"}, minHours, maxHours, options}
 }
 
 type ChoiceRequirement struct {
-	Requirement
-	Choices *CollectionRequirement `bson:"choices" json:"choices"`
+	Requirement `bson:"inline"`
+	Choices     []interface{} `bson:"choices" json:"choices"`
 }
 
-func NewChoiceRequirement(choices *CollectionRequirement) *ChoiceRequirement {
+func NewChoiceRequirement(choices []interface{}) *ChoiceRequirement {
 	return &ChoiceRequirement{Requirement{"choice"}, choices}
 }
 
 type LimitRequirement struct {
-	Requirement
-	MaxHours int `bson:"max_hours" json:"max_hours"`
+	Requirement `bson:"inline"`
+	MinHours    int `bson:"min_hours" json:"min_hours"`
+	MaxHours    int `bson:"max_hours" json:"max_hours"`
 }
 
-func NewLimitRequirement(maxHours int) *LimitRequirement {
-	return &LimitRequirement{Requirement{"limit"}, maxHours}
+func NewLimitRequirement(minHours int, maxHours int) *LimitRequirement {
+	return &LimitRequirement{Requirement{"limit"}, minHours, maxHours}
 }
 
 type CoreRequirement struct {
-	Requirement
-	CoreFlag string `bson:"core_flag" json:"core_flag"`
-	Hours    int    `bson:"hours" json:"hours"`
+	Requirement `bson:"inline"`
+	CoreFlag    string `bson:"core_flag" json:"core_flag"`
+	Hours       int    `bson:"hours" json:"hours"`
 }
 
 func NewCoreRequirement(coreFlag string, hours int) *CoreRequirement {
 	return &CoreRequirement{Requirement{"core"}, coreFlag, hours}
 }
 
+type ElectiveRequirement struct {
+	Requirement  `bson:"inline"`
+	ElectiveType string `bson:"elective_type" json:"elective_type"`
+	Hours        int    `bson:"hours" json:"hours"`
+	Level        string `bson:"level" json:"level"`
+}
+
+func NewElectiveRequirement(elective_t string, hours int, level string) *ElectiveRequirement {
+	return &ElectiveRequirement{Requirement{"elective"}, elective_t, hours, level}
+}
+
+type NotRequirement struct {
+	Requirement `bson:"inline"`
+	Req         interface{} `bson:"requirement" json:"requirement"`
+}
+
+func NewNotRequirement(req interface{}) *NotRequirement {
+	return &NotRequirement{Requirement{"not"}, req}
+}
+
 type Degree struct {
-	Subtype            string                 `bson:"subtype" json:"subtype"`
-	School             string                 `bson:"school" json:"school"`
-	Name               string                 `bson:"name" json:"name"`
-	Year               string                 `bson:"year" json:"year"`
-	Abbreviation       string                 `bson:"abbreviation" json:"abbreviation"`
-	Minimum_Credit_Hours int                  `bson:"minimum_credit_hours" json:"minimum_credit_hours"`
-	Catalog_Uri         string                `bson:"catalog_uri" json:"catalog_uri"`
-	Requirements       *CollectionRequirement `bson:"requirements" json:"requirements"`
+	Subtype              string                 `bson:"subtype" json:"subtype"`
+	School               string                 `bson:"school" json:"school"`
+	Name                 string                 `bson:"name" json:"name"`
+	Year                 string                 `bson:"year" json:"year"`
+	Abbreviation         string                 `bson:"abbreviation" json:"abbreviation"`
+	Minimum_Credit_Hours int                    `bson:"minimum_credit_hours" json:"minimum_credit_hours"`
+	Catalog_Uri          string                 `bson:"catalog_uri" json:"catalog_uri"`
+	Requirements         *CollectionRequirement `bson:"requirements" json:"requirements"`
 }
