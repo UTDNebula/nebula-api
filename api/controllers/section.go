@@ -33,7 +33,7 @@ func SectionSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query := bson.M{}
 		for key, _ := range queryParams {
-			if key == "course_reference" {
+			if key == "course_reference" || key == "professors" {
 				objId, err := primitive.ObjectIDFromHex(c.Query(key))
 				if err != nil {
 					c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
