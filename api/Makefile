@@ -9,10 +9,10 @@ ifndef CONTAINER_HOST
 endif
 
 build: server.go
-	go build -o nebula-api server.go
+	go build -o go-api server.go
 
 clean: nebula-api
 	rm nebula-api
 
-docker: Dockerfile server.go
+docker: Dockerfile configs/ controllers/ models/ responses/ routes/ server.go
 	$(DOCKER_RUNNER) build -t $(REGISTRY)/nebula-api/go-api .
