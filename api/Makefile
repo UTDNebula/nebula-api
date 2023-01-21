@@ -14,5 +14,8 @@ build: server.go
 clean: nebula-api
 	rm nebula-api
 
+RELEASE_TAG=$(shell git rev-parse --short HEAD)
+BASE_TAG=$(REGISTRY)/utdnebula/api/go-api
 docker: Dockerfile configs/ controllers/ models/ responses/ routes/ server.go
-	$(DOCKER_RUNNER) build -t $(REGISTRY)/nebula-api/go-api .
+	$(DOCKER_RUNNER) build -t $(BASE_TAG):$(RELEASE_TAG) .
+	$(DOCKER_RUNNER) tag $(BASE_TAG):$(RELEASE_TAG) $(BASE_TAG):latest
