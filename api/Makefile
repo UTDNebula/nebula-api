@@ -5,6 +5,10 @@ REGISTRY?=localhost:5000
 RELEASE_TAG=$(shell git rev-parse --short HEAD)
 BASE_TAG=$(REGISTRY)/utdnebula/api/go-api
 
+check: 
+	go vet ./...
+	staticcheck ./...
+
 build: server.go
 	go build -o $(EXEC_NAME) server.go
 
