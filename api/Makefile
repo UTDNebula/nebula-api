@@ -4,7 +4,7 @@ ifndef DOCKER_RUNNER
 	DOCKER_RUNNER = docker
 endif
 
-ifndef CONTAINER_HOST
+ifndef REGISTRY 
 	REGISTRY = localhost:5000
 endif
 
