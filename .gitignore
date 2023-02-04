@@ -68,3 +68,6 @@ deploy_log.sh
 
 # Go workspace file
 go.work
+
+# API go executable
+api/go-api
