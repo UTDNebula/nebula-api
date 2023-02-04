@@ -48,20 +48,20 @@ func GetCollection(client *mongo.Client, collectionName string) *mongo.Collectio
 
 // Returns *options.FindOptions with a limit and offset applied. Returns error if any
 func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error){
-		delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
+	delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
 
-		// parses offset if included in the query
-		var offset int64;
-		var err error
-		
-		if c.Query("offset") == "" {
-			offset = 0 	// default value for offset
-		} else {
-			offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
-			if err != nil {
-				return options.Find().SetSkip(0).SetLimit(Limit), err  // default value for offset
-			}
+	// parses offset if included in the query
+	var offset int64;
+	var err error
+	
+	if c.Query("offset") == "" {
+		offset = 0 	// default value for offset
+	} else {
+		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
+		if err != nil {
+			return options.Find().SetSkip(0).SetLimit(Limit), err  // default value for offset
 		}
+	}
 
-		return options.Find().SetSkip(offset).SetLimit(Limit), err
+	return options.Find().SetSkip(offset).SetLimit(Limit), err
 }
