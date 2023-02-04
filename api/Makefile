@@ -8,7 +8,7 @@ BASE_TAG=$(REGISTRY)/utdnebula/api/go-api
 build: server.go
 	go build -o $(EXEC_NAME) server.go
 
-clean: nebula-api
+clean: $(EXEC_NAME)
 	rm $(EXEC_NAME)
 
 docker: Dockerfile configs/ controllers/ models/ responses/ routes/ server.go
