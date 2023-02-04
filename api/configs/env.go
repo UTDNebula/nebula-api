@@ -11,7 +11,7 @@ import (
 func EnvMongoURI() string {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file: %v", err)
+		log.Fatalf("Error loading .env file: %v", err)
 	}
 
 	return os.Getenv("MONGODB_URI")
@@ -20,7 +20,7 @@ func EnvMongoURI() string {
 func EnvLimit() int64 {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file: %v", err)
+		log.Fatalf("Error loading .env file: %v", err)
 	}
 
 	limit, err := strconv.ParseInt(os.Getenv("LIMIT"), 10, 64)
