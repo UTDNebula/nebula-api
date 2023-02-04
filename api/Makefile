@@ -1,21 +1,16 @@
 
-
-ifndef DOCKER_RUNNER
-	DOCKER_RUNNER = docker
-endif
-
-ifndef REGISTRY 
-	REGISTRY = localhost:5000
-endif
-
-build: server.go
-	go build -o go-api server.go
-
-clean: nebula-api
-	rm nebula-api
-
+EXEC_NAME?=go-api
+DOCKER_RUNNER?=docker
+REGISTRY?=localhost:5000
 RELEASE_TAG=$(shell git rev-parse --short HEAD)
 BASE_TAG=$(REGISTRY)/utdnebula/api/go-api
+
+build: server.go
+	go build -o $(EXEC_NAME) server.go
+
+clean: nebula-api
+	rm $(EXEC_NAME)
+
 docker: Dockerfile configs/ controllers/ models/ responses/ routes/ server.go
 	$(DOCKER_RUNNER) build -t $(BASE_TAG):$(RELEASE_TAG) .
 	$(DOCKER_RUNNER) tag $(BASE_TAG):$(RELEASE_TAG) $(BASE_TAG):latest
