@@ -49,7 +49,7 @@ By default, REGISTRY is set to `localhost:5000`. You can set this as a different
 
 ## Linting
 
-Run `make check` to run `go vet` and `staticcheck` on the api project. In order to a PR to be approved, this make target (or its relevant commands) should run successfully to ensure use of good practices.
+To run `staticcheck` refer to [this URL](https://staticcheck.io/docs/getting-started/). Run `make check` to run `go vet` and `staticcheck` on the api project. In order to a PR to be approved, this make target (or its relevant commands) should run successfully to ensure use of good practices.
 
 ## Unit/Integration Testing (TODO)
 
