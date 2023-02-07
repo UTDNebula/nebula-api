@@ -8,7 +8,7 @@ COPY ./controllers ./controllers
 COPY ./models ./models
 COPY ./responses ./responses
 COPY ./routes ./routes
-COPY go.mod go.sum server.go .
+COPY go.mod go.sum server.go ./
 
 RUN CGO_ENABLED=0 go build -v -o go-api
 
