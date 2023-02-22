@@ -6,50 +6,60 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/routes"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	loadEnv()
-	loadMongo()
-	serveTraffic()
-}
-
-func loadEnv() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Print("There was no .env file found!")
-	}
-}
-
-func loadMongo() {
-	configs.ConnectDB()
-}
-
-func serveTraffic() {
 	router := gin.Default()
+
+	// enable cors
+	/*router.Use(cors.New(cors.Config{
+	    AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT"},
+	    AllowHeaders:     []string{"*"},
+	    ExposeHeaders:    []string{"Content-Length"},
+	    AllowCredentials: false,
+	    AllowAllOrigins:  true,
+	    AllowOriginFunc: func(origin string) bool { return true },
+	    MaxAge:          86400,
+	}))*/
+
 	router.Use(CORS())
 
+	// connect to database
+	configs.ConnectDB()
+
+	// routes
 	routes.CourseRoute(router)
 	routes.DegreeRoute(router)
 	routes.ExamRoute(router)
 	routes.SectionRoute(router)
 	routes.ProfessorRoute(router)
+	routes.GradesRoute(router)
 
-	port, exist := os.LookupEnv("PORT")
-	if !exist {
+	//router.OPTIONS("*", CORSOptionsHandler())
+
+	// @DEBUG
+	// router.GET("/", func(c *gin.Context) {
+	//     c.String(http.StatusOK, "Hello World!")
+	// })
+
+	port := os.Getenv("PORT")
+	if port == "" {
 		port = "8080"
 	}
 
-	var portString = fmt.Sprintf(":%s", port)
-
-	// Can we use router.run() for this?
-	err := http.ListenAndServe(portString, router)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), router)
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func CORSOptionsHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.AbortWithStatus(200)
 	}
 }
 
