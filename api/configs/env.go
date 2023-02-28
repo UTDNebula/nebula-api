@@ -7,7 +7,6 @@ import (
 )
 
 func EnvMongoURI() string {
-
 	uri, exist := os.LookupEnv("MONGODB_URI")
 	if !exist {
 		log.Fatal("Error loading 'MONGODB_URI' from the .env file")
