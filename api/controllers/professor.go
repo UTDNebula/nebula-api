@@ -32,12 +32,17 @@ func ProfessorSearch() gin.HandlerFunc {
 
 		// build query key value pairs (only one value per key)
 		query := bson.M{}
-		for key, _ := range queryParams {
+		for key := range queryParams {
 			query[key] = c.Query(key)
 		}
 
+		optionLimit, err := configs.GetOptionLimit(&query, c); if err != nil {
+			c.JSON(http.StatusConflict, responses.ProfessorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			return
+		}
+
 		// get cursor for query results
-		cursor, err := professorCollection.Find(ctx, query)
+		cursor, err := professorCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return

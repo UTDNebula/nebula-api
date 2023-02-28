@@ -32,12 +32,28 @@ func SectionSearch() gin.HandlerFunc {
 
 		// build query key value pairs (only one value per key)
 		query := bson.M{}
-		for key, _ := range queryParams {
-			query[key] = c.Query(key)
+		for key := range queryParams {
+			if key == "course_reference" || key == "professors" {
+				objId, err := primitive.ObjectIDFromHex(c.Query(key))
+				if err != nil {
+					c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+					return
+				} else {
+					query[key] = objId
+				}
+			} else {
+				query[key] = c.Query(key)
+			}
+		}
+
+		optionLimit, err := configs.GetOptionLimit(&query, c)
+		if err != nil {
+			c.JSON(http.StatusConflict, responses.SectionResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			return
 		}
 
 		// get cursor for query results
-		cursor, err := sectionCollection.Find(ctx, query)
+		cursor, err := sectionCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.SectionResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
@@ -67,7 +83,7 @@ func SectionById() gin.HandlerFunc {
 
 		// parse object id from id parameter
 		objId, err := primitive.ObjectIDFromHex(sectionId)
-		if err != nil{
+		if err != nil {
 			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}

@@ -32,12 +32,17 @@ func ExamSearch() gin.HandlerFunc {
 
 		// build query key value pairs (only one value per key)
 		query := bson.M{}
-		for key, _ := range queryParams {
+		for key := range queryParams {
 			query[key] = c.Query(key)
 		}
 
+		optionLimit, err := configs.GetOptionLimit(&query, c); if err != nil {
+			c.JSON(http.StatusConflict, responses.ExamResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			return
+		}
+
 		// get cursor for query results
-		cursor, err := examCollection.Find(ctx, query)
+		cursor, err := examCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
@@ -68,7 +73,7 @@ func ExamById() gin.HandlerFunc {
 		// parse object id from id parameter
 		objId, err := primitive.ObjectIDFromHex(examId)
 		if err != nil{
-			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -81,5 +86,36 @@ func ExamById() gin.HandlerFunc {
 
 		// return result
 		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: exam})
+	}
+}
+
+func ExamAll() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+		// @TODO: Fix with model - There is NO typechecking!
+		var courses []map[string]interface{}
+
+		defer cancel();
+
+		optionLimit, err := configs.GetOptionLimit(&bson.M{}, c); if err != nil {
+			c.JSON(http.StatusConflict, responses.ExamResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			return
+		}
+
+		// get cursor for all exams in the collection
+		cursor, err := examCollection.Find(ctx, bson.M{}, optionLimit)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			return
+		}
+
+		// retrieve and parse all valid documents
+		err = cursor.All(ctx, &courses); if err != nil {
+			panic(err)
+		}
+
+		// return result
+		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: courses})
 	}
 }
