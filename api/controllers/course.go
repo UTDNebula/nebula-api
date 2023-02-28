@@ -31,7 +31,7 @@ func CourseSearch() gin.HandlerFunc {
 
 		// build query key value pairs (only one value per key)
 		query := bson.M{}
-		for key, _ := range queryParams {
+		for key := range queryParams {
 			query[key] = c.Query(key)
 		}
 
