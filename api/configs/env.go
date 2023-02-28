@@ -7,11 +7,10 @@ import (
 )
 
 func EnvMongoURI() string {
-	uri, exist := os.LookupEnv("MONGODB_URI")
-	if !exist {
-		log.Fatal("Error loading 'MONGODB_URI' from the .env file")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
 	}
-
 	return uri
 }
 
