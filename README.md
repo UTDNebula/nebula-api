@@ -10,8 +10,6 @@ Part of [Project Nebula](https://about.utdnebula.com)
 
 ### Prerequisites
 
-- Node.js 12 (or higher) and NPM
-- Python 3.5 (or higher)
 - Golang 1.18.4 (or higher)
 
 ### Development
