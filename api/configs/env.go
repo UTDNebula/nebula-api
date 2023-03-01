@@ -1,26 +1,49 @@
 package configs
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
-func EnvMongoURI() string {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+func GetPortString() string {
+
+	portNumber, exist := os.LookupEnv("Port")
+	if !exist {
+		portNumber = "8080"
 	}
+
+	portString := fmt.Sprintf(":%s", portNumber)
+
+	return portString
+}
+
+func GetEnvMongoURI() string {
+
+	uri, exist := os.LookupEnv("MONGODB_URI")
+	if !exist {
+		log.Fatal("Error loading 'MONGODB_URI' from the .env file")
+	}
+
 	return uri
 }
 
-func EnvLimit() int64 {
+func GetEnvLimit() int64 {
 
-	limit, err := strconv.ParseInt(os.Getenv("LIMIT"), 10, 64)
-	if err != nil {
-		limit = 20 // default value for limit
+	const defaultLimit int64 = 20
+
+	limitString, exist := os.LookupEnv("LIMIT")
+	if !exist {
+		return defaultLimit
 	}
+
+	limit, err := strconv.ParseInt(limitString, 10, 64)
+	if err != nil {
+		return defaultLimit
+	}
+
 	return limit
 }
-
-var Limit int64 = EnvLimit()
