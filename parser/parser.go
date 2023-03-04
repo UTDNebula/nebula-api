@@ -53,20 +53,17 @@ func csvToClassesSlice(csvFile *os.File, logFile *os.File) (classes []model.Clas
 	wCol := -1
 	aPlusCol := -1
 	for j := 0; j < len(records[0]); j++ {
-		if strings.Compare(records[0][j], "Subject") == 0 {
-			subjectCol = j
-		}
-		if strings.Compare(records[0][j], "Catalog Number") == 0 || strings.Compare(records[0][j], "Catalog Nbr") == 0 {
-			catalogNumberCol = j
-		}
-		if strings.Compare(records[0][j], "Section") == 0 {
-			sectionCol = j
-		}
-		if strings.Compare(records[0][j], "W") == 0 || strings.Compare(records[0][j], "Total W") == 0 || strings.Compare(records[0][j], "W Total") == 0 {
-			wCol = j
-		}
-		if strings.Compare(records[0][j], "A+") == 0 {
-			aPlusCol = j
+		switch {
+			case records[0][j] == "Subject":
+				subjectCol = j
+			case records[0][j] == "Catalog Number" || records[0][j] == "Catalog Nbr":
+				catalogNumberCol = j
+			case records[0][j] == "Section":
+				sectionCol = j
+			case records[0][j] == "W" || records[0][j] == "Total W" || records[0][j] == "W Total":
+				wCol = j
+			case records[0][j] == "A+":
+				aPlusCol = j
 		}
 		if wCol == -1 || subjectCol == -1 || catalogNumberCol == -1 || sectionCol == -1 || aPlusCol == -1 {
 			continue
