@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
@@ -54,16 +53,16 @@ func csvToClassesSlice(csvFile *os.File, logFile *os.File) (classes []model.Clas
 	aPlusCol := -1
 	for j := 0; j < len(records[0]); j++ {
 		switch {
-			case records[0][j] == "Subject":
-				subjectCol = j
-			case records[0][j] == "Catalog Number" || records[0][j] == "Catalog Nbr":
-				catalogNumberCol = j
-			case records[0][j] == "Section":
-				sectionCol = j
-			case records[0][j] == "W" || records[0][j] == "Total W" || records[0][j] == "W Total":
-				wCol = j
-			case records[0][j] == "A+":
-				aPlusCol = j
+		case records[0][j] == "Subject":
+			subjectCol = j
+		case records[0][j] == "Catalog Number" || records[0][j] == "Catalog Nbr":
+			catalogNumberCol = j
+		case records[0][j] == "Section":
+			sectionCol = j
+		case records[0][j] == "W" || records[0][j] == "Total W" || records[0][j] == "W Total":
+			wCol = j
+		case records[0][j] == "A+":
+			aPlusCol = j
 		}
 		if wCol == -1 || subjectCol == -1 || catalogNumberCol == -1 || sectionCol == -1 || aPlusCol == -1 {
 			continue
