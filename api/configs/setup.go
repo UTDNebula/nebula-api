@@ -3,10 +3,10 @@ package configs
 import (
 	"context"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,10 +14,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDB() *mongo.Client {
+func ConnectDB() (*mongo.Client, error) {
 	client, err := mongo.NewClient(options.Client().ApplyURI(GetEnvMongoURI()))
 	if err != nil {
-		log.Fatalf("Unable to create MongoDB client: %v", err)
+		return nil, fmt.Errorf("Unable to create MongoDB client: %v", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -25,19 +25,20 @@ func ConnectDB() *mongo.Client {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		log.Fatalf("Unable to connect to database: %v", err)
+		return nil, fmt.Errorf("Unable to connect to database: %v", err)
 	}
 
 	//ping the database
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatalf("Unable to ping database: %v", err)
+		return nil, fmt.Errorf("Unable to ping database: %v", err)
 	}
-	fmt.Println("Connected to MongoDB")
-	return client
+
+	log.Debug.Println("Connected to MongoDB")
+
+	return client, nil
 }
 
-// Client instance
 var DB *mongo.Client = ConnectDB()
 
 // getting database collections
