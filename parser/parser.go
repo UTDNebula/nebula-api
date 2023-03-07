@@ -20,7 +20,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 
-	"parser/configs"
 	"parser/model"
 )
 
@@ -218,7 +217,7 @@ func EnvMongoURI() string {
 }
 
 func main() {
-	URI := configs.EnvMongoURI()
+	URI := EnvMongoURI()
 	fileFlag := flag.String("file", "", "csv grade file to be parsed")
 	semesterFlag := flag.String("semester", "", "semester of the grades, ex: 18U, 19F")
 	flag.Parse()
