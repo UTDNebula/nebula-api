@@ -24,6 +24,7 @@ func main() {
 	routes.SectionRoute(router)
 	routes.ProfessorRoute(router)
 	routes.AutocompleteRoute(router)
+	routes.GradesRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
