@@ -28,31 +28,31 @@ func GradesAll() gin.HandlerFunc {
 
 		bySectionPipeline := mongo.Pipeline{
 			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "sections"},
-						{"localField", "sections"},
-						{"foreignField", "_id"},
-						{"as", "sections"},
+				{Key: "$lookup",
+					Value: bson.D{
+						{Key: "from", Value: "sections"},
+						{Key: "localField", Value: "sections"},
+						{Key: "foreignField", Value: "_id"},
+						{Key: "as", Value: "sections"},
 					},
 				},
 			},
-			bson.D{{"$unwind", "$sections"}},
+			bson.D{{Key: "$unwind", Value: "$sections"}},
 			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "professors"},
-						{"localField", "sections.professors"},
-						{"foreignField", "_id"},
-						{"as", "professors"},
+				{Key: "$lookup",
+					Value: bson.D{
+						{Key: "from", Value: "professors"},
+						{Key: "localField", Value: "sections.professors"},
+						{Key: "foreignField", Value: "_id"},
+						{Key: "as", Value: "professors"},
 					},
 				},
 			},
 			bson.D{
-				{"$group",
-					bson.D{
-						{"_id", "$sections._id"},
-						{"grade_distribution", bson.D{{"$push", "$sections.grade_distribution"}}},
+				{Key: "$group",
+					Value: bson.D{
+						{Key: "_id", Value: "$sections._id"},
+						{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$sections.grade_distribution"}}},
 					},
 				},
 			},
@@ -61,69 +61,69 @@ func GradesAll() gin.HandlerFunc {
 		sumSemesterPipeline :=
 			mongo.Pipeline{
 				bson.D{
-					{"$lookup",
-						bson.D{
-							{"from", "sections"},
-							{"localField", "sections"},
-							{"foreignField", "_id"},
-							{"as", "sections"},
+					{Key: "$lookup",
+						Value: bson.D{
+							{Key: "from", Value: "sections"},
+							{Key: "localField", Value: "sections"},
+							{Key: "foreignField", Value: "_id"},
+							{Key: "as", Value: "sections"},
 						},
 					},
 				},
-				bson.D{{"$unwind", "$sections"}},
+				bson.D{{Key: "$unwind", Value: "$sections"}},
 				bson.D{
-					{"$lookup",
-						bson.D{
-							{"from", "professors"},
-							{"localField", "sections.professors"},
-							{"foreignField", "_id"},
-							{"as", "professors"},
-						},
-					},
-				},
-				bson.D{
-					{"$project",
-						bson.D{
-							{"_id", "$sections.academic_session.name"},
-							{"grade_distribution", "$sections.grade_distribution"},
+					{Key: "$lookup",
+						Value: bson.D{
+							{Key: "from", Value: "professors"},
+							{Key: "localField", Value: "sections.professors"},
+							{Key: "foreignField", Value: "_id"},
+							{Key: "as", Value: "professors"},
 						},
 					},
 				},
 				bson.D{
-					{"$unwind",
-						bson.D{
-							{"path", "$grade_distribution"},
-							{"includeArrayIndex", "ix"},
+					{Key: "$project",
+						Value: bson.D{
+							{Key: "_id", Value: "$sections.academic_session.name"},
+							{Key: "grade_distribution", Value: "$sections.grade_distribution"},
 						},
 					},
 				},
 				bson.D{
-					{"$group",
-						bson.D{
-							{"_id",
-								bson.D{
-									{"academic_session", "$_id"},
-									{"ix", "$ix"},
+					{Key: "$unwind",
+						Value: bson.D{
+							{Key: "path", Value: "$grade_distribution"},
+							{Key: "includeArrayIndex", Value: "ix"},
+						},
+					},
+				},
+				bson.D{
+					{Key: "$group",
+						Value: bson.D{
+							{Key: "_id",
+								Value: bson.D{
+									{Key: "academic_session", Value: "$_id"},
+									{Key: "ix", Value: "$ix"},
 								},
 							},
-							{"grade_distributions", bson.D{{"$push", "$grade_distribution"}}},
+							{Key: "grade_distributions", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
 						},
 					},
 				},
 				bson.D{
-					{"$sort",
-						bson.D{
-							{"_id.ix", 1},
-							{"_id", 1},
+					{Key: "$sort",
+						Value: bson.D{
+							{Key: "_id.ix", Value: 1},
+							{Key: "_id", Value: 1},
 						},
 					},
 				},
-				bson.D{{"$addFields", bson.D{{"grade_distributions", bson.D{{"$sum", "$grade_distributions"}}}}}},
+				bson.D{{Key: "$addFields", Value: bson.D{{Key: "grade_distributions", Value: bson.D{{Key: "$sum", Value: "$grade_distributions"}}}}}},
 				bson.D{
-					{"$group",
-						bson.D{
-							{"_id", "$_id.academic_session"},
-							{"grade_distribution", bson.D{{"$push", "$grade_distributions"}}},
+					{Key: "$group",
+						Value: bson.D{
+							{Key: "_id", Value: "$_id.academic_session"},
+							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distributions"}}},
 						},
 					},
 				},
@@ -132,57 +132,57 @@ func GradesAll() gin.HandlerFunc {
 		totalPipeline :=
 			mongo.Pipeline{
 				bson.D{
-					{"$lookup",
-						bson.D{
-							{"from", "sections"},
-							{"localField", "sections"},
-							{"foreignField", "_id"},
-							{"as", "sections"},
+					{Key: "$lookup",
+						Value: bson.D{
+							{Key: "from", Value: "sections"},
+							{Key: "localField", Value: "sections"},
+							{Key: "foreignField", Value: "_id"},
+							{Key: "as", Value: "sections"},
 						},
 					},
 				},
-				bson.D{{"$unwind", "$sections"}},
+				bson.D{{Key: "$unwind", Value: "$sections"}},
 				bson.D{
-					{"$lookup",
-						bson.D{
-							{"from", "professors"},
-							{"localField", "sections.professors"},
-							{"foreignField", "_id"},
-							{"as", "professors"},
-						},
-					},
-				},
-				bson.D{
-					{"$project",
-						bson.D{
-							{"_id", primitive.Null{}},
-							{"grade_distribution", "$sections.grade_distribution"},
+					{Key: "$lookup",
+						Value: bson.D{
+							{Key: "from", Value: "professors"},
+							{Key: "localField", Value: "sections.professors"},
+							{Key: "foreignField", Value: "_id"},
+							{Key: "as", Value: "professors"},
 						},
 					},
 				},
 				bson.D{
-					{"$unwind",
-						bson.D{
-							{"path", "$grade_distribution"},
-							{"includeArrayIndex", "ix"},
+					{Key: "$project",
+						Value: bson.D{
+							{Key: "_id", Value: primitive.Null{}},
+							{Key: "grade_distribution", Value: "$sections.grade_distribution"},
 						},
 					},
 				},
 				bson.D{
-					{"$group",
-						bson.D{
-							{"_id", "$ix"},
-							{"grade_distribution", bson.D{{"$push", "$grade_distribution"}}},
+					{Key: "$unwind",
+						Value: bson.D{
+							{Key: "path", Value: "$grade_distribution"},
+							{Key: "includeArrayIndex", Value: "ix"},
 						},
 					},
 				},
-				bson.D{{"$sort", bson.D{{"_id", 1}}}},
-				bson.D{{"$addFields", bson.D{{"grade_distribution", bson.D{{"$sum", "$grade_distribution"}}}}}},
 				bson.D{
-					{"$group",
-						bson.D{
-							{"_id", primitive.Null{}},
-							{"grade_distribution", bson.D{{"$push", "$grade_distribution"}}},
+					{Key: "$group",
+						Value: bson.D{
+							{Key: "_id", Value: "$ix"},
+							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
+						},
+					},
+				},
+				bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+				bson.D{{Key: "$addFields", Value: bson.D{{Key: "grade_distribution", Value: bson.D{{Key: "$sum", Value: "$grade_distribution"}}}}}},
+				bson.D{
+					{Key: "$group",
+						Value: bson.D{
+							{Key: "_id", Value: primitive.Null{}},
+							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
 						},
 					},
 				},
@@ -226,12 +226,25 @@ func GradesSearch() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
+		// Query takes the following form:
+		//  - If filtering by course parameter, use equivalent CourseSearch parameter.
+		//  - If filtering by section parameter, add the prefix "sections." to the equivalent SectionSearch query parameter.
+		//  - If filtering by professor parameter, add the prefix "professors." to the equivalent ProfessorSearch query parameter.
+
 		for key, _ := range queryParams {
 			if key[0:len("courses.")] == "courses." { // discard courses prefix becuase pipeline will aggregate courses
 				courseKey := key[len("courses."):]
 				query[courseKey] = c.Query(key)
 			} else if key == "representation" {
 				representation = c.Query(key)
+			} else if key == "sections.course_reference" || key == "sections.professors" {
+				objId, err := primitive.ObjectIDFromHex(c.Query(key))
+				if err != nil {
+					c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+					return
+				} else {
+					query[key] = objId
+				}
 			} else {
 				query[key] = c.Query(key)
 			}
@@ -239,32 +252,32 @@ func GradesSearch() gin.HandlerFunc {
 
 		bySectionPipeline := mongo.Pipeline{
 			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "sections"},
-						{"localField", "sections"},
-						{"foreignField", "_id"},
-						{"as", "sections"},
+				{Key: "$lookup",
+					Value: bson.D{
+						{Key: "from", Value: "sections"},
+						{Key: "localField", Value: "sections"},
+						{Key: "foreignField", Value: "_id"},
+						{Key: "as", Value: "sections"},
 					},
 				},
 			},
-			bson.D{{"$unwind", "$sections"}},
+			bson.D{{Key: "$unwind", Value: "$sections"}},
 			bson.D{
-				{"$lookup",
-					bson.D{
-						{"from", "professors"},
-						{"localField", "sections.professors"},
-						{"foreignField", "_id"},
-						{"as", "professors"},
+				{Key: "$lookup",
+					Value: bson.D{
+						{Key: "from", Value: "professors"},
+						{Key: "localField", Value: "sections.professors"},
+						{Key: "foreignField", Value: "_id"},
+						{Key: "as", Value: "professors"},
 					},
 				},
 			},
-			bson.D{{"$match", query}},
+			bson.D{{Key: "$match", Value: query}},
 			bson.D{
-				{"$group",
-					bson.D{
-						{"_id", "$sections._id"},
-						{"grade_distribution", bson.D{{"$push", "$sections.grade_distribution"}}},
+				{Key: "$group",
+					Value: bson.D{
+						{Key: "_id", Value: "$sections._id"},
+						{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$sections.grade_distribution"}}},
 					},
 				},
 			},
@@ -273,58 +286,58 @@ func GradesSearch() gin.HandlerFunc {
 		totalPipeline :=
 			mongo.Pipeline{
 				bson.D{
-					{"$lookup",
-						bson.D{
-							{"from", "sections"},
-							{"localField", "sections"},
-							{"foreignField", "_id"},
-							{"as", "sections"},
+					{Key: "$lookup",
+						Value: bson.D{
+							{Key: "from", Value: "sections"},
+							{Key: "localField", Value: "sections"},
+							{Key: "foreignField", Value: "_id"},
+							{Key: "as", Value: "sections"},
 						},
 					},
 				},
-				bson.D{{"$unwind", "$sections"}},
+				bson.D{{Key: "$unwind", Value: "$sections"}},
 				bson.D{
-					{"$lookup",
-						bson.D{
-							{"from", "professors"},
-							{"localField", "sections.professors"},
-							{"foreignField", "_id"},
-							{"as", "professors"},
+					{Key: "$lookup",
+						Value: bson.D{
+							{Key: "from", Value: "professors"},
+							{Key: "localField", Value: "sections.professors"},
+							{Key: "foreignField", Value: "_id"},
+							{Key: "as", Value: "professors"},
 						},
 					},
 				},
-				bson.D{{"$match", query}},
+				bson.D{{Key: "$match", Value: query}},
 				bson.D{
-					{"$project",
-						bson.D{
-							{"_id", primitive.Null{}},
-							{"grade_distribution", "$sections.grade_distribution"},
-						},
-					},
-				},
-				bson.D{
-					{"$unwind",
-						bson.D{
-							{"path", "$grade_distribution"},
-							{"includeArrayIndex", "ix"},
+					{Key: "$project",
+						Value: bson.D{
+							{Key: "_id", Value: primitive.Null{}},
+							{Key: "grade_distribution", Value: "$sections.grade_distribution"},
 						},
 					},
 				},
 				bson.D{
-					{"$group",
-						bson.D{
-							{"_id", "$ix"},
-							{"grade_distribution", bson.D{{"$push", "$grade_distribution"}}},
+					{Key: "$unwind",
+						Value: bson.D{
+							{Key: "path", Value: "$grade_distribution"},
+							{Key: "includeArrayIndex", Value: "ix"},
 						},
 					},
 				},
-				bson.D{{"$sort", bson.D{{"_id", 1}}}},
-				bson.D{{"$addFields", bson.D{{"grade_distribution", bson.D{{"$sum", "$grade_distribution"}}}}}},
 				bson.D{
-					{"$group",
-						bson.D{
-							{"_id", primitive.Null{}},
-							{"grade_distribution", bson.D{{"$push", "$grade_distribution"}}},
+					{Key: "$group",
+						Value: bson.D{
+							{Key: "_id", Value: "$ix"},
+							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
+						},
+					},
+				},
+				bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+				bson.D{{Key: "$addFields", Value: bson.D{{Key: "grade_distribution", Value: bson.D{{Key: "$sum", Value: "$grade_distribution"}}}}}},
+				bson.D{
+					{Key: "$group",
+						Value: bson.D{
+							{Key: "_id", Value: primitive.Null{}},
+							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
 						},
 					},
 				},
@@ -333,72 +346,72 @@ func GradesSearch() gin.HandlerFunc {
 		sumSemesterPipeline :=
 			mongo.Pipeline{
 				bson.D{
-					{"$lookup",
-						bson.D{
-							{"from", "sections"},
-							{"localField", "sections"},
-							{"foreignField", "_id"},
-							{"as", "sections"},
+					{Key: "$lookup",
+						Value: bson.D{
+							{Key: "from", Value: "sections"},
+							{Key: "localField", Value: "sections"},
+							{Key: "foreignField", Value: "_id"},
+							{Key: "as", Value: "sections"},
 						},
 					},
 				},
-				bson.D{{"$unwind", "$sections"}},
+				bson.D{{Key: "$unwind", Value: "$sections"}},
 				bson.D{
-					{"$lookup",
-						bson.D{
-							{"from", "professors"},
-							{"localField", "sections.professors"},
-							{"foreignField", "_id"},
-							{"as", "professors"},
-						},
-					},
-				},
-				bson.D{
-					{"$match", query},
-				},
-				bson.D{
-					{"$project",
-						bson.D{
-							{"_id", "$sections.academic_session.name"},
-							{"grade_distribution", "$sections.grade_distribution"},
+					{Key: "$lookup",
+						Value: bson.D{
+							{Key: "from", Value: "professors"},
+							{Key: "localField", Value: "sections.professors"},
+							{Key: "foreignField", Value: "_id"},
+							{Key: "as", Value: "professors"},
 						},
 					},
 				},
 				bson.D{
-					{"$unwind",
-						bson.D{
-							{"path", "$grade_distribution"},
-							{"includeArrayIndex", "ix"},
+					{Key: "$match", Value: query},
+				},
+				bson.D{
+					{Key: "$project",
+						Value: bson.D{
+							{Key: "_id", Value: "$sections.academic_session.name"},
+							{Key: "grade_distribution", Value: "$sections.grade_distribution"},
 						},
 					},
 				},
 				bson.D{
-					{"$group",
-						bson.D{
-							{"_id",
-								bson.D{
-									{"academic_session", "$_id"},
-									{"ix", "$ix"},
+					{Key: "$unwind",
+						Value: bson.D{
+							{Key: "path", Value: "$grade_distribution"},
+							{Key: "includeArrayIndex", Value: "ix"},
+						},
+					},
+				},
+				bson.D{
+					{Key: "$group",
+						Value: bson.D{
+							{Key: "_id",
+								Value: bson.D{
+									{Key: "academic_session", Value: "$_id"},
+									{Key: "ix", Value: "$ix"},
 								},
 							},
-							{"grade_distributions", bson.D{{"$push", "$grade_distribution"}}},
+							{Key: "grade_distributions", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
 						},
 					},
 				},
 				bson.D{
-					{"$sort",
-						bson.D{
-							{"_id.ix", 1},
-							{"_id", 1},
+					{Key: "$sort",
+						Value: bson.D{
+							{Key: "_id.ix", Value: 1},
+							{Key: "_id", Value: 1},
 						},
 					},
 				},
-				bson.D{{"$addFields", bson.D{{"grade_distributions", bson.D{{"$sum", "$grade_distributions"}}}}}},
+				bson.D{{Key: "$addFields", Value: bson.D{{Key: "grade_distributions", Value: bson.D{{Key: "$sum", Value: "$grade_distributions"}}}}}},
 				bson.D{
-					{"$group",
-						bson.D{
-							{"_id", "$_id.academic_session"},
-							{"grade_distribution", bson.D{{"$push", "$grade_distributions"}}},
+					{Key: "$group",
+						Value: bson.D{
+							{Key: "_id", Value: "$_id.academic_session"},
+							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distributions"}}},
 						},
 					},
 				},
