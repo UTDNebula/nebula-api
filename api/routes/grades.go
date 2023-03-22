@@ -11,5 +11,11 @@ func GradesRoute(router *gin.Engine) {
 	gradesGroup := router.Group("/grades")
 
 	gradesGroup.OPTIONS("", controllers.Preflight)
-	gradesGroup.GET("", controllers.GradesSearch())
+	//gradesGroup.GET("", controllers.GradesSearch())
+
+	// @TODO: Do we need this?
+	// ---- gradesGroup.OPTIONS("/semester", controllers.Preflight)
+
+	gradesGroup.GET("/semester", controllers.GradesAggregatedBySemester())
+	//gradesGroup.GET("/overall", controllers.GradesAggregatedOverall())
 }
