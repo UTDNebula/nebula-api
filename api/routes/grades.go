@@ -12,5 +12,4 @@ func GradesRoute(router *gin.Engine) {
 
 	gradesGroup.OPTIONS("", controllers.Preflight)
 	gradesGroup.GET("", controllers.GradesSearch())
-	gradesGroup.GET("all", controllers.GradesAll())
 }
