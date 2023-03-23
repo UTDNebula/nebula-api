@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/responses"
 
 	"github.com/gin-gonic/gin"
@@ -14,8 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
-
-var coursesCollection *mongo.Collection = configs.GetCollection(configs.DB, "courses")
 
 // We want to Filter (Match) ASAP
 
@@ -29,12 +26,10 @@ var coursesCollection *mongo.Collection = configs.GetCollection(configs.DB, "cou
 // Aggregate By Professor -> Section
 // ---- Professor
 
-// Aggregate By Find Course, Find Professor -> Find Section
+// Aggregate By Find Course, Find Professor: then Match Section
+// ---- Prefix, Professor
 // ---- Prefix, Number, Professor
 // ---- Prefix, Number, Professor, SectionNumber
-
-// Aggregate By Find Professor -> Section -> Course
-// ---- Prefix, Professor
 
 // --------------------------------------------------------
 
@@ -48,28 +43,35 @@ var coursesCollection *mongo.Collection = configs.GetCollection(configs.DB, "cou
 // Filter on Professor
 // ---- Professor
 
-// Filter on Section by Matching Course and Professor
+// Filter on Section by Matching Course and Professor IDs
+// ---- Prefix, Professor
 // ---- Prefix, Number, Professor
 // ---- Prefix, Number, Professor, SectionNumber
 
-// Filter on Professor then Course
-// ---- Prefix, Professor
+// 4 Functions
 
-// 5 Functions
-
-func GradesAggregatedBySemester() gin.HandlerFunc {
+func GradesAggregation(flag string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var grades []map[string]interface{}
+		var results []map[string]interface{}
+
+		var cursor *mongo.Cursor
 		var collection *mongo.Collection
 		var pipeline mongo.Pipeline
+
+		var sectionMatch bson.D
 		var courseMatch bson.D
+		var courseFind bson.D
 		var professorMatch bson.D
+		var professorFind bson.D
+
+		var err error
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		// @TODO: Verify first_name and last_name query parameters
-		// @TODO: Recommend forcing using first_name and last_name to ensure single professors per query. All professors sharing the name will be aggregated together in the current implementation
+		// @TODO: Recommend forcing using first_name and last_name to ensure single professors per query.
+		// All professors sharing the name will be aggregated together in the current implementation
 		prefix := c.Query("prefix")
 		number := c.Query("number")
 		section_number := c.Query("section_number")
@@ -87,21 +89,19 @@ func GradesAggregatedBySemester() gin.HandlerFunc {
 			}},
 		}
 
-		// lookupProfessorsStage := bson.D{
-		// 	{Key: "$lookup", Value: bson.D{
-		// 		{Key: "from", Value: "professors"},
-		// 		{Key: "localField", Value: "sections.professors"},
-		// 		{Key: "foreignField", Value: "_id"},
-		// 		{Key: "as", Value: "professors"},
-		// 	}},
-		// }
-
-		unwindSectionsStage := bson.D{{Key: "$unwind", Value: "$sections"}}
+		unwindSectionsStage := bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sections"}}}}
 
 		projectGradeDistributionStage := bson.D{
 			{Key: "$project", Value: bson.D{
 				{Key: "_id", Value: "$sections.academic_session.name"},
 				{Key: "grade_distribution", Value: "$sections.grade_distribution"},
+			}},
+		}
+
+		projectGradeDistributionWithSectionsStage := bson.D{
+			{Key: "$project", Value: bson.D{
+				{Key: "_id", Value: "$academic_session.name"},
+				{Key: "grade_distribution", Value: "$grade_distribution"},
 			}},
 		}
 
@@ -134,32 +134,34 @@ func GradesAggregatedBySemester() gin.HandlerFunc {
 		groupGradeDistributionStage := bson.D{
 			{Key: "$group", Value: bson.D{
 				{Key: "_id", Value: "$_id.academic_session"},
-				{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distributions"}}},
+				{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grades"}}},
 			}},
 		}
 		switch {
 		case prefix != "" && number == "" && section_number == "" && !professor:
 			// Filter on Course
 			collection = courseCollection
-			courseMatch = bson.D{{Key: "$match", Value: bson.M{"prefix": prefix}}}
+			courseMatch = bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix}}}
 			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 		case prefix != "" && number != "" && section_number == "" && !professor:
 			// Filter on Course
 			collection = courseCollection
-			courseMatch := bson.D{{Key: "$match", Value: bson.M{"prefix": prefix, "number": number}}}
+			courseMatch := bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix, "course_number": number}}}
 			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 		case prefix != "" && number != "" && section_number != "" && !professor:
 			// Filter on Course then Section
 			collection = courseCollection
-			courseMatch := bson.D{{Key: "$match", Value: bson.M{"prefix": prefix, "number": number}}}
-			sectionMatch := bson.D{{Key: "$match", Value: bson.M{"section.section_number": section_number}}}
+			courseMatch := bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix, "course_number": number}}}
+			sectionMatch := bson.D{{Key: "$match", Value: bson.M{"sections.section_number": section_number}}}
 			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, sectionMatch, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 		case prefix == "" && number == "" && section_number == "" && professor:
 			// Filter on Professor
 			collection = professorCollection
+
+			// Build professorMatch
 			if last_name == "" {
 				professorMatch = bson.D{{Key: "$match", Value: bson.M{"first_name": first_name}}}
 			} else if first_name == "" {
@@ -167,22 +169,91 @@ func GradesAggregatedBySemester() gin.HandlerFunc {
 			} else {
 				professorMatch = bson.D{{Key: "$match", Value: bson.M{"first_name": first_name, "last_name": last_name}}}
 			}
+
+			// Build grades pipeline
 			pipeline = mongo.Pipeline{professorMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
-		case prefix != "" && number != "" && section_number == "" && professor:
-			// @TODO
-			// Filter on Section by Matching Course and Professor
-		case prefix != "" && number != "" && section_number != "" && professor:
-			// @TODO
-			// Filter on Section by Matching Course and Professor
-		case prefix != "" && number == "" && section_number == "" && !professor:
-			// @TODO
-			// Filter on Professor then Course
+		case prefix != "" && professor:
+			// Filter on Section by Matching Course and Professor IDs
+
+			// Here we get the valid course ids and professor ids
+			// and then we perform the grades aggregation against the sections collection,
+			// matching on the course_reference and professor
+
+			var profIDs []primitive.ObjectID
+			var courseIDs []primitive.ObjectID
+
+			collection = sectionCollection
+
+			// Find valid professor ids
+			if last_name == "" {
+				professorFind = bson.D{{Key: "first_name", Value: first_name}}
+			} else if first_name == "" {
+				professorFind = bson.D{{Key: "last_name", Value: last_name}}
+			} else {
+				professorFind = bson.D{{Key: "first_name", Value: first_name}, {Key: "last_name", Value: last_name}}
+			}
+
+			cursor, err = professorCollection.Find(ctx, professorFind)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, responses.GradeResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+				return
+			}
+			if err = cursor.All(ctx, &results); err != nil {
+				panic(err)
+			}
+
+			for _, prof := range results {
+				profID := prof["_id"].(primitive.ObjectID)
+				profIDs = append(profIDs, profID)
+			}
+
+			// Get valid course ids
+			if number == "" {
+				courseFind = bson.D{{Key: "subject_prefix", Value: prefix}}
+			} else {
+				courseFind = bson.D{{Key: "subject_prefix", Value: prefix}, {Key: "course_number", Value: number}}
+			}
+
+			cursor, err = courseCollection.Find(ctx, courseFind)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, responses.GradeResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+				return
+			}
+			if err = cursor.All(ctx, &results); err != nil {
+				panic(err)
+			}
+
+			for _, course := range results {
+				courseID := course["_id"].(primitive.ObjectID)
+				courseIDs = append(courseIDs, courseID)
+			}
+
+			// Build sectionMatch
+			if section_number == "" {
+				sectionMatch =
+					bson.D{{Key: "$match", Value: bson.D{
+						{Key: "course_reference", Value: bson.D{{Key: "$in", Value: courseIDs}}},
+						{Key: "professors", Value: bson.D{{Key: "$in", Value: profIDs}}},
+					}}}
+			} else {
+				sectionMatch =
+					bson.D{{Key: "$match", Value: bson.D{
+						{Key: "course_reference", Value: bson.D{{Key: "$in", Value: courseIDs}}},
+						{Key: "professors", Value: bson.D{{Key: "$in", Value: profIDs}}},
+						{Key: "section_number", Value: section_number},
+					}}}
+			}
+
+			// Build grades pipeline
+			pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionWithSectionsStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+
+		default:
+			c.JSON(http.StatusBadRequest, responses.GradeResponse{Status: http.StatusBadRequest, Message: "error", Data: "Invalid query parameters."})
+			return
 		}
 
-		var cursor *mongo.Cursor
-		var err error
-
+		// peform aggregation
 		cursor, err = collection.Aggregate(ctx, pipeline)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
@@ -193,234 +264,25 @@ func GradesAggregatedBySemester() gin.HandlerFunc {
 		if err = cursor.All(ctx, &grades); err != nil {
 			panic(err)
 		}
-		c.JSON(http.StatusOK, responses.DegreeResponse{Status: http.StatusOK, Message: "success", Data: grades})
-	}
-}
 
-func GradesSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var representation string
-		query := bson.M{}
-		var grades []map[string]interface{}
-
-		queryParams := c.Request.URL.Query()
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-
-		// Query takes the following form:
-		//  - If filtering by course parameter, use equivalent CourseSearch parameter.
-		//  - If filtering by section parameter, add the prefix "sections." to the equivalent SectionSearch query parameter.
-		//  - If filtering by professor parameter, add the prefix "professors." to the equivalent ProfessorSearch query parameter.
-
-		for key := range queryParams {
-			if key[0:len("courses.")] == "courses." { // discard courses prefix becuase pipeline will aggregate courses
-				courseKey := key[len("courses."):]
-				query[courseKey] = c.Query(key)
-			} else if key == "representation" {
-				representation = c.Query(key)
-			} else if key == "sections.course_reference" || key == "sections.professors" {
-				objId, err := primitive.ObjectIDFromHex(c.Query(key))
-				if err != nil {
-					c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
-					return
-				} else {
-					query[key] = objId
+		if flag == "overall" {
+			// combine all semester grade_distributions
+			overallResponse := make([]int32, 14)
+			for _, sem := range grades {
+				if len(sem["grade_distribution"].(primitive.A)) != 14 {
+					print("Length of Array: ")
+					println(len(sem["grade_distribution"].(primitive.A)))
 				}
-			} else {
-				query[key] = c.Query(key)
+				for i, grade := range sem["grade_distribution"].(primitive.A) {
+					overallResponse[i] += grade.(int32)
+				}
 			}
+			c.JSON(http.StatusOK, responses.DegreeResponse{Status: http.StatusOK, Message: "success", Data: overallResponse})
+		} else if flag == "semester" {
+			c.JSON(http.StatusOK, responses.DegreeResponse{Status: http.StatusOK, Message: "success", Data: grades})
+		} else {
+			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Endpoint broken"})
 		}
 
-		bySectionPipeline := mongo.Pipeline{
-			bson.D{
-				{Key: "$lookup",
-					Value: bson.D{
-						{Key: "from", Value: "sections"},
-						{Key: "localField", Value: "sections"},
-						{Key: "foreignField", Value: "_id"},
-						{Key: "as", Value: "sections"},
-					},
-				},
-			},
-			bson.D{{Key: "$unwind", Value: "$sections"}},
-			bson.D{
-				{Key: "$lookup",
-					Value: bson.D{
-						{Key: "from", Value: "professors"},
-						{Key: "localField", Value: "sections.professors"},
-						{Key: "foreignField", Value: "_id"},
-						{Key: "as", Value: "professors"},
-					},
-				},
-			},
-			bson.D{{Key: "$match", Value: query}},
-			bson.D{
-				{Key: "$group",
-					Value: bson.D{
-						{Key: "_id", Value: "$sections._id"},
-						{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$sections.grade_distribution"}}},
-					},
-				},
-			},
-		}
-
-		totalPipeline :=
-			mongo.Pipeline{
-				bson.D{
-					{Key: "$lookup",
-						Value: bson.D{
-							{Key: "from", Value: "sections"},
-							{Key: "localField", Value: "sections"},
-							{Key: "foreignField", Value: "_id"},
-							{Key: "as", Value: "sections"},
-						},
-					},
-				},
-				bson.D{{Key: "$unwind", Value: "$sections"}},
-				bson.D{
-					{Key: "$lookup",
-						Value: bson.D{
-							{Key: "from", Value: "professors"},
-							{Key: "localField", Value: "sections.professors"},
-							{Key: "foreignField", Value: "_id"},
-							{Key: "as", Value: "professors"},
-						},
-					},
-				},
-				bson.D{{Key: "$match", Value: query}},
-				bson.D{
-					{Key: "$project",
-						Value: bson.D{
-							{Key: "_id", Value: primitive.Null{}},
-							{Key: "grade_distribution", Value: "$sections.grade_distribution"},
-						},
-					},
-				},
-				bson.D{
-					{Key: "$unwind",
-						Value: bson.D{
-							{Key: "path", Value: "$grade_distribution"},
-							{Key: "includeArrayIndex", Value: "ix"},
-						},
-					},
-				},
-				bson.D{
-					{Key: "$group",
-						Value: bson.D{
-							{Key: "_id", Value: "$ix"},
-							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
-						},
-					},
-				},
-				bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-				bson.D{{Key: "$addFields", Value: bson.D{{Key: "grade_distribution", Value: bson.D{{Key: "$sum", Value: "$grade_distribution"}}}}}},
-				bson.D{
-					{Key: "$group",
-						Value: bson.D{
-							{Key: "_id", Value: primitive.Null{}},
-							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
-						},
-					},
-				},
-			}
-
-		sumSemesterPipeline :=
-			mongo.Pipeline{
-				bson.D{
-					{Key: "$lookup",
-						Value: bson.D{
-							{Key: "from", Value: "sections"},
-							{Key: "localField", Value: "sections"},
-							{Key: "foreignField", Value: "_id"},
-							{Key: "as", Value: "sections"},
-						},
-					},
-				},
-				bson.D{{Key: "$unwind", Value: "$sections"}},
-				bson.D{
-					{Key: "$lookup",
-						Value: bson.D{
-							{Key: "from", Value: "professors"},
-							{Key: "localField", Value: "sections.professors"},
-							{Key: "foreignField", Value: "_id"},
-							{Key: "as", Value: "professors"},
-						},
-					},
-				},
-				bson.D{
-					{Key: "$match", Value: query},
-				},
-				bson.D{
-					{Key: "$project",
-						Value: bson.D{
-							{Key: "_id", Value: "$sections.academic_session.name"},
-							{Key: "grade_distribution", Value: "$sections.grade_distribution"},
-						},
-					},
-				},
-				bson.D{
-					{Key: "$unwind",
-						Value: bson.D{
-							{Key: "path", Value: "$grade_distribution"},
-							{Key: "includeArrayIndex", Value: "ix"},
-						},
-					},
-				},
-				bson.D{
-					{Key: "$group",
-						Value: bson.D{
-							{Key: "_id",
-								Value: bson.D{
-									{Key: "academic_session", Value: "$_id"},
-									{Key: "ix", Value: "$ix"},
-								},
-							},
-							{Key: "grade_distributions", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
-						},
-					},
-				},
-				bson.D{
-					{Key: "$sort",
-						Value: bson.D{
-							{Key: "_id.ix", Value: 1},
-							{Key: "_id", Value: 1},
-						},
-					},
-				},
-				bson.D{{Key: "$addFields", Value: bson.D{{Key: "grade_distributions", Value: bson.D{{Key: "$sum", Value: "$grade_distributions"}}}}}},
-				bson.D{
-					{Key: "$group",
-						Value: bson.D{
-							{Key: "_id", Value: "$_id.academic_session"},
-							{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grade_distributions"}}},
-						},
-					},
-				},
-			}
-
-		var cursor *mongo.Cursor
-		var err error
-
-		switch representation {
-		case "section":
-			cursor, err = coursesCollection.Aggregate(ctx, bySectionPipeline)
-		case "semester":
-			cursor, err = courseCollection.Aggregate(ctx, sumSemesterPipeline)
-		case "total":
-			cursor, err = coursesCollection.Aggregate(ctx, totalPipeline)
-		default:
-			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "invalid representation field"})
-		}
-
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
-			return
-		}
-
-		// retrieve and parse all valid documents
-		if err = cursor.All(ctx, &grades); err != nil {
-			panic(err)
-		}
-		c.JSON(http.StatusOK, responses.DegreeResponse{Status: http.StatusOK, Message: "success", Data: grades})
 	}
 }
