@@ -36,7 +36,8 @@ func ExamSearch() gin.HandlerFunc {
 			query[key] = c.Query(key)
 		}
 
-		optionLimit, err := configs.GetOptionLimit(&query, c); if err != nil {
+		optionLimit, err := configs.GetOptionLimit(&query, c)
+		if err != nil {
 			c.JSON(http.StatusConflict, responses.ExamResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
@@ -72,7 +73,7 @@ func ExamById() gin.HandlerFunc {
 
 		// parse object id from id parameter
 		objId, err := primitive.ObjectIDFromHex(examId)
-		if err != nil{
+		if err != nil {
 			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
@@ -96,9 +97,10 @@ func ExamAll() gin.HandlerFunc {
 		// @TODO: Fix with model - There is NO typechecking!
 		var courses []map[string]interface{}
 
-		defer cancel();
+		defer cancel()
 
-		optionLimit, err := configs.GetOptionLimit(&bson.M{}, c); if err != nil {
+		optionLimit, err := configs.GetOptionLimit(&bson.M{}, c)
+		if err != nil {
 			c.JSON(http.StatusConflict, responses.ExamResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
@@ -111,7 +113,8 @@ func ExamAll() gin.HandlerFunc {
 		}
 
 		// retrieve and parse all valid documents
-		err = cursor.All(ctx, &courses); if err != nil {
+		err = cursor.All(ctx, &courses)
+		if err != nil {
 			panic(err)
 		}
 

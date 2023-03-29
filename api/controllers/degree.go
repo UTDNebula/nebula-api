@@ -36,7 +36,8 @@ func DegreeSearch() gin.HandlerFunc {
 			query[key] = c.Query(key)
 		}
 
-		optionLimit, err := configs.GetOptionLimit(&query, c); if err != nil {
+		optionLimit, err := configs.GetOptionLimit(&query, c)
+		if err != nil {
 			c.JSON(http.StatusConflict, responses.DegreeResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
@@ -72,7 +73,7 @@ func DegreeById() gin.HandlerFunc {
 
 		// parse object id from id parameter
 		objId, err := primitive.ObjectIDFromHex(degreeId)
-		if err != nil{
+		if err != nil {
 			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
