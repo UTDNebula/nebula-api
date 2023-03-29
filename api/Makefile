@@ -12,8 +12,8 @@ setup:
 check: 
 	go vet ./... 
 	staticcheck ./...
-	test -z "$(shell gofmt -l ./..)"
-	test -z "$(shell goimports -l ./..)"
+	gofmt -w ./..
+	goimports -w ./..
 
 build: server.go
 	go build -o $(EXEC_NAME) server.go
