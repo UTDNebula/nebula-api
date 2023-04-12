@@ -2,7 +2,7 @@ package configs
 
 import (
 	"context"
-	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -14,10 +14,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDB() (*mongo.Client, error) {
+func ConnectDB() *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI(GetEnvMongoURI()))
 	if err != nil {
-		return nil, fmt.Errorf("Unable to create MongoDB client: %v", err)
+		log.Logger.Err(err).Msg("Unable to create MongoDB client")
+		os.Exit(1)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -25,18 +26,20 @@ func ConnectDB() (*mongo.Client, error) {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to connect to database: %v", err)
+		log.Logger.Err(err).Msg("Unable to connect to database")
+		os.Exit(1)
 	}
 
 	//ping the database
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to ping database: %v", err)
+		log.Logger.Err(err).Msg("Unable to ping database")
+		os.Exit(1)
 	}
 
-	log.Debug.Println("Connected to MongoDB")
+	log.Logger.Debug().Msg("Connected to MongoDB")
 
-	return client, nil
+	return client
 }
 
 var DB *mongo.Client = ConnectDB()

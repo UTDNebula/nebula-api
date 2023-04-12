@@ -5,9 +5,11 @@ import (
 	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/routes"
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog"
 )
 
 func main() {
+	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 
 	// Establish the connection to the database
 	configs.ConnectDB()
@@ -19,7 +21,7 @@ func main() {
 	router.Use(CORS())
 
 	// Enable Logging
-	router.Use(Log())
+	router.Use(LogRequest)
 
 	// Connect Routes
 	routes.CourseRoute(router)
@@ -52,13 +54,12 @@ func CORS() gin.HandlerFunc {
 	}
 }
 
-func Log() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		log.Info.Printf("%s %s from %s",
-			c.Request.Method,
-			c.Request.URL.Path,
-			c.Request.Host,
-		)
-		c.Next()
-	}
+func LogRequest(c *gin.Context) {
+	log.Logger.Info().
+		Str("method", c.Request.Method).
+		Str("path", c.Request.URL.Path).
+		Str("host", c.Request.Host).
+		Send()
+
+	c.Next()
 }
