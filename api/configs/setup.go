@@ -17,7 +17,7 @@ import (
 func ConnectDB() *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI(GetEnvMongoURI()))
 	if err != nil {
-		log.Logger.Err(err).Msg("Unable to create MongoDB client")
+		log.WriteErrorMsg("Unable to create MongoDB client")
 		os.Exit(1)
 	}
 
@@ -26,18 +26,18 @@ func ConnectDB() *mongo.Client {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		log.Logger.Err(err).Msg("Unable to connect to database")
+		log.WriteErrorMsg("Unable to connect to database")
 		os.Exit(1)
 	}
 
 	//ping the database
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Logger.Err(err).Msg("Unable to ping database")
+		log.WriteErrorMsg("Unable to ping database")
 		os.Exit(1)
 	}
 
-	log.Logger.Debug().Msg("Connected to MongoDB")
+	log.WriteDebug("Connected to MongoDB")
 
 	return client
 }
