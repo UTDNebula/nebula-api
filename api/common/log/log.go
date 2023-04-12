@@ -2,29 +2,45 @@ package log
 
 import (
 	"os"
+	"path/filepath"
 	"runtime"
 
 	"github.com/rs/zerolog"
 )
 
-var Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+var output = os.Stdout //zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
+
+var Logger = zerolog.New(output).With().Timestamp().Logger()
+
+func AddCodeLocation(e *zerolog.Event) *zerolog.Event {
+	pc := make([]uintptr, 15)
+	n := runtime.Callers(3, pc)
+	frames := runtime.CallersFrames(pc[:n])
+	frame, _ := frames.Next()
+	file := filepath.Base(frame.File)
+	fn := filepath.Base(frame.Function)
+	line := frame.Line
+	return e.Str("file", file).Str("fn", fn).Int("line", line)
+}
+
+func WriteDebug(msg string) {
+	Logger.Debug().Msg(msg)
+}
 
 func WriteError(err error) {
-	pc, file, line, _ := runtime.Caller(1)
-	fn := runtime.FuncForPC(pc).Name()
+	AddCodeLocation(Logger.Err(err)).Send()
+}
 
-	Logger.Err(err).Str("file", file).Str("fn", fn).Int("line", line).Send()
+func WriteErrorMsg(msg string) {
+	AddCodeLocation(Logger.Error()).Msg(msg)
 }
 
 func WriteErrorWithMsg(err error, msg string) {
-	pc, file, line, _ := runtime.Caller(1)
-	fn := runtime.FuncForPC(pc).Name()
-
-	Logger.Err(err).Str("file", file).Str("fn", fn).Int("line", line).Msg(msg)
+	AddCodeLocation(Logger.Err(err)).Msg(msg)
 }
 
 func WritePanic(err error) {
-	Logger.Panic().Err(err).Send()
+	AddCodeLocation(Logger.Panic().Err(err)).Send()
 }
 
 var OffsetNotTypeInteger = "Offset is not type integer"

@@ -2,9 +2,10 @@ package configs
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
+
+	"github.com/UTDNebula/nebula-api/api/common/log"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -25,7 +26,8 @@ func GetEnvMongoURI() string {
 
 	uri, exist := os.LookupEnv("MONGODB_URI")
 	if !exist {
-		log.Fatalf("Error loading 'MONGODB_URI' from the .env file")
+		log.WriteErrorMsg("Error loading 'MONGODB_URI' from the .env file")
+		os.Exit(1)
 	}
 
 	return uri

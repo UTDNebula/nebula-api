@@ -37,7 +37,7 @@ func main() {
 
 	// Serve Traffic
 	router.Run(portString)
-
+	log.Logger.Debug().Str("port", portString).Msg("Listening to port")
 }
 
 func CORS() gin.HandlerFunc {
