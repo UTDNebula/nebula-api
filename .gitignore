@@ -2,8 +2,8 @@
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
+*.pnp
+*.pnp.js
 
 # testing
 /coverage
@@ -25,12 +25,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.local
-.env.production
-.env.development.local
-.env.test.local
-.env
-/api/.env
+*.env.local
+*.env.production
+*.env.development.local
+*.env.test.local
+*.env
 
 # vercel
 .vercel
@@ -43,12 +42,9 @@ deploy_log.sh
 .vscode/
 .firebase/
 
-# webscraper
-/scraper/.env
-/scraper/credentials.json
-/scraper/scraper.log
-
-# Golang
+# Toolkit data and logs
+toolkit/data/
+toolkit/logs/
 
 # Binaries for programs and plugins
 *.exe

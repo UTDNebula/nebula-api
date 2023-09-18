@@ -18,12 +18,9 @@ See the [docs](docs/index.md) for more information about the project.
 
 Clone the repository.
 
-- The `scraper` directory contains scripts to obtain data.
 - The `api` directory contains infrastructure for endpoints to query data.
-
-#### Scraper
-
-[TBD]
+- The `docs` directory contains, you guessed it, documentation!
+- The `toolkit` directory contains the CLI toolkit used for obtaining data, including scrapers and parsers.
 
 #### API (Under construction)
 
@@ -36,5 +33,5 @@ The API uses Golang with Gin and the MongoDB Golang Driver.
 ## Questions or Feedback
 
 If you have any questions about this project, reach out to the Project Nebula
-Maintainers at core-maintainers@utdnebula.com or open an issue or discussion on
+maintainers at core-maintainers@utdnebula.com or open an issue or discussion on
 this repository.
