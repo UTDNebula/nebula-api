@@ -20,7 +20,6 @@ Clone the repository.
 
 - The `api` directory contains infrastructure for endpoints to query data.
 - The `docs` directory contains, you guessed it, documentation!
-- The `toolkit` directory contains the CLI toolkit used for obtaining data, including scrapers and parsers.
 
 #### API (Under construction)
 
