@@ -5,28 +5,33 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func EnvMongoURI() string {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file: %v", err)
+
+	uri, exist := os.LookupEnv("MONGODB_URI")
+	if !exist {
+		log.Fatalf("Error loading 'MONGODB_URI' from the .env file")
 	}
 
-	return os.Getenv("MONGODB_URI")
+	return uri
 }
 
 func EnvLimit() int64 {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file: %v", err)
+
+	const defaultLimit int64 = 20
+
+	limitString, exist := os.LookupEnv("LIMIT")
+	if !exist {
+		return defaultLimit
 	}
 
-	limit, err := strconv.ParseInt(os.Getenv("LIMIT"), 10, 64)
+	limit, err := strconv.ParseInt(limitString, 10, 64)
 	if err != nil {
-		limit = 20 // default value for limit
+		return defaultLimit
 	}
+
 	return limit
 }
 
