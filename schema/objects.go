@@ -93,3 +93,13 @@ type Professor struct {
 	Office_hours []Meeting   `json:"office_hours"`
 	Sections     []IdWrapper `json:"sections"`
 }
+
+type Organization struct {
+	Id             IdWrapper `json:"_id"`
+	Title          string    `json:"title"`
+	Description    string    `json:"description"`
+	Categories     []string  `json:"categories"`
+	President_name string    `json:"president_name"`
+	Emails         []string  `json:"emails"`
+	Picture_data   string    `json:"picture_data"`
+}
