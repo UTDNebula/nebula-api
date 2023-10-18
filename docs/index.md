@@ -2,25 +2,21 @@
 
 ```
 NEBULA-API
-├───api             - API
-│   ├───.env        - API developer environment variables (MONGODB_URI)
-│   ├───server.go   - Server (go run server.go)
-│   ├───configs     - MondoDB configuration
-│   ├───controllers - Route controllers
-│   ├───models      - Schema models
-│   ├───responses   - Route responses
-│   ├───routes      - Define routes
-│   └───ts          - Old TypeScript Implementation (to be removed)
-│       ├───controllers
-│       ├───models
-│       └───routes
-├───docs
-│   └───schemas     - Database schemas
-├───node_modules    - Old Node Modules (to be removed)
-└───scraper         - Scraper
-    ├───configs
-    ├───data
-    └───scripts
+├───api                 - API
+│   ├───.env            - API developer environment variables (MONGODB_URI)
+│   ├───server.go       - Server (go run server.go)
+│   ├───configs         - MongoDB configuration
+│   ├───controllers     - Route controllers
+│   ├───models          - Schema models
+│   ├───responses       - Route responses
+│   └───routes          - Define routes
+│───docs
+│   ├───schemas         - Database schemas documentation
+│   └───index.md        - Project structure and usage
+│───schema
+│   ├───objects.go      - Object schemas
+│   └───requirements.go - Requirement schemas 
+└───README.md           - Project overview
 ```
 
 # Building 
