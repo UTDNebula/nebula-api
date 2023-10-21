@@ -13,7 +13,7 @@ Meeting = {
     "meeting_days": Array<string>,
     "start_time": string,
     "end_time": string,
-    "modality": ModalityType,
+    "modality": string,
     "location": Location,
 }
 ```
@@ -61,7 +61,7 @@ Meeting = {
 
 > `.modality`
 >
-> **Type**: ModalityType
+> **Type**: string
 >
 > The modality of the meeting following the modality types in [UTD's CourseBook](https://coursebook.utdallas.edu/modalities).
 >

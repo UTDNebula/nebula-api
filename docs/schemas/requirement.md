@@ -69,7 +69,7 @@ abstract Requirement = {
 
 CourseRequirement extends Requirement = {
     "type": "course",
-    "class_reference": ObjectId,
+    "class_reference": string,
     "minimum_grade": string,
 }
 
@@ -152,9 +152,9 @@ CoreRequirement extends Requirement {
 
 > `.class_reference`
 >
-> **Type**: ObjectId
+> **Type**: string
 >
-> A reference to the class required in MongoDB in the form of an id.
+> A reference to the class required in MongoDB in the form of an `internal_course_number`.
 
 > `.minimum_grade`
 >
