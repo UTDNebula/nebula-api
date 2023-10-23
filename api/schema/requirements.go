@@ -1,13 +1,17 @@
 package schema
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 type Requirement struct {
-	Type string `json:"type"`
+	Type string `bson:"type" json:"type"`
 }
 
 type CourseRequirement struct {
 	Requirement
-	ClassReference string `json:"class_reference"`
-	MinimumGrade   string `json:"minimum_grade"`
+	ClassReference string `bson:"class_reference" json:"class_reference"`
+	MinimumGrade   string `bson:"minimum_grade" json:"minimum_grade"`
 }
 
 func NewCourseRequirement(classRef string, minGrade string) *CourseRequirement {
@@ -16,17 +20,17 @@ func NewCourseRequirement(classRef string, minGrade string) *CourseRequirement {
 
 type SectionRequirement struct {
 	Requirement
-	SectionReference IdWrapper `json:"section_reference"`
+	SectionReference primitive.ObjectID `bson:"section_reference" json:"section_reference"`
 }
 
-func NewSectionRequirement(sectionRef IdWrapper) *SectionRequirement {
+func NewSectionRequirement(sectionRef primitive.ObjectID) *SectionRequirement {
 	return &SectionRequirement{Requirement{"section"}, sectionRef}
 }
 
 type ExamRequirement struct {
 	Requirement
-	ExamReference string  `json:"exam_reference"`
-	MinimumScore  float64 `json:"minimum_score"`
+	ExamReference string  `bson:"exam_reference" json:"exam_reference"`
+	MinimumScore  float64 `bson:"minimum_score" json:"minimum_score"`
 }
 
 func NewExamRequirement(examRef string, minScore float64) *ExamRequirement {
@@ -35,7 +39,7 @@ func NewExamRequirement(examRef string, minScore float64) *ExamRequirement {
 
 type MajorRequirement struct {
 	Requirement
-	Major string `json:"major"`
+	Major string `bson:"major" json:"major"`
 }
 
 func NewMajorRequirement(major string) *MajorRequirement {
@@ -44,7 +48,7 @@ func NewMajorRequirement(major string) *MajorRequirement {
 
 type MinorRequirement struct {
 	Requirement
-	Minor string `json:"minor"`
+	Minor string `bson:"minor" json:"minor"`
 }
 
 func NewMinorRequirement(minor string) *MinorRequirement {
@@ -53,8 +57,8 @@ func NewMinorRequirement(minor string) *MinorRequirement {
 
 type GPARequirement struct {
 	Requirement
-	Minimum float64 `json:"minimum"`
-	Subset  string  `json:"subset"`
+	Minimum float64 `bson:"minimum" json:"minimum"`
+	Subset  string  `bson:"subset" json:"subset"`
 }
 
 func NewGPARequirement(min float64, subset string) *GPARequirement {
@@ -63,7 +67,7 @@ func NewGPARequirement(min float64, subset string) *GPARequirement {
 
 type ConsentRequirement struct {
 	Requirement
-	Granter string `json:"granter"`
+	Granter string `bson:"granter" json:"granter"`
 }
 
 func NewConsentRequirement(granter string) *ConsentRequirement {
@@ -72,8 +76,8 @@ func NewConsentRequirement(granter string) *ConsentRequirement {
 
 type OtherRequirement struct {
 	Requirement
-	Description string `json:"description"`
-	Condition   string `json:"condition"`
+	Description string `bson:"description" json:"description"`
+	Condition   string `bson:"condition" json:"condition"`
 }
 
 func NewOtherRequirement(description, condition string) *OtherRequirement {
@@ -82,9 +86,9 @@ func NewOtherRequirement(description, condition string) *OtherRequirement {
 
 type CollectionRequirement struct {
 	Requirement
-	Name     string        `json:"name"`
-	Required int           `json:"required"`
-	Options  []interface{} `json:"options"`
+	Name     string        `bson:"name" json:"name"`
+	Required int           `bson:"required" json:"required"`
+	Options  []interface{} `bson:"options" json:"options"`
 }
 
 func NewCollectionRequirement(name string, required int, options []interface{}) *CollectionRequirement {
@@ -93,8 +97,8 @@ func NewCollectionRequirement(name string, required int, options []interface{}) 
 
 type HoursRequirement struct {
 	Requirement
-	Required int                  `json:"required"`
-	Options  []*CourseRequirement `json:"options"`
+	Required int                  `bson:"required" json:"required"`
+	Options  []*CourseRequirement `bson:"options" json:"options"`
 }
 
 func NewHoursRequirement(required int, options []*CourseRequirement) *HoursRequirement {
@@ -103,7 +107,7 @@ func NewHoursRequirement(required int, options []*CourseRequirement) *HoursRequi
 
 type ChoiceRequirement struct {
 	Requirement
-	Choices *CollectionRequirement `json:"choices"`
+	Choices *CollectionRequirement `bson:"choices" json:"choices"`
 }
 
 func NewChoiceRequirement(choices *CollectionRequirement) *ChoiceRequirement {
@@ -112,7 +116,7 @@ func NewChoiceRequirement(choices *CollectionRequirement) *ChoiceRequirement {
 
 type LimitRequirement struct {
 	Requirement
-	MaxHours int `json:"max_hours"`
+	MaxHours int `bson:"max_hours" json:"max_hours"`
 }
 
 func NewLimitRequirement(maxHours int) *LimitRequirement {
@@ -121,8 +125,8 @@ func NewLimitRequirement(maxHours int) *LimitRequirement {
 
 type CoreRequirement struct {
 	Requirement
-	CoreFlag string `json:"core_flag"`
-	Hours    int    `json:"hours"`
+	CoreFlag string `bson:"core_flag" json:"core_flag"`
+	Hours    int    `bson:"hours" json:"hours"`
 }
 
 func NewCoreRequirement(coreFlag string, hours int) *CoreRequirement {
@@ -130,12 +134,12 @@ func NewCoreRequirement(coreFlag string, hours int) *CoreRequirement {
 }
 
 type Degree struct {
-	Subtype            string                 `json:"subtype"`
-	School             string                 `json:"school"`
-	Name               string                 `json:"name"`
-	Year               string                 `json:"year"`
-	Abbreviation       string                 `json:"abbreviation"`
-	MinimumCreditHours int                    `json:"minimum_credit_hours"`
-	CatalogUri         string                 `json:"catalog_uri"`
-	Requirements       *CollectionRequirement `json:"requirements"`
+	Subtype            string                 `bson:"subtype" json:"subtype"`
+	School             string                 `bson:"school" json:"school"`
+	Name               string                 `bson:"name" json:"name"`
+	Year               string                 `bson:"year" json:"year"`
+	Abbreviation       string                 `bson:"abbreviation" json:"abbreviation"`
+	MinimumCreditHours int                    `bson:"minimum_credit_hours" json:"minimum_credit_hours"`
+	CatalogUri         string                 `bson:"catalog_uri" json:"catalog_uri"`
+	Requirements       *CollectionRequirement `bson:"requirements" json:"requirements"`
 }

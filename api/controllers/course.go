@@ -87,3 +87,29 @@ func CourseById() gin.HandlerFunc {
 		c.JSON(http.StatusOK, responses.CourseResponse{Status: http.StatusOK, Message: "success", Data: course})
 	}
 }
+
+func CourseAll() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+		var courses []map[string]interface{}
+
+		defer cancel()
+
+		cursor, err := courseCollection.Find(ctx, bson.M{})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.CourseResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			return
+		}
+
+		// retrieve and parse all valid documents
+		if err = cursor.All(ctx, &courses); err != nil {
+			panic(err)
+		}
+
+		// return result
+		c.JSON(http.StatusOK, responses.CourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
+
+	}
+}
