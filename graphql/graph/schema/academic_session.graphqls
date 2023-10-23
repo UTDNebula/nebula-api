@@ -1,0 +1,5 @@
+type AcademicSession {
+    name: String!
+    start_date: String! # @TODO: Resolve to DateTime type?
+    end_date: String!   # @TODO: Resolve to DateTime type?
+}
