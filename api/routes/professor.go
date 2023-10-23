@@ -13,4 +13,5 @@ func ProfessorRoute(router *gin.Engine) {
 	professorGroup.OPTIONS("", controllers.Preflight)
 	professorGroup.GET("", controllers.ProfessorSearch())
 	professorGroup.GET(":id", controllers.ProfessorById())
+	professorGroup.GET("all", controllers.ProfessorAll())
 }

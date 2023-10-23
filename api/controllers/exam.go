@@ -95,30 +95,24 @@ func ExamAll() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 		// @TODO: Fix with model - There is NO typechecking!
-		var courses []map[string]interface{}
+		var exams []map[string]interface{}
 
 		defer cancel()
 
-		optionLimit, err := configs.GetOptionLimit(&bson.M{}, c)
-		if err != nil {
-			c.JSON(http.StatusConflict, responses.ExamResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
-			return
-		}
-
 		// get cursor for all exams in the collection
-		cursor, err := examCollection.Find(ctx, bson.M{}, optionLimit)
+		cursor, err := examCollection.Find(ctx, bson.M{})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
 		// retrieve and parse all valid documents
-		err = cursor.All(ctx, &courses)
+		err = cursor.All(ctx, &exams)
 		if err != nil {
 			panic(err)
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: courses})
+		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: exams})
 	}
 }

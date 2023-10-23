@@ -89,3 +89,29 @@ func ProfessorById() gin.HandlerFunc {
 		c.JSON(http.StatusOK, responses.ProfessorResponse{Status: http.StatusOK, Message: "success", Data: professor})
 	}
 }
+
+func ProfessorAll() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+		var professors []map[string]interface{}
+
+		defer cancel()
+
+		cursor, err := professorCollection.Find(ctx, bson.M{})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			return
+		}
+
+		// retrieve and parse all valid documents
+		if err = cursor.All(ctx, &professors); err != nil {
+			panic(err)
+		}
+
+		// return result
+		c.JSON(http.StatusOK, responses.ProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
+
+	}
+}
