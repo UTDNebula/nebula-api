@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"github.com/UTDNebula/nebula-api/api/schema"
 	"net/http"
 	"time"
 
@@ -17,10 +18,12 @@ import (
 
 var courseCollection *mongo.Collection = configs.GetCollection(configs.DB, "courses")
 
+var validQueryFields = schema.GetValidQueryFields(schema.Course{})
+
 func CourseSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//name := c.Query("name")            // value of specific query parameter: string
-		queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
+		//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
@@ -31,8 +34,10 @@ func CourseSearch() gin.HandlerFunc {
 
 		// build query key value pairs (only one value per key)
 		query := bson.M{}
-		for key := range queryParams {
-			query[key] = c.Query(key)
+		for _, key := range validQueryFields {
+			if v, ok := c.Get(key); ok {
+				query[key] = v
+			}
 		}
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
