@@ -7,6 +7,7 @@ import (
 
 	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/responses"
+	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
 
@@ -25,9 +26,7 @@ func CourseSearch() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		// @TODO: Fix with model - There is NO typechecking!
-		// var courses []models.Course
-		var courses []map[string]interface{}
+		var courses []schema.Course
 
 		// build query key value pairs (only one value per key)
 		query := bson.M{}
@@ -65,9 +64,7 @@ func CourseById() gin.HandlerFunc {
 
 		courseId := c.Param("id")
 
-		// @TODO: Fix with model - There is NO typechecking!
-		// var course models.Course
-		var course map[string]interface{}
+		var course schema.Course
 
 		// parse object id from id parameter
 		objId, err := primitive.ObjectIDFromHex(courseId)
@@ -92,7 +89,7 @@ func CourseAll() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		var courses []map[string]interface{}
+		var courses []schema.Course
 
 		defer cancel()
 

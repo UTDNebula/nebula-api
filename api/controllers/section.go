@@ -7,6 +7,7 @@ import (
 
 	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/responses"
+	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
 
@@ -24,9 +25,7 @@ func SectionSearch() gin.HandlerFunc {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		// @TODO: Fix with model - There is NO typechecking!
-		// var sections []models.Section
-		var sections []map[string]interface{}
+		var sections []schema.Section
 
 		defer cancel()
 
@@ -75,9 +74,7 @@ func SectionById() gin.HandlerFunc {
 
 		sectionId := c.Param("id")
 
-		// @TODO: Fix with model - There is NO typechecking!
-		// var section models.Section
-		var section map[string]interface{}
+		var section schema.Section
 
 		defer cancel()
 

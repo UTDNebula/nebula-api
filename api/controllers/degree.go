@@ -7,6 +7,7 @@ import (
 
 	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/responses"
+	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
 
@@ -24,9 +25,7 @@ func DegreeSearch() gin.HandlerFunc {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		// @TODO: Fix with model - There is NO typechecking!
-		// var degrees []models.Degree
-		var degrees []map[string]interface{}
+		var degrees []schema.Degree
 
 		defer cancel()
 
@@ -65,9 +64,7 @@ func DegreeById() gin.HandlerFunc {
 
 		degreeId := c.Param("id")
 
-		// @TODO: Fix with model - There is NO typechecking!
-		// var degree models.Degree
-		var degree map[string]interface{}
+		var degree schema.Degree
 
 		defer cancel()
 
