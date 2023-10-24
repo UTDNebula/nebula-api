@@ -1,9 +1,11 @@
 # Degree
+
 ## Overview
 
 A `Degree` represents either a major, minor, or concentration received from The University of Texas at Dallas.
 
 ## Object Representation
+
 ```ts
 DegreeSubtype = "major" | "minor" | "concentration" | "prescribed double major" | "certificate" | "track"
 
@@ -21,6 +23,7 @@ Degree = {
 ```
 
 ## Properties
+
 > `._id`
 >
 > **Type**: ObjectId
@@ -35,7 +38,7 @@ Degree = {
 >
 > The subtype of degree that this object represents.
 >
-> **Example**: Major
+> **Example**: `major`
 
 > `.school`
 >
@@ -43,7 +46,7 @@ Degree = {
 >
 > The school that the `degree` belongs to.
 >
-> **Example**: School of Natural Sciences and Mathematics
+> **Example**: `School of Natural Sciences and Mathematics`
 
 > `.name`
 >
@@ -51,15 +54,15 @@ Degree = {
 >
 > The full name of the degree.
 >
-> **Example**: Bachelor of Science in Computer Science
+> **Example**: `Bachelor of Science in Computer Science`
 
 > `.year`
-> 
+>
 > **Type**: string
 >
 > The academic year to which this degree corresponds to.
 >
-> **Example**: 2021-2022
+> **Example**: `2021-2022`
 
 > `.abbreviation`
 >
@@ -67,7 +70,7 @@ Degree = {
 >
 >The abbreviation of the degree.
 >
-> **Example**: B.S. in Computer Science
+> **Example**: `B.S. in Computer Science`
 
 > `.minimum_credit_hours`
 >
@@ -83,7 +86,7 @@ Degree = {
 >
 > A link to the listing of the degree and its requirements in the UTD catalog.
 >
-> **Example**: https://catalog.utdallas.edu/2021/undergraduate/programs/ah/philosophy
+> **Example**: `https://catalog.utdallas.edu/2021/undergraduate/programs/ah/philosophy`
 
 > `.requirements`
 >

@@ -1,9 +1,11 @@
 # Academic Session
+
 ## Overview
 
 An `AcademicSession` represents the time period in which courses takes place.
 
 ## Object Representation
+
 ```ts
 AcademicSession = {
     "name": string,
@@ -11,14 +13,16 @@ AcademicSession = {
     "end_date": string,
 }
 ```
+
 ## Properties
+
 > `.name`
 >
 > **Type**: string
 >
 > The name of the academic session in question.
 >
-> **Example**: Spring 2022
+> **Examples**: `22S`, `18F`, `23U`
 
 > `.start_date`
 >
@@ -26,7 +30,7 @@ AcademicSession = {
 >
 > The date of classes starting in the academic session.
 >
-> **Example**: January 18, 2022
+> **Example**: `2022-01-18T00:00:00-06:00`
 
 > `.end_date`
 >
@@ -34,4 +38,4 @@ AcademicSession = {
 >
 > The date of classes ending in the academic session.
 >
-> **Example**: May 5, 2022
+> **Example**: `2022-05-13T00:00:00-05:00`

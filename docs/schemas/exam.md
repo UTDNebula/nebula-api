@@ -70,23 +70,23 @@ CSPlacementExam extends Exam = {
 >
 > The type of exam object this object represents.
 >
-> **Example**: AP
+> **Examples**: `AP`, `CLEP`
 
 > `.yields`
 >
-> **Type**: Array<Outcome>
+> **Type**: Array\<Outcome>
 >
 > An array of `Outcomes` for which the credit for the `Course` or `Credit` is received. Does not include placement, only actual credit.
 >
-> **Example**: [{requirement: ExamRequirement, [[MATH2312._id, MATH 1325._id], [MATH2312._id, MATH2413._id]]}]
+> **Example**: `[{requirement: ExamRequirement, outcome: [[MATH2312._id, MATH 1325._id], [MATH2312._id, MATH2413._id]]}]`
 
 > `.placement`
 >
-> **Type**: Array<Outcome>
+> **Type**: Array\<Outcome>
 >
 > An array of `Outcomes` for which the placement into the `Course` is earned. Does not include credit, only placement into the course.
 >
-> **Example**: [{requirement: ExamRequirement, [[MATH1325._id]]}]
+> **Example**: `[{requirement: ExamRequirement, outcome: [[MATH1325._id, MATH2306._id, MATH2312._id, CS2305._id]]}]`
 
 > `.name`
 >
@@ -94,8 +94,7 @@ CSPlacementExam extends Exam = {
 >
 > The name of the exact exam being taken.
 >
-> **Example**: "Macroeconomics", "American History I: Early Colonization to 1877", "Environmental Systems
-> and Societies"
+> **Examples**: `Macroeconomics`, `American History I: Early Colonization to 1877`, `Environmental Systems and Societies`
 
 > `.level`
 >
@@ -103,7 +102,7 @@ CSPlacementExam extends Exam = {
 >
 > The level of the IB exam.
 >
-> **Example**: Standard, Higher
+> **Examples**: `Standard`, `Higher`
 
 ## Outcome
 
@@ -113,7 +112,7 @@ CSPlacementExam extends Exam = {
 >
 > The requirement to achieve the associated outcome
 >
-> **Example**: ExamRequirement.minimum_score === 4, MajorRequirement.major === "Physics"
+> **Examples**: `ExamRequirement.minimum_score === 4`, `MajorRequirement.major === "Physics"`
 
 > `.outcome`
 >
@@ -122,4 +121,4 @@ CSPlacementExam extends Exam = {
 > The set of sets of `Course`s and `Credit`s which can result (awarded/placed into) should the requirement be met.
 > The outer array contains the possible choices.
 >
-> **Example**: [[MATH2312._id, MATH 1325._id], [MATH2312._id, MATH2413._id]]
+> **Example**: `[[MATH2312._id, MATH 1325._id], [MATH2312._id, MATH2413._id]]`
