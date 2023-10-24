@@ -9,13 +9,13 @@ NEBULA-API
 │   ├───controllers     - Route controllers
 │   ├───models          - Schema models
 │   ├───responses       - Route responses
-│   └───routes          - Define routes
+│   ├───routes          - Define routes
+│   └schema
+│      ├───objects.go      - Object schemas
+│      └───requirements.go - Requirement schemas 
 │───docs
 │   ├───schemas         - Database schemas documentation
 │   └───index.md        - Project structure and usage
-│───schema
-│   ├───objects.go      - Object schemas
-│   └───requirements.go - Requirement schemas 
 └───README.md           - Project overview
 ```
 
