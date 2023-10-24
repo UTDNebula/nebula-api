@@ -1,9 +1,11 @@
 # Location
+
 ## Overview
 
 A location on the UT Dallas campus.
 
 ## Object Representation
+
 ```ts
 Location = {
     "building": string,
@@ -13,13 +15,14 @@ Location = {
 ```
 
 ## Properties
+
 > `.building`
 >
 > **Type**: string
 >
 > The building of the location.
 >
-> **Example**: "SLC", "ONLINE"
+> **Examples**: `SLC`, `ECSW`
 
 > `.room`
 >
@@ -27,7 +30,7 @@ Location = {
 >
 > The room of the location.
 >
-> **Example**: "2.203", "ONLINE"
+> **Examples**: `2.203`, `1.315`
 
 > `.map_uri`
 >
@@ -35,4 +38,4 @@ Location = {
 >
 > A hyperlink to the UTD room locator.
 >
-> **Example**: https://locator.utdallas.edu/SLC_2.203
+> **Example**: `https://locator.utdallas.edu/SLC_2.203`

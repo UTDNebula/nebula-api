@@ -1,9 +1,11 @@
 # Assistant
+
 ## Overview
 
 An 'Assistant' represents a teaching assistant at UT Dallas.
 
 ## Object Representation
+
 ```ts
 Assistant = {
     "first_name": string,
@@ -14,6 +16,7 @@ Assistant = {
 ```
 
 ## Properties
+
 > **Type**: ObjectId
 >
 > The MongoDB database id for the `Assistant` object.
@@ -26,7 +29,7 @@ Assistant = {
 >
 > The first name of the assistant.
 >
-> **Example**: John
+> **Example**: `John`
 
 > `.last_name`
 >
@@ -34,7 +37,7 @@ Assistant = {
 >
 > The last name of the assistant.
 >
-> **Example**: Doe
+> **Example**: `Doe`
 
 > `.role`
 >
@@ -42,7 +45,7 @@ Assistant = {
 >
 > The role of the assistant.
 >
-> **Example**: "Teaching Assistant", "Guest/Visiting Lecturer"
+> **Example**: `Teaching Assistant`
 
 > `.email`
 >
@@ -50,4 +53,4 @@ Assistant = {
 >
 > The email address to contact the assistant.
 >
-> **Example**: xxx555555@utdallas.edu
+> **Example**: `xxx555555@utdallas.edu`

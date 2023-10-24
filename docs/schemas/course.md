@@ -1,9 +1,11 @@
 # Course
+
 ## Overview
 
 The `Course` object represents a course available at the University of Texas at Dallas. A `Course` should not be confused with a `Section` which is the actual instantiation of a `Course` with a professor and dedicated meeting times.
 
 ## Object Representation
+
 ```ts
 Course = {
     "_id": ObjectId,
@@ -27,8 +29,9 @@ Course = {
 ```
 
 ## Properties
+
 > `._id`
-> 
+>
 > **Type**: ObjectId
 >
 > The MongoDB database id for the `Course` object.
@@ -81,7 +84,7 @@ Course = {
 >
 > The number of credit hours awarded by successful completion of the course. Will be "V" if variable credit hours.
 >
-> **Example**: "4", "V"
+> **Examples**: "4", "V"
 
 > `.class_level`
 >
