@@ -7,10 +7,11 @@ The `Course` object represents a course available at the University of Texas at 
 ```ts
 Course = {
     "_id": ObjectId,
-    "course_number": string,
     "subject_prefix": string,
+    "course_number": string,
     "title": string,
     "description": string,
+    "enrollment_reqs": string,
     "school": string,
     "credit_hours": string,
     "class_level": string,
@@ -19,9 +20,12 @@ Course = {
     "internal_course_number": string,
     "prerequisites": CollectionRequirement,
     "corequisites": CollectionRequirement,
+    "co_or_pre_requisites": CollectionRequirement,
+    "sections": Array<ObjectId>,
     "lecture_contact_hours": string,
     "laboratory_contact_hours": string,
     "offering_frequency": string,
+    "catalog_year": string,
     "attributes": Object,
 }
 ```
@@ -35,14 +39,6 @@ Course = {
 >
 > **Example**: ObjectId("61ebbb126e3659537e8a14d6")
 
-> `.course_number`
->
-> **Type**: string
->
-> The course's official number.
->
-> **Example**: 2417
-
 > `.subject_prefix`
 >
 > **Type**: string
@@ -50,6 +46,14 @@ Course = {
 > The course's subject prefix.
 >
 > **Example**: MATH
+
+> `.course_number`
+>
+> **Type**: string
+>
+> The course's official number.
+>
+> **Example**: 2417
 
 > `.title`
 >
@@ -67,13 +71,21 @@ Course = {
 >
 > **Example**: "Functions, limits, continuity, differentiation; integration of..."
 
+> `.enrollment_reqs`
+> 
+> **Type**: string
+> 
+> The course's enrollment requirements.
+> 
+> **Example**: " A minimal placement score of 85% on ALEKS math placement exam or ..."
+
 > `.school`
 >
 > **Type**: string
 >
-> 
+> The course's school. 
 >
-> **Example**: 
+> **Example**: "School of Natural Sciences and Mathematics"
 
 > `.credit_hours`
 >
@@ -125,7 +137,19 @@ Course = {
 >
 > **Type**: CollectionRequirement
 >
+> A collection of all course requirements that must be met while a student enrolls in a section of this course.
+
+> `.co_or_pre_requisites`
+>
+> **Type**: CollectionRequirement
+>
 > A collection of all course requirements that must be met either before or while a student enrolls in a section of this course.
+
+> `.sections`
+>
+> **Type**: Array<ObjectId>
+>
+> A list of all sections that are instances of this course.
 
 > `.lecture_contact_hours`
 >
@@ -150,6 +174,15 @@ Course = {
 > The frequency of offering a course. The meanings of each letter can be found in the UTD Course Policies page.
 >
 > **Example**: "S", "Y", "T", "R"
+
+> `.catalog_year`
+> 
+> **Type**: string
+> 
+> The catalog year of the course. This is the year in which this instance of the course was published in the corresponding course catalog.
+> Only the last two digits of the year are used and the first two digits are assumed to be "20".
+> 
+> **Example**: "19"
 
 > `.attributes`
 >
