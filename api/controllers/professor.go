@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/responses"
 	"github.com/UTDNebula/nebula-api/api/schema"
@@ -37,6 +38,7 @@ func ProfessorSearch() gin.HandlerFunc {
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
 		if err != nil {
+			log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
 			c.JSON(http.StatusConflict, responses.ProfessorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
@@ -44,12 +46,14 @@ func ProfessorSearch() gin.HandlerFunc {
 		// get cursor for query results
 		cursor, err := professorCollection.Find(ctx, query, optionLimit)
 		if err != nil {
+			log.WriteError(err)
 			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
 		// retrieve and parse all valid documents
 		if err = cursor.All(ctx, &professors); err != nil {
+			log.WritePanic(err)
 			panic(err)
 		}
 
@@ -71,6 +75,7 @@ func ProfessorById() gin.HandlerFunc {
 		// parse object id from id parameter
 		objId, err := primitive.ObjectIDFromHex(professorId)
 		if err != nil {
+			log.WriteError(err)
 			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
@@ -78,6 +83,7 @@ func ProfessorById() gin.HandlerFunc {
 		// find and parse matching professor
 		err = professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
 		if err != nil {
+			log.WriteError(err)
 			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/responses"
 
@@ -38,6 +39,7 @@ func ExamSearch() gin.HandlerFunc {
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
 		if err != nil {
+			log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
 			c.JSON(http.StatusConflict, responses.ExamResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
@@ -45,12 +47,14 @@ func ExamSearch() gin.HandlerFunc {
 		// get cursor for query results
 		cursor, err := examCollection.Find(ctx, query, optionLimit)
 		if err != nil {
+			log.WriteError(err)
 			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
 		// retrieve and parse all valid documents
 		if err = cursor.All(ctx, &exams); err != nil {
+			log.WritePanic(err)
 			panic(err)
 		}
 
@@ -74,6 +78,7 @@ func ExamById() gin.HandlerFunc {
 		// parse object id from id parameter
 		objId, err := primitive.ObjectIDFromHex(examId)
 		if err != nil {
+			log.WriteError(err)
 			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
@@ -81,6 +86,7 @@ func ExamById() gin.HandlerFunc {
 		// find and parse matching exam
 		err = examCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&exam)
 		if err != nil {
+			log.WriteError(err)
 			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
@@ -102,6 +108,7 @@ func ExamAll() gin.HandlerFunc {
 		// get cursor for all exams in the collection
 		cursor, err := examCollection.Find(ctx, bson.M{})
 		if err != nil {
+			log.WriteError(err)
 			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
@@ -109,6 +116,7 @@ func ExamAll() gin.HandlerFunc {
 		// retrieve and parse all valid documents
 		err = cursor.All(ctx, &exams)
 		if err != nil {
+			log.WritePanic(err)
 			panic(err)
 		}
 
