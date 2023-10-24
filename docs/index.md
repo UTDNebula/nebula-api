@@ -23,7 +23,7 @@ NEBULA-API
     └───scripts
 ```
 
-# Building 
+# Building
 
 ## Standalone Executable
 
@@ -45,7 +45,7 @@ and
 
 By default, REGISTRY is set to `localhost:5000`. You can set this as a different environment variable if you want to upload the docker image to a different registry.
 
-# Testing 
+# Testing
 
 ## Linting
 
@@ -58,6 +58,7 @@ To run `staticcheck` refer to [this URL](https://staticcheck.io/docs/getting-sta
 ## Standalone
 
 To connect to your Mongo database, in /api/.env: set MONGODB_URI accordingly:
+
 ```
 MONGODB_URI=<insert_connection_string_here>
 ```
