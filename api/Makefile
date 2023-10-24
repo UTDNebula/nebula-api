@@ -10,6 +10,7 @@ setup:
 	go install golang.org/x/tools/cmd/goimports@latest
 
 check: 
+	go mod tidy
 	go vet ./... 
 	staticcheck ./...
 	gofmt -w ./..

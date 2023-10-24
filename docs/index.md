@@ -25,6 +25,8 @@ NEBULA-API
 
 The easiest way to build the project is to use the Makefile. To build this, simply run `make build`. To clean the executable, run `make clean`. Note that this will fail if the build executable does not exist. If you do not have make, you can look at the build and clean targets and run them accordingly in the Makefile.
 
+For ease of building in Windows environments, a `build.bat` alternative is provided. Note that unlike the makefile, this does NOT build a docker image.
+
 ## Docker
 
 To build the docker image for the API, run `make docker`. This will run the build command on any docker runner (default is docker) and tag it accordingly:
@@ -69,4 +71,4 @@ After building the image, create the .env file just as described earlier. Next, 
 
 `docker run -d -p "8080:8080" -v "./env:/app/.env" localhost:5000/utdnebula/api/go-api:latest`
 
-Change `localhost:5000` to a differet registry if you customized this during the docker build.
+Change `localhost:5000` to a different registry if you customized this during the docker build.
