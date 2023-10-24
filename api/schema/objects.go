@@ -1,12 +1,13 @@
 package schema
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Course struct {
-	Id                       primitive.ObjectID              `bson:"_id" json:"_id"`
+	Id                       primitive.ObjectID     `bson:"_id" json:"_id"`
 	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix"`
 	Course_number            string                 `bson:"course_number" json:"course_number"`
 	Title                    string                 `bson:"title" json:"title"`
@@ -21,7 +22,7 @@ type Course struct {
 	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites"`
 	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites"`
 	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites"`
-	Sections                 []primitive.ObjectID            `bson:"sections" json:"sections"`
+	Sections                 []primitive.ObjectID   `bson:"sections" json:"sections"`
 	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours"`
 	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours"`
 	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency"`
@@ -59,12 +60,12 @@ type Meeting struct {
 }
 
 type Section struct {
-	Id                    primitive.ObjectID              `bson:"_id" json:"_id"`
+	Id                    primitive.ObjectID     `bson:"_id" json:"_id"`
 	Section_number        string                 `bson:"section_number" json:"section_number"`
-	Course_reference      primitive.ObjectID              `bson:"course_reference" json:"course_reference"`
+	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference"`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
 	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
-	Professors            []primitive.ObjectID            `bson:"professors" json:"professors"`
+	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
 	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
 	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number"`
 	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode"`
@@ -77,24 +78,24 @@ type Section struct {
 
 type Professor struct {
 	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
-	First_name   string      `bson:"first_name" json:"first_name"`
-	Last_name    string      `bson:"last_name" json:"last_name"`
-	Titles       []string    `bson:"titles" json:"titles"`
-	Email        string      `bson:"email" json:"email"`
-	Phone_number string      `bson:"phone_number" json:"phone_number"`
-	Office       Location    `bson:"office" json:"office"`
-	Profile_uri  string      `bson:"profile_uri" json:"profile_uri"`
-	Image_uri    string      `bson:"image_uri" json:"image_uri"`
-	Office_hours []Meeting   `bson:"office_hours" json:"office_hours"`
+	First_name   string               `bson:"first_name" json:"first_name"`
+	Last_name    string               `bson:"last_name" json:"last_name"`
+	Titles       []string             `bson:"titles" json:"titles"`
+	Email        string               `bson:"email" json:"email"`
+	Phone_number string               `bson:"phone_number" json:"phone_number"`
+	Office       Location             `bson:"office" json:"office"`
+	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
+	Image_uri    string               `bson:"image_uri" json:"image_uri"`
+	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
 	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
 }
 
 type Organization struct {
 	Id             primitive.ObjectID `bson:"_id" json:"_id"`
-	Title          string    `bson:"title" json:"title"`
-	Description    string    `bson:"description" json:"description"`
-	Categories     []string  `bson:"categories" json:"categories"`
-	President_name string    `bson:"president_name" json:"president_name"`
-	Emails         []string  `bson:"emails" json:"emails"`
-	Picture_data   string    `bson:"picture_data" json:"picture_data"`
+	Title          string             `bson:"title" json:"title"`
+	Description    string             `bson:"description" json:"description"`
+	Categories     []string           `bson:"categories" json:"categories"`
+	President_name string             `bson:"president_name" json:"president_name"`
+	Emails         []string           `bson:"emails" json:"emails"`
+	Picture_data   string             `bson:"picture_data" json:"picture_data"`
 }
