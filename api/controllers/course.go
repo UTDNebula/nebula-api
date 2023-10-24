@@ -37,10 +37,7 @@ func CourseSearch() gin.HandlerFunc {
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
 		if err != nil {
-<<<<<<< HEAD
-=======
 			log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
->>>>>>> bbf24cf... Insert Logging statements into code with file, line, and func name
 			c.JSON(http.StatusConflict, responses.CourseResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
