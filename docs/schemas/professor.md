@@ -19,6 +19,8 @@ Professor = {
     "image_uri": string,
     "office_hours": Array<Meeting>,
     "sections": Array<ObjectId>,
+    "tags":Array<Array<Tag | Website>>,
+    "education":    Array<Array<string>>,
 }
 ```
 
@@ -105,3 +107,15 @@ Professor = {
 > **Type**: Array\<ObjectId>
 >
 > A list of references to sections a professor is currently teaching or has taught. This will be sorted in increasing order with respect to `end_date` in the section's `academic_session`.
+
+> `.tags`
+>
+> **Type**: Array\<Array<string>>
+>
+> A list of tags denoting the professor's field of work and the associatied link to that research
+
+> `.education`
+>
+> **Type**: Array\<Array<string>>
+>
+> An array of each professors educations. Each education is an array of strings containing information such as the date they graduated, the level of degree, location, etc
