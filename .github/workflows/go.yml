@@ -5,15 +5,18 @@ name: Go
 
 on:
   push:
-    branches: [ "master", "develop" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "master", "develop" ]
+    branches: [ "develop" ]
   workflow_dispatch:
 
 jobs:
 
   build_ubuntu:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api    
     steps:
     
     - name: Checkout
@@ -23,9 +26,7 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
-
-    - name: Enter api directory
-      run: cd ./api
+        cache-dependency-path: "**/go.sum"
 
     - name: Setup
       run: make setup
@@ -38,6 +39,9 @@ jobs:
 
   build_windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: .\api
     steps:
     
     - name: Checkout
@@ -47,9 +51,7 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
-
-    - name: Enter api directory
-      run: cd .\api
+        cache-dependency-path: "**\\go.sum"
 
     - name: Check & Build
       run: .\build.bat
