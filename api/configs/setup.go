@@ -17,49 +17,53 @@ import (
 func ConnectDB() *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI(EnvMongoURI()))
 	if err != nil {
-		log.Fatal("Unable to create MongoDB client: %v", err)
+		log.Fatalf("Unable to create MongoDB client: %v", err)
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancelFnc := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// TODO: Actually use cancelFnc in the rewrite
+	_ = cancelFnc
+
 	err = client.Connect(ctx)
 	if err != nil {
-		log.Fatal("Unable to connect to database: %v", err)
+		log.Fatalf("Unable to connect to database: %v", err)
 	}
 
 	//ping the database
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatal("Unable to ping database: %v", err)
+		log.Fatalf("Unable to ping database: %v", err)
 	}
 	fmt.Println("Connected to MongoDB")
 	return client
 }
 
-//Client instance
+// Client instance
 var DB *mongo.Client = ConnectDB()
 
-//getting database collections
+// getting database collections
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	collection := client.Database("combinedDB").Collection(collectionName)
 	return collection
 }
 
 // Returns *options.FindOptions with a limit and offset applied. Returns error if any
-func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error){
-		delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
+func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error) {
+	delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
 
-		// parses offset if included in the query
-		var offset int64;
-		var err error
-		
-		if c.Query("offset") == "" {
-			offset = 0 	// default value for offset
-		} else {
-			offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
-			if err != nil {
-				return options.Find().SetSkip(0).SetLimit(Limit), err  // default value for offset
-			}
+	// parses offset if included in the query
+	var offset int64
+	var err error
+
+	if c.Query("offset") == "" {
+		offset = 0 // default value for offset
+	} else {
+		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
+		if err != nil {
+			return options.Find().SetSkip(0).SetLimit(Limit), err // default value for offset
 		}
+	}
 
-		return options.Find().SetSkip(offset).SetLimit(Limit), err
+	return options.Find().SetSkip(offset).SetLimit(Limit), err
 }
