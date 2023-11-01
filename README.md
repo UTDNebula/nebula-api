@@ -20,12 +20,7 @@ See the [docs](docs/index.md) for more information about the project.
 
 Clone the repository.
 
-- The `scraper` directory contains scripts to obtain data.
 - The `api` directory contains infrastructure for endpoints to query data.
-
-#### Scraper
-
-[TBD]
 
 #### API (Under construction)
 
