@@ -1,13 +1,25 @@
 package schema
 
 import (
+	"bytes"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Wrapper type for primitive.ObjectID to allow for custom mashalling below
+type IdWrapper struct {
+	primitive.ObjectID
+}
+
+// Custom JSON marshalling for ObjectID to marshal ObjectIDs correctly
+func (id IdWrapper) MarshalJSON() (data []byte, err error) {
+	jsonString := `{$oid:"` + id.String() + `"}`
+	return bytes.NewBufferString(jsonString).Bytes(), nil
+}
+
 type Course struct {
-	Id                       primitive.ObjectID     `bson:"_id" json:"_id"`
+	Id                       IdWrapper              `bson:"_id" json:"_id"`
 	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix"`
 	Course_number            string                 `bson:"course_number" json:"course_number"`
 	Title                    string                 `bson:"title" json:"title"`
@@ -22,7 +34,7 @@ type Course struct {
 	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites"`
 	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites"`
 	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites"`
-	Sections                 []primitive.ObjectID   `bson:"sections" json:"sections"`
+	Sections                 []IdWrapper            `bson:"sections" json:"sections"`
 	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours"`
 	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours"`
 	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency"`
@@ -60,12 +72,12 @@ type Meeting struct {
 }
 
 type Section struct {
-	Id                    primitive.ObjectID     `bson:"_id" json:"_id"`
+	Id                    IdWrapper              `bson:"_id" json:"_id"`
 	Section_number        string                 `bson:"section_number" json:"section_number"`
-	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference"`
+	Course_reference      IdWrapper              `bson:"course_reference" json:"course_reference"`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
 	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
-	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
+	Professors            []IdWrapper            `bson:"professors" json:"professors"`
 	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
 	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number"`
 	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode"`
@@ -77,43 +89,43 @@ type Section struct {
 }
 
 type Professor struct {
-	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
-	First_name   string               `bson:"first_name" json:"first_name"`
-	Last_name    string               `bson:"last_name" json:"last_name"`
-	Titles       []string             `bson:"titles" json:"titles"`
-	Email        string               `bson:"email" json:"email"`
-	Phone_number string               `bson:"phone_number" json:"phone_number"`
-	Office       Location             `bson:"office" json:"office"`
-	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
-	Image_uri    string               `bson:"image_uri" json:"image_uri"`
-	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
-	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
+	Id           IdWrapper   `bson:"_id" json:"_id"`
+	First_name   string      `bson:"first_name" json:"first_name"`
+	Last_name    string      `bson:"last_name" json:"last_name"`
+	Titles       []string    `bson:"titles" json:"titles"`
+	Email        string      `bson:"email" json:"email"`
+	Phone_number string      `bson:"phone_number" json:"phone_number"`
+	Office       Location    `bson:"office" json:"office"`
+	Profile_uri  string      `bson:"profile_uri" json:"profile_uri"`
+	Image_uri    string      `bson:"image_uri" json:"image_uri"`
+	Office_hours []Meeting   `bson:"office_hours" json:"office_hours"`
+	Sections     []IdWrapper `bson:"sections" json:"sections"`
 }
 
 type Organization struct {
-	Id             primitive.ObjectID `bson:"_id" json:"_id"`
-	Title          string             `bson:"title" json:"title"`
-	Description    string             `bson:"description" json:"description"`
-	Categories     []string           `bson:"categories" json:"categories"`
-	President_name string             `bson:"president_name" json:"president_name"`
-	Emails         []string           `bson:"emails" json:"emails"`
-	Picture_data   string             `bson:"picture_data" json:"picture_data"`
+	Id             IdWrapper `bson:"_id" json:"_id"`
+	Title          string    `bson:"title" json:"title"`
+	Description    string    `bson:"description" json:"description"`
+	Categories     []string  `bson:"categories" json:"categories"`
+	President_name string    `bson:"president_name" json:"president_name"`
+	Emails         []string  `bson:"emails" json:"emails"`
+	Picture_data   string    `bson:"picture_data" json:"picture_data"`
 }
 
 type Event struct {
-	Id                 primitive.ObjectID `bson:"_id" json:"_id"`
-	Summary            string             `bson:"summary" json:"summary"`
-	Location           string             `bson:"location" json:"location"`
-	StartTime          time.Time          `bson:"start_time" json:"start_time"`
-	EndTime            time.Time          `bson:"end_time" json:"end_time"`
-	Description        string             `bson:"description" json:"description"`
-	EventType          []string           `bson:"event_type" json:"event_type"`
-	TargetAudience     []string           `bson:"target_audience" json:"target_audience"`
-	Topic              []string           `bson:"topic" json:"topic"`
-	EventTags          []string           `bson:"event_tags" json:"event_tags"`
-	EventWebsite       string             `bson:"event_website" json:"event_website"`
-	Department         []string           `bson:"department" json:"department"`
-	ContactName        string             `bson:"contact_name" json:"contact_name"`
-	ContactEmail       string             `bson:"contact_email" json:"contact_email"`
-	ContactPhoneNumber string             `bson:"contact_phone_number" json:"contact_phone_number"`
+	Id                 IdWrapper `bson:"_id" json:"_id"`
+	Summary            string    `bson:"summary" json:"summary"`
+	Location           string    `bson:"location" json:"location"`
+	StartTime          time.Time `bson:"start_time" json:"start_time"`
+	EndTime            time.Time `bson:"end_time" json:"end_time"`
+	Description        string    `bson:"description" json:"description"`
+	EventType          []string  `bson:"event_type" json:"event_type"`
+	TargetAudience     []string  `bson:"target_audience" json:"target_audience"`
+	Topic              []string  `bson:"topic" json:"topic"`
+	EventTags          []string  `bson:"event_tags" json:"event_tags"`
+	EventWebsite       string    `bson:"event_website" json:"event_website"`
+	Department         []string  `bson:"department" json:"department"`
+	ContactName        string    `bson:"contact_name" json:"contact_name"`
+	ContactEmail       string    `bson:"contact_email" json:"contact_email"`
+	ContactPhoneNumber string    `bson:"contact_phone_number" json:"contact_phone_number"`
 }
