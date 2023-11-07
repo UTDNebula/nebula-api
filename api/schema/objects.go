@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"encoding/json"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,8 +14,12 @@ type IdWrapper struct {
 
 // Custom JSON marshalling for ObjectID to marshal ObjectIDs correctly
 func (id IdWrapper) MarshalJSON() (data []byte, err error) {
-	jsonString := `{"$oid":"` + id.String() + `"}`
-	return []byte(jsonString), nil
+
+	type tmp struct {
+		Id string `json:"$oid"`
+	}
+
+	return json.Marshal(tmp{id.ObjectID.String()})
 }
 
 type Course struct {
