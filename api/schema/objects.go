@@ -16,10 +16,10 @@ type IdWrapper struct {
 func (id IdWrapper) MarshalJSON() (data []byte, err error) {
 
 	type tmp struct {
-		Id string `json:"$oid"`
+		Id primitive.ObjectID `json:"$oid"`
 	}
 
-	return json.Marshal(tmp{id.ObjectID.String()})
+	return json.Marshal(tmp{id.ObjectID})
 }
 
 type Course struct {
