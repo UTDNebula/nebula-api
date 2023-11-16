@@ -79,7 +79,10 @@ func CourseById() gin.HandlerFunc {
 		}
 
 		// find and parse matching course
-		err = courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
+		searchResult := courseCollection.FindOne(ctx, bson.M{"_id": objId})
+		decodedResult, _ := searchResult.DecodeBytes()
+		var customRegistry = schema.CreateCustomRegistry().Build()
+		err = bson.UnmarshalWithRegistry(customRegistry, []byte(decodedResult), &course)
 		if err != nil {
 			log.WriteError(err)
 			c.JSON(http.StatusInternalServerError, responses.CourseResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
