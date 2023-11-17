@@ -86,12 +86,12 @@ func NewOtherRequirement(description, condition string) *OtherRequirement {
 
 type CollectionRequirement struct {
 	Requirement
-	Name     string        `bson:"name" json:"name"`
-	Required int           `bson:"required" json:"required"`
-	Options  []interface{} `bson:"options" json:"options"`
+	Name     string                   `bson:"name" json:"name"`
+	Required int                      `bson:"required" json:"required"`
+	Options  []map[string]interface{} `bson:"options" json:"options"`
 }
 
-func NewCollectionRequirement(name string, required int, options []interface{}) *CollectionRequirement {
+func NewCollectionRequirement(name string, required int, options []map[string]interface{}) *CollectionRequirement {
 	return &CollectionRequirement{Requirement{"collection"}, name, required, options}
 }
 
