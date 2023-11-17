@@ -100,8 +100,6 @@ type CollectionRequirementIntermediate struct {
 	Options  []bson.Raw `bson:"options"`
 }
 
-func (CollectionRequirement) IsRequirement() {}
-
 func NewCollectionRequirement(name string, required int, options []interface{}) *CollectionRequirement {
 	return &CollectionRequirement{Requirement{"collection"}, name, required, options}
 }
