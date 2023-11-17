@@ -1,6 +1,9 @@
 package schema
 
 import (
+	"fmt"
+
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -9,7 +12,7 @@ type Requirement struct {
 }
 
 type CourseRequirement struct {
-	Requirement
+	Requirement    `bson:",inline" json:",inline"`
 	ClassReference string `bson:"class_reference" json:"class_reference"`
 	MinimumGrade   string `bson:"minimum_grade" json:"minimum_grade"`
 }
@@ -19,7 +22,7 @@ func NewCourseRequirement(classRef string, minGrade string) *CourseRequirement {
 }
 
 type SectionRequirement struct {
-	Requirement
+	Requirement      `bson:",inline" json:",inline"`
 	SectionReference primitive.ObjectID `bson:"section_reference" json:"section_reference"`
 }
 
@@ -28,7 +31,7 @@ func NewSectionRequirement(sectionRef primitive.ObjectID) *SectionRequirement {
 }
 
 type ExamRequirement struct {
-	Requirement
+	Requirement   `bson:",inline" json:",inline"`
 	ExamReference string  `bson:"exam_reference" json:"exam_reference"`
 	MinimumScore  float64 `bson:"minimum_score" json:"minimum_score"`
 }
@@ -38,8 +41,8 @@ func NewExamRequirement(examRef string, minScore float64) *ExamRequirement {
 }
 
 type MajorRequirement struct {
-	Requirement
-	Major string `bson:"major" json:"major"`
+	Requirement `bson:",inline" json:",inline"`
+	Major       string `bson:"major" json:"major"`
 }
 
 func NewMajorRequirement(major string) *MajorRequirement {
@@ -47,8 +50,8 @@ func NewMajorRequirement(major string) *MajorRequirement {
 }
 
 type MinorRequirement struct {
-	Requirement
-	Minor string `bson:"minor" json:"minor"`
+	Requirement `bson:",inline" json:",inline"`
+	Minor       string `bson:"minor" json:"minor"`
 }
 
 func NewMinorRequirement(minor string) *MinorRequirement {
@@ -56,9 +59,9 @@ func NewMinorRequirement(minor string) *MinorRequirement {
 }
 
 type GPARequirement struct {
-	Requirement
-	Minimum float64 `bson:"minimum" json:"minimum"`
-	Subset  string  `bson:"subset" json:"subset"`
+	Requirement `bson:",inline" json:",inline"`
+	Minimum     float64 `bson:"minimum" json:"minimum"`
+	Subset      string  `bson:"subset" json:"subset"`
 }
 
 func NewGPARequirement(min float64, subset string) *GPARequirement {
@@ -66,8 +69,8 @@ func NewGPARequirement(min float64, subset string) *GPARequirement {
 }
 
 type ConsentRequirement struct {
-	Requirement
-	Granter string `bson:"granter" json:"granter"`
+	Requirement `bson:",inline" json:",inline"`
+	Granter     string `bson:"granter" json:"granter"`
 }
 
 func NewConsentRequirement(granter string) *ConsentRequirement {
@@ -75,7 +78,7 @@ func NewConsentRequirement(granter string) *ConsentRequirement {
 }
 
 type OtherRequirement struct {
-	Requirement
+	Requirement `bson:",inline" json:",inline"`
 	Description string `bson:"description" json:"description"`
 	Condition   string `bson:"condition" json:"condition"`
 }
@@ -85,20 +88,107 @@ func NewOtherRequirement(description, condition string) *OtherRequirement {
 }
 
 type CollectionRequirement struct {
-	Requirement
-	Name     string        `bson:"name" json:"name"`
-	Required int           `bson:"required" json:"required"`
-	Options  []interface{} `bson:"options" json:"options"`
+	Requirement `bson:",inline" json:",inline"`
+	Name        string        `bson:"name" json:"name"`
+	Required    int           `bson:"required" json:"required"`
+	Options     []interface{} `bson:"options" json:"options"`
+}
+
+type CollectionRequirementIntermediate struct {
+	Name     string     `bson:"name"`
+	Required int        `bson:"required"`
+	Options  []bson.Raw `bson:"options"`
 }
 
 func NewCollectionRequirement(name string, required int, options []interface{}) *CollectionRequirement {
 	return &CollectionRequirement{Requirement{"collection"}, name, required, options}
 }
 
+func (cr *CollectionRequirement) UnmarshalBSON(data []byte) error {
+	var dummyCollection CollectionRequirementIntermediate
+	err := bson.Unmarshal(data, &dummyCollection)
+	if err != nil {
+		return err
+	}
+
+	var out []interface{}
+	for _, v := range dummyCollection.Options {
+
+		bytes, err := bson.Marshal(v)
+		if err != nil {
+			return err
+		}
+
+		optionType := v.Lookup("type").StringValue()
+
+		switch optionType {
+		case "course":
+			var t CourseRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "section":
+			var t SectionRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "exam":
+			var t ExamRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "major":
+			var t MajorRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "minor":
+			var t MinorRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "gpa":
+			var t GPARequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "consent":
+			var t ConsentRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "collection":
+			var t CollectionRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "hours":
+			var t HoursRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "other":
+			var t OtherRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "choice":
+			var t ChoiceRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "limit":
+			var t LimitRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		case "core":
+			var t CoreRequirement
+			bson.Unmarshal(bytes, &t)
+			out = append(out, t)
+		default:
+			return fmt.Errorf("unknown option type: %v", err)
+		}
+	}
+	cr.Name = dummyCollection.Name
+	cr.Required = dummyCollection.Required
+	cr.Options = out
+	cr.Type = "collection"
+	return nil
+}
+
 type HoursRequirement struct {
-	Requirement
-	Required int                  `bson:"required" json:"required"`
-	Options  []*CourseRequirement `bson:"options" json:"options"`
+	Requirement `bson:",inline" json:",inline"`
+	Required    int                  `bson:"required" json:"required"`
+	Options     []*CourseRequirement `bson:"options" json:"options"`
 }
 
 func NewHoursRequirement(required int, options []*CourseRequirement) *HoursRequirement {
@@ -106,8 +196,8 @@ func NewHoursRequirement(required int, options []*CourseRequirement) *HoursRequi
 }
 
 type ChoiceRequirement struct {
-	Requirement
-	Choices *CollectionRequirement `bson:"choices" json:"choices"`
+	Requirement `bson:",inline" json:",inline"`
+	Choices     *CollectionRequirement `bson:"choices" json:"choices"`
 }
 
 func NewChoiceRequirement(choices *CollectionRequirement) *ChoiceRequirement {
@@ -115,8 +205,8 @@ func NewChoiceRequirement(choices *CollectionRequirement) *ChoiceRequirement {
 }
 
 type LimitRequirement struct {
-	Requirement
-	MaxHours int `bson:"max_hours" json:"max_hours"`
+	Requirement `bson:",inline" json:",inline"`
+	MaxHours    int `bson:"max_hours" json:"max_hours"`
 }
 
 func NewLimitRequirement(maxHours int) *LimitRequirement {
@@ -124,9 +214,9 @@ func NewLimitRequirement(maxHours int) *LimitRequirement {
 }
 
 type CoreRequirement struct {
-	Requirement
-	CoreFlag string `bson:"core_flag" json:"core_flag"`
-	Hours    int    `bson:"hours" json:"hours"`
+	Requirement `bson:",inline" json:",inline"`
+	CoreFlag    string `bson:"core_flag" json:"core_flag"`
+	Hours       int    `bson:"hours" json:"hours"`
 }
 
 func NewCoreRequirement(coreFlag string, hours int) *CoreRequirement {
