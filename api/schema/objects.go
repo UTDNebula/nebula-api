@@ -2,12 +2,7 @@ package schema
 
 import (
 	"encoding/json"
-	"reflect"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/bsoncodec"
-	"go.mongodb.org/mongo-driver/bson/bsonrw"
 )
 
 // Wrapper type for primitive.ObjectID to allow for custom mashalling below
@@ -23,28 +18,18 @@ func (id IdWrapper) MarshalJSON() (data []byte, err error) {
 	return json.Marshal(tmp{string(id)})
 }
 
-func CreateCustomRegistry() *bsoncodec.RegistryBuilder {
-	var primitiveCodecs bson.PrimitiveCodecs
-	rb := bsoncodec.NewRegistryBuilder()
-	bsoncodec.DefaultValueEncoders{}.RegisterDefaultEncoders(rb)
-	bsoncodec.DefaultValueDecoders{}.RegisterDefaultDecoders(rb)
-	// register our new type
-	idWrapperType := reflect.TypeOf(IdWrapper(""))
-	// read the datetime type and convert to integer
-	rb.RegisterTypeDecoder(
-		idWrapperType,
-		bsoncodec.ValueDecoderFunc(func(_ bsoncodec.DecodeContext, vr bsonrw.ValueReader, val reflect.Value) error {
-			// this is the function when we read the datetime format
-			read, err := vr.ReadObjectID()
-			if err != nil {
-				return err
-			}
-			val.SetString(read.Hex())
-			return nil
-		}),
-	)
-	primitiveCodecs.RegisterPrimitiveCodecs(rb)
-	return rb
+// Custom JSON unmarshalling for ObjectID to unmarshal ObjectIDs correctly
+func (id *IdWrapper) UnmarshalJSON(data []byte) (e error) {
+
+	type tmp struct {
+		Id string `json:"$oid"`
+	}
+
+	var t tmp
+
+	e = json.Unmarshal(data, &t)
+	*id = IdWrapper(t.Id)
+	return e
 }
 
 type Course struct {
