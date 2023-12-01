@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"github.com/UTDNebula/nebula-api/api/schema"
 	"net/http"
 	"time"
 
@@ -20,7 +21,7 @@ var sectionCollection *mongo.Collection = configs.GetCollection(configs.DB, "sec
 func SectionSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//name := c.Query("name")            // value of specific query parameter: string
-		queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
+		//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -31,18 +32,29 @@ func SectionSearch() gin.HandlerFunc {
 		defer cancel()
 
 		// build query key value pairs (only one value per key)
-		query := bson.M{}
-		for key := range queryParams {
-			if key == "course_reference" || key == "professors" {
-				objId, err := primitive.ObjectIDFromHex(c.Query(key))
-				if err != nil {
-					c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
-					return
-				} else {
-					query[key] = objId
-				}
+		query, err := schema.FilterQuery[schema.Section](c)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, responses.SectionResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			return
+		}
+
+		if v, ok := query["course_reference"]; ok {
+			objId, err := primitive.ObjectIDFromHex(v.(string))
+			if err != nil {
+				c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+				return
 			} else {
-				query[key] = c.Query(key)
+				query["course_reference"] = objId
+			}
+		}
+
+		if v, ok := query["professor"]; ok {
+			objId, err := primitive.ObjectIDFromHex(v.(string))
+			if err != nil {
+				c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+				return
+			} else {
+				query["professor"] = objId
 			}
 		}
 

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"github.com/UTDNebula/nebula-api/api/schema"
 	"net/http"
 	"time"
 
@@ -17,10 +18,16 @@ import (
 
 var examCollection *mongo.Collection = configs.GetCollection(configs.DB, "exams")
 
+type examFilter struct {
+	Type  string `schema:"type"`
+	Name  string `schema:"name"`
+	Level string `schema:"level"`
+}
+
 func ExamSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//name := c.Query("name")            // value of specific query parameter: string
-		queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
+		//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -31,9 +38,10 @@ func ExamSearch() gin.HandlerFunc {
 		defer cancel()
 
 		// build query key value pairs (only one value per key)
-		query := bson.M{}
-		for key := range queryParams {
-			query[key] = c.Query(key)
+		query, err := schema.FilterQuery[examFilter](c)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			return
 		}
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
