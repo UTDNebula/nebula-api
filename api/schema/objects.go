@@ -79,8 +79,8 @@ type Meeting struct {
 	Start_date   time.Time `bson:"start_date" json:"start_date"`
 	End_date     time.Time `bson:"end_date" json:"end_date"`
 	Meeting_days []string  `bson:"meeting_days" json:"meeting_days"`
-	Start_time   time.Time `bson:"start_time" json:"start_time"`
-	End_time     time.Time `bson:"end_time" json:"end_time"`
+	Start_time   string    `bson:"start_time" json:"start_time"`
+	End_time     string    `bson:"end_time" json:"end_time"`
 	Modality     string    `bson:"modality" json:"modality"`
 	Location     Location  `bson:"location" json:"location"`
 }
