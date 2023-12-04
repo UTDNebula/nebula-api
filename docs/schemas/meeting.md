@@ -50,17 +50,17 @@ Meeting = {
 >
 > **Type**: string
 >
-> The time the meeting starts on each meeting day.
+> The time the meeting starts on each meeting day. The timezone is the same as UTD (CST/CDT).
 >
-> **Example**: `0000-01-01T16:00:00-05:50`
+> **Example**: `7:00pm`
 
 > `.end_time`
 >
 > **Type**: string
 >
-> The time a meeting ends on each meeting day.
+> The time a meeting ends on each meeting day. The timezone is the same as UTD (CST/CDT).
 >
-> **Example**: `0000-01-01T17:15:00-05:50`
+> **Example**: `9:45pm`
 
 > `.modality`
 >
