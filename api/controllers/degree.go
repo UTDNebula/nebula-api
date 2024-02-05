@@ -25,7 +25,6 @@ func DegreeSearch() gin.HandlerFunc {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		// @TODO: Fix with model - There is NO typechecking!
 		// var degrees []models.Degree
 		var degrees []map[string]interface{}
 
@@ -34,7 +33,7 @@ func DegreeSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[schema.Degree](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.DegreeResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.DegreeResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 

@@ -4,7 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	gs "github.com/gorilla/schema"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/url"
+	"reflect"
 )
 
 var decoder = makeDecoder()
@@ -16,8 +18,14 @@ func makeDecoder() *gs.Decoder {
 	return dec
 }
 
+func objectIdEncoder(v reflect.Value) string {
+	id := v.Interface().(primitive.ObjectID)
+	return id.Hex()
+}
+
 func makeEncoder() *gs.Encoder {
 	enc := gs.NewEncoder()
+	enc.RegisterEncoder(primitive.ObjectID{}, objectIdEncoder)
 	return enc
 }
 

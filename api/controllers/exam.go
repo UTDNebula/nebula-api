@@ -31,7 +31,6 @@ func ExamSearch() gin.HandlerFunc {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		// @TODO: Fix with model - There is NO typechecking!
 		// var exams []models.Exam
 		var exams []map[string]interface{}
 
@@ -40,7 +39,7 @@ func ExamSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[examFilter](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 

@@ -25,7 +25,6 @@ func SectionSearch() gin.HandlerFunc {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		// @TODO: Fix with model - There is NO typechecking!
 		// var sections []models.Section
 		var sections []map[string]interface{}
 
@@ -34,7 +33,7 @@ func SectionSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[schema.Section](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.SectionResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.SectionResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 

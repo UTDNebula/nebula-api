@@ -26,14 +26,13 @@ func CourseSearch() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		// @TODO: Fix with model - There is NO typechecking!
 		// var courses []models.Course
 		var courses []map[string]interface{}
 
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[schema.Course](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 

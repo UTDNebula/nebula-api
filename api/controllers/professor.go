@@ -25,7 +25,6 @@ func ProfessorSearch() gin.HandlerFunc {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		// @TODO: Fix with model - There is NO typechecking!
 		// var professors []models.Professor
 		var professors []map[string]interface{}
 
@@ -34,7 +33,7 @@ func ProfessorSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[schema.Professor](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.ProfessorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ProfessorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 
