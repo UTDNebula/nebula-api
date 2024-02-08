@@ -224,12 +224,12 @@ func NewCoreRequirement(coreFlag string, hours int) *CoreRequirement {
 }
 
 type Degree struct {
-	Subtype            string                 `bson:"subtype" json:"subtype"`
-	School             string                 `bson:"school" json:"school"`
-	Name               string                 `bson:"name" json:"name"`
-	Year               string                 `bson:"year" json:"year"`
-	Abbreviation       string                 `bson:"abbreviation" json:"abbreviation"`
-	MinimumCreditHours int                    `bson:"minimum_credit_hours" json:"minimum_credit_hours"`
-	CatalogUri         string                 `bson:"catalog_uri" json:"catalog_uri"`
-	Requirements       *CollectionRequirement `bson:"requirements" json:"requirements"`
+	Subtype            string                 `bson:"subtype" json:"subtype" schema:"subtype"`
+	School             string                 `bson:"school" json:"school" schema:"school"`
+	Name               string                 `bson:"name" json:"name" schema:"name"`
+	Year               string                 `bson:"year" json:"year" schema:"year"`
+	Abbreviation       string                 `bson:"abbreviation" json:"abbreviation" schema:"abbreviation"`
+	MinimumCreditHours int                    `bson:"minimum_credit_hours" json:"minimum_credit_hours" schema:"minimum_credit_hours"`
+	CatalogUri         string                 `bson:"catalog_uri" json:"catalog_uri" schema:"-"`
+	Requirements       *CollectionRequirement `bson:"requirements" json:"requirements" schema:"-"`
 }

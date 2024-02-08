@@ -22,7 +22,7 @@ var courseCollection *mongo.Collection = configs.GetCollection(configs.DB, "cour
 func CourseSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//name := c.Query("name")            // value of specific query parameter: string
-		queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
+		//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
@@ -30,9 +30,10 @@ func CourseSearch() gin.HandlerFunc {
 		var courses []schema.Course
 
 		// build query key value pairs (only one value per key)
-		query := bson.M{}
-		for key := range queryParams {
-			query[key] = c.Query(key)
+		query, err := schema.FilterQuery[schema.Course](c)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+			return
 		}
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/api/schema"
+
 	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/responses"
@@ -18,23 +20,29 @@ import (
 
 var examCollection *mongo.Collection = configs.GetCollection(configs.DB, "exams")
 
+type examFilter struct {
+	Type  string `schema:"type"`
+	Name  string `schema:"name"`
+	Level string `schema:"level"`
+}
+
 func ExamSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//name := c.Query("name")            // value of specific query parameter: string
-		queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
+		//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		// @TODO: Fix with model - There is NO typechecking!
 		// var exams []models.Exam
 		var exams []map[string]interface{}
 
 		defer cancel()
 
 		// build query key value pairs (only one value per key)
-		query := bson.M{}
-		for key := range queryParams {
-			query[key] = c.Query(key)
+		query, err := schema.FilterQuery[examFilter](c)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+			return
 		}
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
