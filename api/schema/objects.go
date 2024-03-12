@@ -143,3 +143,35 @@ type Event struct {
 	ContactEmail       string    `bson:"contact_email" json:"contact_email"`
 	ContactPhoneNumber string    `bson:"contact_phone_number" json:"contact_phone_number"`
 }
+
+// 5 Level Likert Item scale for evaluation responses
+type EvaluationResponse int
+
+const (
+	STRONGLY_DISAGREE EvaluationResponse = 1 << iota
+	DISAGREE
+	NEUTRAL
+	AGREE
+	STRONGLY_AGREE
+)
+
+type EvaluationSummary struct {
+	Median            float32 `bson:"median" json:"median"`
+	Mean              float32 `bson:"mean" json:"mean"`
+	StandardDeviation float32 `bson:"standard_deviation" json:"standard_deviation"`
+	Responses         int     `bson:"responses" json:"responses"`
+}
+
+type EvaluationField struct {
+	Description string                         `bson:"description" json:"description"`
+	Percentages map[EvaluationResponse]float32 `bson:"percentages" json:"percentages"`
+	Counts      map[EvaluationResponse]int     `bson:"counts" json:"counts"`
+	Summary     EvaluationSummary              `bson:"summary" json:"summary"`
+}
+
+type Evaluation struct {
+	Id                   IdWrapper         `bson:"_id" json:"_id"`
+	CourseExperience     []EvaluationField `bson:"course_experience" json:"course_experience"`
+	InstructorExperience []EvaluationField `bson:"instructor_experience" json:"instructor_experience"`
+	StudentExperience    []EvaluationField `bson:"student_experience" json:"student_experience"`
+}

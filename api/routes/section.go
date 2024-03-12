@@ -13,4 +13,5 @@ func SectionRoute(router *gin.Engine) {
 	sectionGroup.OPTIONS("", controllers.Preflight)
 	sectionGroup.GET("", controllers.SectionSearch())
 	sectionGroup.GET(":id", controllers.SectionById())
+	sectionGroup.GET(":id/evaluation", controllers.EvalBySectionID)
 }

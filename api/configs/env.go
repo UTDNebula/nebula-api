@@ -33,6 +33,22 @@ func GetEnvMongoURI() string {
 	return uri
 }
 
+func GetEnvLogin() (netID string, password string) {
+
+	netID, exist := os.LookupEnv("LOGIN_NETID")
+	if !exist {
+		log.WriteErrorMsg("Error loading 'LOGIN_NETID' from the .env file")
+		os.Exit(1)
+	}
+	password, exist = os.LookupEnv("LOGIN_PASSWORD")
+	if !exist {
+		log.WriteErrorMsg("Error loading 'LOGIN_PASSWORD' from the .env file")
+		os.Exit(1)
+	}
+
+	return netID, password
+}
+
 func GetEnvLimit() int64 {
 
 	const defaultLimit int64 = 20

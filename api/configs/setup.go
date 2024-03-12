@@ -15,20 +15,16 @@ import (
 )
 
 func ConnectDB() *mongo.Client {
-	client, err := mongo.NewClient(options.Client().ApplyURI(GetEnvMongoURI()))
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
 	if err != nil {
 		log.WriteErrorMsg("Unable to create MongoDB client")
 		os.Exit(1)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
-	err = client.Connect(ctx)
-	if err != nil {
-		log.WriteErrorMsg("Unable to connect to database")
-		os.Exit(1)
-	}
 
 	//ping the database
 	err = client.Ping(ctx, nil)
