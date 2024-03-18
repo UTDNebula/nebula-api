@@ -17,20 +17,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var professorCollection *mongo.Collection = configs.GetCollection(configs.DB, "professors")
+var professorCollection *mongo.Collection
+
+func init() {
+	professorCollection = configs.GetCollection(configs.DB, "professors")
+}
 
 func ProfessorSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//name := c.Query("name")            // value of specific query parameter: string
-		//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
-
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
 		var professors []schema.Professor
 
-		defer cancel()
-
-		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[schema.Professor](c)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, responses.ProfessorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
@@ -44,7 +43,6 @@ func ProfessorSearch() gin.HandlerFunc {
 			return
 		}
 
-		// get cursor for query results
 		cursor, err := professorCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			log.WriteError(err)
@@ -52,13 +50,11 @@ func ProfessorSearch() gin.HandlerFunc {
 			return
 		}
 
-		// retrieve and parse all valid documents
 		if err = cursor.All(ctx, &professors); err != nil {
 			log.WritePanic(err)
 			panic(err)
 		}
 
-		// return result
 		c.JSON(http.StatusOK, responses.ProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
 	}
 }
@@ -66,14 +62,11 @@ func ProfessorSearch() gin.HandlerFunc {
 func ProfessorById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-		professorId := c.Param("id")
-
-		var professor schema.Professor
-
 		defer cancel()
 
-		// parse object id from id parameter
+		professorId := c.Param("id")
+		var professor schema.Professor
+
 		objId, err := primitive.ObjectIDFromHex(professorId)
 		if err != nil {
 			log.WriteError(err)
@@ -81,7 +74,6 @@ func ProfessorById() gin.HandlerFunc {
 			return
 		}
 
-		// find and parse matching professor
 		err = professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
 		if err != nil {
 			log.WriteError(err)
@@ -89,7 +81,6 @@ func ProfessorById() gin.HandlerFunc {
 			return
 		}
 
-		// return result
 		c.JSON(http.StatusOK, responses.ProfessorResponse{Status: http.StatusOK, Message: "success", Data: professor})
 	}
 }
@@ -97,25 +88,20 @@ func ProfessorById() gin.HandlerFunc {
 func ProfessorAll() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
 		var professors []schema.Professor
 
-		defer cancel()
-
 		cursor, err := professorCollection.Find(ctx, bson.M{})
-
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
-		// retrieve and parse all valid documents
 		if err = cursor.All(ctx, &professors); err != nil {
 			panic(err)
 		}
 
-		// return result
 		c.JSON(http.StatusOK, responses.ProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
-
 	}
 }
