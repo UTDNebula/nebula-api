@@ -32,14 +32,14 @@ func CourseSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[schema.Course](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
 		if err != nil {
 			log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
-			c.JSON(http.StatusConflict, responses.CourseResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
 
@@ -47,7 +47,7 @@ func CourseSearch() gin.HandlerFunc {
 		cursor, err := courseCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.CourseResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -58,7 +58,7 @@ func CourseSearch() gin.HandlerFunc {
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.CourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
+		c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
 	}
 }
 
@@ -75,7 +75,7 @@ func CourseById() gin.HandlerFunc {
 		objId, err := primitive.ObjectIDFromHex(courseId)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -83,12 +83,12 @@ func CourseById() gin.HandlerFunc {
 		err = courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.CourseResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.CourseResponse{Status: http.StatusOK, Message: "success", Data: course})
+		c.JSON(http.StatusOK, responses.SingleCourseResponse{Status: http.StatusOK, Message: "success", Data: course})
 	}
 }
 
@@ -103,7 +103,7 @@ func CourseAll() gin.HandlerFunc {
 		cursor, err := courseCollection.Find(ctx, bson.M{})
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.CourseResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -113,7 +113,7 @@ func CourseAll() gin.HandlerFunc {
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.CourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
+		c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
 
 	}
 }

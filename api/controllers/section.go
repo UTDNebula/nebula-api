@@ -33,14 +33,14 @@ func SectionSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[schema.Section](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.SectionResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 
 		if v, ok := query["course_reference"]; ok {
 			objId, err := primitive.ObjectIDFromHex(v.(string))
 			if err != nil {
-				c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+				c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 				return
 			} else {
 				query["course_reference"] = objId
@@ -50,7 +50,7 @@ func SectionSearch() gin.HandlerFunc {
 		if v, ok := query["professor"]; ok {
 			objId, err := primitive.ObjectIDFromHex(v.(string))
 			if err != nil {
-				c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+				c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 				return
 			} else {
 				query["professor"] = objId
@@ -60,7 +60,7 @@ func SectionSearch() gin.HandlerFunc {
 		optionLimit, err := configs.GetOptionLimit(&query, c)
 		if err != nil {
 			log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
-			c.JSON(http.StatusConflict, responses.SectionResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
 
@@ -68,7 +68,7 @@ func SectionSearch() gin.HandlerFunc {
 		cursor, err := sectionCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.SectionResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -79,7 +79,7 @@ func SectionSearch() gin.HandlerFunc {
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.SectionResponse{Status: http.StatusOK, Message: "success", Data: sections})
+		c.JSON(http.StatusOK, responses.MultiSectionResponse{Status: http.StatusOK, Message: "success", Data: sections})
 	}
 }
 
@@ -97,7 +97,7 @@ func SectionById() gin.HandlerFunc {
 		objId, err := primitive.ObjectIDFromHex(sectionId)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -105,11 +105,11 @@ func SectionById() gin.HandlerFunc {
 		err = sectionCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.SectionResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.SectionResponse{Status: http.StatusOK, Message: "success", Data: section})
+		c.JSON(http.StatusOK, responses.SingleSectionResponse{Status: http.StatusOK, Message: "success", Data: section})
 	}
 }

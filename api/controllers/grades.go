@@ -256,7 +256,7 @@ func GradesAggregation(flag string) gin.HandlerFunc {
 		// peform aggregation
 		cursor, err = collection.Aggregate(ctx, pipeline)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -277,11 +277,11 @@ func GradesAggregation(flag string) gin.HandlerFunc {
 					overallResponse[i] += grade.(int32)
 				}
 			}
-			c.JSON(http.StatusOK, responses.DegreeResponse{Status: http.StatusOK, Message: "success", Data: overallResponse})
+			c.JSON(http.StatusOK, responses.GradeResponse{Status: http.StatusOK, Message: "success", Data: overallResponse})
 		} else if flag == "semester" {
-			c.JSON(http.StatusOK, responses.DegreeResponse{Status: http.StatusOK, Message: "success", Data: grades})
+			c.JSON(http.StatusOK, responses.GradeResponse{Status: http.StatusOK, Message: "success", Data: grades})
 		} else {
-			c.JSON(http.StatusInternalServerError, responses.ProfessorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Endpoint broken"})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Endpoint broken"})
 		}
 
 	}

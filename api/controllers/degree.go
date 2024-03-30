@@ -33,14 +33,14 @@ func DegreeSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[schema.Degree](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.DegreeResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
 		if err != nil {
 			log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
-			c.JSON(http.StatusConflict, responses.DegreeResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
 
@@ -48,7 +48,7 @@ func DegreeSearch() gin.HandlerFunc {
 		cursor, err := degreeCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.DegreeResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -59,7 +59,7 @@ func DegreeSearch() gin.HandlerFunc {
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.DegreeResponse{Status: http.StatusOK, Message: "success", Data: degrees})
+		c.JSON(http.StatusOK, responses.MultiDegreeResponse{Status: http.StatusOK, Message: "success", Data: degrees})
 	}
 }
 
@@ -77,7 +77,7 @@ func DegreeById() gin.HandlerFunc {
 		objId, err := primitive.ObjectIDFromHex(degreeId)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -85,11 +85,11 @@ func DegreeById() gin.HandlerFunc {
 		err = degreeCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&degree)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.DegreeResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.DegreeResponse{Status: http.StatusOK, Message: "success", Data: degree})
+		c.JSON(http.StatusOK, responses.SingleDegreeResponse{Status: http.StatusOK, Message: "success", Data: degree})
 	}
 }
