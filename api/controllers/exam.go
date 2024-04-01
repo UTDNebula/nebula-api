@@ -41,14 +41,14 @@ func ExamSearch() gin.HandlerFunc {
 		// build query key value pairs (only one value per key)
 		query, err := schema.FilterQuery[examFilter](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
 
 		optionLimit, err := configs.GetOptionLimit(&query, c)
 		if err != nil {
 			log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
-			c.JSON(http.StatusConflict, responses.ExamResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+			c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
 			return
 		}
 
@@ -56,7 +56,7 @@ func ExamSearch() gin.HandlerFunc {
 		cursor, err := examCollection.Find(ctx, query, optionLimit)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -67,7 +67,7 @@ func ExamSearch() gin.HandlerFunc {
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: exams})
+		c.JSON(http.StatusOK, responses.MultiExamResponse{Status: http.StatusOK, Message: "success", Data: exams})
 	}
 }
 
@@ -87,7 +87,7 @@ func ExamById() gin.HandlerFunc {
 		objId, err := primitive.ObjectIDFromHex(examId)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusBadRequest, responses.ExamResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -95,12 +95,12 @@ func ExamById() gin.HandlerFunc {
 		err = examCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&exam)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: exam})
+		c.JSON(http.StatusOK, responses.SingleExamResponse{Status: http.StatusOK, Message: "success", Data: exam})
 	}
 }
 
@@ -117,7 +117,7 @@ func ExamAll() gin.HandlerFunc {
 		cursor, err := examCollection.Find(ctx, bson.M{})
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ExamResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -129,6 +129,6 @@ func ExamAll() gin.HandlerFunc {
 		}
 
 		// return result
-		c.JSON(http.StatusOK, responses.ExamResponse{Status: http.StatusOK, Message: "success", Data: exams})
+		c.JSON(http.StatusOK, responses.MultiExamResponse{Status: http.StatusOK, Message: "success", Data: exams})
 	}
 }
