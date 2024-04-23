@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,9 +18,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/network"
-	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -41,7 +42,7 @@ func EvalBySectionID(c *gin.Context) {
 	objId, err := primitive.ObjectIDFromHex(sectionId)
 	if err != nil {
 		log.WriteError(err)
-		c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 		return
 	}
 
@@ -53,7 +54,7 @@ func EvalBySectionID(c *gin.Context) {
 		// If err is anything other than the document not existing, it's likely a database issue; notify the user
 		if err != mongo.ErrNoDocuments {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.SectionResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
@@ -61,50 +62,42 @@ func EvalBySectionID(c *gin.Context) {
 		err = sectionCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.SectionResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
 		// Find and parse course associated with section
-		objId, err = primitive.ObjectIDFromHex(string(section.Course_reference))
-		if err != nil {
-			log.WriteError(err)
-			c.JSON(http.StatusBadRequest, responses.CourseResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
-			return
-		}
+		objId = section.Course_reference
 
 		err = courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.SectionResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 
-		eval = ScrapeEval(course, section)
+		evalResult, err := ScrapeEval(course, section)
+		if err != nil {
+			log.WriteError(err)
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			return
+		}
+		eval = *evalResult
 	}
 
 	// Return result
-	c.JSON(http.StatusOK, responses.SectionResponse{Status: http.StatusOK, Message: "success", Data: eval})
+	c.JSON(http.StatusOK, responses.EvaluationResponse{Status: http.StatusOK, Message: "success", Data: eval})
 }
 
-var captchaCompleted bool = false
-
 // Performs on-demand scraping for the eval of a given section
-func ScrapeEval(course schema.Course, section schema.Section) schema.Evaluation {
+func ScrapeEval(course schema.Course, section schema.Section) (*schema.Evaluation, error) {
 
 	// Make sure chromedp is initialized
 	chromedpCtx, cancel := initChromeDp()
 	defer cancel()
 
-	refreshToken(chromedpCtx)
-
-	if !captchaCompleted {
-		time.Sleep(30 * time.Second)
-		captchaCompleted = true
-	}
-
-	// Get a token from coursebook, because we need that for the ues-report endpoint to work properly
-	//refreshToken(chromedpCtx)
+	// Get auth headers
+	headers := refreshToken(chromedpCtx)
 
 	sectionID := course.Subject_prefix + course.Course_number + "." + section.Section_number + "." + section.Academic_session.Name
 
@@ -112,29 +105,35 @@ func ScrapeEval(course schema.Course, section schema.Section) schema.Evaluation 
 
 	// Get eval info
 	evalURL := fmt.Sprintf("https://coursebook.utdallas.edu/ues-report/%s", sectionID)
+
 	// Navigate to eval URL and pull all HTML
-	var html string
-	_, err := chromedp.RunResponse(chromedpCtx, chromedp.Tasks{
-		chromedp.Navigate(evalURL),
-		chromedp.QueryAfter("table", func(ctx context.Context, eci runtime.ExecutionContextID, n ...*cdp.Node) error {
-			if len(n) > 0 {
-				// Create and write eval HTML to file
-				chromedp.OuterHTML("html", &html).Do(ctx)
-				log.WriteDebug("Eval found!")
-				return nil
-			} else {
-				log.WriteDebug("No eval found!")
-				return nil
-			}
-		}, chromedp.AtLeast(0)),
-	})
+	bodyReader := strings.NewReader("")
+	req, err := http.NewRequest("GET", evalURL, bodyReader)
 	if err != nil {
 		panic(err)
 	}
+	req.Header = headers
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("section find failed! Status was: %s\nIf the status is 404, you've likely been IP ratelimited", res.Status)
+	}
+	buf := bytes.Buffer{}
+	buf.ReadFrom(res.Body)
 
-	// Here is where we'd actually parse the HTML and build an evaluation... unfortunately, coursebook captchas have decided that's not happening anytime soon!
+	file, err := os.Create("./HTML_TEST.html")
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
 
-	return schema.Evaluation{}
+	file.Write(buf.Bytes())
+
+	// TODO: Perform HTML parsing and build eval
+
+	return &schema.Evaluation{}, nil
 }
 
 // The 2 functions below are copied from API-Tools to support on-demand scraping
