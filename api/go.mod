@@ -1,6 +1,6 @@
 module github.com/UTDNebula/nebula-api/api
 
-go 1.23
+go 1.22.1
 
 require (
 	github.com/gin-gonic/gin v1.9.1
