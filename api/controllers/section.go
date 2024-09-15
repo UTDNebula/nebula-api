@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var sectionCollection *mongo.Collection = configs.GetCollection(configs.DB, "sections")
+var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 
 func SectionSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {

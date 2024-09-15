@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/common/log"
@@ -14,34 +15,46 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDB() *mongo.Client {
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
-	if err != nil {
-		log.WriteErrorMsg("Unable to create MongoDB client")
-		os.Exit(1)
-	}
-
-	defer cancel()
-
-	//ping the database
-	err = client.Ping(ctx, nil)
-	if err != nil {
-		log.WriteErrorMsg("Unable to ping database")
-		os.Exit(1)
-	}
-
-	log.WriteDebug("Connected to MongoDB")
-
-	return client
+type DBSingleton struct {
+	client *mongo.Client
 }
 
-var DB *mongo.Client = ConnectDB()
+var dbInstance *DBSingleton
+var once sync.Once
+
+func ConnectDB() *mongo.Client {
+	once.Do(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
+		if err != nil {
+			log.WriteErrorMsg("Unable to create MongoDB client")
+			os.Exit(1)
+		}
+
+		defer cancel()
+
+		//ping the database
+		err = client.Ping(ctx, nil)
+		if err != nil {
+			log.WriteErrorMsg("Unable to ping database")
+			os.Exit(1)
+		}
+
+		log.WriteDebug("Connected to MongoDB")
+
+		dbInstance = &DBSingleton{
+			client: client,
+		}
+
+	})
+
+	return dbInstance.client
+}
 
 // getting database collections
-func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
+func GetCollection(collectionName string) *mongo.Collection {
+	client := ConnectDB()
 	collection := client.Database("combinedDB").Collection(collectionName)
 	return collection
 }
