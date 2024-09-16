@@ -5,7 +5,7 @@ WORKDIR /build
 
 COPY ./configs ./configs
 COPY ./controllers ./controllers
-COPY ./models ./models
+COPY ./schema ./schema
 COPY ./responses ./responses
 COPY ./routes ./routes
 COPY go.mod go.sum server.go ./
