@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var professorCollection *mongo.Collection = configs.GetCollection(configs.DB, "professors")
+var professorCollection *mongo.Collection = configs.GetCollection("professors")
 
 func ProfessorSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {

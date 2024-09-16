@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var degreeCollection *mongo.Collection = configs.GetCollection(configs.DB, "degrees")
+var degreeCollection *mongo.Collection = configs.GetCollection("degrees")
 
 func DegreeSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
