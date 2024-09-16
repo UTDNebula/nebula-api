@@ -3,6 +3,7 @@
 FROM docker.io/golang:1.19.5 AS builder
 WORKDIR /build
 
+COPY ./docs ./docs
 COPY ./configs ./configs
 COPY ./controllers ./controllers
 COPY ./schema ./schema
