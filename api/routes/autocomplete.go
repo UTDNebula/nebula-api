@@ -10,5 +10,5 @@ func AutocompleteRoute(router *gin.Engine) {
 	// All routes related to autocomplete come here
 	autocompleteGroup := router.Group("/autocomplete")
 
-	autocompleteGroup.GET("/dag", controllers.AutocompleteDAG())
+	autocompleteGroup.GET("/dag", controllers.AutocompleteDAG)
 }

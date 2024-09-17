@@ -11,7 +11,7 @@ func CourseRoute(router *gin.Engine) {
 	courseGroup := router.Group("/course")
 
 	courseGroup.OPTIONS("", controllers.Preflight)
-	courseGroup.GET("", controllers.CourseSearch())
-	courseGroup.GET(":id", controllers.CourseById())
-	courseGroup.GET("all", controllers.CourseAll())
+	courseGroup.GET("", controllers.CourseSearch)
+	courseGroup.GET(":id", controllers.CourseById)
+	courseGroup.GET("all", controllers.CourseAll)
 }
