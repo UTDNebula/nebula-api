@@ -19,6 +19,23 @@ import (
 
 var courseCollection *mongo.Collection = configs.GetCollection("courses")
 
+// @Id courseSearch
+// @Router /course [get]
+// @Description "Returns all courses matching the query's string-typed key-value pairs"
+// @Produce json
+// @Param course_number query string false "The course's official number"
+// @Param subject_prefix query string false "The course's subject prefix"
+// @Param title query string false "The course's title"
+// @Param description query string false "The course's description"
+// @Param school query string false "The course's school"
+// @Param credit_hours query string false "The number of credit hours awarded by successful completion of the course"
+// @Param class_level query string false "The level of education that this course course corresponds to"
+// @Param activity_type query string false "The type of class this course corresponds to"
+// @Param grading query string false "The grading status of this course"
+// @Param internal_course_number query string false "The internal (university) number used to reference this course"
+// @Param lecture_contact_hours query string false "The weekly contact hours in lecture for a course"
+// @Param offering_frequency query string false "The frequency of offering a course"
+// @Success 200 {array} schema.Course "A list of courses"
 func CourseSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//name := c.Query("name")            // value of specific query parameter: string
@@ -62,6 +79,12 @@ func CourseSearch() gin.HandlerFunc {
 	}
 }
 
+// @Id courseById
+// @Router /course/{id} [get]
+// @Description "Returns the course with given ID"
+// @Produce json
+// @Param id path string true "ID of the course to get"
+// @Success 200 {object} schema.Course "A course"
 func CourseById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

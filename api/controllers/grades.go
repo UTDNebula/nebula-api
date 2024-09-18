@@ -50,6 +50,34 @@ import (
 
 // 4 Functions
 
+// @Id gradeAggregationBySemester
+// @Router /grades/semester [get]
+// @Description "Returns grade distributions aggregated by semester"
+// @Produce json
+// @Param prefix query string false "The course's subject prefix"
+// @Param number query string false "The course's official number"
+// @Param first_name query string false "The professor's first name"
+// @Param last_name query string false "The professors's last name"
+// @Param section_number query string false "The number of the section"
+// @Success 200 {array} responses.GradeResponse "An array of grade distributions for each semester included"
+func GradeAggregationBySemester() gin.HandlerFunc {
+	return GradesAggregation("semester")
+}
+
+// @Id gradeAggregationOverall
+// @Router /grades/overall [get]
+// @Description "Returns the overall grade distribution"
+// @Produce json
+// @Param prefix query string false "The course's subject prefix"
+// @Param number query string false "The course's official number"
+// @Param first_name query string false "The professor's first name"
+// @Param last_name query string false "The professors's last name"
+// @Param section_number query string false "The number of the section"
+// @Success 200 {array} integer "A grade distribution array"
+func GradesAggregationOverall() gin.HandlerFunc {
+	return GradesAggregation("overall")
+}
+
 func GradesAggregation(flag string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var grades []map[string]interface{}
