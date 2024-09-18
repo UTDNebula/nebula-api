@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var sectionCollection *mongo.Collection = configs.GetCollection(configs.DB, "sections")
+var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 
 // @Id sectionSearch
 // @Router /section [get]

@@ -18,7 +18,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var examCollection *mongo.Collection = configs.GetCollection(configs.DB, "exams")
+var examCollection *mongo.Collection = configs.GetCollection("exams")
 
 type examFilter struct {
 	Type  string `schema:"type"`

@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var courseCollection *mongo.Collection = configs.GetCollection(configs.DB, "courses")
+var courseCollection *mongo.Collection = configs.GetCollection("courses")
 
 // @Id courseSearch
 // @Router /course [get]
