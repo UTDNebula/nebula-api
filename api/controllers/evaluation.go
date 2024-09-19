@@ -25,7 +25,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var evaluationCollection *mongo.Collection = configs.GetCollection(configs.DB, "evaluations")
+var evaluationCollection *mongo.Collection = configs.GetCollection("evaluations")
 
 func EvalBySectionID(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

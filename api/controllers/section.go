@@ -17,8 +17,36 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var sectionCollection *mongo.Collection = configs.GetCollection(configs.DB, "sections")
+var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 
+// @Id sectionSearch
+// @Router /section [get]
+// @Description "Returns all courses matching the query's string-typed key-value pairs"
+// @Produce json
+// @Param section_number query string false "The section's official number"
+// @Param course_reference query string false "An id that points to the course in MongoDB that this section is an instantiation of"
+// @Param academic_session.name query string false "The name of the academic session of the section"
+// @Param academic_session.start_date query string false "The date of classes starting for the section"
+// @Param academic_session.end_date query string false "The date of classes ending for the section"
+// @Param professors query string false "One of the professors teaching the section"
+// @Param teaching_assistants.first_name query string false "The first name of one of the teaching assistants of the section"
+// @Param teaching_assistants.last_name query string false "The last name of one of the teaching assistants of the section"
+// @Param teaching_assistants.role query string false "The role of one of the teaching assistants of the section"
+// @Param teaching_assistants.email query string false "The email of one of the teaching assistants of the section"
+// @Param internal_class_number query string false "The internal (university) number used to reference this section"
+// @Param instruction_mode query string false "The instruction modality for this section"
+// @Param meetings.start_date query string false "The start date of one of the section's meetings"
+// @Param meetings.end_date query string false "The end date of one of the section's meetings"
+// @Param meetings.meeting_days query string false "One of the days that one of the section's meetings"
+// @Param meetings.start_time query string false "The time one of the section's meetings starts"
+// @Param meetings.end_time query string false "The time one of the section's meetings ends"
+// @Param meetings.modality query string false "The modality of one of the section's meetings"
+// @Param meetings.location.building query string false "The building of one of the section's meetings"
+// @Param meetings.location.room query string false "The room of one of the section's meetings"
+// @Param meetings.location.map_uri query string false "A hyperlink to the UTD room locator of one of the section's meetings"
+// @Param core_flags query string false "One of core requirement codes this section fulfills"
+// @Param syllabus_uri query string false "A link to the syllabus on the web"
+// @Success 200 {array} schema.Section "A list of sections"
 func SectionSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//name := c.Query("name")            // value of specific query parameter: string
@@ -83,6 +111,12 @@ func SectionSearch() gin.HandlerFunc {
 	}
 }
 
+// @Id sectionById
+// @Router /section/{id} [get]
+// @Description "Returns the section with given ID"
+// @Produce json
+// @Param id path string true "ID of the section to get"
+// @Success 200 {object} schema.Section "A section"
 func SectionById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

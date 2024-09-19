@@ -18,7 +18,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var examCollection *mongo.Collection = configs.GetCollection(configs.DB, "exams")
+var examCollection *mongo.Collection = configs.GetCollection("exams")
 
 type examFilter struct {
 	Type  string `schema:"type"`
@@ -26,6 +26,14 @@ type examFilter struct {
 	Level string `schema:"level"`
 }
 
+// @Id examSearch
+// @Router /exam [get]
+// @Description "Returns all exams matching the query's string-typed key-value pairs"
+// @Produce json
+// @Param type query string false "The type of exam"
+// @Param name query string false "The name of the exam"
+// @Param level query string false "The level of the IB exam (should it be an IB exam)"
+// @Success 200 {array} responses.MultiExamResponse "A list of exams"
 func ExamSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//name := c.Query("name")            // value of specific query parameter: string
@@ -71,6 +79,12 @@ func ExamSearch() gin.HandlerFunc {
 	}
 }
 
+// @Id examById
+// @Router /exam/{id} [get]
+// @Description "Returns the exam with given ID"
+// @Produce json
+// @Param id path string true "ID of the exam to get"
+// @Success 200 {object} responses.SingleExamResponse "An exam"
 func ExamById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
