@@ -44,48 +44,46 @@ var professorCollection *mongo.Collection = configs.GetCollection("professors")
 // @Param office_hours.location.map_uri query string false "A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
 // @Param sections query string false "The _id of one of the sections the professor teaches"
 // @Success 200 {array} schema.Professor "A list of professors"
-func ProfessorSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		//name := c.Query("name")            // value of specific query parameter: string
-		//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
+func ProfessorSearch(c *gin.Context) {
+	//name := c.Query("name")            // value of specific query parameter: string
+	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		var professors []schema.Professor
+	var professors []schema.Professor
 
-		defer cancel()
+	defer cancel()
 
-		// build query key value pairs (only one value per key)
-		query, err := schema.FilterQuery[schema.Professor](c)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
-			return
-		}
-
-		optionLimit, err := configs.GetOptionLimit(&query, c)
-		if err != nil {
-			log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
-			c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
-			return
-		}
-
-		// get cursor for query results
-		cursor, err := professorCollection.Find(ctx, query, optionLimit)
-		if err != nil {
-			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
-			return
-		}
-
-		// retrieve and parse all valid documents
-		if err = cursor.All(ctx, &professors); err != nil {
-			log.WritePanic(err)
-			panic(err)
-		}
-
-		// return result
-		c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
+	// build query key value pairs (only one value per key)
+	query, err := schema.FilterQuery[schema.Professor](c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+		return
 	}
+
+	optionLimit, err := configs.GetOptionLimit(&query, c)
+	if err != nil {
+		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
+		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+		return
+	}
+
+	// get cursor for query results
+	cursor, err := professorCollection.Find(ctx, query, optionLimit)
+	if err != nil {
+		log.WriteError(err)
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		return
+	}
+
+	// retrieve and parse all valid documents
+	if err = cursor.All(ctx, &professors); err != nil {
+		log.WritePanic(err)
+		panic(err)
+	}
+
+	// return result
+	c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
 }
 
 // @Id professorById
@@ -94,59 +92,54 @@ func ProfessorSearch() gin.HandlerFunc {
 // @Produce json
 // @Param id path string true "ID of the professor to get"
 // @Success 200 {object} schema.Professor "A professor"
-func ProfessorById() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+func ProfessorById(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		professorId := c.Param("id")
+	professorId := c.Param("id")
 
-		var professor schema.Professor
+	var professor schema.Professor
 
-		defer cancel()
+	defer cancel()
 
-		// parse object id from id parameter
-		objId, err := primitive.ObjectIDFromHex(professorId)
-		if err != nil {
-			log.WriteError(err)
-			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
-			return
-		}
-
-		// find and parse matching professor
-		err = professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
-		if err != nil {
-			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
-			return
-		}
-
-		// return result
-		c.JSON(http.StatusOK, responses.SingleProfessorResponse{Status: http.StatusOK, Message: "success", Data: professor})
+	// parse object id from id parameter
+	objId, err := primitive.ObjectIDFromHex(professorId)
+	if err != nil {
+		log.WriteError(err)
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+		return
 	}
+
+	// find and parse matching professor
+	err = professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
+	if err != nil {
+		log.WriteError(err)
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		return
+	}
+
+	// return result
+	c.JSON(http.StatusOK, responses.SingleProfessorResponse{Status: http.StatusOK, Message: "success", Data: professor})
 }
 
-func ProfessorAll() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+func ProfessorAll(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		var professors []schema.Professor
+	var professors []schema.Professor
 
-		defer cancel()
+	defer cancel()
 
-		cursor, err := professorCollection.Find(ctx, bson.M{})
+	cursor, err := professorCollection.Find(ctx, bson.M{})
 
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
-			return
-		}
-
-		// retrieve and parse all valid documents
-		if err = cursor.All(ctx, &professors); err != nil {
-			panic(err)
-		}
-
-		// return result
-		c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
-
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		return
 	}
+
+	// retrieve and parse all valid documents
+	if err = cursor.All(ctx, &professors); err != nil {
+		panic(err)
+	}
+
+	// return result
+	c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
 }
