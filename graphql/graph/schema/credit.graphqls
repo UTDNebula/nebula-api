@@ -1,4 +1,0 @@
-type Credit {
-  category: String! # @TODO: update to enum 
-  credit_hours: Int!
-}
