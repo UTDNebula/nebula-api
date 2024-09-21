@@ -1,6 +1,0 @@
-type Assistant {
-    first_name: String!
-    last_name: String!
-    role: String!
-    email: String!
-}
