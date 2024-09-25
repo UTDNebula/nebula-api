@@ -30,16 +30,6 @@ func NewSectionRequirement(sectionRef primitive.ObjectID) *SectionRequirement {
 	return &SectionRequirement{Requirement{"section"}, sectionRef}
 }
 
-type ExamRequirement struct {
-	Requirement   `bson:",inline" json:",inline"`
-	ExamReference string  `bson:"exam_reference" json:"exam_reference"`
-	MinimumScore  float64 `bson:"minimum_score" json:"minimum_score"`
-}
-
-func NewExamRequirement(examRef string, minScore float64) *ExamRequirement {
-	return &ExamRequirement{Requirement{"exam"}, examRef, minScore}
-}
-
 type MajorRequirement struct {
 	Requirement `bson:",inline" json:",inline"`
 	Major       string `bson:"major" json:"major"`
@@ -130,10 +120,6 @@ func (cr *CollectionRequirement) UnmarshalBSON(data []byte) error {
 			var t SectionRequirement
 			bson.Unmarshal(bytes, &t)
 			out = append(out, t)
-		case "exam":
-			var t ExamRequirement
-			bson.Unmarshal(bytes, &t)
-			out = append(out, t)
 		case "major":
 			var t MajorRequirement
 			bson.Unmarshal(bytes, &t)
@@ -221,15 +207,4 @@ type CoreRequirement struct {
 
 func NewCoreRequirement(coreFlag string, hours int) *CoreRequirement {
 	return &CoreRequirement{Requirement{"core"}, coreFlag, hours}
-}
-
-type Degree struct {
-	Subtype            string                 `bson:"subtype" json:"subtype" schema:"subtype"`
-	School             string                 `bson:"school" json:"school" schema:"school"`
-	Name               string                 `bson:"name" json:"name" schema:"name"`
-	Year               string                 `bson:"year" json:"year" schema:"year"`
-	Abbreviation       string                 `bson:"abbreviation" json:"abbreviation" schema:"abbreviation"`
-	MinimumCreditHours int                    `bson:"minimum_credit_hours" json:"minimum_credit_hours" schema:"minimum_credit_hours"`
-	CatalogUri         string                 `bson:"catalog_uri" json:"catalog_uri" schema:"-"`
-	Requirements       *CollectionRequirement `bson:"requirements" json:"requirements" schema:"-"`
 }
