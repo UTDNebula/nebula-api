@@ -12,7 +12,7 @@ NEBULA-API
 │   ├───routes          - Define routes
 │   └schema
 │      ├───objects.go      - Object schemas
-│      └───requirements.go - Requirement schemas 
+│      └───requirements.go - Requirement schemas
 │───docs
 │   ├───schemas         - Database schemas documentation
 │   └───index.md        - Project structure and usage
@@ -64,6 +64,8 @@ MONGODB_URI=<insert_connection_string_here>
 You may also specify a different port (if 8080 is not desired) in the same .env file by setting PORT as well.
 
 Then, after running `make build`, run the `go-api` executable. Alternatively, you can run `server.go` directly with `go run server.go`. The server will begin serving the API on "/".
+
+View the swagger-ui at [http://localhost:8080/swagger/index.html] port may be different if alternatively set
 
 ## Docker
 

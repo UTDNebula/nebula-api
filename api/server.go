@@ -3,11 +3,25 @@ package main
 import (
 	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/UTDNebula/nebula-api/api/configs"
+	_ "github.com/UTDNebula/nebula-api/api/docs"
 	"github.com/UTDNebula/nebula-api/api/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 )
 
+// @title nebula-api
+// @description The public Nebula Labs API for access to pertinent UT Dallas data
+// @version 0.1.0
+// @host nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
+// @schemes http
+// @x-google-backend {"address": "REDACTED"}
+// @x-google-endpoints [{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
+// @x-google-management {"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
+// @securitydefinitions.apikey apiKey
+// @name x-api-key
+// @in header
 func main() {
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 
@@ -22,6 +36,9 @@ func main() {
 
 	// Enable Logging
 	router.Use(LogRequest)
+
+	// Setup swagger-ui hosted
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Connect Routes
 	routes.CourseRoute(router)
