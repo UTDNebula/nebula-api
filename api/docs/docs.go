@@ -135,72 +135,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/exam": {
-            "get": {
-                "description": "\"Returns all exams matching the query's string-typed key-value pairs\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "examSearch",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "The type of exam",
-                        "name": "type",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The name of the exam",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The level of the IB exam (should it be an IB exam)",
-                        "name": "level",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of exams",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/responses.MultiExamResponse"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/exam/{id}": {
-            "get": {
-                "description": "\"Returns the exam with given ID\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "examById",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of the exam to get",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "An exam",
-                        "schema": {
-                            "$ref": "#/definitions/responses.SingleExamResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/grades/overall": {
             "get": {
                 "description": "\"Returns the overall grade distribution\"",
@@ -662,30 +596,6 @@ const docTemplate = `{
     },
     "definitions": {
         "responses.GradeResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "responses.MultiExamResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "responses.SingleExamResponse": {
             "type": "object",
             "properties": {
                 "data": {},

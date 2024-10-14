@@ -7,22 +7,6 @@ definitions:
       status:
         type: integer
     type: object
-  responses.MultiExamResponse:
-    properties:
-      data: {}
-      message:
-        type: string
-      status:
-        type: integer
-    type: object
-  responses.SingleExamResponse:
-    properties:
-      data: {}
-      message:
-        type: string
-      status:
-        type: integer
-    type: object
   schema.AcademicSession:
     properties:
       end_date:
