@@ -272,50 +272,6 @@ paths:
           description: A course
           schema:
             $ref: '#/definitions/schema.Course'
-  /exam:
-    get:
-      description: '"Returns all exams matching the query''s string-typed key-value
-        pairs"'
-      operationId: examSearch
-      parameters:
-      - description: The type of exam
-        in: query
-        name: type
-        type: string
-      - description: The name of the exam
-        in: query
-        name: name
-        type: string
-      - description: The level of the IB exam (should it be an IB exam)
-        in: query
-        name: level
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: A list of exams
-          schema:
-            items:
-              $ref: '#/definitions/responses.MultiExamResponse'
-            type: array
-  /exam/{id}:
-    get:
-      description: '"Returns the exam with given ID"'
-      operationId: examById
-      parameters:
-      - description: ID of the exam to get
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: An exam
-          schema:
-            $ref: '#/definitions/responses.SingleExamResponse'
   /grades/overall:
     get:
       description: '"Returns the overall grade distribution"'
