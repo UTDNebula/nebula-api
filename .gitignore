@@ -1,16 +1,36 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# dependencies
+/node_modules
+*.pnp
+*.pnp.js
+
 # testing
 /coverage
 # production
 /build
 
 # local env files
-.env.local
-.env.production
-.env.development.local
-.env.test.local
-.env
+*.env.local
+*.env.production
+*.env.development.local
+*.env.test.local
+*.env
+
+# vercel
+.vercel
+
+# custom
+misc/
+deploy_log.sh
+.gcloudignore
+.idea/
+.vscode/
+.firebase/
+
+# Toolkit data and logs
+toolkit/data/
+toolkit/logs/
 
 # Binaries for programs and plugins
 *.exe
@@ -30,3 +50,6 @@
 
 # Go workspace file
 go.work
+
+# API go executable
+api/go-api

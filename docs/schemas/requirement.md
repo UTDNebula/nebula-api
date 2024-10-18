@@ -1,4 +1,5 @@
 # Requirement
+
 ## Overview
 
 A 'Requirement' represents a requirement that can be satisfied. This is probably the most important concept in the API and also has the most cognitive overhead. `Requirement` is abstract and has multiple classes that derive from it to represent the various types requirements at UTD. An overview of these will be given here:
@@ -60,6 +61,7 @@ A `CoreRequirement` represents the need to have taken a course fulfilling a spec
 An `OtherRequirement` represents some miscellaneous need to satisfy the requirement.
 
 ## Object Representation
+
 ```ts
 RequirementType = "course" | "section" | "exam" | "major" | "minor" | "gpa" | "consent" | "collection" | "hours" | "other"
 
@@ -69,7 +71,7 @@ abstract Requirement = {
 
 CourseRequirement extends Requirement = {
     "type": "course",
-    "class_reference": ObjectId,
+    "class_reference": string,
     "minimum_grade": string,
 }
 
@@ -142,6 +144,7 @@ CoreRequirement extends Requirement {
 ```
 
 ## Properties
+
 > `.type`
 >
 > **Type**: RequirementType
@@ -152,9 +155,9 @@ CoreRequirement extends Requirement {
 
 > `.class_reference`
 >
-> **Type**: ObjectId
+> **Type**: string
 >
-> A reference to the class required in MongoDB in the form of an id.
+> A reference to the class required in MongoDB in the form of an `internal_course_number`.
 
 > `.minimum_grade`
 >
@@ -228,7 +231,7 @@ CoreRequirement extends Requirement {
 >
 > **Type**: string
 >
-> A name for the collection to indicate what it holds. May be empty if not very applicable.
+> A name for the collection to indicate what it holds. May be empty if not applicable.
 >
 > **Example**: "Core Curriculum", "", "Major Requirements"
 
@@ -242,7 +245,7 @@ CoreRequirement extends Requirement {
 
 > `.options`
 >
-> **Type**: Array<Requirement>
+> **Type**: Array\<Requirement>
 >
 > A list of all the options that can contribute to satisfying the requirement.
 >
@@ -268,12 +271,12 @@ CoreRequirement extends Requirement {
 >
 > The core flag that a course meeting this requirement must fulfill.
 >
-> **Example**: "060"
+> **Example**: `060`
 
 > `.hours`
 >
 > **Type**: number
 >
-> The minimum number of credit hours that a course meeting this requirement must fulfill. 
+> The minimum number of credit hours that a course meeting this requirement must fulfill.
 >
 > **Example**: 3

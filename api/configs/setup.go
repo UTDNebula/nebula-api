@@ -2,11 +2,12 @@ package configs
 
 import (
 	"context"
-	"fmt"
-	"log"
+	"os"
 	"strconv"
+	"sync"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,36 +15,46 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDB() *mongo.Client {
-	client, err := mongo.NewClient(options.Client().ApplyURI(EnvMongoURI()))
-	if err != nil {
-		log.Fatalf("Unable to create MongoDB client: %v", err)
-	}
-
-	ctx, cancelFnc := context.WithTimeout(context.Background(), 10*time.Second)
-
-	// TODO: Actually use cancelFnc in the rewrite
-	_ = cancelFnc
-
-	err = client.Connect(ctx)
-	if err != nil {
-		log.Fatalf("Unable to connect to database: %v", err)
-	}
-
-	//ping the database
-	err = client.Ping(ctx, nil)
-	if err != nil {
-		log.Fatalf("Unable to ping database: %v", err)
-	}
-	fmt.Println("Connected to MongoDB")
-	return client
+type DBSingleton struct {
+	client *mongo.Client
 }
 
-// Client instance
-var DB *mongo.Client = ConnectDB()
+var dbInstance *DBSingleton
+var once sync.Once
+
+func ConnectDB() *mongo.Client {
+	once.Do(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
+		if err != nil {
+			log.WriteErrorMsg("Unable to create MongoDB client")
+			os.Exit(1)
+		}
+
+		defer cancel()
+
+		//ping the database
+		err = client.Ping(ctx, nil)
+		if err != nil {
+			log.WriteErrorMsg("Unable to ping database")
+			os.Exit(1)
+		}
+
+		log.WriteDebug("Connected to MongoDB")
+
+		dbInstance = &DBSingleton{
+			client: client,
+		}
+
+	})
+
+	return dbInstance.client
+}
 
 // getting database collections
-func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
+func GetCollection(collectionName string) *mongo.Collection {
+	client := ConnectDB()
 	collection := client.Database("combinedDB").Collection(collectionName)
 	return collection
 }
@@ -56,14 +67,16 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 	var offset int64
 	var err error
 
+	var limit int64 = GetEnvLimit()
+
 	if c.Query("offset") == "" {
 		offset = 0 // default value for offset
 	} else {
 		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
 		if err != nil {
-			return options.Find().SetSkip(0).SetLimit(Limit), err // default value for offset
+			return options.Find().SetSkip(0).SetLimit(limit), err // default value for offset
 		}
 	}
 
-	return options.Find().SetSkip(offset).SetLimit(Limit), err
+	return options.Find().SetSkip(offset).SetLimit(limit), err
 }

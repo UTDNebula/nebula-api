@@ -1,0 +1,608 @@
+definitions:
+  responses.GradeResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.AcademicSession:
+    properties:
+      end_date:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+    type: object
+  schema.Assistant:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      role:
+        type: string
+    type: object
+  schema.CollectionRequirement:
+    properties:
+      name:
+        type: string
+      options:
+        items: {}
+        type: array
+      required:
+        type: integer
+      type:
+        type: string
+    type: object
+  schema.Course:
+    properties:
+      _id:
+        type: string
+      activity_type:
+        type: string
+      attributes: {}
+      catalog_year:
+        type: string
+      class_level:
+        type: string
+      co_or_pre_requisites:
+        $ref: '#/definitions/schema.CollectionRequirement'
+      corequisites:
+        $ref: '#/definitions/schema.CollectionRequirement'
+      course_number:
+        type: string
+      credit_hours:
+        type: string
+      description:
+        type: string
+      enrollment_reqs:
+        type: string
+      grading:
+        type: string
+      internal_course_number:
+        type: string
+      laboratory_contact_hours:
+        type: string
+      lecture_contact_hours:
+        type: string
+      offering_frequency:
+        type: string
+      prerequisites:
+        $ref: '#/definitions/schema.CollectionRequirement'
+      school:
+        type: string
+      sections:
+        items:
+          type: string
+        type: array
+      subject_prefix:
+        type: string
+      title:
+        type: string
+    type: object
+  schema.Location:
+    properties:
+      building:
+        type: string
+      map_uri:
+        type: string
+      room:
+        type: string
+    type: object
+  schema.Meeting:
+    properties:
+      end_date:
+        type: string
+      end_time:
+        type: string
+      location:
+        $ref: '#/definitions/schema.Location'
+      meeting_days:
+        items:
+          type: string
+        type: array
+      modality:
+        type: string
+      start_date:
+        type: string
+      start_time:
+        type: string
+    type: object
+  schema.Professor:
+    properties:
+      _id:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      image_uri:
+        type: string
+      last_name:
+        type: string
+      office:
+        $ref: '#/definitions/schema.Location'
+      office_hours:
+        items:
+          $ref: '#/definitions/schema.Meeting'
+        type: array
+      phone_number:
+        type: string
+      profile_uri:
+        type: string
+      sections:
+        items:
+          type: string
+        type: array
+      titles:
+        items:
+          type: string
+        type: array
+    type: object
+  schema.Section:
+    properties:
+      _id:
+        type: string
+      academic_session:
+        $ref: '#/definitions/schema.AcademicSession'
+      attributes: {}
+      core_flags:
+        items:
+          type: string
+        type: array
+      course_reference:
+        type: string
+      grade_distribution:
+        items:
+          type: integer
+        type: array
+      instruction_mode:
+        type: string
+      internal_class_number:
+        type: string
+      meetings:
+        items:
+          $ref: '#/definitions/schema.Meeting'
+        type: array
+      professors:
+        items:
+          type: string
+        type: array
+      section_corequisites:
+        $ref: '#/definitions/schema.CollectionRequirement'
+      section_number:
+        type: string
+      syllabus_uri:
+        type: string
+      teaching_assistants:
+        items:
+          $ref: '#/definitions/schema.Assistant'
+        type: array
+    type: object
+host: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
+info:
+  contact: {}
+  description: The public Nebula Labs API for access to pertinent UT Dallas data
+  title: nebula-api
+  version: 0.1.0
+paths:
+  /course:
+    get:
+      description: '"Returns all courses matching the query''s string-typed key-value
+        pairs"'
+      operationId: courseSearch
+      parameters:
+      - description: The course's official number
+        in: query
+        name: course_number
+        type: string
+      - description: The course's subject prefix
+        in: query
+        name: subject_prefix
+        type: string
+      - description: The course's title
+        in: query
+        name: title
+        type: string
+      - description: The course's description
+        in: query
+        name: description
+        type: string
+      - description: The course's school
+        in: query
+        name: school
+        type: string
+      - description: The number of credit hours awarded by successful completion of
+          the course
+        in: query
+        name: credit_hours
+        type: string
+      - description: The level of education that this course course corresponds to
+        in: query
+        name: class_level
+        type: string
+      - description: The type of class this course corresponds to
+        in: query
+        name: activity_type
+        type: string
+      - description: The grading status of this course
+        in: query
+        name: grading
+        type: string
+      - description: The internal (university) number used to reference this course
+        in: query
+        name: internal_course_number
+        type: string
+      - description: The weekly contact hours in lecture for a course
+        in: query
+        name: lecture_contact_hours
+        type: string
+      - description: The frequency of offering a course
+        in: query
+        name: offering_frequency
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of courses
+          schema:
+            items:
+              $ref: '#/definitions/schema.Course'
+            type: array
+  /course/{id}:
+    get:
+      description: '"Returns the course with given ID"'
+      operationId: courseById
+      parameters:
+      - description: ID of the course to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A course
+          schema:
+            $ref: '#/definitions/schema.Course'
+  /grades/overall:
+    get:
+      description: '"Returns the overall grade distribution"'
+      operationId: gradeAggregationOverall
+      parameters:
+      - description: The course's subject prefix
+        in: query
+        name: prefix
+        type: string
+      - description: The course's official number
+        in: query
+        name: number
+        type: string
+      - description: The professor's first name
+        in: query
+        name: first_name
+        type: string
+      - description: The professors's last name
+        in: query
+        name: last_name
+        type: string
+      - description: The number of the section
+        in: query
+        name: section_number
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A grade distribution array
+          schema:
+            items:
+              type: integer
+            type: array
+  /grades/semester:
+    get:
+      description: '"Returns grade distributions aggregated by semester"'
+      operationId: gradeAggregationBySemester
+      parameters:
+      - description: The course's subject prefix
+        in: query
+        name: prefix
+        type: string
+      - description: The course's official number
+        in: query
+        name: number
+        type: string
+      - description: The professor's first name
+        in: query
+        name: first_name
+        type: string
+      - description: The professors's last name
+        in: query
+        name: last_name
+        type: string
+      - description: The number of the section
+        in: query
+        name: section_number
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: An array of grade distributions for each semester included
+          schema:
+            items:
+              $ref: '#/definitions/responses.GradeResponse'
+            type: array
+  /professor:
+    get:
+      description: '"Returns all professors matching the query''s string-typed key-value
+        pairs"'
+      operationId: professorSearch
+      parameters:
+      - description: The professor's first name
+        in: query
+        name: first_name
+        type: string
+      - description: The professor's last name
+        in: query
+        name: last_name
+        type: string
+      - description: One of the professor's title
+        in: query
+        name: titles
+        type: string
+      - description: The professor's email address
+        in: query
+        name: email
+        type: string
+      - description: The professor's phone number
+        in: query
+        name: phone_number
+        type: string
+      - description: The building of the location of the professor's office
+        in: query
+        name: office.building
+        type: string
+      - description: The room of the location of the professor's office
+        in: query
+        name: office.room
+        type: string
+      - description: A hyperlink to the UTD room locator of the professor's office
+        in: query
+        name: office.map_uri
+        type: string
+      - description: A hyperlink pointing to the professor's official university profile
+        in: query
+        name: profile_uri
+        type: string
+      - description: A link to the image used for the professor on the professor's
+          official university profile
+        in: query
+        name: image_uri
+        type: string
+      - description: The start date of one of the office hours meetings of the professor
+        in: query
+        name: office_hours.start_date
+        type: string
+      - description: The end date of one of the office hours meetings of the professor
+        in: query
+        name: office_hours.end_date
+        type: string
+      - description: One of the days that one of the office hours meetings of the
+          professor
+        in: query
+        name: office_hours.meeting_days
+        type: string
+      - description: The time one of the office hours meetings of the professor starts
+        in: query
+        name: office_hours.start_time
+        type: string
+      - description: The time one of the office hours meetings of the professor ends
+        in: query
+        name: office_hours.end_time
+        type: string
+      - description: The modality of one of the office hours meetings of the professor
+        in: query
+        name: office_hours.modality
+        type: string
+      - description: The building of one of the office hours meetings of the professor
+        in: query
+        name: office_hours.location.building
+        type: string
+      - description: The room of one of the office hours meetings of the professor
+        in: query
+        name: office_hours.location.room
+        type: string
+      - description: A hyperlink to the UTD room locator of one of the office hours
+          meetings of the professor
+        in: query
+        name: office_hours.location.map_uri
+        type: string
+      - description: The _id of one of the sections the professor teaches
+        in: query
+        name: sections
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of professors
+          schema:
+            items:
+              $ref: '#/definitions/schema.Professor'
+            type: array
+  /professor/{id}:
+    get:
+      description: '"Returns the professor with given ID"'
+      operationId: professorById
+      parameters:
+      - description: ID of the professor to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A professor
+          schema:
+            $ref: '#/definitions/schema.Professor'
+  /section:
+    get:
+      description: '"Returns all courses matching the query''s string-typed key-value
+        pairs"'
+      operationId: sectionSearch
+      parameters:
+      - description: The section's official number
+        in: query
+        name: section_number
+        type: string
+      - description: An id that points to the course in MongoDB that this section
+          is an instantiation of
+        in: query
+        name: course_reference
+        type: string
+      - description: The name of the academic session of the section
+        in: query
+        name: academic_session.name
+        type: string
+      - description: The date of classes starting for the section
+        in: query
+        name: academic_session.start_date
+        type: string
+      - description: The date of classes ending for the section
+        in: query
+        name: academic_session.end_date
+        type: string
+      - description: One of the professors teaching the section
+        in: query
+        name: professors
+        type: string
+      - description: The first name of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.first_name
+        type: string
+      - description: The last name of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.last_name
+        type: string
+      - description: The role of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.role
+        type: string
+      - description: The email of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.email
+        type: string
+      - description: The internal (university) number used to reference this section
+        in: query
+        name: internal_class_number
+        type: string
+      - description: The instruction modality for this section
+        in: query
+        name: instruction_mode
+        type: string
+      - description: The start date of one of the section's meetings
+        in: query
+        name: meetings.start_date
+        type: string
+      - description: The end date of one of the section's meetings
+        in: query
+        name: meetings.end_date
+        type: string
+      - description: One of the days that one of the section's meetings
+        in: query
+        name: meetings.meeting_days
+        type: string
+      - description: The time one of the section's meetings starts
+        in: query
+        name: meetings.start_time
+        type: string
+      - description: The time one of the section's meetings ends
+        in: query
+        name: meetings.end_time
+        type: string
+      - description: The modality of one of the section's meetings
+        in: query
+        name: meetings.modality
+        type: string
+      - description: The building of one of the section's meetings
+        in: query
+        name: meetings.location.building
+        type: string
+      - description: The room of one of the section's meetings
+        in: query
+        name: meetings.location.room
+        type: string
+      - description: A hyperlink to the UTD room locator of one of the section's meetings
+        in: query
+        name: meetings.location.map_uri
+        type: string
+      - description: One of core requirement codes this section fulfills
+        in: query
+        name: core_flags
+        type: string
+      - description: A link to the syllabus on the web
+        in: query
+        name: syllabus_uri
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of sections
+          schema:
+            items:
+              $ref: '#/definitions/schema.Section'
+            type: array
+  /section/{id}:
+    get:
+      description: '"Returns the section with given ID"'
+      operationId: sectionById
+      parameters:
+      - description: ID of the section to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A section
+          schema:
+            $ref: '#/definitions/schema.Section'
+schemes:
+- http
+securityDefinitions:
+  apiKey:
+    in: header
+    name: x-api-key
+    type: apiKey
+swagger: "2.0"
+x-google-backend:
+  address: REDACTED
+x-google-endpoints:
+- allowCors: true
+  name: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
+x-google-management:
+  metrics:
+  - displayName: Read Requests CUSTOM
+    metricKind: DELTA
+    name: read-requests
+    valueType: INT64
+  quota:
+    limits:
+    - metric: read-requests
+      name: read-limit
+      unit: 1/min/{project}
+      values:
+        STANDARD: 1000

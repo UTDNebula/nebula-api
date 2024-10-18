@@ -11,6 +11,7 @@ func ProfessorRoute(router *gin.Engine) {
 	professorGroup := router.Group("/professor")
 
 	professorGroup.OPTIONS("", controllers.Preflight)
-	professorGroup.GET("", controllers.ProfessorSearch())
-	professorGroup.GET(":id", controllers.ProfessorById())
+	professorGroup.GET("", controllers.ProfessorSearch)
+	professorGroup.GET(":id", controllers.ProfessorById)
+	professorGroup.GET("all", controllers.ProfessorAll)
 }
