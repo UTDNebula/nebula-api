@@ -296,7 +296,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 				{Key: "course_number", Value: number},
 			}
 			// parse the queried document into the sample course
-			err = courseCollection.FindOne(ctx, sampleCourseQuery).Decode(sampleCourse)
+			err = courseCollection.FindOne(ctx, sampleCourseQuery).Decode(&sampleCourse)
 			if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
 				panic(err)
 			}
