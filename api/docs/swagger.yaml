@@ -582,8 +582,10 @@ paths:
             $ref: '#/definitions/schema.Section'
 schemes:
 - http
+security:
+- api_key: []
 securityDefinitions:
-  apiKey:
+  api_key:
     in: header
     name: x-api-key
     type: apiKey

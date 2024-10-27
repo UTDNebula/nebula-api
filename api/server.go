@@ -19,7 +19,8 @@ import (
 // @x-google-backend {"address": "REDACTED"}
 // @x-google-endpoints [{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
 // @x-google-management {"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
-// @securitydefinitions.apikey apiKey
+// @security api_key
+// @securitydefinitions.apikey api_key
 // @name x-api-key
 // @in header
 func main() {
