@@ -877,12 +877,17 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "apiKey": {
+        "api_key": {
             "type": "apiKey",
             "name": "x-api-key",
             "in": "header"
         }
     },
+    "security": [
+        {
+            "api_key": []
+        }
+    ],
     "x-google-backend": {
         "address": "REDACTED"
     },
