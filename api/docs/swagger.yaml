@@ -184,7 +184,6 @@ definitions:
           $ref: '#/definitions/schema.Assistant'
         type: array
     type: object
-host: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
 info:
   contact: {}
   description: The public Nebula Labs API for access to pertinent UT Dallas data
@@ -589,6 +588,7 @@ paths:
       responses:
         "200":
           description: OK
+      security: []
 schemes:
 - http
 - https

@@ -11,17 +11,18 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// Unauthenticated placeholder endpoint for the built-in ginSwagger swagger documentation endpoint
 // @Id swagger
 // @Router /swagger/index.html [get]
 // @Description Returns the OpenAPI/swagger spec for the API
 // @Produce text/html
+// @Security
 // @Success 200
 func swagger_controller_placeholder() {}
 
 // @title nebula-api
 // @description The public Nebula Labs API for access to pertinent UT Dallas data
 // @version 0.1.0
-// @host nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
 // @schemes http https
 // @x-google-backend {"address": "REDACTED"}
 // @x-google-endpoints [{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]

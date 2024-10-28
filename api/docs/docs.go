@@ -595,6 +595,7 @@ const docTemplate = `{
         },
         "/swagger/index.html": {
             "get": {
+                "security": [],
                 "description": "Returns the OpenAPI/swagger spec for the API",
                 "produces": [
                     "text/html"
@@ -938,7 +939,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1.0",
-	Host:             "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog",
+	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{"http", "https"},
 	Title:            "nebula-api",
