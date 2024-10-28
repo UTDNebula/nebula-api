@@ -11,11 +11,18 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @Id swagger
+// @Router /swagger/index.html [get]
+// @Description Returns the OpenAPI/swagger spec for the API
+// @Produce text/html
+// @Success 200
+func swagger_controller_placeholder() {}
+
 // @title nebula-api
 // @description The public Nebula Labs API for access to pertinent UT Dallas data
 // @version 0.1.0
 // @host nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
-// @schemes http
+// @schemes http https
 // @x-google-backend {"address": "REDACTED"}
 // @x-google-endpoints [{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
 // @x-google-management {"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
@@ -24,6 +31,10 @@ import (
 // @name x-api-key
 // @in header
 func main() {
+
+	// To avoid unused error on swagger_controller_placeholder
+	swagger_controller_placeholder()
+
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 
 	// Establish the connection to the database

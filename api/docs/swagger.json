@@ -1,6 +1,7 @@
 {
     "schemes": [
-        "http"
+        "http",
+        "https"
     ],
     "swagger": "2.0",
     "info": {
@@ -585,6 +586,20 @@
                         "schema": {
                             "$ref": "#/definitions/schema.Section"
                         }
+                    }
+                }
+            }
+        },
+        "/swagger/index.html": {
+            "get": {
+                "description": "Returns the OpenAPI/swagger spec for the API",
+                "produces": [
+                    "text/html"
+                ],
+                "operationId": "swagger",
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }

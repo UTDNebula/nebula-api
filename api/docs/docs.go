@@ -592,6 +592,20 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/swagger/index.html": {
+            "get": {
+                "description": "Returns the OpenAPI/swagger spec for the API",
+                "produces": [
+                    "text/html"
+                ],
+                "operationId": "swagger",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -926,7 +940,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "0.1.0",
 	Host:             "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog",
 	BasePath:         "",
-	Schemes:          []string{"http"},
+	Schemes:          []string{"http", "https"},
 	Title:            "nebula-api",
 	Description:      "The public Nebula Labs API for access to pertinent UT Dallas data",
 	InfoInstanceName: "swagger",

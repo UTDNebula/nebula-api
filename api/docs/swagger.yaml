@@ -580,8 +580,18 @@ paths:
           description: A section
           schema:
             $ref: '#/definitions/schema.Section'
+  /swagger/index.html:
+    get:
+      description: Returns the OpenAPI/swagger spec for the API
+      operationId: swagger
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
 schemes:
 - http
+- https
 security:
 - api_key: []
 securityDefinitions:
