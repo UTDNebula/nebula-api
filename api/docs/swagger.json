@@ -10,7 +10,6 @@
         "contact": {},
         "version": "0.1.0"
     },
-    "host": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog",
     "paths": {
         "/course": {
             "get": {
@@ -592,6 +591,7 @@
         },
         "/swagger/index.html": {
             "get": {
+                "security": [],
                 "description": "Returns the OpenAPI/swagger spec for the API",
                 "produces": [
                     "text/html"
