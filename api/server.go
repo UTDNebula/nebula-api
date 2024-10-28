@@ -20,8 +20,8 @@ import (
 // @Success 200
 func swagger_controller_placeholder() {}
 
-// @title nebula-api
-// @description The public Nebula Labs API for access to pertinent UT Dallas data
+// @title dev-nebula-api
+// @description The developer version of the Nebula Labs API for testing purposes
 // @version 0.1.0
 // @schemes http https
 // @x-google-backend {"address": "REDACTED"}

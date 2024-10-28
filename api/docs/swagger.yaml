@@ -186,8 +186,8 @@ definitions:
     type: object
 info:
   contact: {}
-  description: The public Nebula Labs API for access to pertinent UT Dallas data
-  title: nebula-api
+  description: The developer version of the Nebula Labs API for testing purposes
+  title: dev-nebula-api
   version: 0.1.0
 paths:
   /course:
