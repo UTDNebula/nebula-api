@@ -909,7 +909,7 @@ const docTemplate = `{
     "x-google-endpoints": [
         {
             "allowCors": true,
-            "name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog"
+            "name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog"
         }
     ],
     "x-google-management": {
