@@ -7,8 +7,8 @@ import (
 	"github.com/UTDNebula/nebula-api/api/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
-	"github.com/swaggo/files"
-	"github.com/swaggo/gin-swagger"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // @title nebula-api
