@@ -592,6 +592,21 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/swagger/index.html": {
+            "get": {
+                "security": [],
+                "description": "Returns the OpenAPI/swagger spec for the API",
+                "produces": [
+                    "text/html"
+                ],
+                "operationId": "swagger",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -877,19 +892,24 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "apiKey": {
+        "api_key": {
             "type": "apiKey",
             "name": "x-api-key",
             "in": "header"
         }
     },
+    "security": [
+        {
+            "api_key": []
+        }
+    ],
     "x-google-backend": {
         "address": "REDACTED"
     },
     "x-google-endpoints": [
         {
             "allowCors": true,
-            "name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog"
+            "name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog"
         }
     ],
     "x-google-management": {
@@ -919,11 +939,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1.0",
-	Host:             "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog",
+	Host:             "",
 	BasePath:         "",
-	Schemes:          []string{"http"},
-	Title:            "nebula-api",
-	Description:      "The public Nebula Labs API for access to pertinent UT Dallas data",
+	Schemes:          []string{"http", "https"},
+	Title:            "dev-nebula-api",
+	Description:      "The developer version of the Nebula Labs API for testing purposes",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

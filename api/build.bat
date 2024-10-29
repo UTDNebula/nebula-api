@@ -7,9 +7,14 @@ set EXEC_NAME=go-api.exe
 echo Performing setup...
 go install honnef.co/go/tools/cmd/staticcheck@latest && ^
 go install golang.org/x/tools/cmd/goimports@latest
+go install github.com/swaggo/swag/cmd/swag@latest
 if ERRORLEVEL 1 exit /b %ERRORLEVEL% :: fail if error occurred
 echo Setup done!
 echo[
+
+::docs
+echo Generating docs...
+swag init -g server.go
 
 ::checks
 echo Performing checks...

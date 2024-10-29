@@ -1,15 +1,15 @@
 {
     "schemes": [
-        "http"
+        "http",
+        "https"
     ],
     "swagger": "2.0",
     "info": {
-        "description": "The public Nebula Labs API for access to pertinent UT Dallas data",
-        "title": "nebula-api",
+        "description": "The developer version of the Nebula Labs API for testing purposes",
+        "title": "dev-nebula-api",
         "contact": {},
         "version": "0.1.0"
     },
-    "host": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog",
     "paths": {
         "/course": {
             "get": {
@@ -588,6 +588,21 @@
                     }
                 }
             }
+        },
+        "/swagger/index.html": {
+            "get": {
+                "security": [],
+                "description": "Returns the OpenAPI/swagger spec for the API",
+                "produces": [
+                    "text/html"
+                ],
+                "operationId": "swagger",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -873,19 +888,24 @@
         }
     },
     "securityDefinitions": {
-        "apiKey": {
+        "api_key": {
             "type": "apiKey",
             "name": "x-api-key",
             "in": "header"
         }
     },
+    "security": [
+        {
+            "api_key": []
+        }
+    ],
     "x-google-backend": {
         "address": "REDACTED"
     },
     "x-google-endpoints": [
         {
             "allowCors": true,
-            "name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog"
+            "name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog"
         }
     ],
     "x-google-management": {
