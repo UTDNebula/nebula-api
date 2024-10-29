@@ -184,11 +184,10 @@ definitions:
           $ref: '#/definitions/schema.Assistant'
         type: array
     type: object
-host: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
 info:
   contact: {}
-  description: The public Nebula Labs API for access to pertinent UT Dallas data
-  title: nebula-api
+  description: The developer version of the Nebula Labs API for testing purposes
+  title: dev-nebula-api
   version: 0.1.0
 paths:
   /course:
@@ -580,10 +579,23 @@ paths:
           description: A section
           schema:
             $ref: '#/definitions/schema.Section'
+  /swagger/index.html:
+    get:
+      description: Returns the OpenAPI/swagger spec for the API
+      operationId: swagger
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+      security: []
 schemes:
 - http
+- https
+security:
+- api_key: []
 securityDefinitions:
-  apiKey:
+  api_key:
     in: header
     name: x-api-key
     type: apiKey
@@ -592,7 +604,7 @@ x-google-backend:
   address: REDACTED
 x-google-endpoints:
 - allowCors: true
-  name: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
+  name: dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog
 x-google-management:
   metrics:
   - displayName: Read Requests CUSTOM
