@@ -37,8 +37,8 @@ var courseCollection *mongo.Collection = configs.GetCollection("courses")
 // @Param offering_frequency query string false "The frequency of offering a course"
 // @Success 200 {array} schema.Course "A list of courses"
 func CourseSearch(c *gin.Context) {
-	//name := c.Query("name")            // value of specific query parameter: string
-	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
+	//name := c.Query("name")            	// value of specific query parameter: string
+	//queryParams := c.Request.URL.Query() 	// map of all query params: map[string][]string
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
