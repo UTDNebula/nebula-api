@@ -145,7 +145,7 @@ func ProfessorAll(c *gin.Context) {
 }
 
 // @Id professorCourseSearch
-// @Router /professor [get]
+// @Router /professor/course [get]
 // @Description "Returns all of the courses of all the professors matching the query's string-typed key-value pairs"
 // @Produce json
 // @Param first_name query string false "The professor's first name"
@@ -177,7 +177,7 @@ func ProfessorCourseSearch() gin.HandlerFunc {
 }
 
 // @Id professorCourseById
-// @Router /professor/{id} [get]
+// @Router /professor/{id}/course [get]
 // @Description "Returns all the courses taught by the professor with given ID"
 // @Produce json
 // @Param id path string true "ID of the professor to get"
@@ -199,15 +199,15 @@ func professorCourse(flag string, c *gin.Context) {
 
 	defer cancel()
 
-	if flag == "Search" {
-		// if the flag is Search, filter professors based on query parameters
+	// determine the professor's query
+	if flag == "Search" { // if the flag is Search, filter professors based on query parameters
+		// build the key-value pairs of query parameters
 		professorQuery, err = schema.FilterQuery[schema.Professor](c)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
 			return
 		}
-	} else if flag == "ById" {
-		// if the flag is ById, filter that single professor based on their _id
+	} else if flag == "ById" { // if the flag is ById, filter that single professor based on their _id
 		// parse the ObjectId
 		professorId := c.Param("id")
 		professorObjId, err := primitive.ObjectIDFromHex(professorId)
