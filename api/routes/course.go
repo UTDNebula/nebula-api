@@ -14,4 +14,8 @@ func CourseRoute(router *gin.Engine) {
 	courseGroup.GET("", controllers.CourseSearch)
 	courseGroup.GET(":id", controllers.CourseById)
 	courseGroup.GET("all", controllers.CourseAll)
+
+	// Endpoint to get the list of sections of the queried course, courses
+	courseGroup.GET("/section", controllers.CourseSectionSearch())
+	courseGroup.GET("/:id/section", controllers.CourseSectionById())
 }
