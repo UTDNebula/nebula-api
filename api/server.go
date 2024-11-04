@@ -22,7 +22,7 @@ func swagger_controller_placeholder() {}
 
 // @title nebula-api
 // @description The public Nebula Labs API for access to pertinent UT Dallas data
-// @version 0.1.0
+// @version 1.0.0
 // @schemes http https
 // @x-google-backend {"address": "REDACTED"}
 // @x-google-endpoints [{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]

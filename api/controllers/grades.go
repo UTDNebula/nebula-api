@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/responses"
+	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
 
@@ -97,6 +99,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 	var professorMatch bson.D
 	var professorFind bson.D
 
+	var sampleCourse schema.Course // the sample course with the given prefix and course number parameter
+	var sampleCourseQuery bson.D   // the filter using prefix and course number to get sample course
+
 	var err error
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -179,13 +184,50 @@ func gradesAggregation(flag string, c *gin.Context) {
 	case prefix != "" && number != "" && section_number == "" && !professor:
 		// Filter on Course
 		collection = courseCollection
-		courseMatch := bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix, "course_number": number}}}
+
+		// Find the internal_course_number associated with the subject_prefix and course_number
+		sampleCourseQuery = bson.D{
+			{Key: "subject_prefix", Value: prefix},
+			{Key: "course_number", Value: number},
+		}
+		// parse the queried document into the sample course
+		err = collection.FindOne(ctx, sampleCourseQuery).Decode(&sampleCourse)
+		// If the error is not that there is no matching documents, panic the error
+		if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+			panic(err)
+		}
+		internalCourseNumber := sampleCourse.Internal_course_number
+
+		// Old code that filter on combination of prefix and course number (in case we need it in the future)
+		// courseMatch := bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix, "course_number": number}}}
+
+		// Query using internal_course_number of the documents
+		courseMatch := bson.D{{Key: "$match", Value: bson.M{"internal_course_number": internalCourseNumber}}}
 		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 	case prefix != "" && number != "" && section_number != "" && !professor:
 		// Filter on Course then Section
 		collection = courseCollection
-		courseMatch := bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix, "course_number": number}}}
+
+		// Find the internal_course_number associated with the subject_prefix and course_number
+		sampleCourseQuery = bson.D{
+			{Key: "subject_prefix", Value: prefix},
+			{Key: "course_number", Value: number},
+		}
+		// parse the queried document into the sample course
+		err = collection.FindOne(ctx, sampleCourseQuery).Decode(&sampleCourse)
+		// If the error is not that there is no matching documents, panic the error
+		if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+			panic(err)
+		}
+		internalCourseNumber := sampleCourse.Internal_course_number
+
+		// Old code that filter on combination of prefix and course number (in case we need it in the future)
+		// courseMatch := bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix, "course_number": number}}}
+
+		// Here we query all the courses with the given internal_couse_number,
+		// and then filter on the section_number of those courses
+		courseMatch := bson.D{{Key: "$match", Value: bson.M{"internal_course_number": internalCourseNumber}}}
 		sectionMatch := bson.D{{Key: "$match", Value: bson.M{"sections.section_number": section_number}}}
 		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, sectionMatch, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
@@ -242,9 +284,24 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 		// Get valid course ids
 		if number == "" {
+			// If only the prefix is provided, filter on the prefix
 			courseFind = bson.D{{Key: "subject_prefix", Value: prefix}}
 		} else {
-			courseFind = bson.D{{Key: "subject_prefix", Value: prefix}, {Key: "course_number", Value: number}}
+			// Old code that filter on combination of prefix and course number (in case we need it in the future)
+			// courseFind = bson.D{{Key: "subject_prefix", Value: prefix}, {Key: "course_number", Value: number}}
+
+			// If both prefix and course_number are provided, find the associated internal_course_number to filter on
+			sampleCourseQuery = bson.D{
+				{Key: "subject_prefix", Value: prefix},
+				{Key: "course_number", Value: number},
+			}
+			// parse the queried document into the sample course
+			err = courseCollection.FindOne(ctx, sampleCourseQuery).Decode(&sampleCourse)
+			if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+				panic(err)
+			}
+			internalCourseNumber := sampleCourse.Internal_course_number
+			courseFind = bson.D{{Key: "internal_course_number", Value: internalCourseNumber}}
 		}
 
 		cursor, err = courseCollection.Find(ctx, courseFind)
