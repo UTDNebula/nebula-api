@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 
-FROM docker.io/golang:1.19.5 AS builder
+FROM docker.io/golang:1.23 AS builder
 WORKDIR /build
 
 COPY ./docs ./docs
+COPY ./common ./common
 COPY ./configs ./configs
 COPY ./controllers ./controllers
 COPY ./schema ./schema
