@@ -4,7 +4,6 @@ go 1.23
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/gorilla/schema v1.4.1
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/zerolog v1.31.0
 	github.com/swaggo/files v1.0.1
