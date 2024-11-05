@@ -5,6 +5,7 @@ WORKDIR /build
 
 COPY ./docs ./docs
 COPY ./configs ./configs
+COPY ./common ./common
 COPY ./controllers ./controllers
 COPY ./schema ./schema
 COPY ./responses ./responses
