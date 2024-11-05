@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM docker.io/golang:1.19.5 AS builder
+FROM docker.io/golang:1.23 AS builder
 WORKDIR /build
 
 COPY ./common ./common
