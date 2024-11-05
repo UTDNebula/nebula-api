@@ -10,6 +10,7 @@
         "contact": {},
         "version": "1.0.0"
     },
+    "host": "api.utdnebula.com",
     "paths": {
         "/autocomplete/dag": {
             "get": {

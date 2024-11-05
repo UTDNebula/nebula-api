@@ -232,6 +232,7 @@ definitions:
       last_name:
         type: string
     type: object
+host: api.utdnebula.com
 info:
   contact: {}
   description: The public Nebula Labs API for access to pertinent UT Dallas data
