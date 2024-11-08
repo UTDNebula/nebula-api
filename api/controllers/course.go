@@ -112,7 +112,7 @@ func CourseById(c *gin.Context) {
 }
 
 func CourseAll(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 
 	var courses []schema.Course
 
