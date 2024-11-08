@@ -135,7 +135,7 @@ func CourseAll(c *gin.Context) {
 }
 
 // @Id courseSectionSearch
-// @Router /course/section [get]
+// @Router /course/sections [get]
 // @Description "Returns all the sections of all the courses matching the query's string-typed key-value pairs"
 // @Produce json
 // @Param course_number query string false "The course's official number"
@@ -158,7 +158,7 @@ func CourseSectionSearch() gin.HandlerFunc {
 }
 
 // @Id courseSectionById
-// @Router /course/{id}/section [get]
+// @Router /course/{id}/sections [get]
 // @Description "Returns the all of the sections of the course with given ID"
 // @Produce json
 // @Param id path string true "ID of the course to get"
@@ -204,10 +204,23 @@ func courseSection(flag string, c *gin.Context) {
 		return
 	}
 
+	// determine the offset and limit for pagination stage
+	// and delete "offset" field in professorQuery
+	offset, limit, err := configs.GetAggregateLimit(&courseQuery, c)
+	if err != nil {
+		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
+		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+		return
+	}
+
 	// pipeline to query the sections from the filtered courses
 	courseSectionPipeline := mongo.Pipeline{
 		// filter the courses
 		bson.D{{Key: "$match", Value: courseQuery}},
+
+		// paginate the courses before pulling the sections from thoses courses
+		bson.D{{Key: "$skip", Value: offset}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: limit}}, // limit to the specified number of courses
 
 		// lookup the sections of the courses
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -220,7 +233,7 @@ func courseSection(flag string, c *gin.Context) {
 		// unwind the sections of the courses
 		bson.D{{Key: "$unwind", Value: bson.D{
 			{Key: "path", Value: "$sections"},
-			{Key: "preserveNullAndEmptyArrays", Value: true},
+			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
 		}}},
 
 		// replace the courses with sections

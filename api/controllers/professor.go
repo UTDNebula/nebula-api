@@ -83,6 +83,7 @@ func ProfessorSearch(c *gin.Context) {
 	}
 
 	// return result
+	print(len(professors))
 	c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
 }
 
@@ -145,7 +146,7 @@ func ProfessorAll(c *gin.Context) {
 }
 
 // @Id professorCourseSearch
-// @Router /professor/course [get]
+// @Router /professor/courses [get]
 // @Description "Returns all of the courses of all the professors matching the query's string-typed key-value pairs"
 // @Produce json
 // @Param first_name query string false "The professor's first name"
@@ -177,7 +178,7 @@ func ProfessorCourseSearch() gin.HandlerFunc {
 }
 
 // @Id professorCourseById
-// @Router /professor/{id}/course [get]
+// @Router /professor/{id}/courses [get]
 // @Description "Returns all the courses taught by the professor with given ID"
 // @Produce json
 // @Param id path string true "ID of the professor to get"
@@ -223,12 +224,23 @@ func professorCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	// TODO: ASK QUESTION ABOUT THE OPTION LIMIT
+	// determine the offset and limit for pagination stage
+	// and delete "offset" field in professorQuery
+	offset, limit, err := configs.GetAggregateLimit(&professorQuery, c)
+	if err != nil {
+		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
+		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+		return
+	}
 
 	// Pipeline to query the courses from the filtered professors (or a single professor)
 	professorCoursePipeline := mongo.Pipeline{
 		// filter the professors
 		bson.D{{Key: "$match", Value: professorQuery}},
+
+		// paginate the professors before pulling the courses from those professor
+		bson.D{{Key: "$skip", Value: offset}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: limit}}, // limit to the specified number of professors
 
 		// lookup the array of sections from sections collection
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -252,7 +264,7 @@ func professorCourse(flag string, c *gin.Context) {
 		// unwind the courses
 		bson.D{{Key: "$unwind", Value: bson.D{
 			{Key: "path", Value: "$courses"},
-			{Key: "preserveNullAndEmptyArrays", Value: true},
+			{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
 		}}},
 
 		// replace the combination of ids and courses with the courses entirely
@@ -269,6 +281,7 @@ func professorCourse(flag string, c *gin.Context) {
 	}
 	// Parse the array of courses from these professors
 	if err = cursor.All(ctx, &professorCourses); err != nil {
+		log.WritePanic(err)
 		panic(err)
 	}
 	c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: professorCourses})
