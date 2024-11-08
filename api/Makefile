@@ -24,6 +24,6 @@ build: server.go
 clean: $(EXEC_NAME)
 	rm $(EXEC_NAME)
 
-docker: Dockerfile configs/ controllers/ schema/ responses/ routes/ docs/ server.go
+docker: Dockerfile common/ configs/ controllers/ docs/ responses/ routes/ schema/ server.go
 	$(DOCKER_RUNNER) build -t $(BASE_TAG):$(RELEASE_TAG) .
 	$(DOCKER_RUNNER) tag $(BASE_TAG):$(RELEASE_TAG) $(BASE_TAG):latest
