@@ -15,26 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/autocomplete/dag": {
-            "get": {
-                "description": "\"Returns an aggregation of courses for use in generating autocomplete DAGs\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "autocompleteDAG",
-                "responses": {
-                    "200": {
-                        "description": "An aggregation of courses for use in generating autocomplete DAGs",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Autocomplete"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/course": {
             "get": {
                 "description": "\"Returns all courses matching the query's string-typed key-value pairs\"",
@@ -656,20 +636,6 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.AcademicSessionSections": {
-            "type": "object",
-            "properties": {
-                "academic_session": {
-                    "$ref": "#/definitions/schema.SimpleAcademicSession"
-                },
-                "sections": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schema.SectionNumberProfessors"
-                    }
-                }
-            }
-        },
         "schema.Assistant": {
             "type": "object",
             "properties": {
@@ -683,20 +649,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.Autocomplete": {
-            "type": "object",
-            "properties": {
-                "course_numbers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schema.CourseNumberAcademicSessions"
-                    }
-                },
-                "subject_prefix": {
                     "type": "string"
                 }
             }
@@ -784,20 +736,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.CourseNumberAcademicSessions": {
-            "type": "object",
-            "properties": {
-                "academic_sessions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schema.AcademicSessionSections"
-                    }
-                },
-                "course_number": {
                     "type": "string"
                 }
             }
@@ -949,39 +887,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/schema.Assistant"
                     }
-                }
-            }
-        },
-        "schema.SectionNumberProfessors": {
-            "type": "object",
-            "properties": {
-                "professors": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schema.SimpleProfessor"
-                    }
-                },
-                "section_number": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.SimpleAcademicSession": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.SimpleProfessor": {
-            "type": "object",
-            "properties": {
-                "first_name": {
-                    "type": "string"
-                },
-                "last_name": {
-                    "type": "string"
                 }
             }
         }
