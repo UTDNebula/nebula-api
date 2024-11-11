@@ -16,6 +16,15 @@ definitions:
       start_date:
         type: string
     type: object
+  schema.AcademicSessionSections:
+    properties:
+      academic_session:
+        $ref: '#/definitions/schema.SimpleAcademicSession'
+      sections:
+        items:
+          $ref: '#/definitions/schema.SectionNumberProfessors'
+        type: array
+    type: object
   schema.Assistant:
     properties:
       email:
@@ -25,6 +34,15 @@ definitions:
       last_name:
         type: string
       role:
+        type: string
+    type: object
+  schema.Autocomplete:
+    properties:
+      course_numbers:
+        items:
+          $ref: '#/definitions/schema.CourseNumberAcademicSessions'
+        type: array
+      subject_prefix:
         type: string
     type: object
   schema.CollectionRequirement:
@@ -83,6 +101,15 @@ definitions:
       subject_prefix:
         type: string
       title:
+        type: string
+    type: object
+  schema.CourseNumberAcademicSessions:
+    properties:
+      academic_sessions:
+        items:
+          $ref: '#/definitions/schema.AcademicSessionSections'
+        type: array
+      course_number:
         type: string
     type: object
   schema.Location:
@@ -184,12 +211,48 @@ definitions:
           $ref: '#/definitions/schema.Assistant'
         type: array
     type: object
+  schema.SectionNumberProfessors:
+    properties:
+      professors:
+        items:
+          $ref: '#/definitions/schema.SimpleProfessor'
+        type: array
+      section_number:
+        type: string
+    type: object
+  schema.SimpleAcademicSession:
+    properties:
+      name:
+        type: string
+    type: object
+  schema.SimpleProfessor:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+    type: object
 info:
   contact: {}
-  description: The developer version of the Nebula Labs API for testing purposes
-  title: dev-nebula-api
-  version: 0.1.0
+  description: The public Nebula Labs API for access to pertinent UT Dallas data
+  title: nebula-api
+  version: 1.0.0
 paths:
+  /autocomplete/dag:
+    get:
+      description: '"Returns an aggregation of courses for use in generating autocomplete
+        DAGs"'
+      operationId: autocompleteDAG
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: An aggregation of courses for use in generating autocomplete
+            DAGs
+          schema:
+            items:
+              $ref: '#/definitions/schema.Autocomplete'
+            type: array
   /course:
     get:
       description: '"Returns all courses matching the query''s string-typed key-value
@@ -604,7 +667,7 @@ x-google-backend:
   address: REDACTED
 x-google-endpoints:
 - allowCors: true
-  name: dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog
+  name: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
 x-google-management:
   metrics:
   - displayName: Read Requests CUSTOM

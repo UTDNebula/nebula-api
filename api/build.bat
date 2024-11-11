@@ -3,6 +3,11 @@
 ::vars
 set EXEC_NAME=go-api.exe
 
+::param jump
+if "%1"=="docs" goto docs
+if "%1"=="checks" goto checks
+if "%1"=="build" goto build
+
 ::setup
 echo Performing setup...
 go install honnef.co/go/tools/cmd/staticcheck@latest && ^
@@ -12,11 +17,12 @@ if ERRORLEVEL 1 exit /b %ERRORLEVEL% :: fail if error occurred
 echo Setup done!
 echo[
 
-::docs
+:docs
 echo Generating docs...
 swag init -g server.go
+if "%1"=="docs" exit
 
-::checks
+:checks
 echo Performing checks...
 go mod tidy && ^
 go vet ./... && ^
@@ -26,8 +32,9 @@ goimports -w ./..
 if ERRORLEVEL 1 exit /b %ERRORLEVEL% :: fail if error occurred
 echo Checks done!
 echo[
+if "%1"=="checks" exit
 
-::build
+:build
 echo Building...
 go build -o %EXEC_NAME% server.go
 if ERRORLEVEL 1 exit /b %ERRORLEVEL% :: fail if error occurred
