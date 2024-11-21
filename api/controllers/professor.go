@@ -123,7 +123,7 @@ func ProfessorById(c *gin.Context) {
 }
 
 func ProfessorAll(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 
 	var professors []schema.Professor
 
