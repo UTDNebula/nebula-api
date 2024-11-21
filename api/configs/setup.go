@@ -80,3 +80,25 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 
 	return options.Find().SetSkip(offset).SetLimit(limit), err
 }
+
+// TODO: Is there a chance we can combine this with GetOptionLimit to reduce repretiveness ?
+// Returns pairs of the offset and limit for pagination stage for aggregate endpoints pipeline
+// returns (offset, limit, err)
+func GetAggregateLimit(query *bson.M, c *gin.Context) (int64, int64, error) {
+	delete(*query, "offset") // remove offset field (if present) in the query
+
+	// parses offset if included in the query
+	var limit int64 = GetEnvLimit()
+	var offset int64
+	var err error
+
+	if c.Query("offset") == "" {
+		offset = 0 // default value
+	} else {
+		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
+		if err != nil {
+			return offset, limit, err // default value
+		}
+	}
+	return offset, limit, err
+}
