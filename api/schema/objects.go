@@ -118,6 +118,25 @@ type Event struct {
 	ContactPhoneNumber string             `bson:"contact_phone_number" json:"contact_phone_number"`
 }
 
+type MultiBuildingEvents struct {
+	Buildings []SingleBuildingEvents `bson:"buildings" json:"buildings"`
+}
+
+type SingleBuildingEvents struct {
+	Building string       `bson:"building" json:"building"`
+	Rooms    []RoomEvents `bson:"rooms" json:"rooms"`
+}
+
+type RoomEvents struct {
+	Room     string               `bson:"room" json:"room"`
+	Sections []primitive.ObjectID `bson:"sections" json:"sections"`
+}
+
+type BuildingRooms struct {
+	Building string   `bson:"building" json:"building"`
+	Rooms    []string `bson:"rooms" json:"rooms"`
+}
+
 // 5 Level Likert Item scale for evaluation responses
 type EvaluationResponse int
 
