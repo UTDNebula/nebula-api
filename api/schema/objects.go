@@ -128,8 +128,14 @@ type SingleBuildingEvents struct {
 }
 
 type RoomEvents struct {
-	Room     string               `bson:"room" json:"room"`
-	Sections []primitive.ObjectID `bson:"sections" json:"sections"`
+	Room     string            `bson:"room" json:"room"`
+	Sections []SectionWithTime `bson:"sections" json:"sections"`
+}
+
+type SectionWithTime struct {
+	Section   primitive.ObjectID `bson:"section" json:"section"`
+	StartTime string             `bson:"start_time" json:"start_time"`
+	EndTime   string             `bson:"end_time" json:"end_time"`
 }
 
 type BuildingRooms struct {
