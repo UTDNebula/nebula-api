@@ -21,8 +21,9 @@ var professorCollection *mongo.Collection = configs.GetCollection("professors")
 
 // @Id professorSearch
 // @Router /professor [get]
-// @Description "Returns all professors matching the query's string-typed key-value pairs"
+// @Description "Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce json
+// @Param offset query number false "The staritng position of the current page of professors (e.g. For starting at the 17th professor, offset=16)."
 // @Param first_name query string false "The professor's first name"
 // @Param last_name query string false "The professor's last name"
 // @Param titles query string false "One of the professor's title"
