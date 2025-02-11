@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -74,6 +75,7 @@ func CourseSearch(c *gin.Context) {
 	}
 
 	// return result
+	log.Logger.Print(len(courses))
 	c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
 }
 
@@ -199,14 +201,16 @@ func courseSection(flag string, c *gin.Context) {
 		}
 		courseQuery = bson.M{"_id": courseObjId}
 	} else {
+		err = errors.New("broken endpoint")
 		// otherwise, something that messed up the server
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "internal error", Data: "broken endpoint"})
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "internal error", Data: err.Error()})
 		return
 	}
 
 	// determine the offset and limit for pagination stage
 	// and delete "offset" field in professorQuery
-	offset, limit, err := configs.GetAggregateLimit(&courseQuery, c)
+	formerOffset, latterOffset, limit, err := configs.GetAggregateLimit(&courseQuery, c)
+
 	if err != nil {
 		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
 		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
@@ -219,8 +223,8 @@ func courseSection(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: courseQuery}},
 
 		// paginate the courses before pulling the sections from thoses courses
-		bson.D{{Key: "$skip", Value: offset}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: limit}}, // limit to the specified number of courses
+		bson.D{{Key: "$skip", Value: formerOffset}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: limit}},       // limit to the specified number of courses
 
 		// lookup the sections of the courses
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -238,6 +242,10 @@ func courseSection(flag string, c *gin.Context) {
 
 		// replace the courses with sections
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
+
+		// paginate the sections
+		bson.D{{Key: "$skip", Value: latterOffset}},
+		bson.D{{Key: "$limit", Value: limit}},
 	}
 
 	// perform aggregation on the pipeline
@@ -252,5 +260,7 @@ func courseSection(flag string, c *gin.Context) {
 	if err = cursor.All(ctx, &courseSections); err != nil {
 		panic(err)
 	}
+
+	log.Logger.Print(len(courseSections))
 	c.JSON(http.StatusOK, responses.MultiSectionResponse{Status: http.StatusOK, Message: "success", Data: courseSections})
 }

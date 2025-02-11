@@ -207,7 +207,7 @@ func professorCourse(flag string, c *gin.Context) {
 
 	// determine the offset and limit for pagination stage
 	// and delete "offset" field in professorQuery
-	offset, limit, err := configs.GetAggregateLimit(&professorQuery, c)
+	formerOffset, latterOffset, limit, err := configs.GetAggregateLimit(&professorQuery, c)
 	if err != nil {
 		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
 		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
@@ -220,8 +220,8 @@ func professorCourse(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: professorQuery}},
 
 		// paginate the professors before pulling the courses from those professor
-		bson.D{{Key: "$skip", Value: offset}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: limit}}, // limit to the specified number of professors
+		bson.D{{Key: "$skip", Value: formerOffset}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: limit}},       // limit to the specified number of professors
 
 		// lookup the array of sections from sections collection
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -250,6 +250,10 @@ func professorCourse(flag string, c *gin.Context) {
 
 		// replace the combination of ids and courses with the courses entirely
 		bson.D{{Key: "$replaceWith", Value: "$courses"}},
+
+		// paginate the courses
+		bson.D{{Key: "$skip", Value: latterOffset}},
+		bson.D{{Key: "$limit", Value: limit}},
 	}
 
 	// Perform aggreration on the pipeline
@@ -323,12 +327,11 @@ func professorSection(flag string, c *gin.Context) {
 
 	// determine the professor's query
 	if professorQuery, err = getProfessorQuery(flag, c); err != nil {
-		return // if there's an error, the response will have already been thrown to the consumer, halt the funcion here
+		return
 	}
 
 	// determine the offset and limit for pagination stage
-	// and delete "offset" field in professorQuery
-	offset, limit, err := configs.GetAggregateLimit(&professorQuery, c)
+	formerOffset, latterOffset, limit, err := configs.GetAggregateLimit(&professorQuery, c)
 	if err != nil {
 		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
 		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
@@ -341,8 +344,8 @@ func professorSection(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: professorQuery}},
 
 		// paginate the professors before pulling the courses from those professor
-		bson.D{{Key: "$skip", Value: offset}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: limit}}, // limit to the specified number of professors
+		bson.D{{Key: "$skip", Value: formerOffset}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: limit}},       // limit to the specified number of professors
 
 		// lookup the array of sections from sections collection
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -363,6 +366,10 @@ func professorSection(flag string, c *gin.Context) {
 
 		// replace the combination of ids and sections with the sections entirely
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
+
+		// paginate the sections
+		bson.D{{Key: "$skip", Value: latterOffset}},
+		bson.D{{Key: "$limit", Value: limit}},
 	}
 
 	// Perform aggreration on the pipeline
@@ -381,8 +388,7 @@ func professorSection(flag string, c *gin.Context) {
 	c.JSON(http.StatusOK, responses.MultiSectionResponse{Status: http.StatusOK, Message: "success", Data: professorSections})
 }
 
-// function to determine the query of the professor based on the parameters passed from context
-// avoid redundancy in the code
+// function to determine the query of the professor based on the parameters passed from context avoid redundancy in the code
 // if there's an error, throw an error response back to the API consumer and return only the error
 func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 	var professorQuery bson.M
@@ -406,8 +412,8 @@ func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 		}
 		professorQuery = bson.M{"_id": professorObjId}
 	} else {
-		err = errors.New("broken endpoint")
 		// something wrong that messed up the server
+		err = errors.New("broken endpoint")
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "endpoint error", Data: err.Error()})
 		return nil, err
 	}
