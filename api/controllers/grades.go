@@ -50,7 +50,7 @@ import (
 // ---- Prefix, Number, Professor
 // ---- Prefix, Number, Professor, SectionNumber
 
-// 4 Functions
+// 5 Functions
 
 // @Id gradeAggregationBySemester
 // @Router /grades/semester [get]
@@ -65,6 +65,22 @@ import (
 func GradeAggregationSemester() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("semester", c)
+	}
+}
+
+// @Id gradeAggregationSectionType
+// @Router /grades/semester/sectionType [get]
+// @Description "Returns the grade distributions aggregated by semester and broken down into section type"
+// @Produce json
+// @Param prefix query string false "The course's subject prefix"
+// @Param number query string false "The course's official number"
+// @Param first_name query string false "The professor's first name"
+// @Param last_name query string false "The professors's last name"
+// @Param section_number query string false "The number of the section"
+// @Success 200 {array} responses.SectionTypeGradeResponse "An array of grade distributions for each section type for each semester included"
+func GradesAggregationSectionType() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		gradesAggregation("section_type", c)
 	}
 }
 
@@ -89,6 +105,8 @@ func gradesAggregation(flag string, c *gin.Context) {
 	var grades []map[string]interface{}
 	var results []map[string]interface{}
 
+	var sectionTypeGrades []responses.GradeData // used to parse the response to section-type endpoints
+
 	var cursor *mongo.Cursor
 	var collection *mongo.Collection
 	var pipeline mongo.Pipeline
@@ -100,7 +118,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 	var professorFind bson.D
 
 	var sampleCourse schema.Course // the sample course with the given prefix and course number parameter
-	var sampleCourseQuery bson.D   // the filter using prefix and course number to get sample course
+	var sampleCourseFind bson.D    // the filter using prefix and course number to get sample course
 
 	var err error
 
@@ -116,6 +134,19 @@ func gradesAggregation(flag string, c *gin.Context) {
 	last_name := c.Query("last_name")
 
 	professor := (first_name != "" || last_name != "")
+
+	// Find internal_course_number associated with subject_prefix and course_number, which will be used later on
+	sampleCourseFind = bson.D{
+		{Key: "subject_prefix", Value: prefix},
+		{Key: "course_number", Value: number},
+	}
+	// Parse the queried document into the sample course
+	err = courseCollection.FindOne(ctx, sampleCourseFind).Decode(&sampleCourse)
+	// If the error is not that there is no matching documents, panic the error
+	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+		panic(err)
+	}
+	internalCourseNumber := sampleCourse.Internal_course_number
 
 	lookupSectionsStage := bson.D{
 		{Key: "$lookup", Value: bson.D{
@@ -174,62 +205,137 @@ func gradesAggregation(flag string, c *gin.Context) {
 			{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grades"}}},
 		}},
 	}
+
+	// Stages of the pipeline used for section-type aggregate endpoints
+	// Modify the existing stages to break down into section types
+	if flag == "section_type" {
+		// arrays of regular expressions and corresponding section type
+		typeRegexes := [14]string{"0[0-9][0-9]", "0W[0-9]", "0H[0-9]", "0L[0-9]", "5H[0-9]", "1[0-9][0-9]", "2[0-9][0-9]", "3[0-9][0-9]", "5[0-9][0-9]", "6[0-9][0-9]", "7[0-9][0-9]", "HN[0-9]", "HON", "[0-9]U[0-9]"}
+		typeStrings := [14]string{"0xx", "0Wx", "0Hx", "0Lx", "5Hx", "1xx", "2xx", "3xx", "5xx", "6xx", "7xx", "HNx", "HON", "xUx"}
+
+		var branchArr []bson.D            // for without section pipeline
+		var withSectionBranchArr []bson.D // for with section pipeline
+		for i := 0; i < len(typeRegexes); i++ {
+			branchArr = append(branchArr, bson.D{
+				{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
+					{Key: "input", Value: "$sections.section_number"},
+					{Key: "regex", Value: typeRegexes[i]},
+				}}}},
+				{Key: "then", Value: typeStrings[i]},
+			})
+
+			withSectionBranchArr = append(withSectionBranchArr, bson.D{
+				{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
+					{Key: "input", Value: "$section_number"},
+					{Key: "regex", Value: typeRegexes[i]},
+				}}}},
+				{Key: "then", Value: typeStrings[i]},
+			})
+		}
+
+		// add the section_type for each section
+		project := projectGradeDistributionStage[0].Value.(primitive.D)
+		projectGradeDistributionStage[0].Value = append(project,
+			bson.E{Key: "section_type", Value: bson.D{
+				{Key: "$switch", Value: bson.D{
+					{Key: "branches", Value: branchArr},
+					{Key: "default", Value: "OTHERS"}, // might be cases where section doesn't have type listed
+				}},
+			}},
+		)
+
+		// add the section_type for section from sectionCollection
+		project = projectGradeDistributionWithSectionsStage[0].Value.(primitive.D)
+		projectGradeDistributionWithSectionsStage[0].Value = append(project,
+			bson.E{Key: "section_type", Value: bson.D{
+				{Key: "$switch", Value: bson.D{
+					{Key: "branches", Value: withSectionBranchArr},
+					{Key: "default", Value: "OTHERS"},
+				}},
+			}},
+		)
+
+		// add section_type to _id so as to group grades by both academic_session and section_type
+		group := groupGradesStage[0].Value.(primitive.D)[0].Value.(primitive.D)
+		groupGradesStage[0].Value.(primitive.D)[0].Value = append(group,
+			bson.E{Key: "section_type", Value: "$section_type"},
+		)
+
+		sortGradesStage = bson.D{
+			{Key: "$sort", Value: bson.D{
+				{Key: "_id.ix", Value: 1},
+				{Key: "_id.section_type", Value: 1},
+				{Key: "_id", Value: 1},
+			}},
+		}
+
+		// add section type to _id to group the grade distribution
+		groupGradeDistributionStage[0].Value.(primitive.D)[0].Value = bson.D{
+			{Key: "academic_section", Value: "$_id.academic_session"},
+			{Key: "section_type", Value: "$_id.section_type"},
+		}
+	}
+
+	// additional stages for section-type pipeline
+	// sort the section-type-specific grade distributions before grouping
+	sortGradeDistributionsStage := bson.D{
+		{Key: "$sort", Value: bson.D{
+			{Key: "_id.section_type", Value: 1},
+			{Key: "_id", Value: 1},
+		}},
+	}
+
+	// group section_type-specific grade distributions together based on semester
+	groupSemesterGradeDistributionsStage := bson.D{
+		{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$_id.academic_section"},
+			{Key: "data", Value: bson.D{{Key: "$push", Value: bson.D{
+				{Key: "type", Value: "$_id.section_type"},
+				{Key: "grade_distribution", Value: "$grade_distribution"},
+			}}}},
+		}},
+	}
+
 	switch {
 	case prefix != "" && number == "" && section_number == "" && !professor:
 		// Filter on Course
 		collection = courseCollection
 		courseMatch = bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix}}}
-		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+
+		// pipeline that accounts for section type is different than regular one
+		if flag != "section_type" {
+			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+		} else {
+			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
+		}
 
 	case prefix != "" && number != "" && section_number == "" && !professor:
 		// Filter on Course
 		collection = courseCollection
 
-		// Find the internal_course_number associated with the subject_prefix and course_number
-		sampleCourseQuery = bson.D{
-			{Key: "subject_prefix", Value: prefix},
-			{Key: "course_number", Value: number},
-		}
-		// parse the queried document into the sample course
-		err = collection.FindOne(ctx, sampleCourseQuery).Decode(&sampleCourse)
-		// If the error is not that there is no matching documents, panic the error
-		if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
-			panic(err)
-		}
-		internalCourseNumber := sampleCourse.Internal_course_number
-
-		// Old code that filter on combination of prefix and course number (in case we need it in the future)
-		// courseMatch := bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix, "course_number": number}}}
-
 		// Query using internal_course_number of the documents
 		courseMatch := bson.D{{Key: "$match", Value: bson.M{"internal_course_number": internalCourseNumber}}}
-		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+
+		if flag != "section_type" {
+			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+		} else {
+			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
+		}
 
 	case prefix != "" && number != "" && section_number != "" && !professor:
 		// Filter on Course then Section
 		collection = courseCollection
 
-		// Find the internal_course_number associated with the subject_prefix and course_number
-		sampleCourseQuery = bson.D{
-			{Key: "subject_prefix", Value: prefix},
-			{Key: "course_number", Value: number},
-		}
-		// parse the queried document into the sample course
-		err = collection.FindOne(ctx, sampleCourseQuery).Decode(&sampleCourse)
-		// If the error is not that there is no matching documents, panic the error
-		if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
-			panic(err)
-		}
-		internalCourseNumber := sampleCourse.Internal_course_number
-
-		// Old code that filter on combination of prefix and course number (in case we need it in the future)
-		// courseMatch := bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix, "course_number": number}}}
-
 		// Here we query all the courses with the given internal_couse_number,
 		// and then filter on the section_number of those courses
 		courseMatch := bson.D{{Key: "$match", Value: bson.M{"internal_course_number": internalCourseNumber}}}
 		sectionMatch := bson.D{{Key: "$match", Value: bson.M{"sections.section_number": section_number}}}
-		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, sectionMatch, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+
+		if flag != "section_type" {
+			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, sectionMatch, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+		} else {
+			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, sectionMatch, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
+		}
 
 	case prefix == "" && number == "" && section_number == "" && professor:
 		// Filter on Professor
@@ -244,9 +350,11 @@ func gradesAggregation(flag string, c *gin.Context) {
 			professorMatch = bson.D{{Key: "$match", Value: bson.M{"first_name": first_name, "last_name": last_name}}}
 		}
 
-		// Build grades pipeline
-		pipeline = mongo.Pipeline{professorMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
-
+		if flag != "section_type" {
+			pipeline = mongo.Pipeline{professorMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+		} else {
+			pipeline = mongo.Pipeline{professorMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
+		}
 	case prefix != "" && professor:
 		// Filter on Section by Matching Course and Professor IDs
 
@@ -284,23 +392,10 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 		// Get valid course ids
 		if number == "" {
-			// If only the prefix is provided, filter on the prefix
+			// if only the prefix is provided, filter only on the prefix
 			courseFind = bson.D{{Key: "subject_prefix", Value: prefix}}
 		} else {
-			// Old code that filter on combination of prefix and course number (in case we need it in the future)
-			// courseFind = bson.D{{Key: "subject_prefix", Value: prefix}, {Key: "course_number", Value: number}}
-
-			// If both prefix and course_number are provided, find the associated internal_course_number to filter on
-			sampleCourseQuery = bson.D{
-				{Key: "subject_prefix", Value: prefix},
-				{Key: "course_number", Value: number},
-			}
-			// parse the queried document into the sample course
-			err = courseCollection.FindOne(ctx, sampleCourseQuery).Decode(&sampleCourse)
-			if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
-				panic(err)
-			}
-			internalCourseNumber := sampleCourse.Internal_course_number
+			// if both prefix and course_number are provided, filter on internal_course_number
 			courseFind = bson.D{{Key: "internal_course_number", Value: internalCourseNumber}}
 		}
 
@@ -334,8 +429,11 @@ func gradesAggregation(flag string, c *gin.Context) {
 				}}}
 		}
 
-		// Build grades pipeline
-		pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionWithSectionsStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+		if flag != "section_type" {
+			pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionWithSectionsStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+		} else {
+			pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionWithSectionsStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
+		}
 
 	default:
 		c.JSON(http.StatusBadRequest, responses.GradeResponse{Status: http.StatusBadRequest, Message: "error", Data: "Invalid query parameters."})
@@ -350,8 +448,14 @@ func gradesAggregation(flag string, c *gin.Context) {
 	}
 
 	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &grades); err != nil {
-		panic(err)
+	if flag != "section_type" {
+		if err = cursor.All(ctx, &grades); err != nil {
+			panic(err)
+		}
+	} else {
+		if err = cursor.All(ctx, &sectionTypeGrades); err != nil {
+			panic(err)
+		}
 	}
 
 	if flag == "overall" {
@@ -369,6 +473,8 @@ func gradesAggregation(flag string, c *gin.Context) {
 		c.JSON(http.StatusOK, responses.GradeResponse{Status: http.StatusOK, Message: "success", Data: overallResponse})
 	} else if flag == "semester" {
 		c.JSON(http.StatusOK, responses.GradeResponse{Status: http.StatusOK, Message: "success", Data: grades})
+	} else if flag == "section_type" {
+		c.JSON(http.StatusOK, responses.SectionGradeResponse{Status: http.StatusOK, Message: "success", GradeData: sectionTypeGrades})
 	} else {
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Endpoint broken"})
 	}
