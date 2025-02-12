@@ -77,7 +77,7 @@ func GradeAggregationSemester() gin.HandlerFunc {
 // @Param first_name query string false "The professor's first name"
 // @Param last_name query string false "The professors's last name"
 // @Param section_number query string false "The number of the section"
-// @Success 200 {array} responses.SectionTypeGradeResponse "An array of grade distributions for each section type for each semester included"
+// @Success 200 {array} responses.SectionGradeResponse "An array of grade distributions for each section type for each semester included"
 func GradesAggregationSectionType() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("section_type", c)
