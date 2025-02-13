@@ -148,6 +148,31 @@ func gradesAggregation(flag string, c *gin.Context) {
 	}
 	internalCourseNumber := sampleCourse.Internal_course_number
 
+	// arrays of regexes and section types
+	typeRegexes := [14]string{"0[0-9][0-9]", "0W[0-9]", "0H[0-9]", "0L[0-9]", "5H[0-9]", "1[0-9][0-9]", "2[0-9][0-9]", "3[0-9][0-9]", "5[0-9][0-9]", "6[0-9][0-9]", "7[0-9][0-9]", "HN[0-9]", "HON", "[0-9]U[0-9]"}
+	typeStrings := [14]string{"0xx", "0Wx", "0Hx", "0Lx", "5Hx", "1xx", "2xx", "3xx", "5xx", "6xx", "7xx", "HNx", "HON", "xUx"}
+
+	var branches []bson.D            // for without section pipeline
+	var withSectionBranches []bson.D // for with section pipeline
+	for i := 0; i < len(typeRegexes); i++ {
+		branches = append(branches, bson.D{
+			{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
+				{Key: "input", Value: "$sections.section_number"},
+				{Key: "regex", Value: typeRegexes[i]},
+			}}}},
+			{Key: "then", Value: typeStrings[i]},
+		})
+
+		withSectionBranches = append(withSectionBranches, bson.D{
+			{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
+				{Key: "input", Value: "$section_number"},
+				{Key: "regex", Value: typeRegexes[i]},
+			}}}},
+			{Key: "then", Value: typeStrings[i]},
+		})
+	}
+
+	// Stage to look up sections
 	lookupSectionsStage := bson.D{
 		{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "sections"},
@@ -157,22 +182,40 @@ func gradesAggregation(flag string, c *gin.Context) {
 		}},
 	}
 
+	// Stage to unwind sections
 	unwindSectionsStage := bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sections"}}}}
 
-	projectGradeDistributionStage := bson.D{
-		{Key: "$project", Value: bson.D{
-			{Key: "_id", Value: "$sections.academic_session.name"},
-			{Key: "grade_distribution", Value: "$sections.grade_distribution"},
-		}},
+	// Project grade distribution stage
+	project := bson.D{
+		{Key: "_id", Value: "$sections.academic_session.name"},
+		{Key: "grade_distribution", Value: "$sections.grade_distribution"},
 	}
-
-	projectGradeDistributionWithSectionsStage := bson.D{
-		{Key: "$project", Value: bson.D{
-			{Key: "_id", Value: "$academic_session.name"},
-			{Key: "grade_distribution", Value: "$grade_distribution"},
-		}},
+	if flag == "section_type" { // add the section_type for each section
+		project = append(project, bson.E{Key: "section_type", Value: bson.D{
+			{Key: "$switch", Value: bson.D{
+				{Key: "branches", Value: branches},
+				{Key: "default", Value: "OTHERS"}, // might be cases where section doesn't have type listed
+			}},
+		}})
 	}
+	projectGradeDistributionStage := bson.D{{Key: "$project", Value: project}}
 
+	// Stage to project grade distribution with section
+	project = bson.D{
+		{Key: "_id", Value: "$academic_session.name"},
+		{Key: "grade_distribution", Value: "$grade_distribution"},
+	}
+	if flag == "section_type" { // add the section_type for each section
+		project = append(project, bson.E{Key: "section_type", Value: bson.D{
+			{Key: "$switch", Value: bson.D{
+				{Key: "branches", Value: withSectionBranches},
+				{Key: "default", Value: "OTHERS"},
+			}},
+		}})
+	}
+	projectGradeDistributionWithSectionsStage := bson.D{{Key: "$project", Value: project}}
+
+	// Stage to unwind grade distribution
 	unwindGradeDistributionStage := bson.D{
 		{Key: "$unwind", Value: bson.D{
 			{Key: "path", Value: "$grade_distribution"},
@@ -180,104 +223,56 @@ func gradesAggregation(flag string, c *gin.Context) {
 		}},
 	}
 
+	// Stage to group grades
+	groupID := bson.D{
+		{Key: "academic_session", Value: "$_id"},
+		{Key: "ix", Value: "$ix"},
+	}
+	// add section_type to _id so as to group grades by both academic_session and section_type
+	if flag == "section_type" {
+		groupID = append(groupID, bson.E{Key: "section_type", Value: "$section_type"})
+	}
 	groupGradesStage := bson.D{
 		{Key: "$group", Value: bson.D{
-			{Key: "_id", Value: bson.D{
-				{Key: "academic_session", Value: "$_id"},
-				{Key: "ix", Value: "$ix"},
-			}},
+			{Key: "_id", Value: groupID},
 			{Key: "grades", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
 		}},
 	}
 
-	sortGradesStage := bson.D{
-		{Key: "$sort", Value: bson.D{
-			{Key: "_id.ix", Value: 1},
-			{Key: "_id", Value: 1},
-		}},
+	// Stage to sort grades
+	sort := bson.D{
+		{Key: "_id.ix", Value: 1},
+		{Key: "_id", Value: 1},
 	}
+	if flag == "section_type" {
+		sort = bson.D{ // add section_type to id
+			{Key: "_id.ix", Value: 1},
+			{Key: "_id.section_type", Value: 1},
+			{Key: "_id", Value: 1},
+		}
+	}
+	sortGradesStage := bson.D{{Key: "$sort", Value: sort}}
 
+	// Stage to sum grades
 	sumGradesStage := bson.D{{Key: "$addFields", Value: bson.D{{Key: "grades", Value: bson.D{{Key: "$sum", Value: "$grades"}}}}}}
 
+	// Stage to group grade distribution
+	groupDistributionID := bson.E{Key: "_id", Value: "$_id.academic_session"}
+	if flag == "section_type" {
+		groupDistributionID = bson.E{Key: "_id", Value: bson.D{
+			{Key: "academic_section", Value: "$_id.academic_session"},
+			{Key: "section_type", Value: "$_id.section_type"},
+		}}
+	}
 	groupGradeDistributionStage := bson.D{
 		{Key: "$group", Value: bson.D{
-			{Key: "_id", Value: "$_id.academic_session"},
+			groupDistributionID,
 			{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grades"}}},
 		}},
 	}
 
-	// Stages of the pipeline used for section-type aggregate endpoints
-	// Modify the existing stages to break down into section types
-	if flag == "section_type" {
-		// arrays of regular expressions and corresponding section type
-		typeRegexes := [14]string{"0[0-9][0-9]", "0W[0-9]", "0H[0-9]", "0L[0-9]", "5H[0-9]", "1[0-9][0-9]", "2[0-9][0-9]", "3[0-9][0-9]", "5[0-9][0-9]", "6[0-9][0-9]", "7[0-9][0-9]", "HN[0-9]", "HON", "[0-9]U[0-9]"}
-		typeStrings := [14]string{"0xx", "0Wx", "0Hx", "0Lx", "5Hx", "1xx", "2xx", "3xx", "5xx", "6xx", "7xx", "HNx", "HON", "xUx"}
-
-		var branchArr []bson.D            // for without section pipeline
-		var withSectionBranchArr []bson.D // for with section pipeline
-		for i := 0; i < len(typeRegexes); i++ {
-			branchArr = append(branchArr, bson.D{
-				{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
-					{Key: "input", Value: "$sections.section_number"},
-					{Key: "regex", Value: typeRegexes[i]},
-				}}}},
-				{Key: "then", Value: typeStrings[i]},
-			})
-
-			withSectionBranchArr = append(withSectionBranchArr, bson.D{
-				{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
-					{Key: "input", Value: "$section_number"},
-					{Key: "regex", Value: typeRegexes[i]},
-				}}}},
-				{Key: "then", Value: typeStrings[i]},
-			})
-		}
-
-		// add the section_type for each section
-		project := projectGradeDistributionStage[0].Value.(primitive.D)
-		projectGradeDistributionStage[0].Value = append(project,
-			bson.E{Key: "section_type", Value: bson.D{
-				{Key: "$switch", Value: bson.D{
-					{Key: "branches", Value: branchArr},
-					{Key: "default", Value: "OTHERS"}, // might be cases where section doesn't have type listed
-				}},
-			}},
-		)
-
-		// add the section_type for section from sectionCollection
-		project = projectGradeDistributionWithSectionsStage[0].Value.(primitive.D)
-		projectGradeDistributionWithSectionsStage[0].Value = append(project,
-			bson.E{Key: "section_type", Value: bson.D{
-				{Key: "$switch", Value: bson.D{
-					{Key: "branches", Value: withSectionBranchArr},
-					{Key: "default", Value: "OTHERS"},
-				}},
-			}},
-		)
-
-		// add section_type to _id so as to group grades by both academic_session and section_type
-		group := groupGradesStage[0].Value.(primitive.D)[0].Value.(primitive.D)
-		groupGradesStage[0].Value.(primitive.D)[0].Value = append(group,
-			bson.E{Key: "section_type", Value: "$section_type"},
-		)
-
-		sortGradesStage = bson.D{
-			{Key: "$sort", Value: bson.D{
-				{Key: "_id.ix", Value: 1},
-				{Key: "_id.section_type", Value: 1},
-				{Key: "_id", Value: 1},
-			}},
-		}
-
-		// add section type to _id to group the grade distribution
-		groupGradeDistributionStage[0].Value.(primitive.D)[0].Value = bson.D{
-			{Key: "academic_section", Value: "$_id.academic_session"},
-			{Key: "section_type", Value: "$_id.section_type"},
-		}
-	}
-
-	// additional stages for section-type pipeline
-	// sort the section-type-specific grade distributions before grouping
+	// Additional stages for section-type pipeline
+	// Stage to sort the section-type-specific grade distributions before grouping
 	sortGradeDistributionsStage := bson.D{
 		{Key: "$sort", Value: bson.D{
 			{Key: "_id.section_type", Value: 1},
@@ -285,7 +280,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		}},
 	}
 
-	// group section_type-specific grade distributions together based on semester
+	// Stage group section-type-specific grade distributions together based on semester
 	groupSemesterGradeDistributionsStage := bson.D{
 		{Key: "$group", Value: bson.D{
 			{Key: "_id", Value: "$_id.academic_section"},
@@ -300,14 +295,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 	case prefix != "" && number == "" && section_number == "" && !professor:
 		// Filter on Course
 		collection = courseCollection
-		courseMatch = bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix}}}
 
-		// pipeline that accounts for section type is different than regular one
-		if flag != "section_type" {
-			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
-		} else {
-			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
-		}
+		courseMatch = bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix}}}
+		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 	case prefix != "" && number != "" && section_number == "" && !professor:
 		// Filter on Course
@@ -315,12 +305,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 		// Query using internal_course_number of the documents
 		courseMatch := bson.D{{Key: "$match", Value: bson.M{"internal_course_number": internalCourseNumber}}}
-
-		if flag != "section_type" {
-			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
-		} else {
-			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
-		}
+		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 	case prefix != "" && number != "" && section_number != "" && !professor:
 		// Filter on Course then Section
@@ -331,11 +316,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		courseMatch := bson.D{{Key: "$match", Value: bson.M{"internal_course_number": internalCourseNumber}}}
 		sectionMatch := bson.D{{Key: "$match", Value: bson.M{"sections.section_number": section_number}}}
 
-		if flag != "section_type" {
-			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, sectionMatch, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
-		} else {
-			pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, sectionMatch, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
-		}
+		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, sectionMatch, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 	case prefix == "" && number == "" && section_number == "" && professor:
 		// Filter on Professor
@@ -350,11 +331,8 @@ func gradesAggregation(flag string, c *gin.Context) {
 			professorMatch = bson.D{{Key: "$match", Value: bson.M{"first_name": first_name, "last_name": last_name}}}
 		}
 
-		if flag != "section_type" {
-			pipeline = mongo.Pipeline{professorMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
-		} else {
-			pipeline = mongo.Pipeline{professorMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
-		}
+		pipeline = mongo.Pipeline{professorMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+
 	case prefix != "" && professor:
 		// Filter on Section by Matching Course and Professor IDs
 
@@ -429,15 +407,17 @@ func gradesAggregation(flag string, c *gin.Context) {
 				}}}
 		}
 
-		if flag != "section_type" {
-			pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionWithSectionsStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
-		} else {
-			pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionWithSectionsStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage}
-		}
+		pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionWithSectionsStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 	default:
 		c.JSON(http.StatusBadRequest, responses.GradeResponse{Status: http.StatusBadRequest, Message: "error", Data: "Invalid query parameters."})
 		return
+	}
+
+	// if this is for section type, add the 2 additional stages to the pipeline
+	if flag == "section_type" {
+		pipeline = append(pipeline, sortGradeDistributionsStage)
+		pipeline = append(pipeline, groupSemesterGradeDistributionsStage)
 	}
 
 	// peform aggregation
@@ -447,7 +427,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		return
 	}
 
-	// retrieve and parse all valid documents
+	// retrieve and parse all valid documents to appropriate type
 	if flag != "section_type" {
 		if err = cursor.All(ctx, &grades); err != nil {
 			panic(err)
