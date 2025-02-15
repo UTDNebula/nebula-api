@@ -127,8 +127,8 @@ type SingleBuildingEvents[T any] struct {
 	Rooms    []RoomEvents[T] `bson:"rooms" json:"rooms"`
 }
 type RoomEvents[T any] struct {
-	Room     string `bson:"room" json:"room"`
-	Sections []T    `bson:"events" json:"events"`
+	Room   string `bson:"room" json:"room"`
+	Events []T    `bson:"events" json:"events"`
 }
 
 // Event types
