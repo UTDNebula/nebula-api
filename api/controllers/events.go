@@ -23,13 +23,13 @@ var eventsCollection *mongo.Collection = configs.GetCollection("events")
 // @Description "Returns all sections with meetings on the specified date"
 // @Produce json
 // @Param date path string true "ISO date of the set of events to get"
-// @Success 200 {array} schema.MultiBuildingEvents "All sections with meetings on the specified date"
+// @Success 200 {array} schema.MultiBuildingEvents[schema.SectionWithTime] "All sections with meetings on the specified date"
 func Events(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	date := c.Param("date")
 
-	var events schema.MultiBuildingEvents
+	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 
 	defer cancel()
 
@@ -41,7 +41,7 @@ func Events(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.MultiBuildingEventsResponse{Status: http.StatusOK, Message: "success", Data: events})
+	c.JSON(http.StatusOK, responses.MultiBuildingEventsResponse[schema.SectionWithTime]{Status: http.StatusOK, Message: "success", Data: events})
 }
 
 // @Id eventsByBuilding
@@ -50,15 +50,15 @@ func Events(c *gin.Context) {
 // @Produce json
 // @Param date path string true "ISO date of the set of events to get"
 // @Param building path string true "building abbreviation of event locations"
-// @Success 200 {array} schema.SingleBuildingEvents "All sections with meetings on the specified date in the specified building"
+// @Success 200 {array} schema.SingleBuildingEvents[schema.SectionWithTime] "All sections with meetings on the specified date in the specified building"
 func EventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	date := c.Param("date")
 	building := c.Param("building")
 
-	var events schema.MultiBuildingEvents
-	var eventsByBuilding schema.SingleBuildingEvents
+	var events schema.MultiBuildingEvents[schema.SectionWithTime]
+	var eventsByBuilding schema.SingleBuildingEvents[schema.SectionWithTime]
 
 	defer cancel()
 
@@ -88,5 +88,5 @@ func EventsByBuilding(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.SingleBuildingEventsResponse{Status: http.StatusOK, Message: "success", Data: eventsByBuilding})
+	c.JSON(http.StatusOK, responses.SingleBuildingEventsResponse[schema.SectionWithTime]{Status: http.StatusOK, Message: "success", Data: eventsByBuilding})
 }

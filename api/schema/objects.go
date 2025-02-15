@@ -118,26 +118,27 @@ type Event struct {
 	ContactPhoneNumber string             `bson:"contact_phone_number" json:"contact_phone_number"`
 }
 
-type MultiBuildingEvents struct {
-	Buildings []SingleBuildingEvents `bson:"buildings" json:"buildings"`
+// Event hierarchy
+type MultiBuildingEvents[T any] struct {
+	Buildings []SingleBuildingEvents[T] `bson:"buildings" json:"buildings"`
+}
+type SingleBuildingEvents[T any] struct {
+	Building string          `bson:"building" json:"building"`
+	Rooms    []RoomEvents[T] `bson:"rooms" json:"rooms"`
+}
+type RoomEvents[T any] struct {
+	Room     string `bson:"room" json:"room"`
+	Sections []T    `bson:"events" json:"events"`
 }
 
-type SingleBuildingEvents struct {
-	Building string       `bson:"building" json:"building"`
-	Rooms    []RoomEvents `bson:"rooms" json:"rooms"`
-}
-
-type RoomEvents struct {
-	Room     string            `bson:"room" json:"room"`
-	Sections []SectionWithTime `bson:"sections" json:"sections"`
-}
-
+// Event types
 type SectionWithTime struct {
 	Section   primitive.ObjectID `bson:"section" json:"section"`
 	StartTime string             `bson:"start_time" json:"start_time"`
 	EndTime   string             `bson:"end_time" json:"end_time"`
 }
 
+// Rooms type
 type BuildingRooms struct {
 	Building string   `bson:"building" json:"building"`
 	Rooms    []string `bson:"rooms" json:"rooms"`
