@@ -137,6 +137,18 @@ type SectionWithTime struct {
 	StartTime string             `bson:"start_time" json:"start_time"`
 	EndTime   string             `bson:"end_time" json:"end_time"`
 }
+type AstraEvent struct {
+	ActivityName        *string  `bson:"activity_name" json:"activity_name"`
+	MeetingType         *string  `bson:"meeting_type" json:"meeting_type"`
+	StartDate           *string  `bson:"start_date" json:"start_date"`
+	EndDate             *string  `bson:"end_date" json:"end_date"`
+	BuildingCode        *string  `bson:"building_code" json:"building_code"`
+	RoomNumber          *string  `bson:"room_number" json:"room_number"`
+	CurrentState        *string  `bson:"current_state" json:"current_state"`
+	NotAllowedUsageMask *float64 `bson:"not_allowed_usage_mask" json:"not_allowed_usage_mask"`
+	UsageColor          *string  `bson:"usage_color" json:"usage_color"`
+	Capacity            *float64 `bson:"capacity" json:"capacity"`
+}
 
 // Rooms type
 type BuildingRooms struct {
