@@ -207,7 +207,7 @@ func professorCourse(flag string, c *gin.Context) {
 
 	// determine the offset and limit for pagination stage
 	// and delete "offset" field in professorQuery
-	formerOffset, latterOffset, limit, err := configs.GetAggregateLimit(&professorQuery, c)
+	paginateMap, err := configs.GetAggregateLimit(&professorQuery, c)
 	if err != nil {
 		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
 		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
@@ -220,8 +220,8 @@ func professorCourse(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: professorQuery}},
 
 		// paginate the professors before pulling the courses from those professor
-		bson.D{{Key: "$skip", Value: formerOffset}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: limit}},       // limit to the specified number of professors
+		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of professors
 
 		// lookup the array of sections from sections collection
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -252,8 +252,8 @@ func professorCourse(flag string, c *gin.Context) {
 		bson.D{{Key: "$replaceWith", Value: "$courses"}},
 
 		// paginate the courses
-		bson.D{{Key: "$skip", Value: latterOffset}},
-		bson.D{{Key: "$limit", Value: limit}},
+		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
+		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
 
 	// Perform aggreration on the pipeline
@@ -331,7 +331,7 @@ func professorSection(flag string, c *gin.Context) {
 	}
 
 	// determine the offset and limit for pagination stage
-	formerOffset, latterOffset, limit, err := configs.GetAggregateLimit(&professorQuery, c)
+	paginateMap, err := configs.GetAggregateLimit(&professorQuery, c)
 	if err != nil {
 		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
 		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
@@ -344,8 +344,8 @@ func professorSection(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: professorQuery}},
 
 		// paginate the professors before pulling the courses from those professor
-		bson.D{{Key: "$skip", Value: formerOffset}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: limit}},       // limit to the specified number of professors
+		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of professors
 
 		// lookup the array of sections from sections collection
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -368,8 +368,8 @@ func professorSection(flag string, c *gin.Context) {
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
 		// paginate the sections
-		bson.D{{Key: "$skip", Value: latterOffset}},
-		bson.D{{Key: "$limit", Value: limit}},
+		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
+		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
 
 	// Perform aggreration on the pipeline
@@ -388,7 +388,7 @@ func professorSection(flag string, c *gin.Context) {
 	c.JSON(http.StatusOK, responses.MultiSectionResponse{Status: http.StatusOK, Message: "success", Data: professorSections})
 }
 
-// function to determine the query of the professor based on the parameters passed from context avoid redundancy in the code
+// determine the query of the professor based on the parameters passed from context
 // if there's an error, throw an error response back to the API consumer and return only the error
 func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 	var professorQuery bson.M
@@ -413,7 +413,7 @@ func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 		professorQuery = bson.M{"_id": professorObjId}
 	} else {
 		// something wrong that messed up the server
-		err = errors.New("broken endpoint")
+		err = errors.New("invalid type of filtering professors, either filtering based on available professor fields or ID")
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "endpoint error", Data: err.Error()})
 		return nil, err
 	}

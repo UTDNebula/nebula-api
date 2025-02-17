@@ -80,38 +80,31 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 	return options.Find().SetSkip(offset).SetLimit(limit), err
 }
 
-// Returns the offsets and limit for pagination stage for aggregate endpoints pipeline
-// (former offset, latter offset, limit, err)
-func GetAggregateLimit(query *bson.M, c *gin.Context) (int64, int64, int64, error) {
+// Returns the offsets and limit for pagination stage for aggregate endpoints pipeline (map, err)
+func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]int64, error) {
 	// remove formerOffset and latterOffset field (if present) in the query
 	delete(*query, "former_offset")
 	delete(*query, "latter_offset")
 
-	// parses offset if included in the query
-	var formerOffset, latterOffset int64
+	// parses offsets if included in the query
+	paginateMap := map[string]int64{
+		"former_offset": 0, // initialize the default value of offset & limit right in the map
+		"latter_offset": 0,
+		"limit":         GetEnvLimit(),
+	}
 	var err error
 
-	var limit int64 = GetEnvLimit()
-
-	// get the offset on the "former" part of the endpoint
-	if c.Query("former_offset") == "" {
-		formerOffset = 0
-	} else {
-		formerOffset, err = strconv.ParseInt(c.Query("former_offset"), 10, 64)
-		if err != nil {
-			return 0, 0, limit, err
+	// loop through offset types (keys indicating offset values)
+	for key := range paginateMap {
+		// only change values of the map if specified
+		if key != "limit" && c.Query(key) != "" {
+			offset, parseErr := strconv.ParseInt(c.Query(key), 10, 64)
+			if parseErr != nil {
+				return paginateMap, parseErr // return default value of offset
+			}
+			paginateMap[key] = offset
 		}
 	}
 
-	// get offset on the "latter" part of the endpoint
-	if c.Query("latter_offset") == "" {
-		latterOffset = 0
-	} else {
-		latterOffset, err = strconv.ParseInt(c.Query("latter_offset"), 10, 64)
-		if err != nil {
-			return 0, 0, limit, err
-		}
-	}
-
-	return formerOffset, latterOffset, limit, err
+	return paginateMap, err
 }
