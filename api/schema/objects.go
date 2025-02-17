@@ -138,8 +138,6 @@ type AstraEvent struct {
 	MeetingType         *string  `bson:"meeting_type" json:"meeting_type"`
 	StartDate           *string  `bson:"start_date" json:"start_date"`
 	EndDate             *string  `bson:"end_date" json:"end_date"`
-	BuildingCode        *string  `bson:"building_code" json:"building_code"`
-	RoomNumber          *string  `bson:"room_number" json:"room_number"`
 	CurrentState        *string  `bson:"current_state" json:"current_state"`
 	NotAllowedUsageMask *float64 `bson:"not_allowed_usage_mask" json:"not_allowed_usage_mask"`
 	UsageColor          *string  `bson:"usage_color" json:"usage_color"`
