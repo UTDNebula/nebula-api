@@ -120,6 +120,7 @@ type Event struct {
 
 // Event hierarchy
 type MultiBuildingEvents[T any] struct {
+	Date      string                    `bson:"date" json:"date"`
 	Buildings []SingleBuildingEvents[T] `bson:"buildings" json:"buildings"`
 }
 type SingleBuildingEvents[T any] struct {
