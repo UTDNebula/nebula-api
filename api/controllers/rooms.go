@@ -15,8 +15,7 @@ import (
 	"github.com/UTDNebula/nebula-api/api/schema"
 )
 
-// var roomsCollection *mongo.Collection = configs.GetCollection("rooms")
-var buildingCollection *mongo.Collection = configs.GetCollection("building")
+var buildingCollection *mongo.Collection = configs.GetCollection("rooms")
 
 // @Id rooms
 // @Router /rooms [get]
