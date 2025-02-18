@@ -133,6 +133,11 @@ type RoomEvents[T any] struct {
 }
 
 // Event types
+type SectionWithTime struct {
+	Section   primitive.ObjectID `bson:"section" json:"section"`
+	StartTime string             `bson:"start_time" json:"start_time"`
+	EndTime   string             `bson:"end_time" json:"end_time"`
+}
 type AstraEvent struct {
 	ActivityName        *string  `bson:"activity_name" json:"activity_name"`
 	MeetingType         *string  `bson:"meeting_type" json:"meeting_type"`
@@ -142,6 +147,12 @@ type AstraEvent struct {
 	NotAllowedUsageMask *float64 `bson:"not_allowed_usage_mask" json:"not_allowed_usage_mask"`
 	UsageColor          *string  `bson:"usage_color" json:"usage_color"`
 	Capacity            *float64 `bson:"capacity" json:"capacity"`
+}
+
+// Rooms type
+type BuildingRooms struct {
+	Building string   `bson:"building" json:"building"`
+	Rooms    []string `bson:"rooms" json:"rooms"`
 }
 
 // 5 Level Likert Item scale for evaluation responses
