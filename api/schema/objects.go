@@ -148,6 +148,17 @@ type AstraEvent struct {
 	UsageColor          *string  `bson:"usage_color" json:"usage_color"`
 	Capacity            *float64 `bson:"capacity" json:"capacity"`
 }
+type MazevoEvent struct {
+	EventName         *string  `bson:"eventName" json:"eventName"`
+	OrganizationName  *string  `bson:"organizationName" json:"organizationName"`
+	ContactName       *string  `bson:"contactName" json:"contactName"`
+	SetupMinutes      *float64 `bson:"setupMinutes" json:"setupMinutes"`
+	DateTimeStart     *string  `bson:"dateTimeStart" json:"dateTimeStart"`
+	DateTimeEnd       *string  `bson:"dateTimeEnd" json:"dateTimeEnd"`
+	TeardownMinutes   *float64 `bson:"teardownMinutes" json:"teardownMinutes"`
+	StatusDescription *string  `bson:"statusDescription" json:"statusDescription"`
+	StatusColor       *string  `bson:"statusColor" json:"statusColor"`
+}
 
 // Rooms type
 type BuildingRooms struct {
