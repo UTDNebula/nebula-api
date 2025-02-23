@@ -76,6 +76,7 @@ func CourseSearch(c *gin.Context) {
 	}
 
 	// return result
+	log.Logger.Print(len(courses))
 	c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
 }
 
@@ -259,6 +260,6 @@ func courseSection(flag string, c *gin.Context) {
 	if err = cursor.All(ctx, &courseSections); err != nil {
 		panic(err)
 	}
-
+  
 	c.JSON(http.StatusOK, responses.MultiSectionResponse{Status: http.StatusOK, Message: "success", Data: courseSections})
 }
