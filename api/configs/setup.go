@@ -46,7 +46,6 @@ func ConnectDB() *mongo.Client {
 		dbInstance = &DBSingleton{
 			client: client,
 		}
-
 	})
 
 	return dbInstance.client
@@ -81,24 +80,38 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 	return options.Find().SetSkip(offset).SetLimit(limit), err
 }
 
-// TODO: Is there a chance we can combine this with GetOptionLimit to reduce repretiveness ?
-// Returns pairs of the offset and limit for pagination stage for aggregate endpoints pipeline
-// returns (offset, limit, err)
-func GetAggregateLimit(query *bson.M, c *gin.Context) (int64, int64, error) {
-	delete(*query, "offset") // remove offset field (if present) in the query
+// Returns the offsets and limit for pagination stage for aggregate endpoints pipeline
+// (former offset, latter offset, limit, err)
+func GetAggregateLimit(query *bson.M, c *gin.Context) (int64, int64, int64, error) {
+	// remove formerOffset and latterOffset field (if present) in the query
+	delete(*query, "former_offset")
+	delete(*query, "latter_offset")
 
 	// parses offset if included in the query
-	var limit int64 = GetEnvLimit()
-	var offset int64
+	var formerOffset, latterOffset int64
 	var err error
 
-	if c.Query("offset") == "" {
-		offset = 0 // default value
+	var limit int64 = GetEnvLimit()
+
+	// get the offset on the "former" part of the endpoint
+	if c.Query("former_offset") == "" {
+		formerOffset = 0
 	} else {
-		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
+		formerOffset, err = strconv.ParseInt(c.Query("former_offset"), 10, 64)
 		if err != nil {
-			return offset, limit, err // default value
+			return 0, 0, limit, err
 		}
 	}
-	return offset, limit, err
+
+	// get offset on the "latter" part of the endpoint
+	if c.Query("latter_offset") == "" {
+		latterOffset = 0
+	} else {
+		latterOffset, err = strconv.ParseInt(c.Query("latter_offset"), 10, 64)
+		if err != nil {
+			return 0, 0, limit, err
+		}
+	}
+
+	return formerOffset, latterOffset, limit, err
 }
