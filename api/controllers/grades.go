@@ -148,17 +148,17 @@ func gradesAggregation(flag string, c *gin.Context) {
 	}
 	internalCourseNumber := sampleCourse.Internal_course_number
 
-	// arrays of regexes and section types
+	// Arrays of regexes and section types
 	typeRegexes := [14]string{"0[0-9][0-9]", "0W[0-9]", "0H[0-9]", "0L[0-9]", "5H[0-9]", "1[0-9][0-9]", "2[0-9][0-9]", "3[0-9][0-9]", "5[0-9][0-9]", "6[0-9][0-9]", "7[0-9][0-9]", "HN[0-9]", "HON", "[0-9]U[0-9]"}
 	typeStrings := [14]string{"0xx", "0Wx", "0Hx", "0Lx", "5Hx", "1xx", "2xx", "3xx", "5xx", "6xx", "7xx", "HNx", "HON", "xUx"}
 
 	var branches []bson.D            // for without section pipeline
 	var withSectionBranches []bson.D // for with section pipeline
-	for i := 0; i < len(typeRegexes); i++ {
+	for i, typeRegex := range typeRegexes {
 		branches = append(branches, bson.D{
 			{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
 				{Key: "input", Value: "$sections.section_number"},
-				{Key: "regex", Value: typeRegexes[i]},
+				{Key: "regex", Value: typeRegex},
 			}}}},
 			{Key: "then", Value: typeStrings[i]},
 		})
@@ -166,7 +166,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		withSectionBranches = append(withSectionBranches, bson.D{
 			{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
 				{Key: "input", Value: "$section_number"},
-				{Key: "regex", Value: typeRegexes[i]},
+				{Key: "regex", Value: typeRegex},
 			}}}},
 			{Key: "then", Value: typeStrings[i]},
 		})
@@ -185,7 +185,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 	// Stage to unwind sections
 	unwindSectionsStage := bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sections"}}}}
 
-	// Project grade distribution stage
+	// Stage to project grade distribution stage
 	project := bson.D{
 		{Key: "_id", Value: "$sections.academic_session.name"},
 		{Key: "grade_distribution", Value: "$sections.grade_distribution"},
@@ -228,8 +228,8 @@ func gradesAggregation(flag string, c *gin.Context) {
 		{Key: "academic_session", Value: "$_id"},
 		{Key: "ix", Value: "$ix"},
 	}
-	// add section_type to _id so as to group grades by both academic_session and section_type
 	if flag == "section_type" {
+		// add section_type to _id to group grades by both academic_session and section_type
 		groupID = append(groupID, bson.E{Key: "section_type", Value: "$section_type"})
 	}
 	groupGradesStage := bson.D{
@@ -245,11 +245,8 @@ func gradesAggregation(flag string, c *gin.Context) {
 		{Key: "_id", Value: 1},
 	}
 	if flag == "section_type" {
-		sort = bson.D{ // add section_type to id
-			{Key: "_id.ix", Value: 1},
-			{Key: "_id.section_type", Value: 1},
-			{Key: "_id", Value: 1},
-		}
+		// insert the section-type criteria to index 1
+		sort = append(sort[:1], append(bson.D{{Key: "_id.section_type", Value: 1}}, sort[1:]...)...)
 	}
 	sortGradesStage := bson.D{{Key: "$sort", Value: sort}}
 
@@ -257,21 +254,22 @@ func gradesAggregation(flag string, c *gin.Context) {
 	sumGradesStage := bson.D{{Key: "$addFields", Value: bson.D{{Key: "grades", Value: bson.D{{Key: "$sum", Value: "$grades"}}}}}}
 
 	// Stage to group grade distribution
-	groupDistributionID := bson.E{Key: "_id", Value: "$_id.academic_session"}
+	var groupDistributionID any = "$_id.academic_session"
 	if flag == "section_type" {
-		groupDistributionID = bson.E{Key: "_id", Value: bson.D{
+		// add the section-type criteria
+		groupDistributionID = bson.D{
 			{Key: "academic_section", Value: "$_id.academic_session"},
 			{Key: "section_type", Value: "$_id.section_type"},
-		}}
+		}
 	}
 	groupGradeDistributionStage := bson.D{
 		{Key: "$group", Value: bson.D{
-			groupDistributionID,
+			{Key: "_id", Value: groupDistributionID},
 			{Key: "grade_distribution", Value: bson.D{{Key: "$push", Value: "$grades"}}},
 		}},
 	}
 
-	// Additional stages for section-type pipeline
+	// Additional stages for "section-type" pipeline
 	// Stage to sort the section-type-specific grade distributions before grouping
 	sortGradeDistributionsStage := bson.D{
 		{Key: "$sort", Value: bson.D{
@@ -280,7 +278,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		}},
 	}
 
-	// Stage group section-type-specific grade distributions together based on semester
+	// Stage to group section-type-specific grade distributions together based on semester
 	groupSemesterGradeDistributionsStage := bson.D{
 		{Key: "$group", Value: bson.D{
 			{Key: "_id", Value: "$_id.academic_section"},
