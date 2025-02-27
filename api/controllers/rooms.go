@@ -19,9 +19,9 @@ var buildingCollection *mongo.Collection = configs.GetCollection("rooms")
 
 // @Id rooms
 // @Router /rooms [get]
-// @Description "Returns all classrooms being used in the current and futures semesters"
+// @Description "Returns all schedulable rooms being used in the current and futures semesters from CourseBook, Astra, and Mazevo"
 // @Produce json
-// @Success 200 {array} schema.BuildingRooms "All classrooms being used in the current and futures semesters"
+// @Success 200 {array} schema.BuildingRooms "All schedulable rooms being used in the current and futures semesters from CourseBook, Astra, and Mazevo"
 func Rooms(c *gin.Context) {
 	//gin context has info about request and allows converting to json format
 
