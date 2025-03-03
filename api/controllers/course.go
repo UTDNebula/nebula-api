@@ -260,6 +260,6 @@ func courseSection(flag string, c *gin.Context) {
 	if err = cursor.All(ctx, &courseSections); err != nil {
 		panic(err)
 	}
-  
+
 	c.JSON(http.StatusOK, responses.MultiSectionResponse{Status: http.StatusOK, Message: "success", Data: courseSections})
 }
