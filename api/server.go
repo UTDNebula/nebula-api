@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/UTDNebula/nebula-api/api/configs"
-	_ "github.com/UTDNebula/nebula-api/api/docs"
 	"github.com/UTDNebula/nebula-api/api/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
@@ -61,6 +60,8 @@ func main() {
 	routes.GradesRoute(router)
 	routes.AutocompleteRoute(router)
 	routes.StorageRoute(router)
+	routes.RoomsRoute(router)
+	routes.EventsRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
