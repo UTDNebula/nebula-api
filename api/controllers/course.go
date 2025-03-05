@@ -24,7 +24,7 @@ var courseCollection *mongo.Collection = configs.GetCollection("courses")
 // @Router /course [get]
 // @Description "Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce json
-// @Param offset query number false "The staritng position of the current page of courses (e.g. For starting at the 17th course, offset=16)."
+// @Param offset query number false "The starting position of the current page of courses (e.g. For starting at the 17th course, offset=16)."
 // @Param course_number query string false "The course's official number"
 // @Param subject_prefix query string false "The course's subject prefix"
 // @Param title query string false "The course's title"

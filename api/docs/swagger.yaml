@@ -329,7 +329,7 @@ paths:
         key-value pairs. See offset for more details on pagination."'
       operationId: courseSearch
       parameters:
-      - description: The staritng position of the current page of courses (e.g. For
+      - description: The starting position of the current page of courses (e.g. For
           starting at the 17th course, offset=16).
         in: query
         name: offset
@@ -647,7 +647,7 @@ paths:
         key-value pairs. See offset for more details on pagination."'
       operationId: professorSearch
       parameters:
-      - description: The staritng position of the current page of professors (e.g.
+      - description: The starting position of the current page of professors (e.g.
           For starting at the 17th professor, offset=16).
         in: query
         name: offset
@@ -1016,7 +1016,7 @@ paths:
         key-value pairs. See offset for more details on pagination."'
       operationId: sectionSearch
       parameters:
-      - description: The staritng position of the current page of sections (e.g. For
+      - description: The starting position of the current page of sections (e.g. For
           starting at the 17th professor, offset=16).
         in: query
         name: offset
