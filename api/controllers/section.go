@@ -23,7 +23,7 @@ var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 // @Router /section [get]
 // @Description "Returns paginated list of sections matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce json
-// @Param offset query number false "The staritng position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
+// @Param offset query number false "The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
 // @Param section_number query string false "The section's official number"
 // @Param course_reference query string false "An id that points to the course in MongoDB that this section is an instantiation of"
 // @Param academic_session.name query string false "The name of the academic session of the section"
