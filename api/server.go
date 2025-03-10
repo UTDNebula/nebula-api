@@ -63,6 +63,7 @@ func main() {
 	routes.StorageRoute(router)
 	routes.RoomsRoute(router)
 	routes.EventsRoute(router)
+	routes.AstraRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
