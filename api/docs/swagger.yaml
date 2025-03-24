@@ -60,6 +60,25 @@ definitions:
       role:
         type: string
     type: object
+  schema.AstraEvent:
+    properties:
+      activity_name:
+        type: string
+      capacity:
+        type: number
+      current_state:
+        type: string
+      end_date:
+        type: string
+      meeting_type:
+        type: string
+      not_allowed_usage_mask:
+        type: number
+      start_date:
+        type: string
+      usage_color:
+        type: string
+    type: object
   schema.Autocomplete:
     properties:
       course_numbers:
@@ -173,6 +192,15 @@ definitions:
       start_time:
         type: string
     type: object
+  schema.MultiBuildingEvents-schema_AstraEvent:
+    properties:
+      buildings:
+        items:
+          $ref: '#/definitions/schema.SingleBuildingEvents-schema_AstraEvent'
+        type: array
+      date:
+        type: string
+    type: object
   schema.MultiBuildingEvents-schema_SectionWithTime:
     properties:
       buildings:
@@ -212,6 +240,15 @@ definitions:
         items:
           type: string
         type: array
+    type: object
+  schema.RoomEvents-schema_AstraEvent:
+    properties:
+      events:
+        items:
+          $ref: '#/definitions/schema.AstraEvent'
+        type: array
+      room:
+        type: string
     type: object
   schema.RoomEvents-schema_SectionWithTime:
     properties:
@@ -292,6 +329,15 @@ definitions:
       last_name:
         type: string
     type: object
+  schema.SingleBuildingEvents-schema_AstraEvent:
+    properties:
+      building:
+        type: string
+      rooms:
+        items:
+          $ref: '#/definitions/schema.RoomEvents-schema_AstraEvent'
+        type: array
+    type: object
   schema.SingleBuildingEvents-schema_SectionWithTime:
     properties:
       building:
@@ -308,6 +354,25 @@ info:
   title: nebula-api
   version: 1.0.0
 paths:
+  /astra/{date}:
+    get:
+      description: '"Returns AstraEvent based on the input date"'
+      operationId: AstraEvents
+      parameters:
+      - description: date (ISO format) to retrieve astra events
+        in: path
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All AstraEvents with events on the inputted date
+          schema:
+            items:
+              $ref: '#/definitions/schema.MultiBuildingEvents-schema_AstraEvent'
+            type: array
   /autocomplete/dag:
     get:
       description: '"Returns an aggregation of courses for use in generating autocomplete
@@ -430,10 +495,21 @@ paths:
             type: array
   /course/sections:
     get:
-      description: '"Returns all the sections of all the courses matching the query''s
-        string-typed key-value pairs"'
+      description: '"Returns paginated list of sections of all the courses matching
+        the query''s string-typed key-value pairs. See former_offset and latter_offset
+        for pagination details."'
       operationId: courseSectionSearch
       parameters:
+      - description: The starting position of the current page of courses (e.g. For
+          starting at the 17th course, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 4th section, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
       - description: The course's official number
         in: query
         name: course_number
@@ -801,10 +877,21 @@ paths:
             type: array
   /professor/courses:
     get:
-      description: '"Returns all of the courses of all the professors matching the
-        query''s string-typed key-value pairs"'
+      description: '"Returns paginated list of the courses of all the professors matching
+        the query''s string-typed key-value pairs. See former_offset and latter_offset
+        for pagination details."'
       operationId: professorCourseSearch
       parameters:
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of courses (e.g. For
+          starting at the 4th course, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
       - description: The professor's first name
         in: query
         name: first_name
@@ -899,10 +986,21 @@ paths:
             type: array
   /professor/sections:
     get:
-      description: '"Returns all of the sections of all the professors matching the
-        query''s string-typed key-value pairs"'
+      description: '"Returns paginated list of the sections of all the professors
+        matching the query''s string-typed key-value pairs. See former_offset and
+        latter_offset for pagination details."'
       operationId: professorSectionSearch
       parameters:
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 4th section, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
       - description: The professor's first name
         in: query
         name: first_name

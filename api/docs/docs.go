@@ -15,6 +15,35 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/astra/{date}": {
+            "get": {
+                "description": "\"Returns AstraEvent based on the input date\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "AstraEvents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve astra events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All AstraEvents with events on the inputted date",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MultiBuildingEvents-schema_AstraEvent"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/autocomplete/dag": {
             "get": {
                 "description": "\"Returns an aggregation of courses for use in generating autocomplete DAGs\"",
@@ -137,12 +166,24 @@ const docTemplate = `{
         },
         "/course/sections": {
             "get": {
-                "description": "\"Returns all the sections of all the courses matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "courseSectionSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The course's official number",
@@ -655,12 +696,24 @@ const docTemplate = `{
         },
         "/professor/courses": {
             "get": {
-                "description": "\"Returns all of the courses of all the professors matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "professorCourseSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 4th course, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The professor's first name",
@@ -797,12 +850,24 @@ const docTemplate = `{
         },
         "/professor/sections": {
             "get": {
-                "description": "\"Returns all of the sections of all the professors matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of the sections of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "professorSectionSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The professor's first name",
@@ -1344,6 +1409,35 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.AstraEvent": {
+            "type": "object",
+            "properties": {
+                "activity_name": {
+                    "type": "string"
+                },
+                "capacity": {
+                    "type": "number"
+                },
+                "current_state": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "meeting_type": {
+                    "type": "string"
+                },
+                "not_allowed_usage_mask": {
+                    "type": "number"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "usage_color": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.Autocomplete": {
             "type": "object",
             "properties": {
@@ -1516,6 +1610,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.MultiBuildingEvents-schema_AstraEvent": {
+            "type": "object",
+            "properties": {
+                "buildings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SingleBuildingEvents-schema_AstraEvent"
+                    }
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.MultiBuildingEvents-schema_SectionWithTime": {
             "type": "object",
             "properties": {
@@ -1574,6 +1682,20 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "schema.RoomEvents-schema_AstraEvent": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.AstraEvent"
+                    }
+                },
+                "room": {
+                    "type": "string"
                 }
             }
         },
@@ -1698,6 +1820,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.SingleBuildingEvents-schema_AstraEvent": {
+            "type": "object",
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.RoomEvents-schema_AstraEvent"
+                    }
+                }
+            }
+        },
         "schema.SingleBuildingEvents-schema_SectionWithTime": {
             "type": "object",
             "properties": {
@@ -1761,7 +1897,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "",
+	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"http", "https"},
 	Title:            "nebula-api",
