@@ -495,10 +495,21 @@ paths:
             type: array
   /course/sections:
     get:
-      description: '"Returns all the sections of all the courses matching the query''s
-        string-typed key-value pairs"'
+      description: '"Returns paginated list of sections of all the courses matching
+        the query''s string-typed key-value pairs. See former_offset and latter_offset
+        for pagination details."'
       operationId: courseSectionSearch
       parameters:
+      - description: The starting position of the current page of courses (e.g. For
+          starting at the 17th course, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 4th section, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
       - description: The course's official number
         in: query
         name: course_number
@@ -866,10 +877,21 @@ paths:
             type: array
   /professor/courses:
     get:
-      description: '"Returns all of the courses of all the professors matching the
-        query''s string-typed key-value pairs"'
+      description: '"Returns paginated list of the courses of all the professors matching
+        the query''s string-typed key-value pairs. See former_offset and latter_offset
+        for pagination details."'
       operationId: professorCourseSearch
       parameters:
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of courses (e.g. For
+          starting at the 4th course, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
       - description: The professor's first name
         in: query
         name: first_name
@@ -964,10 +986,21 @@ paths:
             type: array
   /professor/sections:
     get:
-      description: '"Returns all of the sections of all the professors matching the
-        query''s string-typed key-value pairs"'
+      description: '"Returns paginated list of the sections of all the professors
+        matching the query''s string-typed key-value pairs. See former_offset and
+        latter_offset for pagination details."'
       operationId: professorSectionSearch
       parameters:
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 4th section, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
       - description: The professor's first name
         in: query
         name: first_name

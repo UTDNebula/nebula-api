@@ -166,12 +166,24 @@ const docTemplate = `{
         },
         "/course/sections": {
             "get": {
-                "description": "\"Returns all the sections of all the courses matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "courseSectionSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The course's official number",
@@ -684,12 +696,24 @@ const docTemplate = `{
         },
         "/professor/courses": {
             "get": {
-                "description": "\"Returns all of the courses of all the professors matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "professorCourseSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 4th course, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The professor's first name",
@@ -826,12 +850,24 @@ const docTemplate = `{
         },
         "/professor/sections": {
             "get": {
-                "description": "\"Returns all of the sections of all the professors matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of the sections of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "professorSectionSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The professor's first name",
