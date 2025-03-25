@@ -1298,14 +1298,20 @@ const docTemplate = `{
                 }
             }
         },
-        "/swagger/index.html": {
+        "/swagger/{file}": {
             "get": {
                 "security": [],
                 "description": "Returns the OpenAPI/swagger spec for the API",
-                "produces": [
-                    "text/html"
-                ],
                 "operationId": "swagger",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The swagger file to retrieve",
+                        "name": "file",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
