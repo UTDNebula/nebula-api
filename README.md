@@ -1,36 +1,28 @@
 # Nebula API
 
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
-
 _A database for some really useful UTD data._
 
-Part of [Project Nebula](https://about.utdnebula.com)
+Project maintained by [Nebula Labs](https://about.utdnebula.com)
 
-## Contributing
+### Contributing
+
+Please visit our [Discord](https://discord.utdnebula.com) and talk to us if you'd like to contribute!
 
 ### Prerequisites
 
 - Golang 1.23 (or higher)
 
-### Development
+### Documentation
 
-See the [docs](docs/index.md) for more information about the project.
+- Documentation for the current production API can be found [here.](https://api.utdnebula.com/swagger/index.html)
 
-Clone the repository.
+### How to use
 
-- The `api` directory contains infrastructure for endpoints to query data.
-- The `docs` directory contains, you guessed it, documentation!
+- Visit our [Discord](https://discord.utdnebula.com) and ask to be provisioned an API key (please provide details on your use case)
+- Read the documentation listed above (and authenticate with your key for interactive demos)
+- Make requests to `https://api.utdnebula.com` with your provisioned api key set as the `x-api-key` request header
+- Build cool stuff!
 
-#### API (Under construction)
+### How do you get this data?
 
-The API uses Golang with Gin and the MongoDB Golang Driver.
-
-### Deployment
-
-[TBD]
-
-## Questions or Feedback
-
-If you have any questions about this project, reach out to the Project Nebula
-maintainers at core-maintainers@utdnebula.com or open an issue or discussion on
-this repository.
+- Using our set of [tools!](https://github.com/UTDNebula/api-tools)
