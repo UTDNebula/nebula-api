@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/UTDNebula/nebula-api/api/responses"
 	"github.com/UTDNebula/nebula-api/api/schema"
 
@@ -100,6 +101,18 @@ func GradesAggregationOverall() gin.HandlerFunc {
 	}
 }
 
+// @Id gradeAggregationCourseEndpoint
+// @Router /course/{id}/grades [get]
+// @Description "Returns the grade distribution aggregated by semester for a course"
+// @Produce json
+// @Param id path string true "ID of course to get grades for"
+// @Success 200 {array} integer "A grade distribution array for the course"
+func GradesAggregationCourseEndpoint() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		gradesAggregation("course_endpoint", c)
+	}
+}
+
 // base function, returns the grade distribution depending on type of flag
 func gradesAggregation(flag string, c *gin.Context) {
 	var grades []map[string]interface{}
@@ -132,6 +145,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 	section_number := c.Query("section_number")
 	first_name := c.Query("first_name")
 	last_name := c.Query("last_name")
+	id := c.Param("id")
 
 	professor := (first_name != "" || last_name != "")
 
@@ -290,6 +304,21 @@ func gradesAggregation(flag string, c *gin.Context) {
 	}
 
 	switch {
+	case flag == "course_endpoint":
+		// Filter on course ID, from the course endpoint
+		collection = courseCollection
+
+		// parse object id from id parameter
+		objId, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			log.WriteError(err)
+			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
+			return
+		}
+
+		courseMatch := bson.D{{Key: "$match", Value: bson.M{"_id": objId}}}
+		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage, unwindSectionsStage, projectGradeDistributionStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
+
 	case prefix != "" && number == "" && section_number == "" && !professor:
 		// Filter on Course
 		collection = courseCollection
@@ -449,7 +478,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 			}
 		}
 		c.JSON(http.StatusOK, responses.GradeResponse{Status: http.StatusOK, Message: "success", Data: overallResponse})
-	} else if flag == "semester" {
+	} else if flag == "semester" || flag == "course_endpoint" {
 		c.JSON(http.StatusOK, responses.GradeResponse{Status: http.StatusOK, Message: "success", Data: grades})
 	} else if flag == "section_type" {
 		c.JSON(http.StatusOK, responses.SectionGradeResponse{Status: http.StatusOK, Message: "success", GradeData: sectionTypeGrades})

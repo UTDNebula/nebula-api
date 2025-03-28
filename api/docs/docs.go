@@ -296,6 +296,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/course/{id}/grades": {
+            "get": {
+                "description": "\"Returns the grade distribution aggregated by semester for a course\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "gradeAggregationCourseEndpoint",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of course to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the course",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/course/{id}/sections": {
             "get": {
                 "description": "\"Returns the all of the sections of the course with given ID\"",
