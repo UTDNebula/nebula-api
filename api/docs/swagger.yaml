@@ -1321,7 +1321,7 @@ securityDefinitions:
     type: apiKey
 swagger: "2.0"
 x-google-backend:
-  address: REDACTED
+  address: https://dev-nebula-api-1062216541483.us-south1.run.app
 x-google-endpoints:
 - allowCors: true
   name: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
