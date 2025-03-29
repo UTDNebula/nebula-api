@@ -14,4 +14,7 @@ func SectionRoute(router *gin.Engine) {
 	sectionGroup.GET("", controllers.SectionSearch)
 	sectionGroup.GET(":id", controllers.SectionById)
 	sectionGroup.GET(":id/evaluation", controllers.EvalBySectionID)
+
+	// Route for section grades
+	sectionGroup.GET(":id/grades", controllers.GradesBySectionID())
 }
