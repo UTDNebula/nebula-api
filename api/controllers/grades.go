@@ -65,7 +65,7 @@ import (
 // @Success 200 {array} responses.GradeResponse "An array of grade distributions for each semester included"
 func GradeAggregationSemester() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		gradesAggregation("semester", c, false)
+		gradesAggregation("semester", c)
 	}
 }
 
@@ -81,7 +81,7 @@ func GradeAggregationSemester() gin.HandlerFunc {
 // @Success 200 {array} responses.SectionGradeResponse "An array of grade distributions for each section type for each semester included"
 func GradesAggregationSectionType() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		gradesAggregation("section_type", c, false)
+		gradesAggregation("section_type", c)
 	}
 }
 
@@ -97,7 +97,7 @@ func GradesAggregationSectionType() gin.HandlerFunc {
 // @Success 200 {array} integer "A grade distribution array"
 func GradesAggregationOverall() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		gradesAggregation("overall", c, false)
+		gradesAggregation("overall", c)
 	}
 }
 
@@ -109,7 +109,7 @@ func GradesAggregationOverall() gin.HandlerFunc {
 // @Success 200 {array} integer "A grade distribution array for the course"
 func GradesByCourseID() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		gradesAggregation("course_endpoint", c, true)
+		gradesAggregation("course_endpoint", c)
 	}
 }
 
@@ -121,7 +121,7 @@ func GradesByCourseID() gin.HandlerFunc {
 // @Success 200 {array} integer "A grade distribution array for the section"
 func GradesBySectionID() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		gradesAggregation("section_endpoint", c, true)
+		gradesAggregation("section_endpoint", c)
 	}
 }
 
@@ -133,12 +133,12 @@ func GradesBySectionID() gin.HandlerFunc {
 // @Success 200 {array} integer "A grade distribution array for the professor"
 func GradesByProfessorID() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		gradesAggregation("professor_endpoint", c, true)
+		gradesAggregation("professor_endpoint", c)
 	}
 }
 
 // base function, returns the grade distribution depending on type of flag
-func gradesAggregation(flag string, c *gin.Context, endpoint bool) {
+func gradesAggregation(flag string, c *gin.Context) {
 	var grades []map[string]interface{}
 	var results []map[string]interface{}
 
@@ -172,7 +172,7 @@ func gradesAggregation(flag string, c *gin.Context, endpoint bool) {
 	first_name := c.Query("first_name")
 	last_name := c.Query("last_name")
 
-	if endpoint {
+	if flag == "course_endpoint" || flag == "section_endpoint" || flag == "professor_endpoint" {
 		id := c.Param("id")
 		// parse object id from id parameter
 		objId, err = primitive.ObjectIDFromHex(id)
@@ -507,7 +507,7 @@ func gradesAggregation(flag string, c *gin.Context, endpoint bool) {
 		}
 	}
 
-	if flag == "overall" || endpoint {
+	if flag == "overall" || flag == "course_endpoint" || flag == "section_endpoint" || flag == "professor_endpoint" {
 		// combine all semester grade_distributions
 		overallResponse := make([]int32, 14)
 		for _, sem := range grades {
