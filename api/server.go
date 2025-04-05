@@ -25,7 +25,7 @@ func swagger_controller_placeholder() {}
 // @version 1.0.0
 // @host api.utdnebula.com
 // @schemes http https
-// @x-google-backend {"address": "REDACTED"}
+// @x-google-backend {"address": "https://dev-nebula-api-1062216541483.us-south1.run.app"}
 // @x-google-endpoints [{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
 // @x-google-management {"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
 // @security api_key

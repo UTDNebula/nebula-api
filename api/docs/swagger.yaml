@@ -173,6 +173,27 @@ definitions:
       room:
         type: string
     type: object
+  schema.MazevoEvent:
+    properties:
+      contactName:
+        type: string
+      dateTimeEnd:
+        type: string
+      dateTimeStart:
+        type: string
+      eventName:
+        type: string
+      organizationName:
+        type: string
+      setupMinutes:
+        type: number
+      statusColor:
+        type: string
+      statusDescription:
+        type: string
+      teardownMinutes:
+        type: number
+    type: object
   schema.Meeting:
     properties:
       end_date:
@@ -197,6 +218,15 @@ definitions:
       buildings:
         items:
           $ref: '#/definitions/schema.SingleBuildingEvents-schema_AstraEvent'
+        type: array
+      date:
+        type: string
+    type: object
+  schema.MultiBuildingEvents-schema_MazevoEvent:
+    properties:
+      buildings:
+        items:
+          $ref: '#/definitions/schema.SingleBuildingEvents-schema_MazevoEvent'
         type: array
       date:
         type: string
@@ -246,6 +276,15 @@ definitions:
       events:
         items:
           $ref: '#/definitions/schema.AstraEvent'
+        type: array
+      room:
+        type: string
+    type: object
+  schema.RoomEvents-schema_MazevoEvent:
+    properties:
+      events:
+        items:
+          $ref: '#/definitions/schema.MazevoEvent'
         type: array
       room:
         type: string
@@ -336,6 +375,15 @@ definitions:
       rooms:
         items:
           $ref: '#/definitions/schema.RoomEvents-schema_AstraEvent'
+        type: array
+    type: object
+  schema.SingleBuildingEvents-schema_MazevoEvent:
+    properties:
+      building:
+        type: string
+      rooms:
+        items:
+          $ref: '#/definitions/schema.RoomEvents-schema_MazevoEvent'
         type: array
     type: object
   schema.SingleBuildingEvents-schema_SectionWithTime:
@@ -716,6 +764,25 @@ paths:
           schema:
             items:
               $ref: '#/definitions/responses.SectionGradeResponse'
+            type: array
+  /mazevo/{date}:
+    get:
+      description: '"Returns MazevoEvent based on the input date"'
+      operationId: MazevoEvents
+      parameters:
+      - description: date (ISO format) to retrieve mazevo events
+        in: path
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All MazevoEvents with events on the inputted date
+          schema:
+            items:
+              $ref: '#/definitions/schema.MultiBuildingEvents-schema_MazevoEvent'
             type: array
   /professor:
     get:
