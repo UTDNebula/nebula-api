@@ -13,9 +13,9 @@ import (
 
 // Unauthenticated placeholder endpoint for the built-in ginSwagger swagger documentation endpoint
 // @Id swagger
-// @Router /swagger/index.html [get]
+// @Param file path string true "The swagger file to retrieve"
+// @Router /swagger/{file} [get]
 // @Description Returns the OpenAPI/swagger spec for the API
-// @Produce text/html
 // @Security
 // @Success 200
 func swagger_controller_placeholder() {}
@@ -64,6 +64,7 @@ func main() {
 	routes.RoomsRoute(router)
 	routes.EventsRoute(router)
 	routes.AstraRoute(router)
+	routes.MazevoRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()

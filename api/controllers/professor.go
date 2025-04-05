@@ -148,8 +148,10 @@ func ProfessorAll(c *gin.Context) {
 
 // @Id professorCourseSearch
 // @Router /professor/courses [get]
-// @Description "Returns all of the courses of all the professors matching the query's string-typed key-value pairs"
+// @Description "Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce json
+// @Param former_offset query number false "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
+// @Param latter_offset query number false "The starting position of the current page of courses (e.g. For starting at the 4th course, latter_offset=3)."
 // @Param first_name query string false "The professor's first name"
 // @Param last_name query string false "The professor's last name"
 // @Param titles query string false "One of the professor's title"
@@ -252,6 +254,9 @@ func professorCourse(flag string, c *gin.Context) {
 		// replace the combination of ids and courses with the courses entirely
 		bson.D{{Key: "$replaceWith", Value: "$courses"}},
 
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+
 		// paginate the courses
 		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
 		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
@@ -275,8 +280,10 @@ func professorCourse(flag string, c *gin.Context) {
 
 // @Id professorSectionSearch
 // @Router /professor/sections [get]
-// @Description "Returns all of the sections of all the professors matching the query's string-typed key-value pairs"
+// @Description "Returns paginated list of the sections of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce json
+// @Param former_offset query number false "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
+// @Param latter_offset query number false "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
 // @Param first_name query string false "The professor's first name"
 // @Param last_name query string false "The professor's last name"
 // @Param titles query string false "One of the professor's title"
@@ -367,6 +374,9 @@ func professorSection(flag string, c *gin.Context) {
 
 		// replace the combination of ids and sections with the sections entirely
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
+
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
 		// paginate the sections
 		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
