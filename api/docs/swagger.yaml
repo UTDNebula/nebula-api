@@ -522,6 +522,25 @@ paths:
           description: A course
           schema:
             $ref: '#/definitions/schema.Course'
+  /course/{id}/grades:
+    get:
+      description: '"Returns the overall grade distribution for a course"'
+      operationId: GradesByCourseID
+      parameters:
+      - description: ID of course to get grades for
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A grade distribution array for the course
+          schema:
+            items:
+              type: integer
+            type: array
   /course/{id}/sections:
     get:
       description: '"Returns the all of the sections of the course with given ID"'
@@ -923,6 +942,25 @@ paths:
             items:
               $ref: '#/definitions/schema.Course'
             type: array
+  /professor/{id}/grades:
+    get:
+      description: '"Returns the overall grade distribution for a professor"'
+      operationId: GradesByProfessorID
+      parameters:
+      - description: ID of professor to get grades for
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A grade distribution array for the professor
+          schema:
+            items:
+              type: integer
+            type: array
   /professor/{id}/sections:
     get:
       description: '"Returns all the sections taught by the professor with given ID"'
@@ -1305,6 +1343,25 @@ paths:
           description: A section
           schema:
             $ref: '#/definitions/schema.Section'
+  /section/{id}/grades:
+    get:
+      description: '"Returns the overall grade distribution for a section"'
+      operationId: GradesBySectionID
+      parameters:
+      - description: ID of section to get grades for
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A grade distribution array for the section
+          schema:
+            items:
+              type: integer
+            type: array
   /swagger/{file}:
     get:
       description: Returns the OpenAPI/swagger spec for the API
