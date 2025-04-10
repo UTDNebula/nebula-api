@@ -1391,7 +1391,7 @@ x-google-backend:
   address: https://dev-nebula-api-1062216541483.us-south1.run.app
 x-google-endpoints:
 - allowCors: true
-  name: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
+  name: dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog
 x-google-management:
   metrics:
   - displayName: Read Requests CUSTOM
