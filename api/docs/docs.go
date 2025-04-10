@@ -575,6 +575,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/mazevo/{date}": {
+            "get": {
+                "description": "\"Returns MazevoEvent based on the input date\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "MazevoEvents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents with events on the inputted date",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MultiBuildingEvents-schema_MazevoEvent"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/professor": {
             "get": {
                 "description": "\"Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
@@ -1674,6 +1703,38 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "contactName": {
+                    "type": "string"
+                },
+                "dateTimeEnd": {
+                    "type": "string"
+                },
+                "dateTimeStart": {
+                    "type": "string"
+                },
+                "eventName": {
+                    "type": "string"
+                },
+                "organizationName": {
+                    "type": "string"
+                },
+                "setupMinutes": {
+                    "type": "number"
+                },
+                "statusColor": {
+                    "type": "string"
+                },
+                "statusDescription": {
+                    "type": "string"
+                },
+                "teardownMinutes": {
+                    "type": "number"
+                }
+            }
+        },
         "schema.Meeting": {
             "type": "object",
             "properties": {
@@ -1710,6 +1771,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.SingleBuildingEvents-schema_AstraEvent"
+                    }
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MultiBuildingEvents-schema_MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "buildings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SingleBuildingEvents-schema_MazevoEvent"
                     }
                 },
                 "date": {
@@ -1785,6 +1860,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.AstraEvent"
+                    }
+                },
+                "room": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.RoomEvents-schema_MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.MazevoEvent"
                     }
                 },
                 "room": {
@@ -1927,6 +2016,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.SingleBuildingEvents-schema_MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.RoomEvents-schema_MazevoEvent"
+                    }
+                }
+            }
+        },
         "schema.SingleBuildingEvents-schema_SectionWithTime": {
             "type": "object",
             "properties": {
@@ -1955,7 +2058,7 @@ const docTemplate = `{
         }
     ],
     "x-google-backend": {
-        "address": "REDACTED"
+        "address": "https://dev-nebula-api-1062216541483.us-south1.run.app"
     },
     "x-google-endpoints": [
         {
