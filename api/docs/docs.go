@@ -296,6 +296,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/course/{id}/grades": {
+            "get": {
+                "description": "\"Returns the overall grade distribution for a course\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "GradesByCourseID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of course to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the course",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/course/{id}/sections": {
             "get": {
                 "description": "\"Returns the all of the sections of the course with given ID\"",
@@ -1086,6 +1115,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/professor/{id}/grades": {
+            "get": {
+                "description": "\"Returns the overall grade distribution for a professor\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "GradesByProfessorID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of professor to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the professor",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/professor/{id}/sections": {
             "get": {
                 "description": "\"Returns all the sections taught by the professor with given ID\"",
@@ -1322,6 +1380,35 @@ const docTemplate = `{
                         "description": "A section",
                         "schema": {
                             "$ref": "#/definitions/schema.Section"
+                        }
+                    }
+                }
+            }
+        },
+        "/section/{id}/grades": {
+            "get": {
+                "description": "\"Returns the overall grade distribution for a section\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "GradesBySectionID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of section to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the section",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
                         }
                     }
                 }

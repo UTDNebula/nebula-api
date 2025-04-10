@@ -22,4 +22,7 @@ func ProfessorRoute(router *gin.Engine) {
 	// Endpoints to get the sections of the professors
 	professorGroup.GET("sections", controllers.ProfessorSectionSearch())
 	professorGroup.GET(":id/sections", controllers.ProfessorSectionById())
+
+	// Endpoints to get the grades for a professor
+	professorGroup.GET(":id/grades", controllers.GradesByProfessorID())
 }
