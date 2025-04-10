@@ -13,9 +13,9 @@ import (
 
 // Unauthenticated placeholder endpoint for the built-in ginSwagger swagger documentation endpoint
 // @Id swagger
-// @Router /swagger/index.html [get]
+// @Param file path string true "The swagger file to retrieve"
+// @Router /swagger/{file} [get]
 // @Description Returns the OpenAPI/swagger spec for the API
-// @Produce text/html
 // @Security
 // @Success 200
 func swagger_controller_placeholder() {}
@@ -23,9 +23,10 @@ func swagger_controller_placeholder() {}
 // @title nebula-api
 // @description The public Nebula Labs API for access to pertinent UT Dallas data
 // @version 1.0.0
+// @host api.utdnebula.com
 // @schemes http https
-// @x-google-backend {"address": "REDACTED"}
-// @x-google-endpoints [{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
+// @x-google-backend {"address": "https://dev-nebula-api-1062216541483.us-south1.run.app"}
+// @x-google-endpoints [{"name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
 // @x-google-management {"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
 // @security api_key
 // @securitydefinitions.apikey api_key
@@ -62,6 +63,8 @@ func main() {
 	routes.StorageRoute(router)
 	routes.RoomsRoute(router)
 	routes.EventsRoute(router)
+	routes.AstraRoute(router)
+	routes.MazevoRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()

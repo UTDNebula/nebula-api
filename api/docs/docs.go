@@ -15,6 +15,35 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/astra/{date}": {
+            "get": {
+                "description": "\"Returns AstraEvent based on the input date\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "AstraEvents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve astra events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All AstraEvents with events on the inputted date",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MultiBuildingEvents-schema_AstraEvent"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/autocomplete/dag": {
             "get": {
                 "description": "\"Returns an aggregation of courses for use in generating autocomplete DAGs\"",
@@ -37,12 +66,18 @@ const docTemplate = `{
         },
         "/course": {
             "get": {
-                "description": "\"Returns all courses matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "courseSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 17th course, offset=16).",
+                        "name": "offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The course's official number",
@@ -131,12 +166,24 @@ const docTemplate = `{
         },
         "/course/sections": {
             "get": {
-                "description": "\"Returns all the sections of all the courses matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "courseSectionSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The course's official number",
@@ -249,6 +296,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/course/{id}/grades": {
+            "get": {
+                "description": "\"Returns the overall grade distribution for a course\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "GradesByCourseID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of course to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the course",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/course/{id}/sections": {
             "get": {
                 "description": "\"Returns the all of the sections of the course with given ID\"",
@@ -272,6 +348,71 @@ const docTemplate = `{
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/schema.Section"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/events/{date}": {
+            "get": {
+                "description": "\"Returns all sections with meetings on the specified date\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ISO date of the set of events to get",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All sections with meetings on the specified date",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MultiBuildingEvents-schema_SectionWithTime"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/events/{date}/{building}": {
+            "get": {
+                "description": "\"Returns all sections with meetings on the specified date in the specified building\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "eventsByBuilding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ISO date of the set of events to get",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of event locations",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All sections with meetings on the specified date in the specified building",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.SingleBuildingEvents-schema_SectionWithTime"
                             }
                         }
                     }
@@ -382,14 +523,101 @@ const docTemplate = `{
                 }
             }
         },
+        "/grades/semester/sectionType": {
+            "get": {
+                "description": "\"Returns the grade distributions aggregated by semester and broken down into section type\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "gradeAggregationSectionType",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "prefix",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's first name",
+                        "name": "first_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professors's last name",
+                        "name": "last_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The number of the section",
+                        "name": "section_number",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of grade distributions for each section type for each semester included",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/responses.SectionGradeResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/mazevo/{date}": {
+            "get": {
+                "description": "\"Returns MazevoEvent based on the input date\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "MazevoEvents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents with events on the inputted date",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MultiBuildingEvents-schema_MazevoEvent"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/professor": {
             "get": {
-                "description": "\"Returns all professors matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "professorSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, offset=16).",
+                        "name": "offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The professor's first name",
@@ -526,12 +754,24 @@ const docTemplate = `{
         },
         "/professor/courses": {
             "get": {
-                "description": "\"Returns all of the courses of all the professors matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "professorCourseSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 4th course, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The professor's first name",
@@ -668,12 +908,24 @@ const docTemplate = `{
         },
         "/professor/sections": {
             "get": {
-                "description": "\"Returns all of the sections of all the professors matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of the sections of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "professorSectionSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The professor's first name",
@@ -863,6 +1115,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/professor/{id}/grades": {
+            "get": {
+                "description": "\"Returns the overall grade distribution for a professor\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "GradesByProfessorID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of professor to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the professor",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/professor/{id}/sections": {
             "get": {
                 "description": "\"Returns all the sections taught by the professor with given ID\"",
@@ -892,14 +1173,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/rooms": {
+            "get": {
+                "description": "\"Returns all schedulable rooms being used in the current and futures semesters from CourseBook, Astra, and Mazevo\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "rooms",
+                "responses": {
+                    "200": {
+                        "description": "All schedulable rooms being used in the current and futures semesters from CourseBook, Astra, and Mazevo",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.BuildingRooms"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/section": {
             "get": {
-                "description": "\"Returns all courses matching the query's string-typed key-value pairs\"",
+                "description": "\"Returns paginated list of sections matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
                 ],
                 "operationId": "sectionSearch",
                 "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16).",
+                        "name": "offset",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "The section's official number",
@@ -1078,14 +1385,49 @@ const docTemplate = `{
                 }
             }
         },
-        "/swagger/index.html": {
+        "/section/{id}/grades": {
+            "get": {
+                "description": "\"Returns the overall grade distribution for a section\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "GradesBySectionID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of section to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the section",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/swagger/{file}": {
             "get": {
                 "security": [],
                 "description": "Returns the OpenAPI/swagger spec for the API",
-                "produces": [
-                    "text/html"
-                ],
                 "operationId": "swagger",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The swagger file to retrieve",
+                        "name": "file",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -1095,10 +1437,47 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "responses.GradeData": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "grade_distribution": {},
+                            "type": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "responses.GradeResponse": {
             "type": "object",
             "properties": {
                 "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.SectionGradeResponse": {
+            "type": "object",
+            "properties": {
+                "grade_data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/responses.GradeData"
+                    }
+                },
                 "message": {
                     "type": "string"
                 },
@@ -1152,6 +1531,35 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.AstraEvent": {
+            "type": "object",
+            "properties": {
+                "activity_name": {
+                    "type": "string"
+                },
+                "capacity": {
+                    "type": "number"
+                },
+                "current_state": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "meeting_type": {
+                    "type": "string"
+                },
+                "not_allowed_usage_mask": {
+                    "type": "number"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "usage_color": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.Autocomplete": {
             "type": "object",
             "properties": {
@@ -1163,6 +1571,20 @@ const docTemplate = `{
                 },
                 "subject_prefix": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.BuildingRooms": {
+            "type": "object",
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -1281,6 +1703,38 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "contactName": {
+                    "type": "string"
+                },
+                "dateTimeEnd": {
+                    "type": "string"
+                },
+                "dateTimeStart": {
+                    "type": "string"
+                },
+                "eventName": {
+                    "type": "string"
+                },
+                "organizationName": {
+                    "type": "string"
+                },
+                "setupMinutes": {
+                    "type": "number"
+                },
+                "statusColor": {
+                    "type": "string"
+                },
+                "statusDescription": {
+                    "type": "string"
+                },
+                "teardownMinutes": {
+                    "type": "number"
+                }
+            }
+        },
         "schema.Meeting": {
             "type": "object",
             "properties": {
@@ -1306,6 +1760,48 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "start_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MultiBuildingEvents-schema_AstraEvent": {
+            "type": "object",
+            "properties": {
+                "buildings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SingleBuildingEvents-schema_AstraEvent"
+                    }
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MultiBuildingEvents-schema_MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "buildings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SingleBuildingEvents-schema_MazevoEvent"
+                    }
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MultiBuildingEvents-schema_SectionWithTime": {
+            "type": "object",
+            "properties": {
+                "buildings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SingleBuildingEvents-schema_SectionWithTime"
+                    }
+                },
+                "date": {
                     "type": "string"
                 }
             }
@@ -1354,6 +1850,48 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "schema.RoomEvents-schema_AstraEvent": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.AstraEvent"
+                    }
+                },
+                "room": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.RoomEvents-schema_MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.MazevoEvent"
+                    }
+                },
+                "room": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.RoomEvents-schema_SectionWithTime": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SectionWithTime"
+                    }
+                },
+                "room": {
+                    "type": "string"
                 }
             }
         },
@@ -1431,6 +1969,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.SectionWithTime": {
+            "type": "object",
+            "properties": {
+                "end_time": {
+                    "type": "string"
+                },
+                "section": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.SimpleAcademicSession": {
             "type": "object",
             "properties": {
@@ -1449,6 +2001,48 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "schema.SingleBuildingEvents-schema_AstraEvent": {
+            "type": "object",
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.RoomEvents-schema_AstraEvent"
+                    }
+                }
+            }
+        },
+        "schema.SingleBuildingEvents-schema_MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.RoomEvents-schema_MazevoEvent"
+                    }
+                }
+            }
+        },
+        "schema.SingleBuildingEvents-schema_SectionWithTime": {
+            "type": "object",
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.RoomEvents-schema_SectionWithTime"
+                    }
+                }
+            }
         }
     },
     "securityDefinitions": {
@@ -1464,12 +2058,12 @@ const docTemplate = `{
         }
     ],
     "x-google-backend": {
-        "address": "REDACTED"
+        "address": "https://dev-nebula-api-1062216541483.us-south1.run.app"
     },
     "x-google-endpoints": [
         {
             "allowCors": true,
-            "name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog"
+            "name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog"
         }
     ],
     "x-google-management": {
@@ -1499,7 +2093,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "",
+	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"http", "https"},
 	Title:            "nebula-api",

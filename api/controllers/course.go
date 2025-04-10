@@ -24,7 +24,7 @@ var courseCollection *mongo.Collection = configs.GetCollection("courses")
 // @Router /course [get]
 // @Description "Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce json
-// @Param offset query number false "The staritng position of the current page of courses (e.g. For starting at the 17th course, offset=16)."
+// @Param offset query number false "The starting position of the current page of courses (e.g. For starting at the 17th course, offset=16)."
 // @Param course_number query string false "The course's official number"
 // @Param subject_prefix query string false "The course's subject prefix"
 // @Param title query string false "The course's title"
@@ -139,8 +139,10 @@ func CourseAll(c *gin.Context) {
 
 // @Id courseSectionSearch
 // @Router /course/sections [get]
-// @Description "Returns all the sections of all the courses matching the query's string-typed key-value pairs"
+// @Description "Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce json
+// @Param former_offset query number false "The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
+// @Param latter_offset query number false "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
 // @Param course_number query string false "The course's official number"
 // @Param subject_prefix query string false "The course's subject prefix"
 // @Param title query string false "The course's title"
@@ -243,6 +245,9 @@ func courseSection(flag string, c *gin.Context) {
 		// replace the courses with sections
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+
 		// paginate the sections
 		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
 		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
@@ -260,6 +265,6 @@ func courseSection(flag string, c *gin.Context) {
 	if err = cursor.All(ctx, &courseSections); err != nil {
 		panic(err)
 	}
-  
+
 	c.JSON(http.StatusOK, responses.MultiSectionResponse{Status: http.StatusOK, Message: "success", Data: courseSections})
 }
