@@ -10,6 +10,8 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/iterator"
+
+	"github.com/UTDNebula/nebula-api/api/responses"
 )
 
 // Get client from routes
@@ -37,14 +39,14 @@ func BucketInfo(c *gin.Context) {
 	if errors.Is(err, storage.ErrBucketNotExist) {
 		err = client.Bucket(bucket).Create(ctx, "nebula-api-368223", nil)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create bucket", "details": err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Failed to create bucket: " + err.Error()})
 			return
 		}
 		attrs, err = client.Bucket(bucket).Attrs(ctx)
 	}
 	// Catch all from above
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get bucket attributes", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Failed to get bucket attributes: " + err.Error()})
 		return
 	}
 
@@ -57,13 +59,13 @@ func BucketInfo(c *gin.Context) {
 			break
 		}
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 		contents = append(contents, objAttrs.Name)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"attrs": attrs, "contents": contents})
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": gin.H{"attrs": attrs, "contents": contents}})
 }
 
 // @Id deleteBucket
@@ -84,22 +86,22 @@ func DeleteBucket(c *gin.Context) {
 			break
 		}
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 			return
 		}
 		if err := client.Bucket(bucket).Object(objAttrs.Name).Delete(ctx); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Failed to delete object: " + err.Error()})
 			return
 		}
 	}
 
 	// Delete bucket
 	if err := client.Bucket(bucket).Delete(ctx); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Failed to delete bucket: " + err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Bucket deleted"})
+	c.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
 // @Id objectInfo
@@ -117,11 +119,11 @@ func ObjectInfo(c *gin.Context) {
 	// Get object attreibutes
 	attrs, err := client.Bucket(bucket).Object(objectID).Attrs(ctx)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, attrs)
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": attrs})
 }
 
 // @Id postObject
@@ -139,7 +141,7 @@ func PostObject(c *gin.Context) {
 	// Read body as byte stream
 	fileReader := c.Request.Body
 	if fileReader == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Empty body"})
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: "Empty body"})
 		return
 	}
 	defer fileReader.Close()
@@ -154,16 +156,16 @@ func PostObject(c *gin.Context) {
 
 	// Upload
 	if _, err := io.Copy(wc, fileReader); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 		return
 	}
 
 	if err := wc.Close(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Object uploaded", "object": objectID})
+	c.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
 // @Id deleteObject
@@ -180,9 +182,9 @@ func DeleteObject(c *gin.Context) {
 
 	err := client.Bucket(bucket).Object(objectID).Delete(ctx)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Object deleted"})
+	c.JSON(http.StatusOK, gin.H{"message": "success"})
 }
