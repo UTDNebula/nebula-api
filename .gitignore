@@ -33,6 +33,3 @@ go.work
 
 # API go executable
 api/go-api
-
-# cloud storage
-google-application-credentials.json
