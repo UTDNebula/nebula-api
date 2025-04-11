@@ -1,8 +1,21 @@
 package controllers
 
 import (
+	"context"
+	"log"
+	"net/http"
+
+	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
 )
+
+func getClient(c *gin.Context) *storage.Client {
+	val, exists := c.Get("gcsClient")
+	if !exists {
+		panic("storage client not set in context")
+	}
+	return val.(*storage.Client)
+}
 
 // @Id bucketInfo
 // @Router /storage/{bucket} [get]
@@ -10,7 +23,17 @@ import (
 // @Param bucket path string true "Name of the bucket"
 // @Success 200
 func BucketInfo(c *gin.Context) {
+	bucket := c.Param("bucket")
+	client := getClient(c)
 
+	ctx := context.Background()
+	attrs, err := client.Bucket(bucket).Attrs(ctx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, attrs)
 }
 
 // @Id deleteBucket

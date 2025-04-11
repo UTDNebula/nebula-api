@@ -1,12 +1,40 @@
 package routes
 
 import (
+	"context"
+	"log"
+	"sync"
+
 	"github.com/gin-gonic/gin"
 
+	"cloud.google.com/go/storage"
 	"github.com/UTDNebula/nebula-api/api/controllers"
 )
 
+var (
+	client     *storage.Client
+	clientOnce sync.Once
+)
+
+func initStorageClient() *storage.Client {
+	clientOnce.Do(func() {
+		ctx := context.Background()
+		var err error
+		client, err = storage.NewClient(ctx)
+		if err != nil {
+			log.Fatalf("Failed to create GCS client: %v", err)
+		}
+	})
+	return client
+}
+
 func StorageRoute(router *gin.Engine) {
+	storageClient := initStorageClient()
+	router.Use(func(c *gin.Context) {
+		c.Set("gcsClient", storageClient)
+		c.Next()
+	})
+
 	// All routes related to storage come here
 	storageGroup := router.Group("/storage")
 
