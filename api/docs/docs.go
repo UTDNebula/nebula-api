@@ -1414,6 +1414,83 @@ const docTemplate = `{
                 }
             }
         },
+        "/storage/{bucket}/info/{objectID}": {
+            "get": {
+                "description": "\"Get info on an object\"",
+                "operationId": "objectInfo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the object",
+                        "name": "objectID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "\"Get info on an object\"",
+                "operationId": "postObject",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the object",
+                        "name": "objectID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "description": "\"Get info on an object\"",
+                "operationId": "deleteObject",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the object",
+                        "name": "objectID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/swagger/{file}": {
             "get": {
                 "security": [],
@@ -1424,6 +1501,26 @@ const docTemplate = `{
                         "type": "string",
                         "description": "The swagger file to retrieve",
                         "name": "file",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/{bucket}": {
+            "get": {
+                "description": "\"Get info on an object\"",
+                "operationId": "postObject",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
                         "in": "path",
                         "required": true
                     }

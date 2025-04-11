@@ -402,6 +402,19 @@ info:
   title: nebula-api
   version: 1.0.0
 paths:
+  /{bucket}:
+    get:
+      description: '"Get info on an object"'
+      operationId: postObject
+      parameters:
+      - description: Name of the bucket
+        in: path
+        name: bucket
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
   /astra/{date}:
     get:
       description: '"Returns AstraEvent based on the input date"'
@@ -1362,6 +1375,58 @@ paths:
             items:
               type: integer
             type: array
+  /storage/{bucket}/info/{objectID}:
+    delete:
+      description: '"Get info on an object"'
+      operationId: deleteObject
+      parameters:
+      - description: Name of the bucket
+        in: path
+        name: bucket
+        required: true
+        type: string
+      - description: ID of the object
+        in: path
+        name: objectID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+    get:
+      description: '"Get info on an object"'
+      operationId: objectInfo
+      parameters:
+      - description: Name of the bucket
+        in: path
+        name: bucket
+        required: true
+        type: string
+      - description: ID of the object
+        in: path
+        name: objectID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+    post:
+      description: '"Get info on an object"'
+      operationId: postObject
+      parameters:
+      - description: Name of the bucket
+        in: path
+        name: bucket
+        required: true
+        type: string
+      - description: ID of the object
+        in: path
+        name: objectID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
   /swagger/{file}:
     get:
       description: Returns the OpenAPI/swagger spec for the API

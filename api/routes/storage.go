@@ -11,10 +11,9 @@ func StorageRoute(router *gin.Engine) {
 	storageGroup := router.Group("/storage")
 
 	storageGroup.OPTIONS("", controllers.Preflight)
-	/*
-		storageGroup.GET(":bucket", controllers.BucketInfo())
-		storageGroup.GET(":bucket/info/:objectID", controllers.ObjectInfo())
-		storageGroup.POST(":bucket/post/:objectID", controllers.PostObject())
-		storageGroup.GET(":bucket/get/:objectID", controllers.GetObject())
-	*/
+	storageGroup.GET(":bucket", controllers.BucketInfo)
+	storageGroup.DELETE(":bucket", controllers.DeleteBucket)
+	storageGroup.GET(":bucket/info/:objectID", controllers.ObjectInfo)
+	storageGroup.POST(":bucket/post/:objectID", controllers.PostObject)
+	storageGroup.DELETE(":bucket/delete/:objectID", controllers.DeleteObject)
 }
