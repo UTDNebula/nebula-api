@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"time"
@@ -27,15 +28,37 @@ func getClient(c *gin.Context) *storage.Client {
 func BucketInfo(c *gin.Context) {
 	bucket := c.Param("bucket")
 	client := getClient(c)
-
 	ctx := context.Background()
+
 	attrs, err := client.Bucket(bucket).Attrs(ctx)
+	if errors.Is(err, storage.ErrBucketNotExist) {
+		err = client.Bucket(bucket).Create(ctx, "nebula-api-368223", nil)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create bucket", "details": err.Error()})
+			return
+		}
+		attrs, err = client.Bucket(bucket).Attrs(ctx)
+	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get bucket attributes", "details": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, attrs)
+	contents := []string{}
+	it := client.Bucket(bucket).Objects(ctx, nil)
+	for {
+		objAttrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		contents = append(contents, objAttrs.Name)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"attrs": attrs, "contents": contents})
 }
 
 // @Id deleteBucket
@@ -46,7 +69,6 @@ func BucketInfo(c *gin.Context) {
 func DeleteBucket(c *gin.Context) {
 	bucket := c.Param("bucket")
 	client := getClient(c)
-
 	ctx := context.Background()
 
 	// First delete all objects (GCS requires an empty bucket before deletion)
@@ -84,8 +106,8 @@ func ObjectInfo(c *gin.Context) {
 	bucket := c.Param("bucket")
 	objectID := c.Param("objectID")
 	client := getClient(c)
-
 	ctx := context.Background()
+
 	attrs, err := client.Bucket(bucket).Object(objectID).Attrs(ctx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -105,8 +127,8 @@ func PostObject(c *gin.Context) {
 	bucket := c.Param("bucket")
 	objectID := c.Param("objectID")
 	client := getClient(c)
-
 	ctx := context.Background()
+
 	fileReader := c.Request.Body
 	if fileReader == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Empty body"})
@@ -144,8 +166,8 @@ func DeleteObject(c *gin.Context) {
 	bucket := c.Param("bucket")
 	objectID := c.Param("objectID")
 	client := getClient(c)
-
 	ctx := context.Background()
+
 	err := client.Bucket(bucket).Object(objectID).Delete(ctx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
