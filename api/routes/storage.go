@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"sync"
 
@@ -11,6 +12,8 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/UTDNebula/nebula-api/api/controllers"
 	"google.golang.org/api/option"
+
+	"github.com/UTDNebula/nebula-api/api/responses"
 )
 
 // Stored client, not to be changed
@@ -48,6 +51,17 @@ func StorageRoute(router *gin.Engine) {
 		return
 	}
 
+	//Rescrict with password
+	authMiddleware := func(c *gin.Context) {
+		secret := c.GetHeader("X-Storage-Key")
+		expected, exist := os.LookupEnv("STORAGE_ROUTE_KEY")
+		if !exist || secret != expected {
+			c.AbortWithStatusJSON(http.StatusForbidden, responses.ErrorResponse{Status: http.StatusForbidden, Message: "error", Data: "Forbidden"})
+			return
+		}
+		c.Next()
+	}
+
 	// Pass to next layer
 	router.Use(func(c *gin.Context) {
 		c.Set("gcsClient", storageClient)
@@ -56,6 +70,9 @@ func StorageRoute(router *gin.Engine) {
 
 	// All routes related to storage come here
 	storageGroup := router.Group("/storage")
+
+	//Use auth
+	storageGroup.Use(authMiddleware)
 
 	storageGroup.OPTIONS("", controllers.Preflight)
 	storageGroup.GET(":bucket", controllers.BucketInfo)
