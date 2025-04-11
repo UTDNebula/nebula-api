@@ -13,18 +13,22 @@ import (
 	"google.golang.org/api/option"
 )
 
-var (
-	client     *storage.Client
-	clientOnce sync.Once
-)
+// Stored client, not to be changed
+var client *storage.Client
+
+// to prevent changing
+var clientOnce sync.Once
 
 func initStorageClient() *storage.Client {
+	// Only do once
 	clientOnce.Do(func() {
+		// Get JSON service account key
 		encodedCreds, exist := os.LookupEnv("GOOGLE_APPLICATION_CREDENTIALS")
 		if !exist {
 			log.Println("Error loading 'GOOGLE_APPLICATION_CREDENTIALS' from the .env file, skipping cloud storage routes")
 			return
 		}
+		// Create client
 		ctx := context.Background()
 		var err error
 		client, err = storage.NewClient(ctx, option.WithCredentialsJSON([]byte(encodedCreds)))
@@ -37,12 +41,14 @@ func initStorageClient() *storage.Client {
 }
 
 func StorageRoute(router *gin.Engine) {
+	// Create client, don't procede if error
 	storageClient := initStorageClient()
 	if storageClient == nil {
 		log.Println("GCS client not initialized; skipping cloud storage routes")
 		return
 	}
 
+	// Pass to next layer
 	router.Use(func(c *gin.Context) {
 		c.Set("gcsClient", storageClient)
 		c.Next()

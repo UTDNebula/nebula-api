@@ -12,6 +12,7 @@ import (
 	"google.golang.org/api/iterator"
 )
 
+// Get client from routes
 func getClient(c *gin.Context) *storage.Client {
 	val, exists := c.Get("gcsClient")
 	if !exists {
@@ -30,7 +31,9 @@ func BucketInfo(c *gin.Context) {
 	client := getClient(c)
 	ctx := context.Background()
 
+	// Get attributes
 	attrs, err := client.Bucket(bucket).Attrs(ctx)
+	// Create bucket if it does not exist
 	if errors.Is(err, storage.ErrBucketNotExist) {
 		err = client.Bucket(bucket).Create(ctx, "nebula-api-368223", nil)
 		if err != nil {
@@ -39,11 +42,13 @@ func BucketInfo(c *gin.Context) {
 		}
 		attrs, err = client.Bucket(bucket).Attrs(ctx)
 	}
+	// Catch all from above
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get bucket attributes", "details": err.Error()})
 		return
 	}
 
+	// Loop through objects and add names
 	contents := []string{}
 	it := client.Bucket(bucket).Objects(ctx, nil)
 	for {
@@ -71,7 +76,7 @@ func DeleteBucket(c *gin.Context) {
 	client := getClient(c)
 	ctx := context.Background()
 
-	// First delete all objects (GCS requires an empty bucket before deletion)
+	// Delete all objects (GCS requires an empty bucket before deletion)
 	it := client.Bucket(bucket).Objects(ctx, nil)
 	for {
 		objAttrs, err := it.Next()
@@ -88,6 +93,7 @@ func DeleteBucket(c *gin.Context) {
 		}
 	}
 
+	// Delete bucket
 	if err := client.Bucket(bucket).Delete(ctx); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -108,6 +114,7 @@ func ObjectInfo(c *gin.Context) {
 	client := getClient(c)
 	ctx := context.Background()
 
+	// Get object attreibutes
 	attrs, err := client.Bucket(bucket).Object(objectID).Attrs(ctx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -129,6 +136,7 @@ func PostObject(c *gin.Context) {
 	client := getClient(c)
 	ctx := context.Background()
 
+	// Read body as byte stream
 	fileReader := c.Request.Body
 	if fileReader == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Empty body"})
@@ -136,6 +144,7 @@ func PostObject(c *gin.Context) {
 	}
 	defer fileReader.Close()
 
+	// Set metadata
 	wc := client.Bucket(bucket).Object(objectID).NewWriter(ctx)
 	wc.ContentType = c.ContentType()
 	wc.CacheControl = "public, max-age=3600"
@@ -143,6 +152,7 @@ func PostObject(c *gin.Context) {
 		"uploaded-at": time.Now().Format(time.RFC3339),
 	}
 
+	// Upload
 	if _, err := io.Copy(wc, fileReader); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
