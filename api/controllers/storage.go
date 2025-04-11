@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"cloud.google.com/go/storage"

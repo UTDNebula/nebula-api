@@ -3,12 +3,14 @@ package routes
 import (
 	"context"
 	"log"
+	"os"
 	"sync"
 
 	"github.com/gin-gonic/gin"
 
 	"cloud.google.com/go/storage"
 	"github.com/UTDNebula/nebula-api/api/controllers"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -18,9 +20,13 @@ var (
 
 func initStorageClient() *storage.Client {
 	clientOnce.Do(func() {
+		encodedCreds, exist := os.LookupEnv("GOOGLE_APPLICATION_CREDENTIALS")
+		if !exist {
+			log.Fatal("Error loading 'GOOGLE_APPLICATION_CREDENTIALS' from the .env file")
+		}
 		ctx := context.Background()
 		var err error
-		client, err = storage.NewClient(ctx)
+		client, err = storage.NewClient(ctx, option.WithCredentialsJSON([]byte(encodedCreds)))
 		if err != nil {
 			log.Fatalf("Failed to create GCS client: %v", err)
 		}
