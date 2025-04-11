@@ -22,13 +22,15 @@ func initStorageClient() *storage.Client {
 	clientOnce.Do(func() {
 		encodedCreds, exist := os.LookupEnv("GOOGLE_APPLICATION_CREDENTIALS")
 		if !exist {
-			log.Fatal("Error loading 'GOOGLE_APPLICATION_CREDENTIALS' from the .env file")
+			log.Println("Error loading 'GOOGLE_APPLICATION_CREDENTIALS' from the .env file, skipping cloud storage routes")
+			return
 		}
 		ctx := context.Background()
 		var err error
 		client, err = storage.NewClient(ctx, option.WithCredentialsJSON([]byte(encodedCreds)))
 		if err != nil {
-			log.Fatalf("Failed to create GCS client: %v", err)
+			log.Printf("Failed to create GCS client: %v", err)
+			return
 		}
 	})
 	return client
@@ -36,6 +38,11 @@ func initStorageClient() *storage.Client {
 
 func StorageRoute(router *gin.Engine) {
 	storageClient := initStorageClient()
+	if storageClient == nil {
+		log.Println("GCS client not initialized; skipping cloud storage routes")
+		return
+	}
+
 	router.Use(func(c *gin.Context) {
 		c.Set("gcsClient", storageClient)
 		c.Next()
