@@ -25,7 +25,7 @@ func getClient(c *gin.Context) *storage.Client {
 
 // @Id bucketInfo
 // @Router /storage/{bucket} [get]
-// @Description "Get info on a bucket"
+// @Description "Get info on a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param bucket path string true "Name of the bucket"
 // @Success 200
 func BucketInfo(c *gin.Context) {
@@ -70,7 +70,7 @@ func BucketInfo(c *gin.Context) {
 
 // @Id deleteBucket
 // @Router /storage/{bucket} [delete]
-// @Description "Delete a bucket"
+// @Description "Delete a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param bucket path string true "Name of the bucket"
 // @Success 200
 func DeleteBucket(c *gin.Context) {
@@ -106,7 +106,7 @@ func DeleteBucket(c *gin.Context) {
 
 // @Id objectInfo
 // @Router /storage/{bucket}/{objectID} [get]
-// @Description "Get info on an object"
+// @Description "Get info on an object in a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param bucket path string true "Name of the bucket"
 // @Param objectID path string true "ID of the object"
 // @Success 200
@@ -128,7 +128,7 @@ func ObjectInfo(c *gin.Context) {
 
 // @Id postObject
 // @Router /storage/{bucket}/{objectID} [post]
-// @Description "Upload an object"
+// @Description "Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param bucket path string true "Name of the bucket"
 // @Param objectID path string true "ID of the object"
 // @Success 200
@@ -170,7 +170,7 @@ func PostObject(c *gin.Context) {
 
 // @Id deleteObject
 // @Router /storage/{bucket}/{objectID} [delete]
-// @Description "Delete an object"
+// @Description "Delete an object from a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param bucket path string true "Name of the bucket"
 // @Param objectID path string true "ID of the object"
 // @Success 200
