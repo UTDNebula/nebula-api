@@ -1414,6 +1414,155 @@ const docTemplate = `{
                 }
             }
         },
+        "/storage/{bucket}": {
+            "get": {
+                "security": [
+                    {
+                        "storage_key": []
+                    }
+                ],
+                "description": "\"Get info on a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "operationId": "bucketInfo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The bucket's info",
+                        "schema": {
+                            "$ref": "#/definitions/schema.BucketInfo"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "storage_key": []
+                    }
+                ],
+                "description": "\"Delete a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "operationId": "deleteBucket",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/storage/{bucket}/{objectID}": {
+            "get": {
+                "security": [
+                    {
+                        "storage_key": []
+                    }
+                ],
+                "description": "\"Get info on an object in a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "operationId": "objectInfo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the object",
+                        "name": "objectID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The object's info",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ObjectInfo"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "storage_key": []
+                    }
+                ],
+                "description": "\"Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "operationId": "postObject",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the object",
+                        "name": "objectID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The object's info",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ObjectInfo"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "storage_key": []
+                    }
+                ],
+                "description": "\"Delete an object from a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "operationId": "deleteObject",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the object",
+                        "name": "objectID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/swagger/{file}": {
             "get": {
                 "security": [],
@@ -1570,6 +1719,26 @@ const docTemplate = `{
                     }
                 },
                 "subject_prefix": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.BucketInfo": {
+            "type": "object",
+            "properties": {
+                "contents": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "created": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated": {
                     "type": "string"
                 }
             }
@@ -1802,6 +1971,41 @@ const docTemplate = `{
                     }
                 },
                 "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ObjectInfo": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "type": "string"
+                },
+                "content_encoding": {
+                    "type": "string"
+                },
+                "content_type": {
+                    "type": "string"
+                },
+                "created": {
+                    "type": "string"
+                },
+                "md5": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "media_link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "updated": {
                     "type": "string"
                 }
             }
