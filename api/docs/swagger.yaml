@@ -1409,11 +1409,14 @@ paths:
         name: bucket
         required: true
         type: string
+      - description: The internal storage key
+        in: header
+        name: x-storage-key
+        required: true
+        type: string
       responses:
         "200":
           description: OK
-      security:
-      - storage_key: []
     get:
       description: '"Get info on a bucket. This route is restricted to only Nebula
         Labs internal Projects."'
@@ -1424,13 +1427,16 @@ paths:
         name: bucket
         required: true
         type: string
+      - description: The internal storage key
+        in: header
+        name: x-storage-key
+        required: true
+        type: string
       responses:
         "200":
           description: The bucket's info
           schema:
             $ref: '#/definitions/schema.BucketInfo'
-      security:
-      - storage_key: []
   /storage/{bucket}/{objectID}:
     delete:
       description: '"Delete an object from a bucket. This route is restricted to only
@@ -1447,11 +1453,14 @@ paths:
         name: objectID
         required: true
         type: string
+      - description: The internal storage key
+        in: header
+        name: x-storage-key
+        required: true
+        type: string
       responses:
         "200":
           description: OK
-      security:
-      - storage_key: []
     get:
       description: '"Get info on an object in a bucket. This route is restricted to
         only Nebula Labs internal Projects."'
@@ -1467,13 +1476,16 @@ paths:
         name: objectID
         required: true
         type: string
+      - description: The internal storage key
+        in: header
+        name: x-storage-key
+        required: true
+        type: string
       responses:
         "200":
           description: The object's info
           schema:
             $ref: '#/definitions/schema.ObjectInfo'
-      security:
-      - storage_key: []
     post:
       description: '"Upload an object to a bucket. This route is restricted to only
         Nebula Labs internal Projects."'
@@ -1493,14 +1505,17 @@ paths:
         in: formData
         name: data
         required: true
-        type: file
+        type: string
+      - description: The internal storage key
+        in: header
+        name: x-storage-key
+        required: true
+        type: string
       responses:
         "200":
           description: The object's info
           schema:
             $ref: '#/definitions/schema.ObjectInfo'
-      security:
-      - storage_key: []
   /swagger/{file}:
     get:
       description: Returns the OpenAPI/swagger spec for the API
@@ -1524,10 +1539,6 @@ securityDefinitions:
   api_key:
     in: header
     name: x-api-key
-    type: apiKey
-  storage_key:
-    in: header
-    name: x-storage-key
     type: apiKey
 swagger: "2.0"
 x-google-backend:

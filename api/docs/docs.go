@@ -1416,11 +1416,6 @@ const docTemplate = `{
         },
         "/storage/{bucket}": {
             "get": {
-                "security": [
-                    {
-                        "storage_key": []
-                    }
-                ],
                 "description": "\"Get info on a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
                 "operationId": "bucketInfo",
                 "parameters": [
@@ -1429,6 +1424,13 @@ const docTemplate = `{
                         "description": "Name of the bucket",
                         "name": "bucket",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal storage key",
+                        "name": "x-storage-key",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -1442,11 +1444,6 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "security": [
-                    {
-                        "storage_key": []
-                    }
-                ],
                 "description": "\"Delete a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
                 "operationId": "deleteBucket",
                 "parameters": [
@@ -1455,6 +1452,13 @@ const docTemplate = `{
                         "description": "Name of the bucket",
                         "name": "bucket",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal storage key",
+                        "name": "x-storage-key",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -1467,11 +1471,6 @@ const docTemplate = `{
         },
         "/storage/{bucket}/{objectID}": {
             "get": {
-                "security": [
-                    {
-                        "storage_key": []
-                    }
-                ],
                 "description": "\"Get info on an object in a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
                 "operationId": "objectInfo",
                 "parameters": [
@@ -1488,6 +1487,13 @@ const docTemplate = `{
                         "name": "objectID",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal storage key",
+                        "name": "x-storage-key",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1500,11 +1506,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "storage_key": []
-                    }
-                ],
                 "description": "\"Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
                 "operationId": "postObject",
                 "parameters": [
@@ -1523,10 +1524,17 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "file",
+                        "type": "string",
                         "description": "The data to upload",
                         "name": "data",
                         "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal storage key",
+                        "name": "x-storage-key",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -1540,11 +1548,6 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "security": [
-                    {
-                        "storage_key": []
-                    }
-                ],
                 "description": "\"Delete an object from a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
                 "operationId": "deleteObject",
                 "parameters": [
@@ -1560,6 +1563,13 @@ const docTemplate = `{
                         "description": "ID of the object",
                         "name": "objectID",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal storage key",
+                        "name": "x-storage-key",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -2260,11 +2270,6 @@ const docTemplate = `{
         "api_key": {
             "type": "apiKey",
             "name": "x-api-key",
-            "in": "header"
-        },
-        "storage_key": {
-            "type": "apiKey",
-            "name": "x-storage-key",
             "in": "header"
         }
     },

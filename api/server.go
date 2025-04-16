@@ -33,9 +33,6 @@ func swagger_controller_placeholder() {}
 // @securitydefinitions.apikey	api_key
 // @name						x-api-key
 // @in							header
-// @securitydefinitions.apikey	storage_key
-// @name						x-storage-key
-// @in							header
 
 func main() {
 
