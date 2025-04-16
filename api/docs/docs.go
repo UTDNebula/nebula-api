@@ -2284,7 +2284,7 @@ const docTemplate = `{
     "x-google-endpoints": [
         {
             "allowCors": true,
-            "name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog"
+            "name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog"
         }
     ],
     "x-google-management": {
@@ -2317,8 +2317,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"http", "https"},
-	Title:            "dev-nebula-api",
-	Description:      "The developer Nebula Labs API for access to pertinent UT Dallas data",
+	Title:            "nebula-api",
+	Description:      "The Nebula Labs API for access to pertinent UT Dallas data",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

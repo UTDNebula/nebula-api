@@ -434,8 +434,8 @@ definitions:
 host: api.utdnebula.com
 info:
   contact: {}
-  description: The developer Nebula Labs API for access to pertinent UT Dallas data
-  title: dev-nebula-api
+  description: The Nebula Labs API for access to pertinent UT Dallas data
+  title: nebula-api
   version: 1.0.0
 paths:
   /astra/{date}:
@@ -1545,7 +1545,7 @@ x-google-backend:
   address: https://nebula-api-1062216541483.us-central1.run.app
 x-google-endpoints:
 - allowCors: true
-  name: dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog
+  name: nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog
 x-google-management:
   metrics:
   - displayName: Read Requests CUSTOM

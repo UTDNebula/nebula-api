@@ -21,18 +21,18 @@ import (
 //	@Success	200
 func swagger_controller_placeholder() {}
 
-// @title dev-nebula-api
-// @description The developer Nebula Labs API for access to pertinent UT Dallas data
-// @version 1.0.0
-// @host api.utdnebula.com
-// @schemes http https
-// @x-google-backend {"address": "https://nebula-api-1062216541483.us-central1.run.app"}
-// @x-google-endpoints [{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
-// @x-google-management {"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
-// @security api_key
-// @securitydefinitions.apikey api_key
-// @name x-api-key
-// @in header
+// @title						nebula-api
+// @description				The Nebula Labs API for access to pertinent UT Dallas data
+// @version					1.0.0
+// @host						api.utdnebula.com
+// @schemes					http https
+// @x-google-backend			{"address": "https://nebula-api-1062216541483.us-central1.run.app"}
+// @x-google-endpoints			[{"name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
+// @x-google-management		{"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
+// @security					api_key
+// @securitydefinitions.apikey	api_key
+// @name						x-api-key
+// @in							header
 func main() {
 
 	// To avoid unused error on swagger_controller_placeholder
