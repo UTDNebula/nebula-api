@@ -1,5 +1,6 @@
 package controllers
 
+/*
 import (
 	"bytes"
 	"context"
@@ -225,3 +226,4 @@ func refreshToken(chromedpCtx context.Context) map[string][]string {
 
 	return cachedCookie
 }
+*/

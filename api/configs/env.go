@@ -12,7 +12,7 @@ import (
 
 func GetPortString() string {
 
-	portNumber, exist := os.LookupEnv("Port")
+	portNumber, exist := os.LookupEnv("PORT")
 	if !exist {
 		portNumber = "8080"
 	}
