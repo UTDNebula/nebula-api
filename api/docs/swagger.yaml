@@ -88,6 +88,19 @@ definitions:
       subject_prefix:
         type: string
     type: object
+  schema.BucketInfo:
+    properties:
+      contents:
+        items:
+          type: string
+        type: array
+      created:
+        type: string
+      name:
+        type: string
+      updated:
+        type: string
+    type: object
   schema.BuildingRooms:
     properties:
       building:
@@ -238,6 +251,29 @@ definitions:
           $ref: '#/definitions/schema.SingleBuildingEvents-schema_SectionWithTime'
         type: array
       date:
+        type: string
+    type: object
+  schema.ObjectInfo:
+    properties:
+      bucket:
+        type: string
+      content_encoding:
+        type: string
+      content_type:
+        type: string
+      created:
+        type: string
+      md5:
+        items:
+          type: integer
+        type: array
+      media_link:
+        type: string
+      name:
+        type: string
+      size:
+        type: integer
+      updated:
         type: string
     type: object
   schema.Professor:
@@ -402,19 +438,6 @@ info:
   title: nebula-api
   version: 1.0.0
 paths:
-  /{bucket}:
-    get:
-      description: '"Get info on an object"'
-      operationId: postObject
-      parameters:
-      - description: Name of the bucket
-        in: path
-        name: bucket
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
   /astra/{date}:
     get:
       description: '"Returns AstraEvent based on the input date"'
@@ -1375,9 +1398,43 @@ paths:
             items:
               type: integer
             type: array
-  /storage/{bucket}/info/{objectID}:
+  /storage/{bucket}:
     delete:
-      description: '"Get info on an object"'
+      description: '"Delete a bucket. This route is restricted to only Nebula Labs
+        internal Projects."'
+      operationId: deleteBucket
+      parameters:
+      - description: Name of the bucket
+        in: path
+        name: bucket
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      security:
+      - storage_key: []
+    get:
+      description: '"Get info on a bucket. This route is restricted to only Nebula
+        Labs internal Projects."'
+      operationId: bucketInfo
+      parameters:
+      - description: Name of the bucket
+        in: path
+        name: bucket
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The bucket's info
+          schema:
+            $ref: '#/definitions/schema.BucketInfo'
+      security:
+      - storage_key: []
+  /storage/{bucket}/{objectID}:
+    delete:
+      description: '"Delete an object from a bucket. This route is restricted to only
+        Nebula Labs internal Projects."'
       operationId: deleteObject
       parameters:
       - description: Name of the bucket
@@ -1393,8 +1450,11 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+      - storage_key: []
     get:
-      description: '"Get info on an object"'
+      description: '"Get info on an object in a bucket. This route is restricted to
+        only Nebula Labs internal Projects."'
       operationId: objectInfo
       parameters:
       - description: Name of the bucket
@@ -1409,9 +1469,14 @@ paths:
         type: string
       responses:
         "200":
-          description: OK
+          description: The object's info
+          schema:
+            $ref: '#/definitions/schema.ObjectInfo'
+      security:
+      - storage_key: []
     post:
-      description: '"Get info on an object"'
+      description: '"Upload an object to a bucket. This route is restricted to only
+        Nebula Labs internal Projects."'
       operationId: postObject
       parameters:
       - description: Name of the bucket
@@ -1426,7 +1491,11 @@ paths:
         type: string
       responses:
         "200":
-          description: OK
+          description: The object's info
+          schema:
+            $ref: '#/definitions/schema.ObjectInfo'
+      security:
+      - storage_key: []
   /swagger/{file}:
     get:
       description: Returns the OpenAPI/swagger spec for the API

@@ -16,10 +16,10 @@ import (
 	"github.com/UTDNebula/nebula-api/api/responses"
 )
 
-// Stored client, not to be changed
+// Singleton client, not to be changed
 var client *storage.Client
 
-// to prevent changing
+// To prevent changing above singleton
 var clientOnce sync.Once
 
 func initStorageClient() *storage.Client {
@@ -53,7 +53,7 @@ func StorageRoute(router *gin.Engine) {
 
 	//Rescrict with password
 	authMiddleware := func(c *gin.Context) {
-		secret := c.GetHeader("X-Storage-Key")
+		secret := c.GetHeader("x-storage-key")
 		expected, exist := os.LookupEnv("STORAGE_ROUTE_KEY")
 		if !exist || secret != expected {
 			c.AbortWithStatusJSON(http.StatusForbidden, responses.ErrorResponse{Status: http.StatusForbidden, Message: "error", Data: "Forbidden"})
