@@ -23,13 +23,15 @@ func getClient(c *gin.Context) *storage.Client {
 	return val.(*storage.Client)
 }
 
+// Get bucket or create it if it doesn't already exist
 func getOrCreateBucket(client *storage.Client, bucket string) (*storage.BucketHandle, error) {
 	ctx := context.Background()
 	// Get bucket, or create it if it does not exist
-	bucketHandle := client.Bucket(bucket)
+	// NOTE: We automatically prefix bucket names with "utdnebula_" here since bucket names need to be GLOBALLY unique
+	bucketHandle := client.Bucket("utdnebula_" + bucket)
 	_, err := bucketHandle.Attrs(ctx)
 	if err != nil {
-		err = client.Bucket(bucket).Create(ctx, "nebula-api-368223", nil)
+		err = bucketHandle.Create(ctx, "nebula-api-368223", nil)
 		if err != nil {
 			return nil, errors.New("failed to create bucket: " + err.Error())
 		}
