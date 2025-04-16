@@ -176,7 +176,7 @@ func ObjectInfo(c *gin.Context) {
 // @Description	"Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param			bucket			path		string				true	"Name of the bucket"
 // @Param			objectID		path		string				true	"ID of the object"
-// @Param			data			formData	string				true	"The data to upload"
+// @Param			data			body		string				true	"The data to upload"
 // @Param			x-storage-key	header		string				true	"The internal storage key"
 // @Success		200				{object}	schema.ObjectInfo	"The object's info"
 func PostObject(c *gin.Context) {
