@@ -18,12 +18,12 @@ import (
 
 var eventsCollection *mongo.Collection = configs.GetCollection("events")
 
-// @Id events
-// @Router /events/{date} [get]
-// @Description "Returns all sections with meetings on the specified date"
-// @Produce json
-// @Param date path string true "ISO date of the set of events to get"
-// @Success 200 {array} schema.MultiBuildingEvents[schema.SectionWithTime] "All sections with meetings on the specified date"
+// @Id				events
+// @Router			/events/{date} [get]
+// @Description	"Returns all sections with meetings on the specified date"
+// @Produce		json
+// @Param			date	path	string												true	"ISO date of the set of events to get"
+// @Success		200		{array}	schema.MultiBuildingEvents[schema.SectionWithTime]	"All sections with meetings on the specified date"
 func Events(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -44,13 +44,13 @@ func Events(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.MultiBuildingEventsResponse[schema.SectionWithTime]{Status: http.StatusOK, Message: "success", Data: events})
 }
 
-// @Id eventsByBuilding
-// @Router /events/{date}/{building} [get]
-// @Description "Returns all sections with meetings on the specified date in the specified building"
-// @Produce json
-// @Param date path string true "ISO date of the set of events to get"
-// @Param building path string true "building abbreviation of event locations"
-// @Success 200 {array} schema.SingleBuildingEvents[schema.SectionWithTime] "All sections with meetings on the specified date in the specified building"
+// @Id				eventsByBuilding
+// @Router			/events/{date}/{building} [get]
+// @Description	"Returns all sections with meetings on the specified date in the specified building"
+// @Produce		json
+// @Param			date		path	string												true	"ISO date of the set of events to get"
+// @Param			building	path	string												true	"building abbreviation of event locations"
+// @Success		200			{array}	schema.SingleBuildingEvents[schema.SectionWithTime]	"All sections with meetings on the specified date in the specified building"
 func EventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 

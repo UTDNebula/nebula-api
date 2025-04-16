@@ -12,26 +12,31 @@ import (
 )
 
 // Unauthenticated placeholder endpoint for the built-in ginSwagger swagger documentation endpoint
-// @Id swagger
-// @Param file path string true "The swagger file to retrieve"
-// @Router /swagger/{file} [get]
-// @Description Returns the OpenAPI/swagger spec for the API
-// @Security
-// @Success 200
+//
+//	@Id				swagger
+//	@Param			file	path	string	true	"The swagger file to retrieve"
+//	@Router			/swagger/{file} [get]
+//	@Description	Returns the OpenAPI/swagger spec for the API
+//	@Security
+//	@Success	200
 func swagger_controller_placeholder() {}
 
-// @title dev-nebula-api
-// @description The developer Nebula Labs API for access to pertinent UT Dallas data
-// @version 1.0.0
-// @host api.utdnebula.com
-// @schemes http https
-// @x-google-backend {"address": "https://dev-nebula-api-1062216541483.us-south1.run.app"}
-// @x-google-endpoints [{"name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
-// @x-google-management {"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
-// @security api_key
-// @securitydefinitions.apikey api_key
-// @name x-api-key
-// @in header
+// @title						dev-nebula-api
+// @description				The developer Nebula Labs API for access to pertinent UT Dallas data
+// @version					1.0.0
+// @host						api.utdnebula.com
+// @schemes					http https
+// @x-google-backend			{"address": "https://dev-nebula-api-1062216541483.us-south1.run.app"}
+// @x-google-endpoints			[{"name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
+// @x-google-management		{"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
+// @security					api_key
+// @securitydefinitions.apikey	api_key
+// @name						x-api-key
+// @in							header
+// @securitydefinitions.apikey	storage_key
+// @name						x-storage-key
+// @in							header
+
 func main() {
 
 	// To avoid unused error on swagger_controller_placeholder
@@ -44,6 +49,8 @@ func main() {
 
 	// Configure Gin Router
 	router := gin.New()
+	// Get rid of "trusted all proxies" warning -- we don't care
+	router.SetTrustedProxies(nil)
 
 	// Enable CORS
 	router.Use(CORS())

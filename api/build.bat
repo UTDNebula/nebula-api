@@ -19,6 +19,7 @@ echo[
 
 :docs
 echo Generating docs...
+swag fmt
 swag init -g server.go --outputTypes yaml,go
 if "%1"=="docs" exit
 

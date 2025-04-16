@@ -17,12 +17,12 @@ import (
 
 var astraCollection *mongo.Collection = configs.GetCollection("astra")
 
-// @Id AstraEvents
-// @Router /astra/{date} [get]
-// @Description "Returns AstraEvent based on the input date"
-// @Produce json
-// @Param date path string true "date (ISO format) to retrieve astra events"
-// @Success 200 {array} schema.MultiBuildingEvents[schema.AstraEvent] "All AstraEvents with events on the inputted date"
+// @Id				AstraEvents
+// @Router			/astra/{date} [get]
+// @Description	"Returns AstraEvent based on the input date"
+// @Produce		json
+// @Param			date	path	string											true	"date (ISO format) to retrieve astra events"
+// @Success		200		{array}	schema.MultiBuildingEvents[schema.AstraEvent]	"All AstraEvents with events on the inputted date"
 func AstraEvents(c *gin.Context) {
 	//gin context has info about request and allows converting to json format
 

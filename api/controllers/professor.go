@@ -20,32 +20,32 @@ import (
 
 var professorCollection *mongo.Collection = configs.GetCollection("professors")
 
-// @Id professorSearch
-// @Router /professor [get]
-// @Description "Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination."
-// @Produce json
-// @Param offset query number false "The starting position of the current page of professors (e.g. For starting at the 17th professor, offset=16)."
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professor's last name"
-// @Param titles query string false "One of the professor's title"
-// @Param email query string false "The professor's email address"
-// @Param phone_number query string false "The professor's phone number"
-// @Param office.building query string false "The building of the location of the professor's office"
-// @Param office.room query string false "The room of the location of the professor's office"
-// @Param office.map_uri query string false "A hyperlink to the UTD room locator of the professor's office"
-// @Param profile_uri query string false "A hyperlink pointing to the professor's official university profile"
-// @Param image_uri query string false "A link to the image used for the professor on the professor's official university profile"
-// @Param office_hours.start_date query string false "The start date of one of the office hours meetings of the professor"
-// @Param office_hours.end_date query string false "The end date of one of the office hours meetings of the professor"
-// @Param office_hours.meeting_days query string false "One of the days that one of the office hours meetings of the professor"
-// @Param office_hours.start_time query string false "The time one of the office hours meetings of the professor starts"
-// @Param office_hours.end_time query string false "The time one of the office hours meetings of the professor ends"
-// @Param office_hours.modality query string false "The modality of one of the office hours meetings of the professor"
-// @Param office_hours.location.building query string false "The building of one of the office hours meetings of the professor"
-// @Param office_hours.location.room query string false "The room of one of the office hours meetings of the professor"
-// @Param office_hours.location.map_uri query string false "A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
-// @Param sections query string false "The _id of one of the sections the professor teaches"
-// @Success 200 {array} schema.Professor "A list of professors"
+// @Id				professorSearch
+// @Router			/professor [get]
+// @Description	"Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination."
+// @Produce		json
+// @Param			offset							query	number				false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, offset=16)."
+// @Param			first_name						query	string				false	"The professor's first name"
+// @Param			last_name						query	string				false	"The professor's last name"
+// @Param			titles							query	string				false	"One of the professor's title"
+// @Param			email							query	string				false	"The professor's email address"
+// @Param			phone_number					query	string				false	"The professor's phone number"
+// @Param			office.building					query	string				false	"The building of the location of the professor's office"
+// @Param			office.room						query	string				false	"The room of the location of the professor's office"
+// @Param			office.map_uri					query	string				false	"A hyperlink to the UTD room locator of the professor's office"
+// @Param			profile_uri						query	string				false	"A hyperlink pointing to the professor's official university profile"
+// @Param			image_uri						query	string				false	"A link to the image used for the professor on the professor's official university profile"
+// @Param			office_hours.start_date			query	string				false	"The start date of one of the office hours meetings of the professor"
+// @Param			office_hours.end_date			query	string				false	"The end date of one of the office hours meetings of the professor"
+// @Param			office_hours.meeting_days		query	string				false	"One of the days that one of the office hours meetings of the professor"
+// @Param			office_hours.start_time			query	string				false	"The time one of the office hours meetings of the professor starts"
+// @Param			office_hours.end_time			query	string				false	"The time one of the office hours meetings of the professor ends"
+// @Param			office_hours.modality			query	string				false	"The modality of one of the office hours meetings of the professor"
+// @Param			office_hours.location.building	query	string				false	"The building of one of the office hours meetings of the professor"
+// @Param			office_hours.location.room		query	string				false	"The room of one of the office hours meetings of the professor"
+// @Param			office_hours.location.map_uri	query	string				false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
+// @Param			sections						query	string				false	"The _id of one of the sections the professor teaches"
+// @Success		200								{array}	schema.Professor	"A list of professors"
 func ProfessorSearch(c *gin.Context) {
 	//name := c.Query("name")            // value of specific query parameter: string
 	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
@@ -88,12 +88,12 @@ func ProfessorSearch(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
 }
 
-// @Id professorById
-// @Router /professor/{id} [get]
-// @Description "Returns the professor with given ID"
-// @Produce json
-// @Param id path string true "ID of the professor to get"
-// @Success 200 {object} schema.Professor "A professor"
+// @Id				professorById
+// @Router			/professor/{id} [get]
+// @Description	"Returns the professor with given ID"
+// @Produce		json
+// @Param			id	path		string				true	"ID of the professor to get"
+// @Success		200	{object}	schema.Professor	"A professor"
 func ProfessorById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -146,33 +146,33 @@ func ProfessorAll(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
 }
 
-// @Id professorCourseSearch
-// @Router /professor/courses [get]
-// @Description "Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
-// @Produce json
-// @Param former_offset query number false "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
-// @Param latter_offset query number false "The starting position of the current page of courses (e.g. For starting at the 4th course, latter_offset=3)."
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professor's last name"
-// @Param titles query string false "One of the professor's title"
-// @Param email query string false "The professor's email address"
-// @Param phone_number query string false "The professor's phone number"
-// @Param office.building query string false "The building of the location of the professor's office"
-// @Param office.room query string false "The room of the location of the professor's office"
-// @Param office.map_uri query string false "A hyperlink to the UTD room locator of the professor's office"
-// @Param profile_uri query string false "A hyperlink pointing to the professor's official university profile"
-// @Param image_uri query string false "A link to the image used for the professor on the professor's official university profile"
-// @Param office_hours.start_date query string false "The start date of one of the office hours meetings of the professor"
-// @Param office_hours.end_date query string false "The end date of one of the office hours meetings of the professor"
-// @Param office_hours.meeting_days query string false "One of the days that one of the office hours meetings of the professor"
-// @Param office_hours.start_time query string false "The time one of the office hours meetings of the professor starts"
-// @Param office_hours.end_time query string false "The time one of the office hours meetings of the professor ends"
-// @Param office_hours.modality query string false "The modality of one of the office hours meetings of the professor"
-// @Param office_hours.location.building query string false "The building of one of the office hours meetings of the professor"
-// @Param office_hours.location.room query string false "The room of one of the office hours meetings of the professor"
-// @Param office_hours.location.map_uri query string false "A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
-// @Param sections query string false "The _id of one of the sections the professor teaches"
-// @Success 200 {array} schema.Course "A list of Courses"
+// @Id				professorCourseSearch
+// @Router			/professor/courses [get]
+// @Description	"Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
+// @Produce		json
+// @Param			former_offset					query	number			false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
+// @Param			latter_offset					query	number			false	"The starting position of the current page of courses (e.g. For starting at the 4th course, latter_offset=3)."
+// @Param			first_name						query	string			false	"The professor's first name"
+// @Param			last_name						query	string			false	"The professor's last name"
+// @Param			titles							query	string			false	"One of the professor's title"
+// @Param			email							query	string			false	"The professor's email address"
+// @Param			phone_number					query	string			false	"The professor's phone number"
+// @Param			office.building					query	string			false	"The building of the location of the professor's office"
+// @Param			office.room						query	string			false	"The room of the location of the professor's office"
+// @Param			office.map_uri					query	string			false	"A hyperlink to the UTD room locator of the professor's office"
+// @Param			profile_uri						query	string			false	"A hyperlink pointing to the professor's official university profile"
+// @Param			image_uri						query	string			false	"A link to the image used for the professor on the professor's official university profile"
+// @Param			office_hours.start_date			query	string			false	"The start date of one of the office hours meetings of the professor"
+// @Param			office_hours.end_date			query	string			false	"The end date of one of the office hours meetings of the professor"
+// @Param			office_hours.meeting_days		query	string			false	"One of the days that one of the office hours meetings of the professor"
+// @Param			office_hours.start_time			query	string			false	"The time one of the office hours meetings of the professor starts"
+// @Param			office_hours.end_time			query	string			false	"The time one of the office hours meetings of the professor ends"
+// @Param			office_hours.modality			query	string			false	"The modality of one of the office hours meetings of the professor"
+// @Param			office_hours.location.building	query	string			false	"The building of one of the office hours meetings of the professor"
+// @Param			office_hours.location.room		query	string			false	"The room of one of the office hours meetings of the professor"
+// @Param			office_hours.location.map_uri	query	string			false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
+// @Param			sections						query	string			false	"The _id of one of the sections the professor teaches"
+// @Success		200								{array}	schema.Course	"A list of Courses"
 func ProfessorCourseSearch() gin.HandlerFunc {
 	// Wrapper of professorCourse() with flag of Search
 	return func(c *gin.Context) {
@@ -180,12 +180,12 @@ func ProfessorCourseSearch() gin.HandlerFunc {
 	}
 }
 
-// @Id professorCourseById
-// @Router /professor/{id}/courses [get]
-// @Description "Returns all the courses taught by the professor with given ID"
-// @Produce json
-// @Param id path string true "ID of the professor to get"
-// @Success 200 {array} schema.Course "A list of courses"
+// @Id				professorCourseById
+// @Router			/professor/{id}/courses [get]
+// @Description	"Returns all the courses taught by the professor with given ID"
+// @Produce		json
+// @Param			id	path	string			true	"ID of the professor to get"
+// @Success		200	{array}	schema.Course	"A list of courses"
 func ProfessorCourseById() gin.HandlerFunc {
 	// Essentially wrapper of professorCourse() with flag of ById
 	return func(c *gin.Context) {
@@ -278,45 +278,45 @@ func professorCourse(flag string, c *gin.Context) {
 	c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: professorCourses})
 }
 
-// @Id professorSectionSearch
-// @Router /professor/sections [get]
-// @Description "Returns paginated list of the sections of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
-// @Produce json
-// @Param former_offset query number false "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
-// @Param latter_offset query number false "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professor's last name"
-// @Param titles query string false "One of the professor's title"
-// @Param email query string false "The professor's email address"
-// @Param phone_number query string false "The professor's phone number"
-// @Param office.building query string false "The building of the location of the professor's office"
-// @Param office.room query string false "The room of the location of the professor's office"
-// @Param office.map_uri query string false "A hyperlink to the UTD room locator of the professor's office"
-// @Param profile_uri query string false "A hyperlink pointing to the professor's official university profile"
-// @Param image_uri query string false "A link to the image used for the professor on the professor's official university profile"
-// @Param office_hours.start_date query string false "The start date of one of the office hours meetings of the professor"
-// @Param office_hours.end_date query string false "The end date of one of the office hours meetings of the professor"
-// @Param office_hours.meeting_days query string false "One of the days that one of the office hours meetings of the professor"
-// @Param office_hours.start_time query string false "The time one of the office hours meetings of the professor starts"
-// @Param office_hours.end_time query string false "The time one of the office hours meetings of the professor ends"
-// @Param office_hours.modality query string false "The modality of one of the office hours meetings of the professor"
-// @Param office_hours.location.building query string false "The building of one of the office hours meetings of the professor"
-// @Param office_hours.location.room query string false "The room of one of the office hours meetings of the professor"
-// @Param office_hours.location.map_uri query string false "A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
-// @Param sections query string false "The _id of one of the sections the professor teaches"
-// @Success 200 {array} schema.Section "A list of Sections"
+// @Id				professorSectionSearch
+// @Router			/professor/sections [get]
+// @Description	"Returns paginated list of the sections of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
+// @Produce		json
+// @Param			former_offset					query	number			false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
+// @Param			latter_offset					query	number			false	"The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
+// @Param			first_name						query	string			false	"The professor's first name"
+// @Param			last_name						query	string			false	"The professor's last name"
+// @Param			titles							query	string			false	"One of the professor's title"
+// @Param			email							query	string			false	"The professor's email address"
+// @Param			phone_number					query	string			false	"The professor's phone number"
+// @Param			office.building					query	string			false	"The building of the location of the professor's office"
+// @Param			office.room						query	string			false	"The room of the location of the professor's office"
+// @Param			office.map_uri					query	string			false	"A hyperlink to the UTD room locator of the professor's office"
+// @Param			profile_uri						query	string			false	"A hyperlink pointing to the professor's official university profile"
+// @Param			image_uri						query	string			false	"A link to the image used for the professor on the professor's official university profile"
+// @Param			office_hours.start_date			query	string			false	"The start date of one of the office hours meetings of the professor"
+// @Param			office_hours.end_date			query	string			false	"The end date of one of the office hours meetings of the professor"
+// @Param			office_hours.meeting_days		query	string			false	"One of the days that one of the office hours meetings of the professor"
+// @Param			office_hours.start_time			query	string			false	"The time one of the office hours meetings of the professor starts"
+// @Param			office_hours.end_time			query	string			false	"The time one of the office hours meetings of the professor ends"
+// @Param			office_hours.modality			query	string			false	"The modality of one of the office hours meetings of the professor"
+// @Param			office_hours.location.building	query	string			false	"The building of one of the office hours meetings of the professor"
+// @Param			office_hours.location.room		query	string			false	"The room of one of the office hours meetings of the professor"
+// @Param			office_hours.location.map_uri	query	string			false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
+// @Param			sections						query	string			false	"The _id of one of the sections the professor teaches"
+// @Success		200								{array}	schema.Section	"A list of Sections"
 func ProfessorSectionSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		professorSection("Search", c)
 	}
 }
 
-// @Id professorSectionById
-// @Router /professor/{id}/sections [get]
-// @Description "Returns all the sections taught by the professor with given ID"
-// @Produce json
-// @Param id path string true "ID of the professor to get"
-// @Success 200 {array} schema.Section "A list of sections"
+// @Id				professorSectionById
+// @Router			/professor/{id}/sections [get]
+// @Description	"Returns all the sections taught by the professor with given ID"
+// @Produce		json
+// @Param			id	path	string			true	"ID of the professor to get"
+// @Success		200	{array}	schema.Section	"A list of sections"
 func ProfessorSectionById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		professorSection("ById", c)

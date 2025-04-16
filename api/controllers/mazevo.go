@@ -17,12 +17,12 @@ import (
 
 var mazevoCollection *mongo.Collection = configs.GetCollection("mazevo")
 
-// @Id MazevoEvents
-// @Router /mazevo/{date} [get]
-// @Description "Returns MazevoEvent based on the input date"
-// @Produce json
-// @Param date path string true "date (ISO format) to retrieve mazevo events"
-// @Success 200 {array} schema.MultiBuildingEvents[schema.MazevoEvent] "All MazevoEvents with events on the inputted date"
+// @Id				MazevoEvents
+// @Router			/mazevo/{date} [get]
+// @Description	"Returns MazevoEvent based on the input date"
+// @Produce		json
+// @Param			date	path	string											true	"date (ISO format) to retrieve mazevo events"
+// @Success		200		{array}	schema.MultiBuildingEvents[schema.MazevoEvent]	"All MazevoEvents with events on the inputted date"
 func MazevoEvents(c *gin.Context) {
 	//gin context has info about request and allows converting to json format
 

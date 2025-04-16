@@ -43,15 +43,12 @@ func getOrCreateBucket(client *storage.Client, bucket string) (*storage.BucketHa
 	return bucketHandle, nil
 }
 
-// @Id bucketInfo
-// @Router /storage/{bucket} [get]
-// @Description "Get info on a bucket. This route is restricted to only Nebula Labs internal Projects."
-// @Param bucket path string true "Name of the bucket"
-// @Success 200 {object} schema.BucketInfo "The bucket's info"
-// @security storage_key
-// @securitydefinitions.apikey storage_key
-// @name x-storage-key
-// @in header
+// @Id				bucketInfo
+// @Router			/storage/{bucket} [get]
+// @Description	"Get info on a bucket. This route is restricted to only Nebula Labs internal Projects."
+// @Param			bucket	path		string				true	"Name of the bucket"
+// @Success		200		{object}	schema.BucketInfo	"The bucket's info"
+// @security		storage_key
 func BucketInfo(c *gin.Context) {
 	bucket := c.Param("bucket")
 	client := getClient(c)
@@ -93,15 +90,12 @@ func BucketInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.BucketResponse{Status: http.StatusOK, Message: "success", Data: bucketInfo})
 }
 
-// @Id deleteBucket
-// @Router /storage/{bucket} [delete]
-// @Description "Delete a bucket. This route is restricted to only Nebula Labs internal Projects."
-// @Param bucket path string true "Name of the bucket"
-// @Success 200
-// @security storage_key
-// @securitydefinitions.apikey storage_key
-// @name x-storage-key
-// @in header
+// @Id				deleteBucket
+// @Router			/storage/{bucket} [delete]
+// @Description	"Delete a bucket. This route is restricted to only Nebula Labs internal Projects."
+// @Param			bucket	path	string	true	"Name of the bucket"
+// @Success		200
+// @security		storage_key
 func DeleteBucket(c *gin.Context) {
 	bucket := c.Param("bucket")
 	client := getClient(c)
@@ -141,16 +135,13 @@ func DeleteBucket(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.DeleteResponse{Status: http.StatusOK, Message: "success", Data: deletedCount})
 }
 
-// @Id objectInfo
-// @Router /storage/{bucket}/{objectID} [get]
-// @Description "Get info on an object in a bucket. This route is restricted to only Nebula Labs internal Projects."
-// @Param bucket path string true "Name of the bucket"
-// @Param objectID path string true "ID of the object"
-// @Success 200 {object} schema.ObjectInfo "The object's info"
-// @security storage_key
-// @securitydefinitions.apikey storage_key
-// @name x-storage-key
-// @in header
+// @Id				objectInfo
+// @Router			/storage/{bucket}/{objectID} [get]
+// @Description	"Get info on an object in a bucket. This route is restricted to only Nebula Labs internal Projects."
+// @Param			bucket		path		string				true	"Name of the bucket"
+// @Param			objectID	path		string				true	"ID of the object"
+// @Success		200			{object}	schema.ObjectInfo	"The object's info"
+// @security		storage_key
 func ObjectInfo(c *gin.Context) {
 	bucket := c.Param("bucket")
 	objectID := c.Param("objectID")
@@ -180,16 +171,14 @@ func ObjectInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.ObjectResponse{Status: http.StatusOK, Message: "success", Data: objectInfo})
 }
 
-// @Id postObject
-// @Router /storage/{bucket}/{objectID} [post]
-// @Description "Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects."
-// @Param bucket path string true "Name of the bucket"
-// @Param objectID path string true "ID of the object"
-// @Success 200 {object} schema.ObjectInfo "The object's info"
-// @security storage_key
-// @securitydefinitions.apikey storage_key
-// @name x-storage-key
-// @in header
+// @Id				postObject
+// @Router			/storage/{bucket}/{objectID} [post]
+// @Description	"Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects."
+// @Param			bucket		path		string				true	"Name of the bucket"
+// @Param			objectID	path		string				true	"ID of the object"
+// @Param			data		formData	file				true	"The data to upload"
+// @Success		200			{object}	schema.ObjectInfo	"The object's info"
+// @security		storage_key
 func PostObject(c *gin.Context) {
 	bucket := c.Param("bucket")
 	objectID := c.Param("objectID")
@@ -245,16 +234,13 @@ func PostObject(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.ObjectResponse{Status: http.StatusOK, Message: "success", Data: objectInfo})
 }
 
-// @Id deleteObject
-// @Router /storage/{bucket}/{objectID} [delete]
-// @Description "Delete an object from a bucket. This route is restricted to only Nebula Labs internal Projects."
-// @Param bucket path string true "Name of the bucket"
-// @Param objectID path string true "ID of the object"
-// @Success 200
-// @security storage_key
-// @securitydefinitions.apikey storage_key
-// @name x-storage-key
-// @in header
+// @Id				deleteObject
+// @Router			/storage/{bucket}/{objectID} [delete]
+// @Description	"Delete an object from a bucket. This route is restricted to only Nebula Labs internal Projects."
+// @Param			bucket		path	string	true	"Name of the bucket"
+// @Param			objectID	path	string	true	"ID of the object"
+// @Success		200
+// @security		storage_key
 func DeleteObject(c *gin.Context) {
 	bucket := c.Param("bucket")
 	objectID := c.Param("objectID")

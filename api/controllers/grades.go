@@ -53,84 +53,84 @@ import (
 
 // 5 Functions
 
-// @Id gradeAggregationBySemester
-// @Router /grades/semester [get]
-// @Description "Returns grade distributions aggregated by semester"
-// @Produce json
-// @Param prefix query string false "The course's subject prefix"
-// @Param number query string false "The course's official number"
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professors's last name"
-// @Param section_number query string false "The number of the section"
-// @Success 200 {array} responses.GradeResponse "An array of grade distributions for each semester included"
+// @Id				gradeAggregationBySemester
+// @Router			/grades/semester [get]
+// @Description	"Returns grade distributions aggregated by semester"
+// @Produce		json
+// @Param			prefix			query	string					false	"The course's subject prefix"
+// @Param			number			query	string					false	"The course's official number"
+// @Param			first_name		query	string					false	"The professor's first name"
+// @Param			last_name		query	string					false	"The professors's last name"
+// @Param			section_number	query	string					false	"The number of the section"
+// @Success		200				{array}	responses.GradeResponse	"An array of grade distributions for each semester included"
 func GradeAggregationSemester() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("semester", c)
 	}
 }
 
-// @Id gradeAggregationSectionType
-// @Router /grades/semester/sectionType [get]
-// @Description "Returns the grade distributions aggregated by semester and broken down into section type"
-// @Produce json
-// @Param prefix query string false "The course's subject prefix"
-// @Param number query string false "The course's official number"
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professors's last name"
-// @Param section_number query string false "The number of the section"
-// @Success 200 {array} responses.SectionGradeResponse "An array of grade distributions for each section type for each semester included"
+// @Id				gradeAggregationSectionType
+// @Router			/grades/semester/sectionType [get]
+// @Description	"Returns the grade distributions aggregated by semester and broken down into section type"
+// @Produce		json
+// @Param			prefix			query	string							false	"The course's subject prefix"
+// @Param			number			query	string							false	"The course's official number"
+// @Param			first_name		query	string							false	"The professor's first name"
+// @Param			last_name		query	string							false	"The professors's last name"
+// @Param			section_number	query	string							false	"The number of the section"
+// @Success		200				{array}	responses.SectionGradeResponse	"An array of grade distributions for each section type for each semester included"
 func GradesAggregationSectionType() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("section_type", c)
 	}
 }
 
-// @Id gradeAggregationOverall
-// @Router /grades/overall [get]
-// @Description "Returns the overall grade distribution"
-// @Produce json
-// @Param prefix query string false "The course's subject prefix"
-// @Param number query string false "The course's official number"
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professors's last name"
-// @Param section_number query string false "The number of the section"
-// @Success 200 {array} integer "A grade distribution array"
+// @Id				gradeAggregationOverall
+// @Router			/grades/overall [get]
+// @Description	"Returns the overall grade distribution"
+// @Produce		json
+// @Param			prefix			query	string	false	"The course's subject prefix"
+// @Param			number			query	string	false	"The course's official number"
+// @Param			first_name		query	string	false	"The professor's first name"
+// @Param			last_name		query	string	false	"The professors's last name"
+// @Param			section_number	query	string	false	"The number of the section"
+// @Success		200				{array}	integer	"A grade distribution array"
 func GradesAggregationOverall() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("overall", c)
 	}
 }
 
-// @Id GradesByCourseID
-// @Router /course/{id}/grades [get]
-// @Description "Returns the overall grade distribution for a course"
-// @Produce json
-// @Param id path string true "ID of course to get grades for"
-// @Success 200 {array} integer "A grade distribution array for the course"
+// @Id				GradesByCourseID
+// @Router			/course/{id}/grades [get]
+// @Description	"Returns the overall grade distribution for a course"
+// @Produce		json
+// @Param			id	path	string	true	"ID of course to get grades for"
+// @Success		200	{array}	integer	"A grade distribution array for the course"
 func GradesByCourseID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("course_endpoint", c)
 	}
 }
 
-// @Id GradesBySectionID
-// @Router /section/{id}/grades [get]
-// @Description "Returns the overall grade distribution for a section"
-// @Produce json
-// @Param id path string true "ID of section to get grades for"
-// @Success 200 {array} integer "A grade distribution array for the section"
+// @Id				GradesBySectionID
+// @Router			/section/{id}/grades [get]
+// @Description	"Returns the overall grade distribution for a section"
+// @Produce		json
+// @Param			id	path	string	true	"ID of section to get grades for"
+// @Success		200	{array}	integer	"A grade distribution array for the section"
 func GradesBySectionID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("section_endpoint", c)
 	}
 }
 
-// @Id GradesByProfessorID
-// @Router /professor/{id}/grades [get]
-// @Description "Returns the overall grade distribution for a professor"
-// @Produce json
-// @Param id path string true "ID of professor to get grades for"
-// @Success 200 {array} integer "A grade distribution array for the professor"
+// @Id				GradesByProfessorID
+// @Router			/professor/{id}/grades [get]
+// @Description	"Returns the overall grade distribution for a professor"
+// @Produce		json
+// @Param			id	path	string	true	"ID of professor to get grades for"
+// @Success		200	{array}	integer	"A grade distribution array for the professor"
 func GradesByProfessorID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("professor_endpoint", c)
@@ -164,7 +164,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// @TODO: Recommend forcing using first_name and last_name to ensure single professors per query.
+	//	@TODO:	Recommend forcing using first_name and last_name to ensure single professors per query.
 	// All professors sharing the name will be aggregated together in the current implementation
 	prefix := c.Query("prefix")
 	number := c.Query("number")
