@@ -14,6 +14,10 @@ import (
 	"github.com/UTDNebula/nebula-api/api/schema"
 )
 
+const (
+	PROJECT_ID = "nebula-api-368223"
+)
+
 // Get client from routes
 func getClient(c *gin.Context) *storage.Client {
 	val, exists := c.Get("gcsClient")
@@ -28,10 +32,10 @@ func getOrCreateBucket(client *storage.Client, bucket string) (*storage.BucketHa
 	ctx := context.Background()
 	// Get bucket, or create it if it does not exist
 	// NOTE: We automatically prefix bucket names with "utdnebula_" here since bucket names need to be GLOBALLY unique
-	bucketHandle := client.Bucket("utdnebula_" + bucket)
+	bucketHandle := client.Bucket(schema.BUCKET_PREFIX + bucket)
 	_, err := bucketHandle.Attrs(ctx)
 	if err != nil {
-		err = bucketHandle.Create(ctx, "nebula-api-368223", nil)
+		err = bucketHandle.Create(ctx, PROJECT_ID, nil)
 		if err != nil {
 			return nil, errors.New("failed to create bucket: " + err.Error())
 		}

@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"strings"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -167,6 +168,9 @@ type BuildingRooms struct {
 	Rooms    []string `bson:"rooms" json:"rooms"`
 }
 
+// Prefix used for cloud storage bucket names
+const BUCKET_PREFIX = "utdnebula_"
+
 // Minimized form of storage.BucketAttrs for cloud storage
 type BucketInfo struct {
 	Name     string    `bson:"name" json:"name"`
@@ -176,7 +180,9 @@ type BucketInfo struct {
 }
 
 func BucketInfoFromAttrs(attrs *storage.BucketAttrs) BucketInfo {
-	return BucketInfo{attrs.Name, attrs.Created, attrs.Updated, []string{}}
+	// Don't show the bucket prefix externally
+	bucketName, _ := strings.CutPrefix(attrs.Name, BUCKET_PREFIX)
+	return BucketInfo{bucketName, attrs.Created, attrs.Updated, []string{}}
 }
 
 // Minimized form of storage.ObjectAttrs for cloud storage
@@ -193,8 +199,10 @@ type ObjectInfo struct {
 }
 
 func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
+	// Don't show the bucket prefix externally
+	bucketName, _ := strings.CutPrefix(attrs.Bucket, BUCKET_PREFIX)
 	return ObjectInfo{
-		attrs.Bucket,
+		bucketName,
 		attrs.Name,
 		attrs.ContentType,
 		attrs.Size,
