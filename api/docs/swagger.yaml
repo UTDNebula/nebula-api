@@ -434,8 +434,8 @@ definitions:
 host: api.utdnebula.com
 info:
   contact: {}
-  description: The public Nebula Labs API for access to pertinent UT Dallas data
-  title: nebula-api
+  description: The developer Nebula Labs API for access to pertinent UT Dallas data
+  title: dev-nebula-api
   version: 1.0.0
 paths:
   /astra/{date}:
