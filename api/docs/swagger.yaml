@@ -1502,10 +1502,11 @@ paths:
         required: true
         type: string
       - description: The data to upload
-        in: formData
+        in: body
         name: data
         required: true
-        type: string
+        schema:
+          type: string
       - description: The internal storage key
         in: header
         name: x-storage-key
