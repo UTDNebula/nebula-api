@@ -20,24 +20,24 @@ import (
 
 var courseCollection *mongo.Collection = configs.GetCollection("courses")
 
-// @Id courseSearch
-// @Router /course [get]
-// @Description "Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination."
-// @Produce json
-// @Param offset query number false "The starting position of the current page of courses (e.g. For starting at the 17th course, offset=16)."
-// @Param course_number query string false "The course's official number"
-// @Param subject_prefix query string false "The course's subject prefix"
-// @Param title query string false "The course's title"
-// @Param description query string false "The course's description"
-// @Param school query string false "The course's school"
-// @Param credit_hours query string false "The number of credit hours awarded by successful completion of the course"
-// @Param class_level query string false "The level of education that this course course corresponds to"
-// @Param activity_type query string false "The type of class this course corresponds to"
-// @Param grading query string false "The grading status of this course"
-// @Param internal_course_number query string false "The internal (university) number used to reference this course"
-// @Param lecture_contact_hours query string false "The weekly contact hours in lecture for a course"
-// @Param offering_frequency query string false "The frequency of offering a course"
-// @Success 200 {array} schema.Course "A list of courses"
+// @Id				courseSearch
+// @Router			/course [get]
+// @Description	"Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination."
+// @Produce		json
+// @Param			offset					query	number			false	"The starting position of the current page of courses (e.g. For starting at the 17th course, offset=16)."
+// @Param			course_number			query	string			false	"The course's official number"
+// @Param			subject_prefix			query	string			false	"The course's subject prefix"
+// @Param			title					query	string			false	"The course's title"
+// @Param			description				query	string			false	"The course's description"
+// @Param			school					query	string			false	"The course's school"
+// @Param			credit_hours			query	string			false	"The number of credit hours awarded by successful completion of the course"
+// @Param			class_level				query	string			false	"The level of education that this course course corresponds to"
+// @Param			activity_type			query	string			false	"The type of class this course corresponds to"
+// @Param			grading					query	string			false	"The grading status of this course"
+// @Param			internal_course_number	query	string			false	"The internal (university) number used to reference this course"
+// @Param			lecture_contact_hours	query	string			false	"The weekly contact hours in lecture for a course"
+// @Param			offering_frequency		query	string			false	"The frequency of offering a course"
+// @Success		200						{array}	schema.Course	"A list of courses"
 func CourseSearch(c *gin.Context) {
 	//name := c.Query("name")            	// value of specific query parameter: string
 	//queryParams := c.Request.URL.Query() 	// map of all query params: map[string][]string
@@ -80,12 +80,12 @@ func CourseSearch(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
 }
 
-// @Id courseById
-// @Router /course/{id} [get]
-// @Description "Returns the course with given ID"
-// @Produce json
-// @Param id path string true "ID of the course to get"
-// @Success 200 {object} schema.Course "A course"
+// @Id				courseById
+// @Router			/course/{id} [get]
+// @Description	"Returns the course with given ID"
+// @Produce		json
+// @Param			id	path		string			true	"ID of the course to get"
+// @Success		200	{object}	schema.Course	"A course"
 func CourseById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -137,37 +137,37 @@ func CourseAll(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: courses})
 }
 
-// @Id courseSectionSearch
-// @Router /course/sections [get]
-// @Description "Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
-// @Produce json
-// @Param former_offset query number false "The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
-// @Param latter_offset query number false "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
-// @Param course_number query string false "The course's official number"
-// @Param subject_prefix query string false "The course's subject prefix"
-// @Param title query string false "The course's title"
-// @Param description query string false "The course's description"
-// @Param school query string false "The course's school"
-// @Param credit_hours query string false "The number of credit hours awarded by successful completion of the course"
-// @Param class_level query string false "The level of education that this course course corresponds to"
-// @Param activity_type query string false "The type of class this course corresponds to"
-// @Param grading query string false "The grading status of this course"
-// @Param internal_course_number query string false "The internal (university) number used to reference this course"
-// @Param lecture_contact_hours query string false "The weekly contact hours in lecture for a course"
-// @Param offering_frequency query string false "The frequency of offering a course"
-// @Success 200 {array} schema.Section "A list of sections"
+// @Id				courseSectionSearch
+// @Router			/course/sections [get]
+// @Description	"Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
+// @Produce		json
+// @Param			former_offset			query	number			false	"The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
+// @Param			latter_offset			query	number			false	"The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
+// @Param			course_number			query	string			false	"The course's official number"
+// @Param			subject_prefix			query	string			false	"The course's subject prefix"
+// @Param			title					query	string			false	"The course's title"
+// @Param			description				query	string			false	"The course's description"
+// @Param			school					query	string			false	"The course's school"
+// @Param			credit_hours			query	string			false	"The number of credit hours awarded by successful completion of the course"
+// @Param			class_level				query	string			false	"The level of education that this course course corresponds to"
+// @Param			activity_type			query	string			false	"The type of class this course corresponds to"
+// @Param			grading					query	string			false	"The grading status of this course"
+// @Param			internal_course_number	query	string			false	"The internal (university) number used to reference this course"
+// @Param			lecture_contact_hours	query	string			false	"The weekly contact hours in lecture for a course"
+// @Param			offering_frequency		query	string			false	"The frequency of offering a course"
+// @Success		200						{array}	schema.Section	"A list of sections"
 func CourseSectionSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		courseSection("Search", c)
 	}
 }
 
-// @Id courseSectionById
-// @Router /course/{id}/sections [get]
-// @Description "Returns the all of the sections of the course with given ID"
-// @Produce json
-// @Param id path string true "ID of the course to get"
-// @Success 200 {array} schema.Section "A list of sections"
+// @Id				courseSectionById
+// @Router			/course/{id}/sections [get]
+// @Description	"Returns the all of the sections of the course with given ID"
+// @Produce		json
+// @Param			id	path	string			true	"ID of the course to get"
+// @Success		200	{array}	schema.Section	"A list of sections"
 func CourseSectionById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		courseSection("ById", c)

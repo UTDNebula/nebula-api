@@ -1489,6 +1489,11 @@ paths:
         name: objectID
         required: true
         type: string
+      - description: The data to upload
+        in: formData
+        name: data
+        required: true
+        type: file
       responses:
         "200":
           description: The object's info
@@ -1519,6 +1524,10 @@ securityDefinitions:
   api_key:
     in: header
     name: x-api-key
+    type: apiKey
+  storage_key:
+    in: header
+    name: x-storage-key
     type: apiKey
 swagger: "2.0"
 x-google-backend:

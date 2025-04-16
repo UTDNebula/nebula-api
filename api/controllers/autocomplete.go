@@ -17,11 +17,11 @@ import (
 
 var DAGCollection *mongo.Collection = configs.GetCollection("DAG")
 
-// @Id autocompleteDAG
-// @Router /autocomplete/dag [get]
-// @Description "Returns an aggregation of courses for use in generating autocomplete DAGs"
-// @Produce json
-// @Success 200 {array} schema.Autocomplete "An aggregation of courses for use in generating autocomplete DAGs"
+// @Id				autocompleteDAG
+// @Router			/autocomplete/dag [get]
+// @Description	"Returns an aggregation of courses for use in generating autocomplete DAGs"
+// @Produce		json
+// @Success		200	{array}	schema.Autocomplete	"An aggregation of courses for use in generating autocomplete DAGs"
 func AutocompleteDAG(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()

@@ -12,12 +12,13 @@ import (
 )
 
 // Unauthenticated placeholder endpoint for the built-in ginSwagger swagger documentation endpoint
-// @Id swagger
-// @Param file path string true "The swagger file to retrieve"
-// @Router /swagger/{file} [get]
-// @Description Returns the OpenAPI/swagger spec for the API
-// @Security
-// @Success 200
+//
+//	@Id				swagger
+//	@Param			file	path	string	true	"The swagger file to retrieve"
+//	@Router			/swagger/{file} [get]
+//	@Description	Returns the OpenAPI/swagger spec for the API
+//	@Security
+//	@Success	200
 func swagger_controller_placeholder() {}
 
 // @title dev-nebula-api
@@ -44,6 +45,8 @@ func main() {
 
 	// Configure Gin Router
 	router := gin.New()
+	// Get rid of "trusted all proxies" warning -- we don't care
+	router.SetTrustedProxies(nil)
 
 	// Enable CORS
 	router.Use(CORS())

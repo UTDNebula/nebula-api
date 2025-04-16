@@ -1521,6 +1521,13 @@ const docTemplate = `{
                         "name": "objectID",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "The data to upload",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2253,6 +2260,11 @@ const docTemplate = `{
         "api_key": {
             "type": "apiKey",
             "name": "x-api-key",
+            "in": "header"
+        },
+        "storage_key": {
+            "type": "apiKey",
+            "name": "x-storage-key",
             "in": "header"
         }
     },

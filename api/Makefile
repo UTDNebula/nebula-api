@@ -18,6 +18,7 @@ check:
 	goimports -w ./..
 
 build: server.go
+	swag fmt
 	swag init -g server.go --outputTypes yaml,go
 	go build -o $(EXEC_NAME) server.go
 
