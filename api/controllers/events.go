@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/UTDNebula/nebula-api/api/configs"
-	"github.com/UTDNebula/nebula-api/api/responses"
+
 	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
@@ -22,8 +21,9 @@ var eventsCollection *mongo.Collection = configs.GetCollection("events")
 // @Router			/events/{date} [get]
 // @Description	"Returns all sections with meetings on the specified date"
 // @Produce		json
-// @Param			date	path	string												true	"ISO date of the set of events to get"
-// @Success		200		{array}	schema.MultiBuildingEvents[schema.SectionWithTime]	"All sections with meetings on the specified date"
+// @Param			date	path		string																	true	"ISO date of the set of events to get"
+// @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.SectionWithTime]]	"All sections with meetings on the specified date"
+// @Failure		500		{object}	schema.APIResponse[string]												"A string describing the error"
 func Events(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -36,21 +36,22 @@ func Events(c *gin.Context) {
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
-		log.WriteError(err)
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.MultiBuildingEventsResponse[schema.SectionWithTime]{Status: http.StatusOK, Message: "success", Data: events})
+	respond(c, http.StatusOK, "success", events)
 }
 
 // @Id				eventsByBuilding
 // @Router			/events/{date}/{building} [get]
 // @Description	"Returns all sections with meetings on the specified date in the specified building"
 // @Produce		json
-// @Param			date		path	string												true	"ISO date of the set of events to get"
-// @Param			building	path	string												true	"building abbreviation of event locations"
-// @Success		200			{array}	schema.SingleBuildingEvents[schema.SectionWithTime]	"All sections with meetings on the specified date in the specified building"
+// @Param			date		path		string																	true	"ISO date of the set of events to get"
+// @Param			building	path		string																	true	"building abbreviation of event locations"
+// @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.SectionWithTime]]	"All sections with meetings on the specified date in the specified building"
+// @Failure		500			{object}	schema.APIResponse[string]												"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]												"A string describing the error"
 func EventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -65,8 +66,7 @@ func EventsByBuilding(c *gin.Context) {
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
-		log.WriteError(err)
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 
@@ -80,7 +80,7 @@ func EventsByBuilding(c *gin.Context) {
 
 	// If no building is found, return an error
 	if eventsByBuilding.Building == "" {
-		c.JSON(http.StatusNotFound, responses.ErrorResponse{
+		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
 			Status:  http.StatusNotFound,
 			Message: "error",
 			Data:    "No events found for the specified building",
@@ -88,5 +88,5 @@ func EventsByBuilding(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.SingleBuildingEventsResponse[schema.SectionWithTime]{Status: http.StatusOK, Message: "success", Data: eventsByBuilding})
+	respond(c, http.StatusOK, "success", eventsByBuilding)
 }

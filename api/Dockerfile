@@ -3,12 +3,10 @@
 FROM docker.io/golang:1.23 AS builder
 WORKDIR /build
 
-COPY ./common ./common
 COPY ./configs ./configs
 COPY ./common ./common
 COPY ./controllers ./controllers
 COPY ./docs ./docs
-COPY ./responses ./responses
 COPY ./routes ./routes
 COPY ./schema ./schema
 COPY go.mod go.sum server.go ./

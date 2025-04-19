@@ -35,10 +35,13 @@ const docTemplate = `{
                     "200": {
                         "description": "All AstraEvents with events on the inputted date",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.MultiBuildingEvents-schema_AstraEvent"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_AstraEvent"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -55,10 +58,13 @@ const docTemplate = `{
                     "200": {
                         "description": "An aggregation of courses for use in generating autocomplete DAGs",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Autocomplete"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Autocomplete"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -155,10 +161,42 @@ const docTemplate = `{
                     "200": {
                         "description": "A list of courses",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Course"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Course"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/course/all": {
+            "get": {
+                "description": "\"Returns all courses\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "courseAll",
+                "responses": {
+                    "200": {
+                        "description": "All courses",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Course"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -261,10 +299,58 @@ const docTemplate = `{
                     "200": {
                         "description": "A list of sections",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Section"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/course/sections/trends": {
+            "get": {
+                "description": "\"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "trendsCourseSectionSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "course_number",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "subject_prefix",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of Sections",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -290,7 +376,51 @@ const docTemplate = `{
                     "200": {
                         "description": "A course",
                         "schema": {
-                            "$ref": "#/definitions/schema.Course"
+                            "$ref": "#/definitions/schema.APIResponse-schema_Course"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/course/{id}/grades": {
+            "get": {
+                "description": "\"Returns the overall grade distribution for a course\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "GradesByCourseID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of course to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the course",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_GradeData"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -345,10 +475,19 @@ const docTemplate = `{
                     "200": {
                         "description": "A list of sections",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Section"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -374,10 +513,13 @@ const docTemplate = `{
                     "200": {
                         "description": "All sections with meetings on the specified date",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.MultiBuildingEvents-schema_SectionWithTime"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_SectionWithTime"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -410,10 +552,19 @@ const docTemplate = `{
                     "200": {
                         "description": "All sections with meetings on the specified date in the specified building",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.SingleBuildingEvents-schema_SectionWithTime"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-schema_SingleBuildingEvents-schema_SectionWithTime"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -462,10 +613,19 @@ const docTemplate = `{
                     "200": {
                         "description": "A grade distribution array",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-schema_GradeData"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -514,10 +674,19 @@ const docTemplate = `{
                     "200": {
                         "description": "An array of grade distributions for each semester included",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/responses.GradeResponse"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_GradeData"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -566,10 +735,51 @@ const docTemplate = `{
                     "200": {
                         "description": "An array of grade distributions for each section type for each semester included",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/responses.SectionGradeResponse"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_TypedGradeData"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/mazevo/{date}": {
+            "get": {
+                "description": "\"Returns MazevoEvent based on the input date\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "MazevoEvents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents with events on the inputted date",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -731,22 +941,48 @@ const docTemplate = `{
                         "description": "A hyperlink to the UTD room locator of one of the office hours meetings of the professor",
                         "name": "office_hours.location.map_uri",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The _id of one of the sections the professor teaches",
-                        "name": "sections",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "A list of professors",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Professor"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/professor/all": {
+            "get": {
+                "description": "\"Returns all professors\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "professorAll",
+                "responses": {
+                    "200": {
+                        "description": "All professors",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -885,22 +1121,25 @@ const docTemplate = `{
                         "description": "A hyperlink to the UTD room locator of one of the office hours meetings of the professor",
                         "name": "office_hours.location.map_uri",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The _id of one of the sections the professor teaches",
-                        "name": "sections",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "A list of Courses",
+                        "description": "A list of courses",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Course"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1039,22 +1278,64 @@ const docTemplate = `{
                         "description": "A hyperlink to the UTD room locator of one of the office hours meetings of the professor",
                         "name": "office_hours.location.map_uri",
                         "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of sections",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/professor/sections/trends": {
+            "get": {
+                "description": "\"Returns all of the given professor's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "trendsProfessorSectionSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The professor's first name",
+                        "name": "first_name",
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "string",
-                        "description": "The _id of one of the sections the professor teaches",
-                        "name": "sections",
-                        "in": "query"
+                        "description": "The professor's last name",
+                        "name": "last_name",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "A list of Sections",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Section"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1080,7 +1361,19 @@ const docTemplate = `{
                     "200": {
                         "description": "A professor",
                         "schema": {
-                            "$ref": "#/definitions/schema.Professor"
+                            "$ref": "#/definitions/schema.APIResponse-schema_Professor"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1106,10 +1399,57 @@ const docTemplate = `{
                     "200": {
                         "description": "A list of courses",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Course"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Course"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/professor/{id}/grades": {
+            "get": {
+                "description": "\"Returns the overall grade distribution for a professor\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "GradesByProfessorID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of professor to get grades for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A grade distribution array for the professor",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_GradeData"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1164,10 +1504,19 @@ const docTemplate = `{
                     "200": {
                         "description": "A list of sections",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Section"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1184,10 +1533,13 @@ const docTemplate = `{
                     "200": {
                         "description": "All schedulable rooms being used in the current and futures semesters from CourseBook, Astra, and Mazevo",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.BuildingRooms"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_BuildingRooms"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1215,12 +1567,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "An id that points to the course in MongoDB that this section is an instantiation of",
-                        "name": "course_reference",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "description": "The name of the academic session of the section",
                         "name": "academic_session.name",
                         "in": "query"
@@ -1235,12 +1581,6 @@ const docTemplate = `{
                         "type": "string",
                         "description": "The date of classes ending for the section",
                         "name": "academic_session.end_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "One of the professors teaching the section",
-                        "name": "professors",
                         "in": "query"
                     },
                     {
@@ -1350,10 +1690,19 @@ const docTemplate = `{
                     "200": {
                         "description": "A list of sections",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Section"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1379,7 +1728,19 @@ const docTemplate = `{
                     "200": {
                         "description": "A section",
                         "schema": {
-                            "$ref": "#/definitions/schema.Section"
+                            "$ref": "#/definitions/schema.APIResponse-schema_Section"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1405,10 +1766,19 @@ const docTemplate = `{
                     "200": {
                         "description": "A grade distribution array for the section",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            }
+                            "$ref": "#/definitions/schema.APIResponse-schema_GradeData"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1438,7 +1808,13 @@ const docTemplate = `{
                     "200": {
                         "description": "The bucket's info",
                         "schema": {
-                            "$ref": "#/definitions/schema.BucketInfo"
+                            "$ref": "#/definitions/schema.APIResponse-schema_BucketInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1464,7 +1840,16 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "The number of objects that were in the deleted bucket",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-int"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
                     }
                 }
             }
@@ -1500,7 +1885,13 @@ const docTemplate = `{
                     "200": {
                         "description": "The object's info",
                         "schema": {
-                            "$ref": "#/definitions/schema.ObjectInfo"
+                            "$ref": "#/definitions/schema.APIResponse-schema_ObjectInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1544,7 +1935,13 @@ const docTemplate = `{
                     "200": {
                         "description": "The object's info",
                         "schema": {
-                            "$ref": "#/definitions/schema.ObjectInfo"
+                            "$ref": "#/definitions/schema.APIResponse-schema_ObjectInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     }
                 }
@@ -1577,7 +1974,16 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Placeholder response, always set to 1",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-int"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
                     }
                 }
             }
@@ -1605,30 +2011,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "responses.GradeData": {
+        "schema.APIResponse-array_schema_Autocomplete": {
             "type": "object",
             "properties": {
-                "_id": {
-                    "type": "string"
-                },
                 "data": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "grade_distribution": {},
-                            "type": {
-                                "type": "string"
-                            }
-                        }
+                        "$ref": "#/definitions/schema.Autocomplete"
                     }
-                }
-            }
-        },
-        "responses.GradeResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
+                },
                 "message": {
                     "type": "string"
                 },
@@ -1637,14 +2028,267 @@ const docTemplate = `{
                 }
             }
         },
-        "responses.SectionGradeResponse": {
+        "schema.APIResponse-array_schema_BuildingRooms": {
             "type": "object",
             "properties": {
-                "grade_data": {
+                "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/responses.GradeData"
+                        "$ref": "#/definitions/schema.BuildingRooms"
                     }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-array_schema_Course": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Course"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-array_schema_GradeData": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.GradeData"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-array_schema_Professor": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Professor"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-array_schema_Section": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Section"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-array_schema_TypedGradeData": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.TypedGradeData"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-int": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_BucketInfo": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.BucketInfo"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_Course": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.Course"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_GradeData": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.GradeData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_MultiBuildingEvents-schema_AstraEvent": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.MultiBuildingEvents-schema_AstraEvent"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.MultiBuildingEvents-schema_MazevoEvent"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_MultiBuildingEvents-schema_SectionWithTime": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.MultiBuildingEvents-schema_SectionWithTime"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_ObjectInfo": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.ObjectInfo"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_Professor": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.Professor"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_Section": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.Section"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_SingleBuildingEvents-schema_SectionWithTime": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.SingleBuildingEvents-schema_SectionWithTime"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-string": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
                 },
                 "message": {
                     "type": "string"
@@ -1874,6 +2518,17 @@ const docTemplate = `{
                 },
                 "course_number": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.GradeData": {
+            "type": "object",
+            "properties": {
+                "grade_distribution": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -2266,6 +2921,31 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "schema.TypedGradeData": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "grade_distribution": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "securityDefinitions": {
@@ -2281,12 +2961,12 @@ const docTemplate = `{
         }
     ],
     "x-google-backend": {
-        "address": "https://nebula-api-1062216541483.us-central1.run.app"
+        "address": "https://dev-nebula-api-1062216541483.us-south1.run.app"
     },
     "x-google-endpoints": [
         {
             "allowCors": true,
-            "name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog"
+            "name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog"
         }
     ],
     "x-google-management": {
@@ -2315,12 +2995,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0.0",
+	Version:          "1.1.0",
 	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"http", "https"},
-	Title:            "nebula-api",
-	Description:      "The Nebula Labs API for access to pertinent UT Dallas data",
+	Title:            "dev-nebula-api",
+	Description:      "The developer Nebula Labs API for access to pertinent UT Dallas data",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
