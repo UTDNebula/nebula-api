@@ -169,6 +169,7 @@ type BuildingRooms struct {
 }
 
 type GradeData struct {
+	Id                string  `bson:"_id" json:"_id"`
 	GradeDistribution [14]int `bson:"grade_distribution" json:"grade_distribution"`
 }
 
