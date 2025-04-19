@@ -1,4 +1,15 @@
 definitions:
+  schema.APIResponse-array_int:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_Autocomplete:
     properties:
       data:
@@ -98,15 +109,6 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/schema.Course'
-      message:
-        type: string
-      status:
-        type: integer
-    type: object
-  schema.APIResponse-schema_GradeData:
-    properties:
-      data:
-        $ref: '#/definitions/schema.GradeData'
       message:
         type: string
       status:
@@ -332,6 +334,8 @@ definitions:
     type: object
   schema.GradeData:
     properties:
+      _id:
+        type: string
       grade_distribution:
         items:
           type: integer
@@ -764,7 +768,7 @@ paths:
         "200":
           description: A grade distribution array for the course
           schema:
-            $ref: '#/definitions/schema.APIResponse-schema_GradeData'
+            $ref: '#/definitions/schema.APIResponse-array_int'
         "400":
           description: A string describing the error
           schema:
@@ -1005,7 +1009,7 @@ paths:
         "200":
           description: A grade distribution array
           schema:
-            $ref: '#/definitions/schema.APIResponse-schema_GradeData'
+            $ref: '#/definitions/schema.APIResponse-array_int'
         "400":
           description: A string describing the error
           schema:
@@ -1288,7 +1292,7 @@ paths:
         "200":
           description: A grade distribution array for the professor
           schema:
-            $ref: '#/definitions/schema.APIResponse-schema_GradeData'
+            $ref: '#/definitions/schema.APIResponse-array_int'
         "400":
           description: A string describing the error
           schema:
@@ -1754,7 +1758,7 @@ paths:
         "200":
           description: A grade distribution array for the section
           schema:
-            $ref: '#/definitions/schema.APIResponse-schema_GradeData'
+            $ref: '#/definitions/schema.APIResponse-array_int'
         "400":
           description: A string describing the error
           schema:

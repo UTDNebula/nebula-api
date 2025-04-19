@@ -408,7 +408,7 @@ const docTemplate = `{
                     "200": {
                         "description": "A grade distribution array for the course",
                         "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-schema_GradeData"
+                            "$ref": "#/definitions/schema.APIResponse-array_int"
                         }
                     },
                     "400": {
@@ -584,7 +584,7 @@ const docTemplate = `{
                     "200": {
                         "description": "A grade distribution array",
                         "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-schema_GradeData"
+                            "$ref": "#/definitions/schema.APIResponse-array_int"
                         }
                     },
                     "400": {
@@ -1379,7 +1379,7 @@ const docTemplate = `{
                     "200": {
                         "description": "A grade distribution array for the professor",
                         "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-schema_GradeData"
+                            "$ref": "#/definitions/schema.APIResponse-array_int"
                         }
                     },
                     "400": {
@@ -1679,7 +1679,7 @@ const docTemplate = `{
                     "200": {
                         "description": "A grade distribution array for the section",
                         "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-schema_GradeData"
+                            "$ref": "#/definitions/schema.APIResponse-array_int"
                         }
                     },
                     "400": {
@@ -1924,6 +1924,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "schema.APIResponse-array_int": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-array_schema_Autocomplete": {
             "type": "object",
             "properties": {
@@ -2076,20 +2093,6 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/schema.Course"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "schema.APIResponse-schema_GradeData": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/schema.GradeData"
                 },
                 "message": {
                     "type": "string"
@@ -2437,6 +2440,9 @@ const docTemplate = `{
         "schema.GradeData": {
             "type": "object",
             "properties": {
+                "_id": {
+                    "type": "string"
+                },
                 "grade_distribution": {
                     "type": "array",
                     "items": {
