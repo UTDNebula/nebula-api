@@ -4,7 +4,6 @@ FROM docker.io/golang:1.23 AS builder
 WORKDIR /build
 
 COPY ./configs ./configs
-COPY ./common ./common
 COPY ./controllers ./controllers
 COPY ./docs ./docs
 COPY ./routes ./routes
