@@ -11,9 +11,9 @@ import (
 
 	"cloud.google.com/go/storage"
 	"github.com/UTDNebula/nebula-api/api/controllers"
-	"google.golang.org/api/option"
+	"github.com/UTDNebula/nebula-api/api/schema"
 
-	"github.com/UTDNebula/nebula-api/api/responses"
+	"google.golang.org/api/option"
 )
 
 // Singleton client, not to be changed
@@ -64,7 +64,7 @@ func StorageRoute(router *gin.Engine) {
 		secret := c.GetHeader("x-storage-key")
 		expected, exist := os.LookupEnv("STORAGE_ROUTE_KEY")
 		if !exist || secret != expected {
-			c.AbortWithStatusJSON(http.StatusForbidden, responses.ErrorResponse{Status: http.StatusForbidden, Message: "error", Data: "Forbidden"})
+			c.AbortWithStatusJSON(http.StatusForbidden, schema.APIResponse[string]{Status: http.StatusForbidden, Message: "error", Data: "Forbidden"})
 			return
 		}
 		c.Next()

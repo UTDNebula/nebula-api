@@ -6,15 +6,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/api/common/log"
 	"github.com/UTDNebula/nebula-api/api/configs"
-	"github.com/UTDNebula/nebula-api/api/responses"
+
 	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -24,28 +22,29 @@ var professorCollection *mongo.Collection = configs.GetCollection("professors")
 // @Router			/professor [get]
 // @Description	"Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce		json
-// @Param			offset							query	number				false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, offset=16)."
-// @Param			first_name						query	string				false	"The professor's first name"
-// @Param			last_name						query	string				false	"The professor's last name"
-// @Param			titles							query	string				false	"One of the professor's title"
-// @Param			email							query	string				false	"The professor's email address"
-// @Param			phone_number					query	string				false	"The professor's phone number"
-// @Param			office.building					query	string				false	"The building of the location of the professor's office"
-// @Param			office.room						query	string				false	"The room of the location of the professor's office"
-// @Param			office.map_uri					query	string				false	"A hyperlink to the UTD room locator of the professor's office"
-// @Param			profile_uri						query	string				false	"A hyperlink pointing to the professor's official university profile"
-// @Param			image_uri						query	string				false	"A link to the image used for the professor on the professor's official university profile"
-// @Param			office_hours.start_date			query	string				false	"The start date of one of the office hours meetings of the professor"
-// @Param			office_hours.end_date			query	string				false	"The end date of one of the office hours meetings of the professor"
-// @Param			office_hours.meeting_days		query	string				false	"One of the days that one of the office hours meetings of the professor"
-// @Param			office_hours.start_time			query	string				false	"The time one of the office hours meetings of the professor starts"
-// @Param			office_hours.end_time			query	string				false	"The time one of the office hours meetings of the professor ends"
-// @Param			office_hours.modality			query	string				false	"The modality of one of the office hours meetings of the professor"
-// @Param			office_hours.location.building	query	string				false	"The building of one of the office hours meetings of the professor"
-// @Param			office_hours.location.room		query	string				false	"The room of one of the office hours meetings of the professor"
-// @Param			office_hours.location.map_uri	query	string				false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
-// @Param			sections						query	string				false	"The _id of one of the sections the professor teaches"
-// @Success		200								{array}	schema.Professor	"A list of professors"
+// @Param			offset							query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, offset=16)."
+// @Param			first_name						query		string									false	"The professor's first name"
+// @Param			last_name						query		string									false	"The professor's last name"
+// @Param			titles							query		string									false	"One of the professor's title"
+// @Param			email							query		string									false	"The professor's email address"
+// @Param			phone_number					query		string									false	"The professor's phone number"
+// @Param			office.building					query		string									false	"The building of the location of the professor's office"
+// @Param			office.room						query		string									false	"The room of the location of the professor's office"
+// @Param			office.map_uri					query		string									false	"A hyperlink to the UTD room locator of the professor's office"
+// @Param			profile_uri						query		string									false	"A hyperlink pointing to the professor's official university profile"
+// @Param			image_uri						query		string									false	"A link to the image used for the professor on the professor's official university profile"
+// @Param			office_hours.start_date			query		string									false	"The start date of one of the office hours meetings of the professor"
+// @Param			office_hours.end_date			query		string									false	"The end date of one of the office hours meetings of the professor"
+// @Param			office_hours.meeting_days		query		string									false	"One of the days that one of the office hours meetings of the professor"
+// @Param			office_hours.start_time			query		string									false	"The time one of the office hours meetings of the professor starts"
+// @Param			office_hours.end_time			query		string									false	"The time one of the office hours meetings of the professor ends"
+// @Param			office_hours.modality			query		string									false	"The modality of one of the office hours meetings of the professor"
+// @Param			office_hours.location.building	query		string									false	"The building of one of the office hours meetings of the professor"
+// @Param			office_hours.location.room		query		string									false	"The room of one of the office hours meetings of the professor"
+// @Param			office_hours.location.map_uri	query		string									false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
+// @Success		200								{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
+// @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorSearch(c *gin.Context) {
 	//name := c.Query("name")            // value of specific query parameter: string
 	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
@@ -59,70 +58,71 @@ func ProfessorSearch(c *gin.Context) {
 	// build query key value pairs (only one value per key)
 	query, err := schema.FilterQuery[schema.Professor](c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+		respond(c, http.StatusBadRequest, "schema validation error", err.Error())
 		return
 	}
 
 	optionLimit, err := configs.GetOptionLimit(&query, c)
 	if err != nil {
-		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
-		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
 
 	// get cursor for query results
 	cursor, err := professorCollection.Find(ctx, query, optionLimit)
 	if err != nil {
-		log.WriteError(err)
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 
 	// retrieve and parse all valid documents
 	if err = cursor.All(ctx, &professors); err != nil {
-		log.WritePanic(err)
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
 
 	// return result
-	c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
+	respond(c, http.StatusOK, "success", professors)
 }
 
 // @Id				professorById
 // @Router			/professor/{id} [get]
 // @Description	"Returns the professor with given ID"
 // @Produce		json
-// @Param			id	path		string				true	"ID of the professor to get"
-// @Success		200	{object}	schema.Professor	"A professor"
+// @Param			id	path		string									true	"ID of the professor to get"
+// @Success		200	{object}	schema.APIResponse[schema.Professor]	"A professor"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	professorId := c.Param("id")
 
 	var professor schema.Professor
 
 	defer cancel()
 
 	// parse object id from id parameter
-	objId, err := primitive.ObjectIDFromHex(professorId)
+	objId, err := objectIDFromParam(c, "id")
 	if err != nil {
-		log.WriteError(err)
-		c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 		return
 	}
 
 	// find and parse matching professor
 	err = professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
 	if err != nil {
-		log.WriteError(err)
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 
 	// return result
-	c.JSON(http.StatusOK, responses.SingleProfessorResponse{Status: http.StatusOK, Message: "success", Data: professor})
+	respond(c, http.StatusOK, "success", professor)
 }
 
+// @Id				professorAll
+// @Router			/professor/all [get]
+// @Description	"Returns all professors"
+// @Produce		json
+// @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"All professors"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 
@@ -133,46 +133,48 @@ func ProfessorAll(c *gin.Context) {
 	cursor, err := professorCollection.Find(ctx, bson.M{})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 
 	// retrieve and parse all valid documents
 	if err = cursor.All(ctx, &professors); err != nil {
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
 
 	// return result
-	c.JSON(http.StatusOK, responses.MultiProfessorResponse{Status: http.StatusOK, Message: "success", Data: professors})
+	respond(c, http.StatusOK, "success", professors)
 }
 
 // @Id				professorCourseSearch
 // @Router			/professor/courses [get]
 // @Description	"Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
-// @Param			former_offset					query	number			false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
-// @Param			latter_offset					query	number			false	"The starting position of the current page of courses (e.g. For starting at the 4th course, latter_offset=3)."
-// @Param			first_name						query	string			false	"The professor's first name"
-// @Param			last_name						query	string			false	"The professor's last name"
-// @Param			titles							query	string			false	"One of the professor's title"
-// @Param			email							query	string			false	"The professor's email address"
-// @Param			phone_number					query	string			false	"The professor's phone number"
-// @Param			office.building					query	string			false	"The building of the location of the professor's office"
-// @Param			office.room						query	string			false	"The room of the location of the professor's office"
-// @Param			office.map_uri					query	string			false	"A hyperlink to the UTD room locator of the professor's office"
-// @Param			profile_uri						query	string			false	"A hyperlink pointing to the professor's official university profile"
-// @Param			image_uri						query	string			false	"A link to the image used for the professor on the professor's official university profile"
-// @Param			office_hours.start_date			query	string			false	"The start date of one of the office hours meetings of the professor"
-// @Param			office_hours.end_date			query	string			false	"The end date of one of the office hours meetings of the professor"
-// @Param			office_hours.meeting_days		query	string			false	"One of the days that one of the office hours meetings of the professor"
-// @Param			office_hours.start_time			query	string			false	"The time one of the office hours meetings of the professor starts"
-// @Param			office_hours.end_time			query	string			false	"The time one of the office hours meetings of the professor ends"
-// @Param			office_hours.modality			query	string			false	"The modality of one of the office hours meetings of the professor"
-// @Param			office_hours.location.building	query	string			false	"The building of one of the office hours meetings of the professor"
-// @Param			office_hours.location.room		query	string			false	"The room of one of the office hours meetings of the professor"
-// @Param			office_hours.location.map_uri	query	string			false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
-// @Param			sections						query	string			false	"The _id of one of the sections the professor teaches"
-// @Success		200								{array}	schema.Course	"A list of Courses"
+// @Param			former_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
+// @Param			latter_offset					query		number									false	"The starting position of the current page of courses (e.g. For starting at the 4th course, latter_offset=3)."
+// @Param			first_name						query		string									false	"The professor's first name"
+// @Param			last_name						query		string									false	"The professor's last name"
+// @Param			titles							query		string									false	"One of the professor's title"
+// @Param			email							query		string									false	"The professor's email address"
+// @Param			phone_number					query		string									false	"The professor's phone number"
+// @Param			office.building					query		string									false	"The building of the location of the professor's office"
+// @Param			office.room						query		string									false	"The room of the location of the professor's office"
+// @Param			office.map_uri					query		string									false	"A hyperlink to the UTD room locator of the professor's office"
+// @Param			profile_uri						query		string									false	"A hyperlink pointing to the professor's official university profile"
+// @Param			image_uri						query		string									false	"A link to the image used for the professor on the professor's official university profile"
+// @Param			office_hours.start_date			query		string									false	"The start date of one of the office hours meetings of the professor"
+// @Param			office_hours.end_date			query		string									false	"The end date of one of the office hours meetings of the professor"
+// @Param			office_hours.meeting_days		query		string									false	"One of the days that one of the office hours meetings of the professor"
+// @Param			office_hours.start_time			query		string									false	"The time one of the office hours meetings of the professor starts"
+// @Param			office_hours.end_time			query		string									false	"The time one of the office hours meetings of the professor ends"
+// @Param			office_hours.modality			query		string									false	"The modality of one of the office hours meetings of the professor"
+// @Param			office_hours.location.building	query		string									false	"The building of one of the office hours meetings of the professor"
+// @Param			office_hours.location.room		query		string									false	"The room of one of the office hours meetings of the professor"
+// @Param			office_hours.location.map_uri	query		string									false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
+// @Success		200								{object}	schema.APIResponse[[]schema.Professor]	"A list of courses"
+// @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorCourseSearch() gin.HandlerFunc {
 	// Wrapper of professorCourse() with flag of Search
 	return func(c *gin.Context) {
@@ -184,8 +186,10 @@ func ProfessorCourseSearch() gin.HandlerFunc {
 // @Router			/professor/{id}/courses [get]
 // @Description	"Returns all the courses taught by the professor with given ID"
 // @Produce		json
-// @Param			id	path	string			true	"ID of the professor to get"
-// @Success		200	{array}	schema.Course	"A list of courses"
+// @Param			id	path		string								true	"ID of the professor to get"
+// @Success		200	{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
+// @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
 func ProfessorCourseById() gin.HandlerFunc {
 	// Essentially wrapper of professorCourse() with flag of ById
 	return func(c *gin.Context) {
@@ -212,8 +216,7 @@ func professorCourse(flag string, c *gin.Context) {
 	// and delete "offset" field in professorQuery
 	paginateMap, err := configs.GetAggregateLimit(&professorQuery, c)
 	if err != nil {
-		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
-		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
 
@@ -266,45 +269,45 @@ func professorCourse(flag string, c *gin.Context) {
 	cursor, err := professorCollection.Aggregate(ctx, professorCoursePipeline)
 	if err != nil {
 		// return the error with there's something wrong with the aggregation
-		log.WriteError(err)
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 	// Parse the array of courses from these professors
 	if err = cursor.All(ctx, &professorCourses); err != nil {
-		log.WritePanic(err)
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
-	c.JSON(http.StatusOK, responses.MultiCourseResponse{Status: http.StatusOK, Message: "success", Data: professorCourses})
+	respond(c, http.StatusOK, "success", professorCourses)
 }
 
 // @Id				professorSectionSearch
 // @Router			/professor/sections [get]
 // @Description	"Returns paginated list of the sections of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
-// @Param			former_offset					query	number			false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
-// @Param			latter_offset					query	number			false	"The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
-// @Param			first_name						query	string			false	"The professor's first name"
-// @Param			last_name						query	string			false	"The professor's last name"
-// @Param			titles							query	string			false	"One of the professor's title"
-// @Param			email							query	string			false	"The professor's email address"
-// @Param			phone_number					query	string			false	"The professor's phone number"
-// @Param			office.building					query	string			false	"The building of the location of the professor's office"
-// @Param			office.room						query	string			false	"The room of the location of the professor's office"
-// @Param			office.map_uri					query	string			false	"A hyperlink to the UTD room locator of the professor's office"
-// @Param			profile_uri						query	string			false	"A hyperlink pointing to the professor's official university profile"
-// @Param			image_uri						query	string			false	"A link to the image used for the professor on the professor's official university profile"
-// @Param			office_hours.start_date			query	string			false	"The start date of one of the office hours meetings of the professor"
-// @Param			office_hours.end_date			query	string			false	"The end date of one of the office hours meetings of the professor"
-// @Param			office_hours.meeting_days		query	string			false	"One of the days that one of the office hours meetings of the professor"
-// @Param			office_hours.start_time			query	string			false	"The time one of the office hours meetings of the professor starts"
-// @Param			office_hours.end_time			query	string			false	"The time one of the office hours meetings of the professor ends"
-// @Param			office_hours.modality			query	string			false	"The modality of one of the office hours meetings of the professor"
-// @Param			office_hours.location.building	query	string			false	"The building of one of the office hours meetings of the professor"
-// @Param			office_hours.location.room		query	string			false	"The room of one of the office hours meetings of the professor"
-// @Param			office_hours.location.map_uri	query	string			false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
-// @Param			sections						query	string			false	"The _id of one of the sections the professor teaches"
-// @Success		200								{array}	schema.Section	"A list of Sections"
+// @Param			former_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
+// @Param			latter_offset					query		number									false	"The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
+// @Param			first_name						query		string									false	"The professor's first name"
+// @Param			last_name						query		string									false	"The professor's last name"
+// @Param			titles							query		string									false	"One of the professor's title"
+// @Param			email							query		string									false	"The professor's email address"
+// @Param			phone_number					query		string									false	"The professor's phone number"
+// @Param			office.building					query		string									false	"The building of the location of the professor's office"
+// @Param			office.room						query		string									false	"The room of the location of the professor's office"
+// @Param			office.map_uri					query		string									false	"A hyperlink to the UTD room locator of the professor's office"
+// @Param			profile_uri						query		string									false	"A hyperlink pointing to the professor's official university profile"
+// @Param			image_uri						query		string									false	"A link to the image used for the professor on the professor's official university profile"
+// @Param			office_hours.start_date			query		string									false	"The start date of one of the office hours meetings of the professor"
+// @Param			office_hours.end_date			query		string									false	"The end date of one of the office hours meetings of the professor"
+// @Param			office_hours.meeting_days		query		string									false	"One of the days that one of the office hours meetings of the professor"
+// @Param			office_hours.start_time			query		string									false	"The time one of the office hours meetings of the professor starts"
+// @Param			office_hours.end_time			query		string									false	"The time one of the office hours meetings of the professor ends"
+// @Param			office_hours.modality			query		string									false	"The modality of one of the office hours meetings of the professor"
+// @Param			office_hours.location.building	query		string									false	"The building of one of the office hours meetings of the professor"
+// @Param			office_hours.location.room		query		string									false	"The room of one of the office hours meetings of the professor"
+// @Param			office_hours.location.map_uri	query		string									false	"A hyperlink to the UTD room locator of one of the office hours meetings of the professor"
+// @Success		200								{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
+// @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorSectionSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		professorSection("Search", c)
@@ -315,8 +318,10 @@ func ProfessorSectionSearch() gin.HandlerFunc {
 // @Router			/professor/{id}/sections [get]
 // @Description	"Returns all the sections taught by the professor with given ID"
 // @Produce		json
-// @Param			id	path	string			true	"ID of the professor to get"
-// @Success		200	{array}	schema.Section	"A list of sections"
+// @Param			id	path		string									true	"ID of the professor to get"
+// @Success		200	{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorSectionById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		professorSection("ById", c)
@@ -341,8 +346,7 @@ func professorSection(flag string, c *gin.Context) {
 	// determine the offset and limit for pagination stage
 	paginateMap, err := configs.GetAggregateLimit(&professorQuery, c)
 	if err != nil {
-		log.WriteErrorWithMsg(err, log.OffsetNotTypeInteger)
-		c.JSON(http.StatusConflict, responses.ErrorResponse{Status: http.StatusConflict, Message: "Error offset is not type integer", Data: err.Error()})
+		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
 
@@ -387,16 +391,15 @@ func professorSection(flag string, c *gin.Context) {
 	cursor, err := professorCollection.Aggregate(ctx, professorSectionPipeline)
 	if err != nil {
 		// return the error with there's something wrong with the aggregation
-		log.WriteError(err)
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 	// Parse the array of sections from these professors
 	if err = cursor.All(ctx, &professorSections); err != nil {
-		log.WritePanic(err)
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
-	c.JSON(http.StatusOK, responses.MultiSectionResponse{Status: http.StatusOK, Message: "success", Data: professorSections})
+	respond(c, http.StatusOK, "success", professorSections)
 }
 
 // determine the query of the professor based on the parameters passed from context
@@ -409,24 +412,51 @@ func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 		// build the key-value pairs of query parameters
 		professorQuery, err = schema.FilterQuery[schema.Professor](c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "schema validation error", Data: err.Error()})
+			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
 			return nil, err // return only the error
 		}
 	} else if flag == "ById" { // if the flag is ById, filter that single professor based on their _id
 		// parse the ObjectId
-		professorId := c.Param("id")
-		professorObjId, convertIdErr := primitive.ObjectIDFromHex(professorId)
-		if convertIdErr != nil {
-			log.WriteError(convertIdErr)
-			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "id conversion error", Data: convertIdErr.Error()})
-			return nil, convertIdErr
+		objId, err := objectIDFromParam(c, "id")
+		if err != nil {
+			return nil, err
 		}
-		professorQuery = bson.M{"_id": professorObjId}
+		professorQuery = bson.M{"_id": objId}
 	} else {
 		// something wrong that messed up the server
 		err = errors.New("invalid type of filtering professors, either filtering based on available professor fields or ID")
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "endpoint error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return nil, err
 	}
 	return professorQuery, err
+}
+
+// @Id				trendsProfessorSectionSearch
+// @Router			/professor/sections/trends [get]
+// @Description	"Returns all of the given professor's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
+// @Produce		json
+// @Param			first_name	query		string									true	"The professor's first name"
+// @Param			last_name	query		string									true	"The professor's last name"
+// @Success		200			{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
+// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+func TrendsProfessorSectionSearch(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	var profSectionsObject struct {
+		Sections []schema.Section `bson:"sections" json:"sections"`
+	}
+
+	professorQuery, _ := schema.FilterQuery[schema.Professor](c)
+
+	defer cancel()
+
+	trendsCollection := configs.GetCollection("trends_prof_sections")
+
+	err := trendsCollection.FindOne(ctx, professorQuery).Decode(&profSectionsObject)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", profSectionsObject.Sections)
 }

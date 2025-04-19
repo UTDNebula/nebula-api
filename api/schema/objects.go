@@ -168,6 +168,18 @@ type BuildingRooms struct {
 	Rooms    []string `bson:"rooms" json:"rooms"`
 }
 
+type GradeData struct {
+	GradeDistribution [14]int `bson:"grade_distribution" json:"grade_distribution"`
+}
+
+type TypedGradeData struct {
+	Id   string `bson:"_id" json:"_id"`
+	Data []struct {
+		Type              string  `bson:"type" json:"type"`
+		GradeDistribution [14]int `bson:"grade_distribution" json:"grade_distribution"`
+	} `bson:"data" json:"data"`
+}
+
 // Prefix used for cloud storage bucket names
 const BUCKET_PREFIX = "utdnebula_"
 
@@ -212,6 +224,12 @@ func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
 		attrs.Created,
 		attrs.Updated,
 	}
+}
+
+type APIResponse[T any] struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Data    T      `json:"data"`
 }
 
 /* Can uncomment these if we ever get evals
