@@ -426,35 +426,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/course/{id}/grades": {
-            "get": {
-                "description": "\"Returns the overall grade distribution for a course\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "GradesByCourseID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of course to get grades for",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A grade distribution array for the course",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/course/{id}/sections": {
             "get": {
                 "description": "\"Returns the all of the sections of the course with given ID\"",
@@ -780,35 +751,6 @@ const docTemplate = `{
                         "description": "A string describing the error",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
-        "/mazevo/{date}": {
-            "get": {
-                "description": "\"Returns MazevoEvent based on the input date\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "MazevoEvents",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "date (ISO format) to retrieve mazevo events",
-                        "name": "date",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "All MazevoEvents with events on the inputted date",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.MultiBuildingEvents-schema_MazevoEvent"
-                            }
                         }
                     }
                 }
@@ -1450,35 +1392,6 @@ const docTemplate = `{
                         "description": "A string describing the error",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
-        "/professor/{id}/grades": {
-            "get": {
-                "description": "\"Returns the overall grade distribution for a professor\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "GradesByProfessorID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of professor to get grades for",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A grade distribution array for the professor",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            }
                         }
                     }
                 }
@@ -2961,12 +2874,12 @@ const docTemplate = `{
         }
     ],
     "x-google-backend": {
-        "address": "https://dev-nebula-api-1062216541483.us-south1.run.app"
+        "address": "https://nebula-api-1062216541483.us-central1.run.app"
     },
     "x-google-endpoints": [
         {
             "allowCors": true,
-            "name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog"
+            "name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog"
         }
     ],
     "x-google-management": {
@@ -2999,8 +2912,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"http", "https"},
-	Title:            "dev-nebula-api",
-	Description:      "The developer Nebula Labs API for access to pertinent UT Dallas data",
+	Title:            "nebula-api",
+	Description:      "The public Nebula Labs API for access to pertinent UT Dallas data",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
