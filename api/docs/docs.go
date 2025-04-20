@@ -2917,7 +2917,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.1.0",
 	Host:             "api.utdnebula.com",
 	BasePath:         "",
-	Schemes:          []string{"http", "https"},
+	Schemes:          []string{"https", "http"},
 	Title:            "nebula-api",
 	Description:      "The public Nebula Labs API for access to pertinent UT Dallas data",
 	InfoInstanceName: "swagger",
