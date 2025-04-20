@@ -25,7 +25,7 @@ func swagger_controller_placeholder() {}
 // @description				The developer Nebula Labs API for access to pertinent UT Dallas data
 // @version					1.1.0
 // @host						api.utdnebula.com
-// @schemes					http https
+// @schemes					https http
 // @x-google-backend			{"address": "https://dev-nebula-api-1062216541483.us-south1.run.app"}
 // @x-google-endpoints			[{"name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
 // @x-google-management		{"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}

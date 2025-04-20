@@ -1925,8 +1925,8 @@ paths:
           description: OK
       security: []
 schemes:
-- http
 - https
+- http
 security:
 - api_key: []
 securityDefinitions:
