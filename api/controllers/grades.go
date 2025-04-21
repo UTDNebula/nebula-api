@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/api/common/log"
-	"github.com/UTDNebula/nebula-api/api/responses"
 	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
@@ -53,84 +51,96 @@ import (
 
 // 5 Functions
 
-// @Id gradeAggregationBySemester
-// @Router /grades/semester [get]
-// @Description "Returns grade distributions aggregated by semester"
-// @Produce json
-// @Param prefix query string false "The course's subject prefix"
-// @Param number query string false "The course's official number"
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professors's last name"
-// @Param section_number query string false "The number of the section"
-// @Success 200 {array} responses.GradeResponse "An array of grade distributions for each semester included"
+// @Id				gradeAggregationBySemester
+// @Router			/grades/semester [get]
+// @Description	"Returns grade distributions aggregated by semester"
+// @Produce		json
+// @Param			prefix			query		string									false	"The course's subject prefix"
+// @Param			number			query		string									false	"The course's official number"
+// @Param			first_name		query		string									false	"The professor's first name"
+// @Param			last_name		query		string									false	"The professors's last name"
+// @Param			section_number	query		string									false	"The number of the section"
+// @Success		200				{object}	schema.APIResponse[[]schema.GradeData]	"An array of grade distributions for each semester included"
+// @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400				{object}	schema.APIResponse[string]				"A string describing the error"
 func GradeAggregationSemester() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("semester", c)
 	}
 }
 
-// @Id gradeAggregationSectionType
-// @Router /grades/semester/sectionType [get]
-// @Description "Returns the grade distributions aggregated by semester and broken down into section type"
-// @Produce json
-// @Param prefix query string false "The course's subject prefix"
-// @Param number query string false "The course's official number"
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professors's last name"
-// @Param section_number query string false "The number of the section"
-// @Success 200 {array} responses.SectionGradeResponse "An array of grade distributions for each section type for each semester included"
+// @Id				gradeAggregationSectionType
+// @Router			/grades/semester/sectionType [get]
+// @Description	"Returns the grade distributions aggregated by semester and broken down into section type"
+// @Produce		json
+// @Param			prefix			query		string										false	"The course's subject prefix"
+// @Param			number			query		string										false	"The course's official number"
+// @Param			first_name		query		string										false	"The professor's first name"
+// @Param			last_name		query		string										false	"The professors's last name"
+// @Param			section_number	query		string										false	"The number of the section"
+// @Success		200				{object}	schema.APIResponse[[]schema.TypedGradeData]	"An array of grade distributions for each section type for each semester included"
+// @Failure		500				{object}	schema.APIResponse[string]					"A string describing the error"
+// @Failure		400				{object}	schema.APIResponse[string]					"A string describing the error"
 func GradesAggregationSectionType() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("section_type", c)
 	}
 }
 
-// @Id gradeAggregationOverall
-// @Router /grades/overall [get]
-// @Description "Returns the overall grade distribution"
-// @Produce json
-// @Param prefix query string false "The course's subject prefix"
-// @Param number query string false "The course's official number"
-// @Param first_name query string false "The professor's first name"
-// @Param last_name query string false "The professors's last name"
-// @Param section_number query string false "The number of the section"
-// @Success 200 {array} integer "A grade distribution array"
+// @Id				gradeAggregationOverall
+// @Router			/grades/overall [get]
+// @Description	"Returns the overall grade distribution"
+// @Produce		json
+// @Param			prefix			query		string						false	"The course's subject prefix"
+// @Param			number			query		string						false	"The course's official number"
+// @Param			first_name		query		string						false	"The professor's first name"
+// @Param			last_name		query		string						false	"The professors's last name"
+// @Param			section_number	query		string						false	"The number of the section"
+// @Success		200				{object}	schema.APIResponse[[]int]	"A grade distribution array"
+// @Failure		500				{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400				{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesAggregationOverall() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("overall", c)
 	}
 }
 
-// @Id GradesByCourseID
-// @Router /course/{id}/grades [get]
-// @Description "Returns the overall grade distribution for a course"
-// @Produce json
-// @Param id path string true "ID of course to get grades for"
-// @Success 200 {array} integer "A grade distribution array for the course"
+// @Id				GradesByCourseID
+// @Router			/course/{id}/grades [get]
+// @Description	"Returns the overall grade distribution for a course"
+// @Produce		json
+// @Param			id	path		string						true	"ID of course to get grades for"
+// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the course"
+// @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesByCourseID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("course_endpoint", c)
 	}
 }
 
-// @Id GradesBySectionID
-// @Router /section/{id}/grades [get]
-// @Description "Returns the overall grade distribution for a section"
-// @Produce json
-// @Param id path string true "ID of section to get grades for"
-// @Success 200 {array} integer "A grade distribution array for the section"
+// @Id				GradesBySectionID
+// @Router			/section/{id}/grades [get]
+// @Description	"Returns the overall grade distribution for a section"
+// @Produce		json
+// @Param			id	path		string						true	"ID of section to get grades for"
+// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the section"
+// @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesBySectionID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("section_endpoint", c)
 	}
 }
 
-// @Id GradesByProfessorID
-// @Router /professor/{id}/grades [get]
-// @Description "Returns the overall grade distribution for a professor"
-// @Produce json
-// @Param id path string true "ID of professor to get grades for"
-// @Success 200 {array} integer "A grade distribution array for the professor"
+// @Id				GradesByProfessorID
+// @Router			/professor/{id}/grades [get]
+// @Description	"Returns the overall grade distribution for a professor"
+// @Produce		json
+// @Param			id	path		string						true	"ID of professor to get grades for"
+// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the professor"
+// @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesByProfessorID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("professor_endpoint", c)
@@ -139,10 +149,10 @@ func GradesByProfessorID() gin.HandlerFunc {
 
 // base function, returns the grade distribution depending on type of flag
 func gradesAggregation(flag string, c *gin.Context) {
-	var grades []map[string]interface{}
+	var grades []schema.GradeData
 	var results []map[string]interface{}
 
-	var sectionTypeGrades []responses.GradeData // used to parse the response to section-type endpoints
+	var sectionTypeGrades []schema.TypedGradeData // used to parse the response to section-type endpoints
 
 	var cursor *mongo.Cursor
 	var collection *mongo.Collection
@@ -157,14 +167,14 @@ func gradesAggregation(flag string, c *gin.Context) {
 	var sampleCourse schema.Course // the sample course with the given prefix and course number parameter
 	var sampleCourseFind bson.D    // the filter using prefix and course number to get sample course
 
-	var objId primitive.ObjectID
+	var objId *primitive.ObjectID
 
 	var err error
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// @TODO: Recommend forcing using first_name and last_name to ensure single professors per query.
+	//	@TODO:	Recommend forcing using first_name and last_name to ensure single professors per query.
 	// All professors sharing the name will be aggregated together in the current implementation
 	prefix := c.Query("prefix")
 	number := c.Query("number")
@@ -173,12 +183,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 	last_name := c.Query("last_name")
 
 	if flag == "course_endpoint" || flag == "section_endpoint" || flag == "professor_endpoint" {
-		id := c.Param("id")
 		// parse object id from id parameter
-		objId, err = primitive.ObjectIDFromHex(id)
+		objId, err = objectIDFromParam(c, "id")
 		if err != nil {
-			log.WriteError(err)
-			c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 			return
 		}
 	}
@@ -192,9 +199,10 @@ func gradesAggregation(flag string, c *gin.Context) {
 	}
 	// Parse the queried document into the sample course
 	err = courseCollection.FindOne(ctx, sampleCourseFind).Decode(&sampleCourse)
-	// If the error is not that there is no matching documents, panic the error
+	// If the error is not that there is no matching documents, throw an internal server error
 	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
 	internalCourseNumber := sampleCourse.Internal_course_number
 
@@ -425,11 +433,12 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 		cursor, err = professorCollection.Find(ctx, professorFind)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.GradeResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			respondWithInternalError(c, err)
 			return
 		}
 		if err = cursor.All(ctx, &results); err != nil {
-			panic(err)
+			respondWithInternalError(c, err)
+			return
 		}
 
 		for _, prof := range results {
@@ -448,11 +457,12 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 		cursor, err = courseCollection.Find(ctx, courseFind)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.GradeResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			respondWithInternalError(c, err)
 			return
 		}
 		if err = cursor.All(ctx, &results); err != nil {
-			panic(err)
+			respondWithInternalError(c, err)
+			return
 		}
 
 		for _, course := range results {
@@ -479,7 +489,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionWithSectionsStage, unwindGradeDistributionStage, groupGradesStage, sortGradesStage, sumGradesStage, groupGradeDistributionStage}
 
 	default:
-		c.JSON(http.StatusBadRequest, responses.GradeResponse{Status: http.StatusBadRequest, Message: "error", Data: "Invalid query parameters."})
+		respond(c, http.StatusBadRequest, "error", "Invalid query parameters.")
 		return
 	}
 
@@ -492,39 +502,35 @@ func gradesAggregation(flag string, c *gin.Context) {
 	// peform aggregation
 	cursor, err = collection.Aggregate(ctx, pipeline)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 
 	// retrieve and parse all valid documents to appropriate type
 	if flag != "section_type" {
 		if err = cursor.All(ctx, &grades); err != nil {
-			panic(err)
+			respondWithInternalError(c, err)
+			return
 		}
 	} else {
 		if err = cursor.All(ctx, &sectionTypeGrades); err != nil {
-			panic(err)
+			respondWithInternalError(c, err)
+			return
 		}
 	}
 
 	if flag == "overall" || flag == "course_endpoint" || flag == "section_endpoint" || flag == "professor_endpoint" {
 		// combine all semester grade_distributions
-		overallResponse := make([]int32, 14)
+		overallResponse := [14]int{}
 		for _, sem := range grades {
-			if len(sem["grade_distribution"].(primitive.A)) != 14 {
-				print("Length of Array: ")
-				println(len(sem["grade_distribution"].(primitive.A)))
-			}
-			for i, grade := range sem["grade_distribution"].(primitive.A) {
-				overallResponse[i] += grade.(int32)
+			for i, grade := range sem.GradeDistribution {
+				overallResponse[i] += grade
 			}
 		}
-		c.JSON(http.StatusOK, responses.GradeResponse{Status: http.StatusOK, Message: "success", Data: overallResponse})
+		respond(c, http.StatusOK, "success", overallResponse)
 	} else if flag == "semester" {
-		c.JSON(http.StatusOK, responses.GradeResponse{Status: http.StatusOK, Message: "success", Data: grades})
+		respond(c, http.StatusOK, "success", grades)
 	} else if flag == "section_type" {
-		c.JSON(http.StatusOK, responses.SectionGradeResponse{Status: http.StatusOK, Message: "success", GradeData: sectionTypeGrades})
-	} else {
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: "Endpoint broken"})
+		respond(c, http.StatusOK, "success", sectionTypeGrades)
 	}
 }

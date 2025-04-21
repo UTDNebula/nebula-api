@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
-	"github.com/UTDNebula/nebula-api/api/responses"
+
 	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
@@ -17,11 +17,12 @@ import (
 
 var DAGCollection *mongo.Collection = configs.GetCollection("DAG")
 
-// @Id autocompleteDAG
-// @Router /autocomplete/dag [get]
-// @Description "Returns an aggregation of courses for use in generating autocomplete DAGs"
-// @Produce json
-// @Success 200 {array} schema.Autocomplete "An aggregation of courses for use in generating autocomplete DAGs"
+// @Id				autocompleteDAG
+// @Router			/autocomplete/dag [get]
+// @Description	"Returns an aggregation of courses for use in generating autocomplete DAGs"
+// @Produce		json
+// @Success		200	{object}	schema.APIResponse[[]schema.Autocomplete]	"An aggregation of courses for use in generating autocomplete DAGs"
+// @Failure		500	{object}	schema.APIResponse[string]					"A string describing the error"
 func AutocompleteDAG(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -31,14 +32,15 @@ func AutocompleteDAG(c *gin.Context) {
 	cursor, err := DAGCollection.Find(ctx, bson.M{})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+		respondWithInternalError(c, err)
 		return
 	}
 
-	// retrieve and parse all valid documents
+	// Retrieve and parse all valid documents from view
 	if err = cursor.All(ctx, &autocompleteDAG); err != nil {
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
 
-	c.JSON(http.StatusOK, responses.AutocompleteResponse{Status: http.StatusOK, Message: "success", Data: autocompleteDAG})
+	respond(c, http.StatusOK, "success", autocompleteDAG)
 }

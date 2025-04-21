@@ -2,12 +2,12 @@ package configs
 
 import (
 	"context"
-	"os"
 	"strconv"
 	"sync"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/api/common/log"
+	"log"
+
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,8 +28,7 @@ func ConnectDB() *mongo.Client {
 
 		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
 		if err != nil {
-			log.WriteErrorMsg("Unable to create MongoDB client")
-			os.Exit(1)
+			log.Fatalf("Unable to create MongoDB client")
 		}
 
 		defer cancel()
@@ -37,11 +36,10 @@ func ConnectDB() *mongo.Client {
 		//ping the database
 		err = client.Ping(ctx, nil)
 		if err != nil {
-			log.WriteErrorMsg("Unable to ping database")
-			os.Exit(1)
+			log.Fatalf("Unable to ping database")
 		}
 
-		log.WriteDebug("Connected to MongoDB")
+		log.Printf("Connected to MongoDB")
 
 		dbInstance = &DBSingleton{
 			client: client,
@@ -58,7 +56,7 @@ func GetCollection(collectionName string) *mongo.Collection {
 	return collection
 }
 
-// Returns *options.FindOptions with a limit and offset applied. Returns error if any
+// Returns *options.FindOptions with a limit and offset applied. Produces an error if user-provided offset isn't able to be parsed.
 func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error) {
 	delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
 

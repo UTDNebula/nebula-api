@@ -1,8 +1,10 @@
 package schema
 
 import (
+	"strings"
 	"time"
 
+	"cloud.google.com/go/storage"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -166,6 +168,73 @@ type BuildingRooms struct {
 	Rooms    []string `bson:"rooms" json:"rooms"`
 }
 
+type GradeData struct {
+	Id                string  `bson:"_id" json:"_id"`
+	GradeDistribution [14]int `bson:"grade_distribution" json:"grade_distribution"`
+}
+
+type TypedGradeData struct {
+	Id   string `bson:"_id" json:"_id"`
+	Data []struct {
+		Type              string  `bson:"type" json:"type"`
+		GradeDistribution [14]int `bson:"grade_distribution" json:"grade_distribution"`
+	} `bson:"data" json:"data"`
+}
+
+// Prefix used for cloud storage bucket names
+const BUCKET_PREFIX = "utdnebula_"
+
+// Minimized form of storage.BucketAttrs for cloud storage
+type BucketInfo struct {
+	Name     string    `bson:"name" json:"name"`
+	Created  time.Time `bson:"created" json:"created"`
+	Updated  time.Time `bson:"updated" json:"updated"`
+	Contents []string  `bson:"contents" json:"contents"`
+}
+
+func BucketInfoFromAttrs(attrs *storage.BucketAttrs) BucketInfo {
+	// Don't show the bucket prefix externally
+	bucketName, _ := strings.CutPrefix(attrs.Name, BUCKET_PREFIX)
+	return BucketInfo{bucketName, attrs.Created, attrs.Updated, []string{}}
+}
+
+// Minimized form of storage.ObjectAttrs for cloud storage
+type ObjectInfo struct {
+	Bucket          string    `bson:"bucket" json:"bucket"`
+	Name            string    `bson:"name" json:"name"`
+	ContentType     string    `bson:"content_type" json:"content_type"`
+	Size            int64     `bson:"size" json:"size"`
+	ContentEncoding string    `bson:"content_encoding" json:"content_encoding"`
+	MD5             []byte    `bson:"md5" json:"md5"`
+	MediaLink       string    `bson:"media_link" json:"media_link"`
+	Created         time.Time `bson:"created" json:"created"`
+	Updated         time.Time `bson:"updated" json:"updated"`
+}
+
+func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
+	// Don't show the bucket prefix externally
+	bucketName, _ := strings.CutPrefix(attrs.Bucket, BUCKET_PREFIX)
+	return ObjectInfo{
+		bucketName,
+		attrs.Name,
+		attrs.ContentType,
+		attrs.Size,
+		attrs.ContentEncoding,
+		attrs.MD5,
+		attrs.MediaLink,
+		attrs.Created,
+		attrs.Updated,
+	}
+}
+
+type APIResponse[T any] struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Data    T      `json:"data"`
+}
+
+/* Can uncomment these if we ever get evals
+
 // 5 Level Likert Item scale for evaluation responses
 type EvaluationResponse int
 
@@ -197,3 +266,5 @@ type Evaluation struct {
 	InstructorExperience []EvaluationField  `bson:"instructor_experience" json:"instructor_experience"`
 	StudentExperience    []EvaluationField  `bson:"student_experience" json:"student_experience"`
 }
+
+*/
