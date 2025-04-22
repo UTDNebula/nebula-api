@@ -164,8 +164,12 @@ type MazevoEvent struct {
 
 // Rooms type
 type BuildingRooms struct {
-	Building string   `bson:"building" json:"building"`
-	Rooms    []string `bson:"rooms" json:"rooms"`
+	Building string `bson:"building" json:"building"`
+	Rooms    []Room `bson:"rooms" json:"rooms"`
+}
+type Room struct {
+	Room     string `bson:"room" json:"room"`
+	Capacity int    `bson:"capacity" json:"capacity"`
 }
 
 type GradeData struct {
