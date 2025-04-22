@@ -2331,7 +2331,7 @@ const docTemplate = `{
                 "rooms": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/schema.Room"
                     }
                 }
             }
@@ -2647,6 +2647,17 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "schema.Room": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "room": {
+                    "type": "string"
                 }
             }
         },
