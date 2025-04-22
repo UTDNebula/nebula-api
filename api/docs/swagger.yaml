@@ -262,7 +262,7 @@ definitions:
         type: string
       rooms:
         items:
-          type: string
+          $ref: '#/definitions/schema.Room'
         type: array
     type: object
   schema.CollectionRequirement:
@@ -470,6 +470,13 @@ definitions:
         items:
           type: string
         type: array
+    type: object
+  schema.Room:
+    properties:
+      capacity:
+        type: integer
+      room:
+        type: string
     type: object
   schema.RoomEvents-schema_AstraEvent:
     properties:
