@@ -8,6 +8,7 @@ type Autocomplete struct {
 type CourseNumberAcademicSessions struct {
 	Academic_sessions []AcademicSessionSections `bson:"academic_sessions" json:"academic_sessions" schema:"academic_sessions"`
 	Course_number     string                    `bson:"course_number" json:"course_number" schema:"course_number"`
+	Title             string                    `bson:"title" json:"title" schema:"title"`
 }
 
 type AcademicSessionSections struct {
