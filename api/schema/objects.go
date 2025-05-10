@@ -164,8 +164,10 @@ type MazevoEvent struct {
 
 // Rooms type
 type BuildingRooms struct {
-	Building string `bson:"building" json:"building"`
-	Rooms    []Room `bson:"rooms" json:"rooms"`
+	Building string  `bson:"building" json:"building"`
+	Rooms    []Room  `bson:"rooms" json:"rooms"`
+	Lat      float64 `bson:"lat" json:"lat"`
+	Lng      float64 `bson:"lng" json:"lng"`
 }
 type Room struct {
 	Room     string `bson:"room" json:"room"`
