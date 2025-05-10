@@ -260,6 +260,10 @@ definitions:
     properties:
       building:
         type: string
+      lat:
+        type: number
+      lng:
+        type: number
       rooms:
         items:
           $ref: '#/definitions/schema.Room'
@@ -330,6 +334,8 @@ definitions:
           $ref: '#/definitions/schema.AcademicSessionSections'
         type: array
       course_number:
+        type: string
+      title:
         type: string
     type: object
   schema.GradeData:

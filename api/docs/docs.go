@@ -2328,6 +2328,12 @@ const docTemplate = `{
                 "building": {
                     "type": "string"
                 },
+                "lat": {
+                    "type": "number"
+                },
+                "lng": {
+                    "type": "number"
+                },
                 "rooms": {
                     "type": "array",
                     "items": {
@@ -2433,6 +2439,9 @@ const docTemplate = `{
                     }
                 },
                 "course_number": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
