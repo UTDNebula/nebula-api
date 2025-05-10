@@ -629,7 +629,7 @@ info:
   contact: {}
   description: The public Nebula Labs API for access to pertinent UT Dallas data
   title: nebula-api
-  version: 1.1.0
+  version: 1.2.0
 paths:
   /astra/{date}:
     get:
