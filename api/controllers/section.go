@@ -19,6 +19,7 @@ var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 
 // @Id				sectionSearch
 // @Router			/section [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of sections matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce		json
 // @Param			offset							query		number									false	"The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
@@ -88,6 +89,7 @@ func SectionSearch(c *gin.Context) {
 
 // @Id				sectionById
 // @Router			/section/{id} [get]
+// @Tags			Sections
 // @Description	"Returns the section with given ID"
 // @Produce		json
 // @Param			id	path		string								true	"ID of the section to get"
