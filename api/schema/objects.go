@@ -7,27 +7,27 @@ import (
 )
 
 type Course struct {
-	Id                       primitive.ObjectID     `bson:"_id" json:"_id" schema:"-"`
-	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" schema:"subject_prefix"`
-	Course_number            string                 `bson:"course_number" json:"course_number" schema:"course_number"`
-	Title                    string                 `bson:"title" json:"title" schema:"title"`
-	Description              string                 `bson:"description" json:"description" schema:"-"`
-	Enrollment_reqs          string                 `bson:"enrollment_reqs" json:"enrollment_reqs" schema:"-"`
-	School                   string                 `bson:"school" json:"school" schema:"school"`
-	Credit_hours             string                 `bson:"credit_hours" json:"credit_hours" schema:"credit_hours"`
-	Class_level              string                 `bson:"class_level" json:"class_level" schema:"class_level"`
-	Activity_type            string                 `bson:"activity_type" json:"activity_type" schema:"activity_type"`
-	Grading                  string                 `bson:"grading" json:"grading" schema:"grading"`
-	Internal_course_number   string                 `bson:"internal_course_number" json:"internal_course_number" schema:"internal_course_number"`
-	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites" schema:"-"`
-	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites" schema:"-"`
-	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites" schema:"-"`
-	Sections                 []primitive.ObjectID   `bson:"sections" json:"sections" schema:"-"`
-	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours" schema:"lecture_contact_hours"`
-	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours" schema:"laboratory_contact_hours"`
-	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency" schema:"offering_frequency"`
-	Catalog_year             string                 `bson:"catalog_year" json:"catalog_year" schema:"catalog_year"`
-	Attributes               interface{}            `bson:"attributes" json:"attributes" schema:"-"`
+	Id                       primitive.ObjectID     `bson:"_id" json:"_id"`
+	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
+	Course_number            string                 `bson:"course_number" json:"course_number" queryable:""`
+	Title                    string                 `bson:"title" json:"title" queryable:""`
+	Description              string                 `bson:"description" json:"description"`
+	Enrollment_reqs          string                 `bson:"enrollment_reqs" json:"enrollment_reqs"`
+	School                   string                 `bson:"school" json:"school" queryable:""`
+	Credit_hours             string                 `bson:"credit_hours" json:"credit_hours" queryable:""`
+	Class_level              string                 `bson:"class_level" json:"class_level" queryable:""`
+	Activity_type            string                 `bson:"activity_type" json:"activity_type" queryable:""`
+	Grading                  string                 `bson:"grading" json:"grading" queryable:""`
+	Internal_course_number   string                 `bson:"internal_course_number" json:"internal_course_number" queryable:""`
+	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites"`
+	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites"`
+	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites"`
+	Sections                 []primitive.ObjectID   `bson:"sections" json:"sections"`
+	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours" queryable:""`
+	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours" queryable:""`
+	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency" queryable:""`
+	Catalog_year             string                 `bson:"catalog_year" json:"catalog_year" queryable:""`
+	Attributes               interface{}            `bson:"attributes" json:"attributes"`
 }
 
 type AcademicSession struct {
