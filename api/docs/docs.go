@@ -2328,10 +2328,16 @@ const docTemplate = `{
                 "building": {
                     "type": "string"
                 },
+                "lat": {
+                    "type": "number"
+                },
+                "lng": {
+                    "type": "number"
+                },
                 "rooms": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/schema.Room"
                     }
                 }
             }
@@ -2433,6 +2439,9 @@ const docTemplate = `{
                     }
                 },
                 "course_number": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -2647,6 +2656,17 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "schema.Room": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "room": {
+                    "type": "string"
                 }
             }
         },

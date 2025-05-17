@@ -260,9 +260,13 @@ definitions:
     properties:
       building:
         type: string
+      lat:
+        type: number
+      lng:
+        type: number
       rooms:
         items:
-          type: string
+          $ref: '#/definitions/schema.Room'
         type: array
     type: object
   schema.CollectionRequirement:
@@ -330,6 +334,8 @@ definitions:
           $ref: '#/definitions/schema.AcademicSessionSections'
         type: array
       course_number:
+        type: string
+      title:
         type: string
     type: object
   schema.GradeData:
@@ -470,6 +476,13 @@ definitions:
         items:
           type: string
         type: array
+    type: object
+  schema.Room:
+    properties:
+      capacity:
+        type: integer
+      room:
+        type: string
     type: object
   schema.RoomEvents-schema_AstraEvent:
     properties:
