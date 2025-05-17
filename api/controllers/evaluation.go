@@ -1,5 +1,6 @@
 package controllers
 
+/*
 import (
 	"bytes"
 	"context"
@@ -11,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/api/common/log"
+	"log"
 	"github.com/UTDNebula/nebula-api/api/configs"
-	"github.com/UTDNebula/nebula-api/api/responses"
+
 	"github.com/UTDNebula/nebula-api/api/schema"
 
 	"github.com/gin-gonic/gin"
@@ -30,8 +31,6 @@ var evaluationCollection *mongo.Collection = configs.GetCollection("evaluations"
 func EvalBySectionID(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	sectionId := c.Param("id")
-
 	var eval schema.Evaluation
 	var section schema.Section
 	var course schema.Course
@@ -39,10 +38,8 @@ func EvalBySectionID(c *gin.Context) {
 	defer cancel()
 
 	// Parse object id from id parameter
-	objId, err := primitive.ObjectIDFromHex(sectionId)
+	objId, err := objectIDFromParam(c, "id")
 	if err != nil {
-		log.WriteError(err)
-		c.JSON(http.StatusBadRequest, responses.ErrorResponse{Status: http.StatusBadRequest, Message: "error", Data: err.Error()})
 		return
 	}
 
@@ -54,7 +51,7 @@ func EvalBySectionID(c *gin.Context) {
 		// If err is anything other than the document not existing, it's likely a database issue; notify the user
 		if err != mongo.ErrNoDocuments {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			respondWithInternalError(c, err)
 			return
 		}
 
@@ -62,7 +59,7 @@ func EvalBySectionID(c *gin.Context) {
 		err = sectionCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			respondWithInternalError(c, err)
 			return
 		}
 
@@ -72,14 +69,14 @@ func EvalBySectionID(c *gin.Context) {
 		err = courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			respondWithInternalError(c, err)
 			return
 		}
 
 		evalResult, err := ScrapeEval(course, section)
 		if err != nil {
 			log.WriteError(err)
-			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Status: http.StatusInternalServerError, Message: "error", Data: err.Error()})
+			respondWithInternalError(c, err)
 			return
 		}
 		eval = *evalResult
@@ -110,12 +107,14 @@ func ScrapeEval(course schema.Course, section schema.Section) (*schema.Evaluatio
 	bodyReader := strings.NewReader("")
 	req, err := http.NewRequest("GET", evalURL, bodyReader)
 	if err != nil {
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
 	req.Header = headers
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
 	if res.StatusCode != 200 {
 		return nil, fmt.Errorf("section find failed! Status was: %s\nIf the status is 404, you've likely been IP ratelimited", res.Status)
@@ -183,7 +182,8 @@ func refreshToken(chromedpCtx context.Context) map[string][]string {
 		chromedp.WaitVisible(`body`),
 	)
 	if err != nil {
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
 
 	var cookieStrs []string
@@ -207,7 +207,8 @@ func refreshToken(chromedpCtx context.Context) map[string][]string {
 		}),
 	)
 	if err != nil {
-		panic(err)
+		respondWithInternalError(c, err)
+		return
 	}
 
 	cachedCookie = map[string][]string{
@@ -225,3 +226,4 @@ func refreshToken(chromedpCtx context.Context) map[string][]string {
 
 	return cachedCookie
 }
+*/
