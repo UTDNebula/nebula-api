@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Course struct {
+type Course struct {  
 	Id                       primitive.ObjectID     `bson:"_id" json:"_id"`
 	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
 	Course_number            string                 `bson:"course_number" json:"course_number" queryable:""`
@@ -30,26 +30,26 @@ type Course struct {
 	Attributes               interface{}            `bson:"attributes" json:"attributes"`
 }
 
-type AcademicSession struct {
+type AcademicSession struct { 
 	Name       string    `bson:"name" json:"name"`
 	Start_date time.Time `bson:"start_date" json:"start_date"`
 	End_date   time.Time `bson:"end_date" json:"end_date"`
 }
 
-type Assistant struct {
+type Assistant struct {  
 	First_name string `bson:"first_name" json:"first_name"`
 	Last_name  string `bson:"last_name" json:"last_name"`
 	Role       string `bson:"role" json:"role"`
 	Email      string `bson:"email" json:"email"`
 }
 
-type Location struct {
+type Location struct {  
 	Building string `bson:"building" json:"building"`
 	Room     string `bson:"room" json:"room"`
 	Map_uri  string `bson:"map_uri" json:"map_uri"`
 }
 
-type Meeting struct {
+type Meeting struct {  
 	Start_date   time.Time `bson:"start_date" json:"start_date"`
 	End_date     time.Time `bson:"end_date" json:"end_date"`
 	Meeting_days []string  `bson:"meeting_days" json:"meeting_days"`
@@ -59,38 +59,38 @@ type Meeting struct {
 	Location     Location  `bson:"location" json:"location"`
 }
 
-type Section struct {
-	Id                    primitive.ObjectID     `bson:"_id" json:"_id" schema:"-"`
-	Section_number        string                 `bson:"section_number" json:"section_number" schema:"section_number"`
-	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" schema:"course_reference"`
-	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites" schema:"-"`
-	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session" schema:"-"`
-	Professors            []primitive.ObjectID   `bson:"professors" json:"professors" schema:"-"`
-	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants" schema:"-"`
-	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" schema:"internal_class_number"`
-	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" schema:"instruction_mode"`
-	Meetings              []Meeting              `bson:"meetings" json:"meetings" schema:"-"`
-	Core_flags            []string               `bson:"core_flags" json:"core_flags" schema:"-"`
-	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri" schema:"-"`
-	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution" schema:"-"`
-	Attributes            interface{}            `bson:"attributes" json:"attributes" schema:"-"`
+type Section struct {   
+	Id                    primitive.ObjectID     `bson:"_id" json:"_id"`
+	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
+	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" queryable:""`
+	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
+	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
+	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
+	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
+	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" queryable:""`
+	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" queryable:""`
+	Meetings              []Meeting              `bson:"meetings" json:"meetings"`
+	Core_flags            []string               `bson:"core_flags" json:"core_flags"`
+	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri"`
+	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
+	Attributes            interface{}            `bson:"attributes" json:"attributes"`
 }
 
-type Professor struct {
-	Id           primitive.ObjectID   `bson:"_id" json:"_id" schema:"-"`
-	First_name   string               `bson:"first_name" json:"first_name" schema:"first_name"`
-	Last_name    string               `bson:"last_name" json:"last_name" schema:"last_name"`
-	Titles       []string             `bson:"titles" json:"titles" schema:"titles"`
-	Email        string               `bson:"email" json:"email" schema:"email"`
-	Phone_number string               `bson:"phone_number" json:"phone_number" schema:"phone_number"`
-	Office       Location             `bson:"office" json:"office" schema:"-"`
-	Profile_uri  string               `bson:"profile_uri" json:"profile_uri" schema:"-"`
-	Image_uri    string               `bson:"image_uri" json:"image_uri" schema:"-"`
-	Office_hours []Meeting            `bson:"office_hours" json:"office_hours" schema:"-"`
-	Sections     []primitive.ObjectID `bson:"sections" json:"sections" schema:"-"`
+type Professor struct {  
+	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
+	First_name   string               `bson:"first_name" json:"first_name" queryable:""`
+	Last_name    string               `bson:"last_name" json:"last_name" queryable:""`
+	Titles       []string             `bson:"titles" json:"titles" queryable:""`
+	Email        string               `bson:"email" json:"email" queryable:""`
+	Phone_number string               `bson:"phone_number" json:"phone_number" queryable:""`
+	Office       Location             `bson:"office" json:"office"`
+	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
+	Image_uri    string               `bson:"image_uri" json:"image_uri"`
+	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
+	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
 }
 
-type Organization struct {
+type Organization struct {  
 	Id             primitive.ObjectID `bson:"_id" json:"_id"`
 	Title          string             `bson:"title" json:"title"`
 	Description    string             `bson:"description" json:"description"`
@@ -100,7 +100,7 @@ type Organization struct {
 	Picture_data   string             `bson:"picture_data" json:"picture_data"`
 }
 
-type Event struct {
+type Event struct {  
 	Id                 primitive.ObjectID `bson:"_id" json:"_id"`
 	Summary            string             `bson:"summary" json:"summary"`
 	Location           string             `bson:"location" json:"location"`
@@ -119,15 +119,17 @@ type Event struct {
 }
 
 // Event hierarchy
-type MultiBuildingEvents[T any] struct {
+type MultiBuildingEvents[T any] struct {  
 	Date      string                    `bson:"date" json:"date"`
 	Buildings []SingleBuildingEvents[T] `bson:"buildings" json:"buildings"`
 }
-type SingleBuildingEvents[T any] struct {
+
+type SingleBuildingEvents[T any] struct {  
 	Building string          `bson:"building" json:"building"`
 	Rooms    []RoomEvents[T] `bson:"rooms" json:"rooms"`
 }
-type RoomEvents[T any] struct {
+
+type RoomEvents[T any] struct {  
 	Room   string `bson:"room" json:"room"`
 	Events []T    `bson:"events" json:"events"`
 }
@@ -138,6 +140,7 @@ type SectionWithTime struct {
 	StartTime string             `bson:"start_time" json:"start_time"`
 	EndTime   string             `bson:"end_time" json:"end_time"`
 }
+
 type AstraEvent struct {
 	ActivityName        *string  `bson:"activity_name" json:"activity_name"`
 	MeetingType         *string  `bson:"meeting_type" json:"meeting_type"`
