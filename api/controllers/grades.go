@@ -91,14 +91,14 @@ func GradesAggregationSectionType() gin.HandlerFunc {
 // @Router			/grades/overall [get]
 // @Description	"Returns the overall grade distribution"
 // @Produce		json
-// @Param			prefix			query		string									false	"The course's subject prefix"
-// @Param			number			query		string									false	"The course's official number"
-// @Param			first_name		query		string									false	"The professor's first name"
-// @Param			last_name		query		string									false	"The professors's last name"
-// @Param			section_number	query		string									false	"The number of the section"
-// @Success		200				{object}	schema.APIResponse[schema.GradeData]	"A grade distribution array"
-// @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400				{object}	schema.APIResponse[string]				"A string describing the error"
+// @Param			prefix			query		string						false	"The course's subject prefix"
+// @Param			number			query		string						false	"The course's official number"
+// @Param			first_name		query		string						false	"The professor's first name"
+// @Param			last_name		query		string						false	"The professors's last name"
+// @Param			section_number	query		string						false	"The number of the section"
+// @Success		200				{object}	schema.APIResponse[[]int]	"A grade distribution array"
+// @Failure		500				{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400				{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesAggregationOverall() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("overall", c)
@@ -109,10 +109,10 @@ func GradesAggregationOverall() gin.HandlerFunc {
 // @Router			/course/{id}/grades [get]
 // @Description	"Returns the overall grade distribution for a course"
 // @Produce		json
-// @Param			id	path		string									true	"ID of course to get grades for"
-// @Success		200	{object}	schema.APIResponse[schema.GradeData]	"A grade distribution array for the course"
-// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Param			id	path		string						true	"ID of course to get grades for"
+// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the course"
+// @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesByCourseID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("course_endpoint", c)
@@ -123,10 +123,10 @@ func GradesByCourseID() gin.HandlerFunc {
 // @Router			/section/{id}/grades [get]
 // @Description	"Returns the overall grade distribution for a section"
 // @Produce		json
-// @Param			id	path		string									true	"ID of section to get grades for"
-// @Success		200	{object}	schema.APIResponse[schema.GradeData]	"A grade distribution array for the section"
-// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Param			id	path		string						true	"ID of section to get grades for"
+// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the section"
+// @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesBySectionID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("section_endpoint", c)
@@ -137,10 +137,10 @@ func GradesBySectionID() gin.HandlerFunc {
 // @Router			/professor/{id}/grades [get]
 // @Description	"Returns the overall grade distribution for a professor"
 // @Produce		json
-// @Param			id	path		string									true	"ID of professor to get grades for"
-// @Success		200	{object}	schema.APIResponse[schema.GradeData]	"A grade distribution array for the professor"
-// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Param			id	path		string						true	"ID of professor to get grades for"
+// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the professor"
+// @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesByProfessorID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gradesAggregation("professor_endpoint", c)
@@ -521,10 +521,10 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 	if flag == "overall" || flag == "course_endpoint" || flag == "section_endpoint" || flag == "professor_endpoint" {
 		// combine all semester grade_distributions
-		overallResponse := schema.GradeData{}
+		overallResponse := [14]int{}
 		for _, sem := range grades {
 			for i, grade := range sem.GradeDistribution {
-				overallResponse.GradeDistribution[i] += grade
+				overallResponse[i] += grade
 			}
 		}
 		respond(c, http.StatusOK, "success", overallResponse)

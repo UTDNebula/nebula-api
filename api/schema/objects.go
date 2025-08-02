@@ -164,11 +164,26 @@ type MazevoEvent struct {
 
 // Rooms type
 type BuildingRooms struct {
-	Building string   `bson:"building" json:"building"`
-	Rooms    []string `bson:"rooms" json:"rooms"`
+	Building string  `bson:"building" json:"building"`
+	Rooms    []Room  `bson:"rooms" json:"rooms"`
+	Lat      float64 `bson:"lat" json:"lat"`
+	Lng      float64 `bson:"lng" json:"lng"`
+}
+type Room struct {
+	Room     string `bson:"room" json:"room"`
+	Capacity int    `bson:"capacity" json:"capacity"`
+}
+
+// Map location type
+type MapBuilding struct {
+	Name    *string  `bson:"name" json:"name"`
+	Acronym *string  `bson:"acronym" json:"acronym"`
+	Lat     *float64 `bson:"lat" json:"lat"`
+	Lng     *float64 `bson:"lng" json:"lng"`
 }
 
 type GradeData struct {
+	Id                string  `bson:"_id" json:"_id"`
 	GradeDistribution [14]int `bson:"grade_distribution" json:"grade_distribution"`
 }
 
