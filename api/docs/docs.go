@@ -1901,6 +1901,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/storage/{bucket}/{objectID}/url": {
+            "put": {
+                "description": "\"Create's a new signed URL for target object\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "operationId": "objectUploadURL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the bucket",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the object",
+                        "name": "objectID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "params for Signed URL",
+                        "name": "method",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ObjectSignedURLBody"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal storage key",
+                        "name": "x-storage-key",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Presigned url for the target Object",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/swagger/{file}": {
             "get": {
                 "security": [],
@@ -1924,6 +1979,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.ObjectSignedURLBody": {
+            "description": "request body",
+            "type": "object",
+            "properties": {
+                "expiration": {
+                    "description": "timestamp for when the signed URL will expire",
+                    "type": "string"
+                },
+                "headers": {
+                    "description": "headers for signed URL",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "method": {
+                    "description": "method to be used with signed URL",
+                    "type": "string",
+                    "example": "PUT"
+                }
+            }
+        },
         "schema.APIResponse-array_int": {
             "type": "object",
             "properties": {
