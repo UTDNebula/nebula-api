@@ -19,6 +19,7 @@ var buildingCollection *mongo.Collection = configs.GetCollection("rooms")
 
 // @Id				rooms
 // @Router			/rooms [get]
+// @Tags			Events
 // @Description	"Returns all schedulable rooms being used in the current and futures semesters from CourseBook, Astra, and Mazevo"
 // @Produce		json
 // @Success		200	{object}	schema.APIResponse[[]schema.BuildingRooms]	"All schedulable rooms being used in the current and futures semesters from CourseBook, Astra, and Mazevo"
