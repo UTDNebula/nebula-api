@@ -186,6 +186,17 @@ definitions:
       status:
         type: integer
     type: object
+  responses.SectionGradeResponse:
+    properties:
+      grade_data:
+        items:
+          $ref: '#/definitions/responses.GradeData'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.AcademicSession:
     properties:
       end_date:
@@ -673,6 +684,8 @@ paths:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
         key-value pairs. See offset for more details on pagination."'
+      description: '"Returns paginated list of courses matching the query''s string-typed
+        key-value pairs. See offset for more details on pagination."'
       operationId: courseSearch
       parameters:
       - description: The starting position of the current page of courses (e.g. For
@@ -1136,6 +1149,8 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
   /professor:
     get:
+      description: '"Returns paginated list of professors matching the query''s string-typed
+        key-value pairs. See offset for more details on pagination."'
       description: '"Returns paginated list of professors matching the query''s string-typed
         key-value pairs. See offset for more details on pagination."'
       operationId: professorSearch
@@ -1747,6 +1762,284 @@ paths:
           description: A section
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_Section'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /section/courses:
+    get:
+      description: '"Returns paginated list of courses of all the sections matching the query''s string-typed key-value pairs. See former_offset and latter_offset for pagination details."'
+      operationId: sectionCourseSearch
+      parameters:
+      - description: The starting position of the current page of sections (e.g.
+          For starting at the 17th section, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of courses (e.g. For
+          starting at the 4th course, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
+      - description: The section's official number
+        in: query
+        name: section_number
+        type: string
+      - description: The name of the academic session of the section
+        in: query
+        name: academic_session.name
+        type: string
+      - description: The date of classes starting for the section
+        in: query
+        name: academic_session.start_date
+        type: string
+      - description: The date of classes ending for the section
+        in: query
+        name: academic_session.end_date
+        type: string
+      - description: The first name of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.first_name
+        type: string
+      - description: The last name of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.last_name
+        type: string
+      - description: The role of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.role
+        type: string
+      - description: The email of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.email
+        type: string
+      - description: The internal (university) number used to reference this section
+        in: query
+        name: internal_class_number
+        type: string
+      - description: The instruction modality for this section
+        in: query
+        name: instruction_mode
+        type: string
+      - description: The start date of one of the section's meetings
+        in: query
+        name: meetings.start_date
+        type: string
+      - description: The end date of one of the section's meetings
+        in: query
+        name: meetings.end_date
+        type: string
+      - description: One of the days that one of the section's meetings
+        in: query
+        name: meetings.meeting_days
+        type: string
+      - description: The time one of the section's meetings starts
+        in: query
+        name: meetings.start_time
+        type: string
+      - description: The time one of the section's meetings ends
+        in: query
+        name: meetings.end_time
+        type: string
+      - description: The modality of one of the section's meetings
+        in: query
+        name: meetings.modality
+        type: string
+      - description: The building of one of the section's meetings
+        in: query
+        name: meetings.location.building
+        type: string
+      - description: The room of one of the section's meetings
+        in: query
+        name: meetings.location.room
+        type: string
+      - description: A hyperlink to the UTD room locator of one of the section's meetings
+        in: query
+        name: meetings.location.map_uri
+        type: string
+      - description: One of core requirement codes this section fulfills
+        in: query
+        name: core_flags
+        type: string
+      - description: A link to the syllabus on the web
+        in: query
+        name: syllabus_uri
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of course
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Course'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /section/{id}/courses:
+    get:
+      description: '"Returns the paginated list of courses of the section with given ID"'
+      operationId: sectionCourseById
+      parameters:
+      - description: ID of the section to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of course
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Course'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /section/professors:
+    get:
+      description: '"Returns paginated list of professors of all the sections matching the query''s string-typed key-value pairs. See former_offset and latter_offset for pagination details."'
+      operationId: sectionProfessorSearch
+      parameters:
+      - description: The starting position of the current page of sections (e.g.
+          For starting at the 17th section, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of professors (e.g. For
+          starting at the 4th professor, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
+      - description: The section's official number
+        in: query
+        name: section_number
+        type: string
+      - description: The name of the academic session of the section
+        in: query
+        name: academic_session.name
+        type: string
+      - description: The date of classes starting for the section
+        in: query
+        name: academic_session.start_date
+        type: string
+      - description: The date of classes ending for the section
+        in: query
+        name: academic_session.end_date
+        type: string
+      - description: The first name of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.first_name
+        type: string
+      - description: The last name of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.last_name
+        type: string
+      - description: The role of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.role
+        type: string
+      - description: The email of one of the teaching assistants of the section
+        in: query
+        name: teaching_assistants.email
+        type: string
+      - description: The internal (university) number used to reference this section
+        in: query
+        name: internal_class_number
+        type: string
+      - description: The instruction modality for this section
+        in: query
+        name: instruction_mode
+        type: string
+      - description: The start date of one of the section's meetings
+        in: query
+        name: meetings.start_date
+        type: string
+      - description: The end date of one of the section's meetings
+        in: query
+        name: meetings.end_date
+        type: string
+      - description: One of the days that one of the section's meetings
+        in: query
+        name: meetings.meeting_days
+        type: string
+      - description: The time one of the section's meetings starts
+        in: query
+        name: meetings.start_time
+        type: string
+      - description: The time one of the section's meetings ends
+        in: query
+        name: meetings.end_time
+        type: string
+      - description: The modality of one of the section's meetings
+        in: query
+        name: meetings.modality
+        type: string
+      - description: The building of one of the section's meetings
+        in: query
+        name: meetings.location.building
+        type: string
+      - description: The room of one of the section's meetings
+        in: query
+        name: meetings.location.room
+        type: string
+      - description: A hyperlink to the UTD room locator of one of the section's meetings
+        in: query
+        name: meetings.location.map_uri
+        type: string
+      - description: One of core requirement codes this section fulfills
+        in: query
+        name: core_flags
+        type: string
+      - description: A link to the syllabus on the web
+        in: query
+        name: syllabus_uri
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of course
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /section/{id}/professors:
+    get:
+      description: '"Returns the paginated list of professors of the section with given ID"'
+      operationId: sectionProfessorById
+      parameters:
+      - description: ID of the section to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of professors
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
         "400":
           description: A string describing the error
           schema:
