@@ -323,5 +323,5 @@ func ObjectSignedURL(c *gin.Context) {
 		return
 	}
 
-	respond(c, http.StatusOK, "Created SignUrl", url)
+	respond(c, http.StatusOK, "success", url)
 }
