@@ -186,17 +186,6 @@ definitions:
       status:
         type: integer
     type: object
-  responses.SectionGradeResponse:
-    properties:
-      grade_data:
-        items:
-          $ref: '#/definitions/responses.GradeData'
-        type: array
-      message:
-        type: string
-      status:
-        type: integer
-    type: object
   schema.AcademicSession:
     properties:
       end_date:
@@ -684,8 +673,6 @@ paths:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
         key-value pairs. See offset for more details on pagination."'
-      description: '"Returns paginated list of courses matching the query''s string-typed
-        key-value pairs. See offset for more details on pagination."'
       operationId: courseSearch
       parameters:
       - description: The starting position of the current page of courses (e.g. For
@@ -1149,8 +1136,6 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
   /professor:
     get:
-      description: '"Returns paginated list of professors matching the query''s string-typed
-        key-value pairs. See offset for more details on pagination."'
       description: '"Returns paginated list of professors matching the query''s string-typed
         key-value pairs. See offset for more details on pagination."'
       operationId: professorSearch
@@ -1770,9 +1755,88 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+  /section/{id}/courses:
+    get:
+      description: '"Returns the paginated list of courses of the section with given
+        ID"'
+      operationId: sectionCourseById
+      parameters:
+      - description: ID of the section to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of courses
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Course'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /section/{id}/grades:
+    get:
+      description: '"Returns the overall grade distribution for a section"'
+      operationId: GradesBySectionID
+      parameters:
+      - description: ID of section to get grades for
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A grade distribution array for the section
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_int'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /section/{id}/professors:
+    get:
+      description: '"Returns the paginated list of professors of the section with
+        given ID"'
+      operationId: sectionProfessorById
+      parameters:
+      - description: ID of the section to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of professors
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
   /section/courses:
     get:
-      description: '"Returns paginated list of courses of all the sections matching the query''s string-typed key-value pairs. See former_offset and latter_offset for pagination details."'
+      description: '"Returns paginated list of courses of all the sections matching
+        the query''s string-typed key-value pairs. See former_offset and latter_offset
+        for pagination details."'
       operationId: sectionCourseSearch
       parameters:
       - description: The starting position of the current page of sections (e.g.
@@ -1873,32 +1937,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: A list of course
-          schema:
-            $ref: '#/definitions/schema.APIResponse-array_schema_Course'
-        "400":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-        "500":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-  /section/{id}/courses:
-    get:
-      description: '"Returns the paginated list of courses of the section with given ID"'
-      operationId: sectionCourseById
-      parameters:
-      - description: ID of the section to get
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: A list of course
+          description: A list of courses
           schema:
             $ref: '#/definitions/schema.APIResponse-array_schema_Course'
         "400":
@@ -1911,7 +1950,9 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
   /section/professors:
     get:
-      description: '"Returns paginated list of professors of all the sections matching the query''s string-typed key-value pairs. See former_offset and latter_offset for pagination details."'
+      description: '"Returns paginated list of professors of all the sections matching
+        the query''s string-typed key-value pairs. See former_offset and latter_offset
+        for pagination details."'
       operationId: sectionProfessorSearch
       parameters:
       - description: The starting position of the current page of sections (e.g.
@@ -2012,59 +2053,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: A list of course
+          description: A list of professor
           schema:
             $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
-        "400":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-        "500":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-  /section/{id}/professors:
-    get:
-      description: '"Returns the paginated list of professors of the section with given ID"'
-      operationId: sectionProfessorById
-      parameters:
-      - description: ID of the section to get
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: A list of professors
-          schema:
-            $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
-        "400":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-        "500":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-  /section/{id}/grades:
-    get:
-      description: '"Returns the overall grade distribution for a section"'
-      operationId: GradesBySectionID
-      parameters:
-      - description: ID of section to get grades for
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: A grade distribution array for the section
-          schema:
-            $ref: '#/definitions/schema.APIResponse-array_int'
         "400":
           description: A string describing the error
           schema:
