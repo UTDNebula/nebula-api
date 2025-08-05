@@ -1621,6 +1621,344 @@ const docTemplate = `{
                 }
             }
         },
+        "/section/courses": {
+            "get": {
+                "description": "\"Returns paginated list of courses of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "sectionCourseSearch",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th section, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses from the predefined page of sections (e.g. For starting at the 18th course, latter_offset=17).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The section's official number",
+                        "name": "section_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The name of the academic session of the section",
+                        "name": "academic_session.name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The date of classes starting for the section",
+                        "name": "academic_session.start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The date of classes ending for the section",
+                        "name": "academic_session.end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The first name of one of the teaching assistants of the section",
+                        "name": "teaching_assistants.first_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The last name of one of the teaching assistants of the section",
+                        "name": "teaching_assistants.last_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The role of one of the teaching assistants of the section",
+                        "name": "teaching_assistants.role",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The email of one of the teaching assistants of the section",
+                        "name": "teaching_assistants.email",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal (university) number used to reference this section",
+                        "name": "internal_class_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The instruction modality for this section",
+                        "name": "instruction_mode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The start date of one of the section's meetings",
+                        "name": "meetings.start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The end date of one of the section's meetings",
+                        "name": "meetings.end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "One of the days that one of the section's meetings",
+                        "name": "meetings.meeting_days",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The time one of the section's meetings starts",
+                        "name": "meetings.start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The time one of the section's meetings ends",
+                        "name": "meetings.end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The modality of one of the section's meetings",
+                        "name": "meetings.modality",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The building of one of the section's meetings",
+                        "name": "meetings.location.building",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The room of one of the section's meetings",
+                        "name": "meetings.location.room",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "A hyperlink to the UTD room locator of one of the section's meetings",
+                        "name": "meetings.location.map_uri",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "One of core requirement codes this section fulfills",
+                        "name": "core_flags",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "A link to the syllabus on the web",
+                        "name": "syllabus_uri",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of courses",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Course"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/section/professors": {
+            "get": {
+                "description": "\"Returns paginated list of professors of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "sectionProfessorSearch",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th section, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors from the predefined page of sections (e.g. For starting at the 18th professor, latter_offset=17).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The section's official number",
+                        "name": "section_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The name of the academic session of the section",
+                        "name": "academic_session.name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The date of classes starting for the section",
+                        "name": "academic_session.start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The date of classes ending for the section",
+                        "name": "academic_session.end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The first name of one of the teaching assistants of the section",
+                        "name": "teaching_assistants.first_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The last name of one of the teaching assistants of the section",
+                        "name": "teaching_assistants.last_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The role of one of the teaching assistants of the section",
+                        "name": "teaching_assistants.role",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The email of one of the teaching assistants of the section",
+                        "name": "teaching_assistants.email",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal (university) number used to reference this section",
+                        "name": "internal_class_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The instruction modality for this section",
+                        "name": "instruction_mode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The start date of one of the section's meetings",
+                        "name": "meetings.start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The end date of one of the section's meetings",
+                        "name": "meetings.end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "One of the days that one of the section's meetings",
+                        "name": "meetings.meeting_days",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The time one of the section's meetings starts",
+                        "name": "meetings.start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The time one of the section's meetings ends",
+                        "name": "meetings.end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The modality of one of the section's meetings",
+                        "name": "meetings.modality",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The building of one of the section's meetings",
+                        "name": "meetings.location.building",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The room of one of the section's meetings",
+                        "name": "meetings.location.room",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "A hyperlink to the UTD room locator of one of the section's meetings",
+                        "name": "meetings.location.map_uri",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "One of core requirement codes this section fulfills",
+                        "name": "core_flags",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "A link to the syllabus on the web",
+                        "name": "syllabus_uri",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of professor",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/section/{id}": {
             "get": {
                 "description": "\"Returns the section with given ID\"",
@@ -1659,6 +1997,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/section/{id}/courses": {
+            "get": {
+                "description": "\"Returns the paginated list of courses of the section with given ID\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "sectionCourseById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the section to get",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of courses",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Course"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/section/{id}/grades": {
             "get": {
                 "description": "\"Returns the overall grade distribution for a section\"",
@@ -1680,6 +2056,44 @@ const docTemplate = `{
                         "description": "A grade distribution array for the section",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_int"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/section/{id}/professors": {
+            "get": {
+                "description": "\"Returns the paginated list of professors of the section with given ID\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "sectionProfessorById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the section to get",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of professors",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
                         }
                     },
                     "400": {
