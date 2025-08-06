@@ -43,6 +43,6 @@ func Rooms(c *gin.Context) {
 		return
 	}
 
-	//serialize RoomsResponse struct data into JSON format
+	// serialize RoomsResponse struct data into JSON format
 	respond(c, http.StatusOK, "success", buildingRooms)
 }
