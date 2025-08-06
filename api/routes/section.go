@@ -15,6 +15,12 @@ func SectionRoute(router *gin.Engine) {
 	sectionGroup.GET(":id", controllers.SectionById)
 	//sectionGroup.GET(":id/evaluation", controllers.EvalBySectionID)
 
+	// Endpoints for aggregate
+	sectionGroup.GET("/courses", controllers.SectionCourseSearch())
+	sectionGroup.GET(":id/course", controllers.SectionCourseById())
+	sectionGroup.GET("/professors", controllers.SectionProfessorSearch())
+	sectionGroup.GET("/:id/professors", controllers.SectionProfessorById())
+
 	// Route for section grades
 	sectionGroup.GET(":id/grades", controllers.GradesBySectionID())
 }

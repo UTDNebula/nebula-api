@@ -59,7 +59,7 @@ func StorageRoute(router *gin.Engine) {
 		return
 	}
 
-	//Rescrict with password
+	// Rescrict with password
 	authMiddleware := func(c *gin.Context) {
 		secret := c.GetHeader("x-storage-key")
 		expected, exist := os.LookupEnv("STORAGE_ROUTE_KEY")
@@ -79,7 +79,7 @@ func StorageRoute(router *gin.Engine) {
 	// All routes related to storage come here
 	storageGroup := router.Group("/storage")
 
-	//Use auth
+	// Use auth
 	storageGroup.Use(authMiddleware)
 
 	storageGroup.OPTIONS("", controllers.Preflight)
@@ -88,4 +88,5 @@ func StorageRoute(router *gin.Engine) {
 	storageGroup.GET(":bucket/:objectID", controllers.ObjectInfo)
 	storageGroup.POST(":bucket/:objectID", controllers.PostObject)
 	storageGroup.DELETE(":bucket/:objectID", controllers.DeleteObject)
+	storageGroup.PUT(":bucket/:objectID/url", controllers.ObjectSignedURL)
 }
