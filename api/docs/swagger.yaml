@@ -1755,9 +1755,9 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
-  /section/{id}/courses:
+  /section/{id}/course:
     get:
-      description: '"Returns the paginated list of courses of the section with given
+      description: '"Returns the course of the section with given
         ID"'
       operationId: sectionCourseById
       parameters:
@@ -1770,9 +1770,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: A list of courses
+          description: A course
           schema:
-            $ref: '#/definitions/schema.APIResponse-array_schema_Course'
+            $ref: '#/definitions/schema.APIResponse-schema_Course'
         "400":
           description: A string describing the error
           schema:

@@ -1997,9 +1997,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/section/{id}/courses": {
+        "/section/{id}/course": {
             "get": {
-                "description": "\"Returns the paginated list of courses of the section with given ID\"",
+                "description": "\"Returns the course of the section with given ID\"",
                 "produces": [
                     "application/json"
                 ],
@@ -2015,9 +2015,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "A list of courses",
+                        "description": "A course",
                         "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-array_schema_Course"
+                            "$ref": "#/definitions/schema.APIResponse-schema_Course"
                         }
                     },
                     "400": {
