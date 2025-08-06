@@ -1,4 +1,20 @@
 definitions:
+  schema.ObjectSignedURLBody:
+    description: request body
+    properties:
+      expiration:
+        description: timestamp for when the signed URL will expire
+        type: string
+      headers:
+        description: headers for signed URL
+        items:
+          type: string
+        type: array
+      method:
+        description: method to be used with signed URL
+        example: PUT
+        type: string
+    type: object
   schema.APIResponse-array_int:
     properties:
       data:
@@ -1755,9 +1771,9 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
-  /section/{id}/courses:
+  /section/{id}/course:
     get:
-      description: '"Returns the paginated list of courses of the section with given
+      description: '"Returns the course of the section with given
         ID"'
       operationId: sectionCourseById
       parameters:
@@ -1770,9 +1786,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: A list of courses
+          description: A course
           schema:
-            $ref: '#/definitions/schema.APIResponse-array_schema_Course'
+            $ref: '#/definitions/schema.APIResponse-schema_Course'
         "400":
           description: A string describing the error
           schema:
@@ -2203,6 +2219,43 @@ paths:
           description: The object's info
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_ObjectInfo'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /storage/{bucket}/{objectID}/url:
+    put:
+      consumes:
+      - application/json
+      description: '"Create''s a new signed URL for target object"'
+      operationId: objectUploadURL
+      parameters:
+      - description: Name of the bucket
+        in: path
+        name: bucket
+        required: true
+        type: string
+      - description: ID of the object
+        in: path
+        name: objectID
+        required: true
+        type: string
+      - description: Request body 
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.ObjectSignedURLBody'
+      - description: The internal storage key
+        in: header
+        name: x-storage-key
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Presigned url for the target Object
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
         "500":
           description: A string describing the error
           schema:

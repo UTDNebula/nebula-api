@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Course struct {  
+type Course struct {
 	Id                       primitive.ObjectID     `bson:"_id" json:"_id"`
 	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
 	Course_number            string                 `bson:"course_number" json:"course_number" queryable:""`
@@ -32,26 +32,26 @@ type Course struct {
 	Attributes               interface{}            `bson:"attributes" json:"attributes"`
 }
 
-type AcademicSession struct { 
+type AcademicSession struct {
 	Name       string    `bson:"name" json:"name"`
 	Start_date time.Time `bson:"start_date" json:"start_date"`
 	End_date   time.Time `bson:"end_date" json:"end_date"`
 }
 
-type Assistant struct {  
+type Assistant struct {
 	First_name string `bson:"first_name" json:"first_name"`
 	Last_name  string `bson:"last_name" json:"last_name"`
 	Role       string `bson:"role" json:"role"`
 	Email      string `bson:"email" json:"email"`
 }
 
-type Location struct {  
+type Location struct {
 	Building string `bson:"building" json:"building"`
 	Room     string `bson:"room" json:"room"`
 	Map_uri  string `bson:"map_uri" json:"map_uri"`
 }
 
-type Meeting struct {  
+type Meeting struct {
 	Start_date   time.Time `bson:"start_date" json:"start_date"`
 	End_date     time.Time `bson:"end_date" json:"end_date"`
 	Meeting_days []string  `bson:"meeting_days" json:"meeting_days"`
@@ -61,7 +61,7 @@ type Meeting struct {
 	Location     Location  `bson:"location" json:"location"`
 }
 
-type Section struct {   
+type Section struct {
 	Id                    primitive.ObjectID     `bson:"_id" json:"_id"`
 	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
 	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" queryable:""`
@@ -78,7 +78,7 @@ type Section struct {
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
 }
 
-type Professor struct {  
+type Professor struct {
 	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
 	First_name   string               `bson:"first_name" json:"first_name" queryable:""`
 	Last_name    string               `bson:"last_name" json:"last_name" queryable:""`
@@ -92,7 +92,7 @@ type Professor struct {
 	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
 }
 
-type Organization struct {  
+type Organization struct {
 	Id             primitive.ObjectID `bson:"_id" json:"_id"`
 	Title          string             `bson:"title" json:"title"`
 	Description    string             `bson:"description" json:"description"`
@@ -102,7 +102,7 @@ type Organization struct {
 	Picture_data   string             `bson:"picture_data" json:"picture_data"`
 }
 
-type Event struct {  
+type Event struct {
 	Id                 primitive.ObjectID `bson:"_id" json:"_id"`
 	Summary            string             `bson:"summary" json:"summary"`
 	Location           string             `bson:"location" json:"location"`
@@ -121,17 +121,17 @@ type Event struct {
 }
 
 // Event hierarchy
-type MultiBuildingEvents[T any] struct {  
+type MultiBuildingEvents[T any] struct {
 	Date      string                    `bson:"date" json:"date"`
 	Buildings []SingleBuildingEvents[T] `bson:"buildings" json:"buildings"`
 }
 
-type SingleBuildingEvents[T any] struct {  
+type SingleBuildingEvents[T any] struct {
 	Building string          `bson:"building" json:"building"`
 	Rooms    []RoomEvents[T] `bson:"rooms" json:"rooms"`
 }
 
-type RoomEvents[T any] struct {  
+type RoomEvents[T any] struct {
 	Room   string `bson:"room" json:"room"`
 	Events []T    `bson:"events" json:"events"`
 }
@@ -242,6 +242,13 @@ func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
 		attrs.Created,
 		attrs.Updated,
 	}
+}
+
+// Signed URL request body
+type ObjectSignedURLBody struct {
+	Method     string   `json:"method"`     // method to be used with signed URL. For example, PUT
+	Headers    []string `json:"headers"`    // headers for signed URL
+	Expiration string   `json:"expiration"` // timestamp for when the signed URL will expire
 }
 
 type APIResponse[T any] struct {

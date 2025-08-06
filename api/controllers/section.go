@@ -156,11 +156,11 @@ func SectionCourseSearch() gin.HandlerFunc {
 }
 
 // @Id				sectionCourseById
-// @Router			/section/{id}/courses [get]
-// @Description	"Returns the paginated list of courses of the section with given ID"
+// @Router			/section/{id}/course [get]
+// @Description	"Returns the course of the section with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the section to get"
-// @Success		200	{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
+// @Success		200	{object}	schema.APIResponse[schema.Course]	"A course"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func SectionCourseById() gin.HandlerFunc {
@@ -236,7 +236,14 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	respond(c, http.StatusOK, "success", sectionCourses)
+	switch flag {
+	case "Search":
+		respond(c, http.StatusOK, "success", sectionCourses)
+	case "ById":
+		// Each section is only referenced by only one course, so returning a single course is ideal
+		// A better way of handling this might be needed in the future
+		respond(c, http.StatusOK, "success", sectionCourses[0])
+	}
 }
 
 // @Id				sectionProfessorSearch

@@ -17,7 +17,7 @@ func SectionRoute(router *gin.Engine) {
 
 	// Endpoints for aggregate
 	sectionGroup.GET("/courses", controllers.SectionCourseSearch())
-	sectionGroup.GET(":id/courses", controllers.SectionCourseById())
+	sectionGroup.GET(":id/course", controllers.SectionCourseById())
 	sectionGroup.GET("/professors", controllers.SectionProfessorSearch())
 	sectionGroup.GET("/:id/professors", controllers.SectionProfessorById())
 

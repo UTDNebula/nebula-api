@@ -188,22 +188,23 @@ func courseSection(flag string, c *gin.Context) {
 	var err error                       // error
 
 	// determine the course query
-	if flag == "Search" { // filter courses based on the query parameters
-		// build the key-value pair of query parameters
+	switch flag {
+	case "Search":
+		// filter courses based on the query parameters, build the key-value pair
 		courseQuery, err = schema.FilterQuery[schema.Course](c)
 		if err != nil {
 			// return the validation error if there's anything wrong
 			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
 			return
 		}
-	} else if flag == "ById" { // filter the single course based on it's Id
-		// convert the id param with the ObjectID
+	case "ById":
+		// filter the single course based on it's Id, convert to ObjectID
 		objId, err := objectIDFromParam(c, "id")
 		if err != nil {
 			return
 		}
 		courseQuery = bson.M{"_id": objId}
-	} else {
+	default:
 		err = errors.New("invalid type of filtering courses, either filtering based on available course fields or ID")
 		// otherwise, something that messed up the server
 		respondWithInternalError(c, err)
