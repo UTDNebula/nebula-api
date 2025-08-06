@@ -1,5 +1,5 @@
 definitions:
-  controllers.ObjectSignedURLBody:
+  schema.ObjectSignedURLBody:
     description: request body
     properties:
       expiration:
@@ -2240,12 +2240,23 @@ paths:
         name: objectID
         required: true
         type: string
-      - description: params for Signed URL
+      - description: HTTP method to be used with signed URL. For example, PUT
         in: body
         name: method
         required: true
-        schema:
-          $ref: '#/definitions/controllers.ObjectSignedURLBody'
+        type: string
+      - description: Headers for signed URL
+        in: body
+        name: headers
+        required: false
+        type: array
+        items:
+          type: string
+      - description: Timestamp for when the signed URL will expire
+        in: body
+        name: expiration
+        required: false
+        type: string
       - description: The internal storage key
         in: header
         name: x-storage-key

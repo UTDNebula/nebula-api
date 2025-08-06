@@ -268,22 +268,15 @@ func DeleteObject(c *gin.Context) {
 	respond(c, http.StatusOK, "success", 1)
 }
 
-// Signed URL request body
-//
-//	@Description	request body
-type ObjectSignedURLBody struct {
-	Method     string   `json:"method" example:"PUT"` // method to be used with signed URL
-	Headers    []string `json:"headers"`              // headers for signed URL
-	Expiration string   `json:"expiration"`           // timestamp for when the signed URL will expire
-}
-
 // @Id				objectUploadURL
 // @Router			/storage/{bucket}/{objectID}/url [put]
 // @Accept			json
 // @Description	"Create's a new signed URL for target object"
 // @Param			bucket			path		string						true	"Name of the bucket"
 // @Param			objectID		path		string						true	"ID of the object"
-// @Param			method			body		ObjectSignedURLBody			true	"params for Signed URL"
+// @Param			method			body		string						true	"HTTP method to be used with signed URL. For example, PUT"
+// @Param 			headers			body		[]string					false	"Headers for signed URL"
+// @Param 			expiration		body 		string						false	"Timestamp for when the signed URL will expire"
 // @Param			x-storage-key	header		string						true	"The internal storage key"
 // @Success		200				{object}	schema.APIResponse[string]	"Presigned url for the target Object"
 // @Failure		500				{object}	schema.APIResponse[string]	"A string describing the error"
@@ -291,8 +284,8 @@ func ObjectSignedURL(c *gin.Context) {
 	bucket := c.Param("bucket")
 	objectID := c.Param("objectID")
 
+	var body schema.ObjectSignedURLBody
 	client := getClient(c)
-	var body ObjectSignedURLBody
 	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "error", "Bad Request Syntax")
