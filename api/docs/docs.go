@@ -2338,28 +2338,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "HTTP method to be used with signed URL. For example, PUT",
-                        "name": "method",
+                        "description": "params for Signed URL",
+                        "name": "body",
                         "in": "body",
                         "required": true,
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
+                        "schema": {
+                            "$ref": "#/definitions/schema.ObjectSignedURLBody"
                         }
-                        "description": "Headers for signed URL",
-                        "name": "headers",
-                        "in": "body",
-                        "required": false,
-                    },
-                    {
-                        "type": "string",
-                        "description": "Timestamp for when the signed URL will expire",
-                        "name": "expiration",
-                        "in": "body",
-                        "required": false,
                     },
                     {
                         "type": "string",

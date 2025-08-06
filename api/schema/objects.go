@@ -246,7 +246,7 @@ func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
 
 // Signed URL request body
 type ObjectSignedURLBody struct {
-	Method     string   `json:"method"`     // method to be used with signed URL
+	Method     string   `json:"method"`     // method to be used with signed URL. For example, PUT
 	Headers    []string `json:"headers"`    // headers for signed URL
 	Expiration string   `json:"expiration"` // timestamp for when the signed URL will expire
 }

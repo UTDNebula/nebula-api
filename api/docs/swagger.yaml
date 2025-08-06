@@ -2240,23 +2240,12 @@ paths:
         name: objectID
         required: true
         type: string
-      - description: HTTP method to be used with signed URL. For example, PUT
+      - description: Request body 
         in: body
-        name: method
+        name: body
         required: true
-        type: string
-      - description: Headers for signed URL
-        in: body
-        name: headers
-        required: false
-        type: array
-        items:
-          type: string
-      - description: Timestamp for when the signed URL will expire
-        in: body
-        name: expiration
-        required: false
-        type: string
+        schema:
+          $ref: '#/definitions/schema.ObjectSignedURLBody'
       - description: The internal storage key
         in: header
         name: x-storage-key
