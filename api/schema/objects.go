@@ -251,6 +251,13 @@ type ObjectSignedURLBody struct {
 	Expiration string   `json:"expiration"` // timestamp for when the signed URL will expire
 }
 
+// Letters type
+type Letters struct {
+	Date    string `bson:"date" json:"date"`
+	Letters string `bson:"letters" json:"letters"`
+}
+
+// Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
