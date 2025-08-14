@@ -7,7 +7,7 @@ import (
 )
 
 func EventsRoute(router *gin.Engine) {
-	// All routes related to sections come here
+	// All routes related to coursebook events come here
 	eventsGroup := router.Group("/events")
 
 	eventsGroup.OPTIONS("", controllers.Preflight)
