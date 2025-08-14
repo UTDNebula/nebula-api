@@ -70,6 +70,7 @@ func main() {
 	routes.EventsRoute(router)
 	routes.AstraRoute(router)
 	routes.MazevoRoute(router)
+	routes.GamesRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
