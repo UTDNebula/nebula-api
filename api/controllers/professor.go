@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"time"
 
@@ -208,7 +207,7 @@ func professorCourse(flag string, c *gin.Context) {
 	defer cancel()
 
 	// determine the professor's query
-	if professorQuery, err = getProfessorQuery(flag, c); err != nil {
+	if professorQuery, err = GetQuery[schema.Professor](flag, c); err != nil {
 		return // if there's an error, the response will have already been thrown to the consumer, halt the funcion here
 	}
 
@@ -339,7 +338,7 @@ func professorSection(flag string, c *gin.Context) {
 	defer cancel()
 
 	// determine the professor's query
-	if professorQuery, err = getProfessorQuery(flag, c); err != nil {
+	if professorQuery, err = GetQuery[schema.Professor](flag, c); err != nil {
 		return
 	}
 
@@ -400,35 +399,6 @@ func professorSection(flag string, c *gin.Context) {
 		return
 	}
 	respond(c, http.StatusOK, "success", professorSections)
-}
-
-// determine the query of the professor based on the parameters passed from context
-// if there's an error, throw an error response back to the API consumer and return only the error
-func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
-	var professorQuery bson.M
-	var err error
-
-	switch flag {
-	case "Search":
-		// if the flag is Search, filter professors based on query parameters
-		professorQuery, err = schema.FilterQuery[schema.Professor](c)
-		if err != nil {
-			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-			return nil, err
-		}
-	case "ById":
-		// if the flag is ById, filter that single professor based on their _id
-		objId, err := objectIDFromParam(c, "id")
-		if err != nil {
-			return nil, err
-		}
-		professorQuery = bson.M{"_id": objId}
-	default:
-		err = errors.New("invalid type of filtering professors, either filtering based on available professor fields or ID")
-		respondWithInternalError(c, err)
-		return nil, err
-	}
-	return professorQuery, err
 }
 
 // @Id				trendsProfessorSectionSearch

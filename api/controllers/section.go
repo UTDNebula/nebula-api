@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"time"
 
@@ -177,7 +176,7 @@ func sectionCourse(flag string, c *gin.Context) {
 	var sectionCourses []schema.Course
 	var sectionQuery bson.M
 	var err error
-	if sectionQuery, err = getSectionQuery(flag, c); err != nil {
+	if sectionQuery, err = GetQuery[schema.Section](flag, c); err != nil {
 		return
 	}
 
@@ -304,7 +303,7 @@ func sectionProfessor(flag string, c *gin.Context) {
 	var sectionProfessors []schema.Professor
 	var sectionQuery bson.M
 	var err error
-	if sectionQuery, err = getSectionQuery(flag, c); err != nil {
+	if sectionQuery, err = GetQuery[schema.Section](flag, c); err != nil {
 		return
 	}
 
@@ -356,32 +355,4 @@ func sectionProfessor(flag string, c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", sectionProfessors)
-}
-
-// Determine the query of the section based on parameters passed from context.
-func getSectionQuery(flag string, c *gin.Context) (bson.M, error) {
-	var sectionQuery bson.M
-	var err error
-
-	switch flag {
-	case "Search":
-		sectionQuery, err = schema.FilterQuery[schema.Section](c)
-		if err != nil {
-			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-			return nil, err
-		}
-	case "ById":
-		sectionId, err := objectIDFromParam(c, "id")
-		if err != nil {
-			respond(c, http.StatusBadRequest, "invalid section id error", err.Error())
-			return nil, err
-		}
-		sectionQuery = bson.M{"_id": sectionId}
-	default:
-		err = errors.New("invalid type of filtering sections, either on fields or ids")
-		respondWithInternalError(c, err)
-		return nil, err
-	}
-
-	return sectionQuery, nil
 }

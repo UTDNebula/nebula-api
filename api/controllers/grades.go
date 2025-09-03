@@ -184,11 +184,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 	if flag == "course_endpoint" || flag == "section_endpoint" || flag == "professor_endpoint" {
 		// parse object id from id parameter
-		objId, err = objectIDFromParam(c, "id")
-		if err != nil {
-			return
-		}
-	}
+filter, err := GetQuery[schema.Course]("ById", c) // for course_endpoint
+if err != nil { return }
+courseMatch := bson.D{{Key: "$match", Value: filter}}
 
 	professor := (first_name != "" || last_name != "")
 

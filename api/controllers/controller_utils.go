@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/UTDNebula/nebula-api/api/schema"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -33,4 +35,31 @@ func objectIDFromParam(c *gin.Context, paramName string) (*primitive.ObjectID, e
 		return nil, convertIdErr
 	}
 	return &objectId, nil
+}
+
+// GetQuery builds a bson.M for T using the common Search|ById flag contract.
+// - "Search": uses schema.FilterQuery[T](c)
+// - "ById":   matches {"_id": <ObjectID from :id>}
+func GetQuery[T any](flag string, c *gin.Context) (bson.M, error) {
+	switch flag {
+	case "Search":
+		q, err := schema.FilterQuery[T](c)
+		if err != nil {
+			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
+			return nil, err
+		}
+		return q, nil
+
+	case "ById":
+		objId, err := objectIDFromParam(c, "id")
+		if err != nil {
+			return nil, err
+		}
+		return bson.M{"_id": objId}, nil
+
+	default:
+		err := errors.New("invalid filter flag; expected \"Search\" or \"ById\"")
+		respondWithInternalError(c, err)
+		return nil, err
+	}
 }
