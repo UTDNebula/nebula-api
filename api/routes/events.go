@@ -8,7 +8,7 @@ import (
 
 func EventsRoute(router *gin.Engine) {
 	// All routes related to sections come here
-	eventsGroup := router.Group("/events")
+	eventsGroup := router.Group("/events/coursebook")
 
 	eventsGroup.OPTIONS("", controllers.Preflight)
 	eventsGroup.GET(":date", controllers.Events)

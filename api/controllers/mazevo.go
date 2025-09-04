@@ -18,7 +18,7 @@ import (
 var mazevoCollection *mongo.Collection = configs.GetCollection("mazevo")
 
 // @Id				MazevoEvents
-// @Router			/mazevo/{date} [get]
+// @Router			events/mazevo/{date} [get]
 // @Description	"Returns MazevoEvent based on the input date"
 // @Produce		json
 // @Param			date	path		string																true	"date (ISO format) to retrieve mazevo events"
