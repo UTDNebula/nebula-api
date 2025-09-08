@@ -22,4 +22,6 @@ func CourseRoute(router *gin.Engine) {
 
 	// Endpoint to get grades for a course by its course id
 	courseGroup.GET("/:id/grades", controllers.GradesByCourseID())
+	courseGroup.GET("/professors", controllers.CourseProfessorSearch)
+	courseGroup.GET("/:id/professors", controllers.CourseProfessorById)
 }
