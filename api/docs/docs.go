@@ -202,6 +202,121 @@ const docTemplate = `{
                 }
             }
         },
+        "/course/professors": {
+            "get": {
+                "description": "\"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "courseProfessorSearch",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "course_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "subject_prefix",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's title",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's description",
+                        "name": "description",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's school",
+                        "name": "school",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The number of credit hours awarded by successful completion of the course",
+                        "name": "credit_hours",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The level of education that this course course corresponds to",
+                        "name": "class_level",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The type of class this course corresponds to",
+                        "name": "activity_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The grading status of this course",
+                        "name": "grading",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal (university) number used to reference this course",
+                        "name": "internal_course_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The weekly contact hours in lecture for a course",
+                        "name": "lecture_contact_hours",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The frequency of offering a course",
+                        "name": "offering_frequency",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of professors",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/course/sections": {
             "get": {
                 "description": "\"Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
@@ -356,194 +471,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/course/professors": {
-            "get": {
-                "description": "\"Returns all the professors of all the courses matching the query's string-typed key-value pairs\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "courseProfessorSearch",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "The course's official number",
-                        "name": "course_number",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's subject prefix",
-                        "name": "subject_prefix",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's title",
-                        "name": "title",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's description",
-                        "name": "description",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's school",
-                        "name": "school",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The number of credit hours awarded by successful completion of the course",
-                        "name": "credit_hours",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The level of education that this course course corresponds to",
-                        "name": "class_level",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The type of class this course corresponds to",
-                        "name": "activity_type",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The grading status of this course",
-                        "name": "grading",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The internal (university) number used to reference this course",
-                        "name": "internal_course_number",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The weekly contact hours in lecture for a course",
-                        "name": "lecture_contact_hours",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The frequency of offering a course",
-                        "name": "offering_frequency",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of professors",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Professor"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/course/sections": {
-            "get": {
-                "description": "\"Returns all the sections of all the courses matching the query's string-typed key-value pairs\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "courseSectionSearch",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "The course's official number",
-                        "name": "course_number",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's subject prefix",
-                        "name": "subject_prefix",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's title",
-                        "name": "title",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's description",
-                        "name": "description",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's school",
-                        "name": "school",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The number of credit hours awarded by successful completion of the course",
-                        "name": "credit_hours",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The level of education that this course course corresponds to",
-                        "name": "class_level",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The type of class this course corresponds to",
-                        "name": "activity_type",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The grading status of this course",
-                        "name": "grading",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The internal (university) number used to reference this course",
-                        "name": "internal_course_number",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The weekly contact hours in lecture for a course",
-                        "name": "lecture_contact_hours",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The frequency of offering a course",
-                        "name": "offering_frequency",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of sections",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Section"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/course/{id}": {
             "get": {
                 "description": "\"Returns the course with given ID\"",
@@ -597,6 +524,44 @@ const docTemplate = `{
                         "description": "A grade distribution array for the course",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_int"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/course/{id}/professors": {
+            "get": {
+                "description": "\"Returns the all of the professors of the course with given ID\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "courseProfessorById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the course to get",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of professors",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
                         }
                     },
                     "400": {
@@ -724,64 +689,6 @@ const docTemplate = `{
                         "description": "A string describing the error",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
-        "/course/{id}/professors": {
-            "get": {
-                "description": "\"Returns the all of the professors of the course with given ID\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "courseProfessorById",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of the course to get",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of professors",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Professor"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/course/{id}/sections": {
-            "get": {
-                "description": "\"Returns the all of the sections of the course with given ID\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "courseSectionById",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of the course to get",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of sections",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Section"
-                            }
                         }
                     }
                 }
@@ -1529,148 +1436,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/professor/courses": {
-            "get": {
-                "description": "\"Returns all of the courses of all the professors matching the query's string-typed key-value pairs\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "professorCourseSearch",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "The professor's first name",
-                        "name": "first_name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The professor's last name",
-                        "name": "last_name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "One of the professor's title",
-                        "name": "titles",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The professor's email address",
-                        "name": "email",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The professor's phone number",
-                        "name": "phone_number",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The building of the location of the professor's office",
-                        "name": "office.building",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The room of the location of the professor's office",
-                        "name": "office.room",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "A hyperlink to the UTD room locator of the professor's office",
-                        "name": "office.map_uri",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "A hyperlink pointing to the professor's official university profile",
-                        "name": "profile_uri",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "A link to the image used for the professor on the professor's official university profile",
-                        "name": "image_uri",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The start date of one of the office hours meetings of the professor",
-                        "name": "office_hours.start_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The end date of one of the office hours meetings of the professor",
-                        "name": "office_hours.end_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "One of the days that one of the office hours meetings of the professor",
-                        "name": "office_hours.meeting_days",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The time one of the office hours meetings of the professor starts",
-                        "name": "office_hours.start_time",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The time one of the office hours meetings of the professor ends",
-                        "name": "office_hours.end_time",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The modality of one of the office hours meetings of the professor",
-                        "name": "office_hours.modality",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The building of one of the office hours meetings of the professor",
-                        "name": "office_hours.location.building",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The room of one of the office hours meetings of the professor",
-                        "name": "office_hours.location.room",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "A hyperlink to the UTD room locator of one of the office hours meetings of the professor",
-                        "name": "office_hours.location.map_uri",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The _id of one of the sections the professor teaches",
-                        "name": "sections",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of Courses",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Course"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/professor/{id}": {
             "get": {
                 "description": "\"Returns the professor with given ID\"",
@@ -1841,35 +1606,6 @@ const docTemplate = `{
                         "description": "A string describing the error",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
-        "/professor/{id}/courses": {
-            "get": {
-                "description": "\"Returns all the courses taught by the professor with given ID\"",
-                "produces": [
-                    "application/json"
-                ],
-                "operationId": "professorCourseById",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of the professor to get",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of courses",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schema.Course"
-                            }
                         }
                     }
                 }
@@ -2048,13 +1784,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th section, former_offset=16).",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
                         "name": "former_offset",
                         "in": "query"
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of courses from the predefined page of sections (e.g. For starting at the 18th course, latter_offset=17).",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16).",
                         "name": "latter_offset",
                         "in": "query"
                     },
@@ -2217,13 +1953,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th section, former_offset=16).",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
                         "name": "former_offset",
                         "in": "query"
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of professors from the predefined page of sections (e.g. For starting at the 18th professor, latter_offset=17).",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16).",
                         "name": "latter_offset",
                         "in": "query"
                     },
@@ -2755,7 +2491,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "params for Signed URL",
+                        "description": "Request body",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -2810,28 +2546,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "schema.ObjectSignedURLBody": {
-            "description": "request body",
-            "type": "object",
-            "properties": {
-                "expiration": {
-                    "description": "timestamp for when the signed URL will expire",
-                    "type": "string"
-                },
-                "headers": {
-                    "description": "headers for signed URL",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "method": {
-                    "description": "method to be used with signed URL",
-                    "type": "string",
-                    "example": "PUT"
-                }
-            }
-        },
         "schema.APIResponse-array_int": {
             "type": "object",
             "properties": {
@@ -3516,6 +3230,26 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "updated": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ObjectSignedURLBody": {
+            "type": "object",
+            "properties": {
+                "expiration": {
+                    "description": "timestamp for when the signed URL will expire",
+                    "type": "string"
+                },
+                "headers": {
+                    "description": "headers for signed URL",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "method": {
+                    "description": "method to be used with signed URL. For example, PUT",
                     "type": "string"
                 }
             }
