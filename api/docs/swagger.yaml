@@ -1,20 +1,4 @@
 definitions:
-  schema.ObjectSignedURLBody:
-    description: request body
-    properties:
-      expiration:
-        description: timestamp for when the signed URL will expire
-        type: string
-      headers:
-        description: headers for signed URL
-        items:
-          type: string
-        type: array
-      method:
-        description: method to be used with signed URL
-        example: PUT
-        type: string
-    type: object
   schema.APIResponse-array_int:
     properties:
       data:
@@ -462,6 +446,20 @@ definitions:
       updated:
         type: string
     type: object
+  schema.ObjectSignedURLBody:
+    properties:
+      expiration:
+        description: timestamp for when the signed URL will expire
+        type: string
+      headers:
+        description: headers for signed URL
+        items:
+          type: string
+        type: array
+      method:
+        description: method to be used with signed URL. For example, PUT
+        type: string
+    type: object
   schema.Professor:
     properties:
       _id:
@@ -806,6 +804,31 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+  /course/{id}/professors:
+    get:
+      description: '"Returns the all of the professors of the course with given ID"'
+      operationId: courseProfessorById
+      parameters:
+      - description: ID of the course to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of professors
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
   /course/{id}/sections:
     get:
       description: '"Returns the all of the sections of the course with given ID"'
@@ -842,6 +865,87 @@ paths:
           description: All courses
           schema:
             $ref: '#/definitions/schema.APIResponse-array_schema_Course'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /course/professors:
+    get:
+      description: '"Returns paginated list of professors of all the courses matching
+        the query''s string-typed key-value pairs. See former_offset and latter_offset
+        for pagination details."'
+      operationId: courseProfessorSearch
+      parameters:
+      - description: The starting position of the current page of courses (e.g. For
+          starting at the 17th course, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 4th section, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
+      - description: The course's official number
+        in: query
+        name: course_number
+        type: string
+      - description: The course's subject prefix
+        in: query
+        name: subject_prefix
+        type: string
+      - description: The course's title
+        in: query
+        name: title
+        type: string
+      - description: The course's description
+        in: query
+        name: description
+        type: string
+      - description: The course's school
+        in: query
+        name: school
+        type: string
+      - description: The number of credit hours awarded by successful completion of
+          the course
+        in: query
+        name: credit_hours
+        type: string
+      - description: The level of education that this course course corresponds to
+        in: query
+        name: class_level
+        type: string
+      - description: The type of class this course corresponds to
+        in: query
+        name: activity_type
+        type: string
+      - description: The grading status of this course
+        in: query
+        name: grading
+        type: string
+      - description: The internal (university) number used to reference this course
+        in: query
+        name: internal_course_number
+        type: string
+      - description: The weekly contact hours in lecture for a course
+        in: query
+        name: lecture_contact_hours
+        type: string
+      - description: The frequency of offering a course
+        in: query
+        name: offering_frequency
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of professors
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
         "500":
           description: A string describing the error
           schema:
@@ -1773,8 +1877,7 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
   /section/{id}/course:
     get:
-      description: '"Returns the course of the section with given
-        ID"'
+      description: '"Returns the course of the section with given ID"'
       operationId: sectionCourseById
       parameters:
       - description: ID of the section to get
@@ -1855,13 +1958,13 @@ paths:
         for pagination details."'
       operationId: sectionCourseSearch
       parameters:
-      - description: The starting position of the current page of sections (e.g.
-          For starting at the 17th section, former_offset=16).
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
         in: query
         name: former_offset
         type: number
-      - description: The starting position of the current page of courses (e.g. For
-          starting at the 4th course, latter_offset=3).
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 17th professor, offset=16).
         in: query
         name: latter_offset
         type: number
@@ -1971,13 +2074,13 @@ paths:
         for pagination details."'
       operationId: sectionProfessorSearch
       parameters:
-      - description: The starting position of the current page of sections (e.g.
-          For starting at the 17th section, former_offset=16).
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
         in: query
         name: former_offset
         type: number
-      - description: The starting position of the current page of professors (e.g. For
-          starting at the 4th professor, latter_offset=3).
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 17th professor, offset=16).
         in: query
         name: latter_offset
         type: number
@@ -2240,7 +2343,7 @@ paths:
         name: objectID
         required: true
         type: string
-      - description: Request body 
+      - description: Request body
         in: body
         name: body
         required: true
