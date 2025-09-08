@@ -248,36 +248,6 @@ func courseSection(flag string, c *gin.Context) {
 	respond(c, http.StatusOK, "success", courseSections)
 }
 
-// @Id				trendsCourseSectionSearch
-// @Router			/course/sections/trends [get]
-// @Description		"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
-// @Produce			json
-// @Param			course_number	query		string									true	"The course's official number"
-// @Param			subject_prefix	query		string									true	"The course's subject prefix"
-// @Success			200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
-// @Failure			500				{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsCourseSectionSearch(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	var courseSectionsObject struct {
-		Sections []schema.Section
-	}
-
-	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
-
-	defer cancel()
-
-	trendsCollection := configs.GetCollection("trends_course_sections")
-
-	err := trendsCollection.FindOne(ctx, courseQuery).Decode(&courseSectionsObject)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", courseSectionsObject.Sections)
-}
-
 // @Id				courseProfessorSearch
 // @Router			/course/professors [get]
 // @Description		"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
@@ -422,4 +392,34 @@ func getCourseQuery(flag string, c *gin.Context) (bson.M, error) {
 	}
 
 	return courseQuery, nil
+}
+
+// @Id				trendsCourseSectionSearch
+// @Router			/course/sections/trends [get]
+// @Description		"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
+// @Produce			json
+// @Param			course_number	query		string									true	"The course's official number"
+// @Param			subject_prefix	query		string									true	"The course's subject prefix"
+// @Success			200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
+// @Failure			500				{object}	schema.APIResponse[string]				"A string describing the error"
+func TrendsCourseSectionSearch(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	var courseSectionsObject struct {
+		Sections []schema.Section
+	}
+
+	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
+
+	defer cancel()
+
+	trendsCollection := configs.GetCollection("trends_course_sections")
+
+	err := trendsCollection.FindOne(ctx, courseQuery).Decode(&courseSectionsObject)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", courseSectionsObject.Sections)
 }
