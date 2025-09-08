@@ -235,11 +235,9 @@ func courseSection(flag string, c *gin.Context) {
 	// perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseSectionPipeline)
 	if err != nil {
-		// return error for any aggregation problem
 		respondWithInternalError(c, err)
 		return
 	}
-	// parse the array of sections of the course
 	if err = cursor.All(ctx, &courseSections); err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -290,8 +288,8 @@ func courseProfessor(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var courseProfessors []schema.Professor // the list of professors of the filtered courses
-	var courseQuery bson.M                  // query of the courses (or the single course)
+	var courseProfessors []schema.Professor
+	var courseQuery bson.M
 	var err error
 
 	if courseQuery, err = getCourseQuery(flag, c); err != nil {
@@ -306,7 +304,7 @@ func courseProfessor(flag string, c *gin.Context) {
 		return
 	}
 
-	// pipeline to query the professors from the filtered courses
+	// Pipeline to query the professors from the filtered courses
 	courseProfessorPipeline := mongo.Pipeline{
 		// filter the courses
 		bson.D{{Key: "$match", Value: courseQuery}},
