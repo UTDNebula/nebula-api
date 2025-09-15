@@ -6,6 +6,8 @@ import (
 	"github.com/UTDNebula/nebula-api/api/configs"
 	_ "github.com/UTDNebula/nebula-api/api/docs"
 	"github.com/UTDNebula/nebula-api/api/routes"
+	"github.com/getsentry/sentry-go"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -45,6 +47,13 @@ func main() {
 	// Establish the connection to the database
 	configs.ConnectDB()
 
+	// Set up Sentry
+	if err := sentry.Init(sentry.ClientOptions{
+		Dsn: "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
+	}); err != nil {
+		log.Printf("Sentry initialization failed: %v\n", err)
+	}
+
 	// Configure Gin Router
 	router := gin.New()
 	// Get rid of "trusted all proxies" warning -- we don't care
@@ -55,6 +64,9 @@ func main() {
 
 	// Enable Logging
 	router.Use(LogRequest)
+
+	// Attach Sentry
+	router.Use(sentrygin.New(sentrygin.Options{}))
 
 	// Setup swagger-ui hosted
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
