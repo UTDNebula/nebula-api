@@ -18,7 +18,7 @@ import (
 var eventsCollection *mongo.Collection = configs.GetCollection("events")
 
 // @Id				events
-// @Router			/events/{date} [get]
+// @Router			/events/coursebook/{date} [get]
 // @Description	"Returns all sections with meetings on the specified date"
 // @Produce		json
 // @Param			date	path		string																	true	"ISO date of the set of events to get"

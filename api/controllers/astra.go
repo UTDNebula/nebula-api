@@ -18,7 +18,7 @@ import (
 var astraCollection *mongo.Collection = configs.GetCollection("astra")
 
 // @Id				AstraEvents
-// @Router			/astra/{date} [get]
+// @Router			events/astra/{date} [get]
 // @Description	"Returns AstraEvent based on the input date"
 // @Produce		json
 // @Param			date	path		string																true	"date (ISO format) to retrieve astra events"
