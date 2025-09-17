@@ -65,7 +65,7 @@ Build with
 `make build`
 
 Run with
-`./go-api.exe`
+`./go-api`
 ## Running to API locally
 Copy `.env.template` to `.env` with
 `cp .env.template .env`
