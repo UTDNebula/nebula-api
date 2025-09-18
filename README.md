@@ -5,14 +5,6 @@ _A database for some really useful UTD data collected by our [tools](https://git
 
 Project maintained by [Nebula Labs](https://about.utdnebula.com).
 
-## Contributing
-
-Contributions are welcome!
-
-This project uses the MIT License.
-
-Please visit our [Discord](https://discord.utdnebula.com) and talk to us if you'd like to contribute!
-
 ## Documentation
 
 Documentation for the current production API can be found [here.](https://api.utdnebula.com/swagger/index.html)
