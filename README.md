@@ -64,7 +64,7 @@ Copy `.env.template` to `.env` with
 
 Enter Nebula MongoDB URI in `.env`
 
-Run API
+Run `go-api`
 
 Check command output to see the route serving traffic. It's likely port 8080
 
