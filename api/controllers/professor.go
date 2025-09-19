@@ -56,10 +56,9 @@ func ProfessorSearch(c *gin.Context) {
 	defer cancel()
 
 	// build query key value pairs (only one value per key)
-	query, err := schema.FilterQuery[schema.Professor](c)
+	query, err := getQuery[schema.Professor](c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-		return
+    	return
 	}
 
 	optionLimit, err := configs.GetOptionLimit(&query, c)
@@ -411,11 +410,11 @@ func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 	switch flag {
 	case "Search":
 		// if the flag is Search, filter professors based on query parameters
-		professorQuery, err = schema.FilterQuery[schema.Professor](c)
+		professorQuery, err = getQuery[schema.Professor](c)
 		if err != nil {
-			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-			return nil, err
+    		return nil, err
 		}
+
 	case "ById":
 		// if the flag is ById, filter that single professor based on their _id
 		objId, err := objectIDFromParam(c, "id")
@@ -446,7 +445,7 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 		Sections []schema.Section `bson:"sections" json:"sections"`
 	}
 
-	professorQuery, _ := schema.FilterQuery[schema.Professor](c)
+	professorQuery, _ := getQuery[schema.Professor](c)
 
 	defer cancel()
 

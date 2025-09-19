@@ -48,11 +48,11 @@ func CourseSearch(c *gin.Context) {
 	var courses []schema.Course
 
 	// build query key value pairs (only one value per key)
-	query, err := schema.FilterQuery[schema.Course](c)
+	query, err := getQuery[schema.Course](c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-		return
+    	return
 	}
+
 
 	optionLimit, err := configs.GetOptionLimit(&query, c)
 	if err != nil {
@@ -191,12 +191,11 @@ func courseSection(flag string, c *gin.Context) {
 	switch flag {
 	case "Search":
 		// filter courses based on the query parameters, build the key-value pair
-		courseQuery, err = schema.FilterQuery[schema.Course](c)
+		courseQuery, err = getQuery[schema.Course](c)
 		if err != nil {
-			// return the validation error if there's anything wrong
-			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
 			return
 		}
+	
 	case "ById":
 		// filter the single course based on it's Id, convert to ObjectID
 		objId, err := objectIDFromParam(c, "id")
