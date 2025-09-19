@@ -34,7 +34,6 @@ Submit proposed changes via a [Pull Request](https://docs.github.com/en/pull-req
 ### Requirements
 - [Golang 1.23 or Higher](https://go.dev/dl/)
 
-
 ### Building for Windows
 cd into `nebula-api\api`
 
@@ -46,6 +45,7 @@ Build with
 
 Run with
 `.\go-api.exe`
+> Note: some have experienced issues with Windows Defender or other antivirus blocking `go-api.exe` from reading files, editing files, or causing slowed performance. Consider adding a exception to your `nebula-api` folder.
 
 ### Building for macOs, Linux, and WSL
 cd into `nebula-api/api`
@@ -58,6 +58,7 @@ Build with
 
 Run with
 `./go-api`
+
 ## Running to API locally
 Copy `.env.template` to `.env` with
 `cp .env.template .env`
