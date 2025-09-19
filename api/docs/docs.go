@@ -1631,13 +1631,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th section, former_offset=16).",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
                         "name": "former_offset",
                         "in": "query"
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of courses from the predefined page of sections (e.g. For starting at the 18th course, latter_offset=17).",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16).",
                         "name": "latter_offset",
                         "in": "query"
                     },
@@ -1800,13 +1800,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th section, former_offset=16).",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
                         "name": "former_offset",
                         "in": "query"
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of professors from the predefined page of sections (e.g. For starting at the 18th professor, latter_offset=17).",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16).",
                         "name": "latter_offset",
                         "in": "query"
                     },
@@ -2338,7 +2338,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "params for Signed URL",
+                        "description": "Request body",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -2393,28 +2393,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "schema.ObjectSignedURLBody": {
-            "description": "request body",
-            "type": "object",
-            "properties": {
-                "expiration": {
-                    "description": "timestamp for when the signed URL will expire",
-                    "type": "string"
-                },
-                "headers": {
-                    "description": "headers for signed URL",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "method": {
-                    "description": "method to be used with signed URL",
-                    "type": "string",
-                    "example": "PUT"
-                }
-            }
-        },
         "schema.APIResponse-array_int": {
             "type": "object",
             "properties": {
@@ -3099,6 +3077,26 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "updated": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ObjectSignedURLBody": {
+            "type": "object",
+            "properties": {
+                "expiration": {
+                    "description": "timestamp for when the signed URL will expire",
+                    "type": "string"
+                },
+                "headers": {
+                    "description": "headers for signed URL",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "method": {
+                    "description": "method to be used with signed URL. For example, PUT",
                     "type": "string"
                 }
             }
