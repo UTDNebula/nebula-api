@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -98,69 +97,49 @@ func EventsByBuilding(c *gin.Context) {
 // @Produce		json
 // @Param			date		path		string																	true	"ISO date of the set of events to get"
 // @Param			building	path		string	                                                                true    "building abbreviation of the event location"
-// @Param           room        path        string
-// @Param           section     path        string                                                                  true    "section ID (ObjectID)"
+// @Param           room        path        string                                                                true    "section ID (ObjectID)"
 // @Success		200			{object}	schema.APIResponse[schema.SingleRoomEvents[schema.SectionWithTime]]	       	"All sections with meetings on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]												"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]												"A string describing the error"
 func EventsByRoomSection(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
 	defer cancel()
 
 	date := c.Param("date")
 	building := c.Param("building")
 	room := c.Param("room")
-	sectionParam := c.Param("section")
-
-	// converting string param to ObjectID
-	sectionID, err := primitive.ObjectIDFromHex(sectionParam)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, schema.APIResponse[string]{
-			Status:  http.StatusBadRequest,
-			Message: "error",
-			Data:    "Invalid section ID format",
-		})
-		return
-	}
-
-	// referencing from @TyHill's code for issue #247
 
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
-	var foundSection schema.SectionWithTime
+	var foundSections []schema.SectionWithTime
 
 	// find and parse matching date
-	err = eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
+	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	// filter for the specified building, room, section
+	// filter for the specified building and room
 	for _, b := range events.Buildings {
 		if b.Building == building {
 			for _, r := range b.Rooms {
 				if r.Room == room {
-					for _, s := range r.Events {
-						if s.Section == sectionID { // now comparing ObjectIDs
-							foundSection = s
-							break
-						}
-					}
+					foundSections = r.Events
+					break
 				}
 			}
 		}
 	}
 
-	// If nothing found return an error - checking for empty ObjectID
-	if foundSection.Section.IsZero() {
+	if len(foundSections) == 0 {
 		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
 			Status:  http.StatusNotFound,
 			Message: "error",
-			Data:    "No events found for the specified building, room, and section",
+			Data:    "No events found for the specified building and room",
 		})
 		return
 	}
 
-	respond(c, http.StatusOK, "success", foundSection)
+	// return all sections in the room
+	respond(c, http.StatusOK, "success", foundSections)
 }
