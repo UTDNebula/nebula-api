@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/UTDNebula/nebula-api/api/schema"
+	"github.com/getsentry/sentry-go"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -31,6 +33,12 @@ func getQuery[T any](c *gin.Context) (bson.M, error) {
 func respondWithInternalError(c *gin.Context, err error) {
 	// Note that we use log.Output here to be able to set the stack depth to the frame above this one (2), which allows us to log the location this function was called from
 	log.Output(2, fmt.Sprintf("INTERNAL SERVER ERROR: %s", err.Error()))
+	// Capture error with Sentry
+	if hub := sentrygin.GetHubFromContext(c); hub != nil {
+		hub.WithScope(func(scope *sentry.Scope) {
+			hub.CaptureException(err)
+		})
+	}
 	respond(c, http.StatusInternalServerError, "error", err.Error())
 }
 
