@@ -218,7 +218,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3).",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 4th professor, latter_offset=3).",
                         "name": "latter_offset",
                         "in": "query"
                     },
@@ -1784,13 +1784,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 16th section, former_offset=16).",
                         "name": "former_offset",
                         "in": "query"
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16).",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 16th course, latter_offset=16).",
                         "name": "latter_offset",
                         "in": "query"
                     },
@@ -1953,13 +1953,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16).",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 16th sections, former_offset=16).",
                         "name": "former_offset",
                         "in": "query"
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16).",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 16th professor, latter_offset=16).",
                         "name": "latter_offset",
                         "in": "query"
                     },

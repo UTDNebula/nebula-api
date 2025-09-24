@@ -248,10 +248,10 @@ func courseSection(flag string, c *gin.Context) {
 
 // @Id				courseProfessorSearch
 // @Router			/course/professors [get]
-// @Description		"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
-// @Produce			json
+// @Description	"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
+// @Produce		json
 // @Param			former_offset			query		number									false	"The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
-// @Param			latter_offset			query		number									false	"The starting position of the current page of sections (e.g. For starting at the 4th section, latter_offset=3)."
+// @Param			latter_offset			query		number									false	"The starting position of the current page of professors (e.g. For starting at the 4th professor, latter_offset=3)."
 // @Param			course_number			query		string									false	"The course's official number"
 // @Param			subject_prefix			query		string									false	"The course's subject prefix"
 // @Param			title					query		string									false	"The course's title"
@@ -264,21 +264,21 @@ func courseSection(flag string, c *gin.Context) {
 // @Param			internal_course_number	query		string									false	"The internal (university) number used to reference this course"
 // @Param			lecture_contact_hours	query		string									false	"The weekly contact hours in lecture for a course"
 // @Param			offering_frequency		query		string									false	"The frequency of offering a course"
-// @Success			200						{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
-// @Failure			500						{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure			400						{object}	schema.APIResponse[string]				"A string describing the error"
+// @Success		200						{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
+// @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseProfessorSearch(c *gin.Context) {
 	courseProfessor("Search", c)
 }
 
 // @Id				courseProfessorById
 // @Router			/course/{id}/professors [get]
-// @Description		"Returns the all of the professors of the course with given ID"
-// @Produce			json
-// @Param			id		path		string									true	"ID of the course to get"
-// @Success			200	{object}		schema.APIResponse[[]schema.Professor]	"A list of professors"
-// @Failure			500	{object}		schema.APIResponse[string]				"A string describing the error"
-// @Failure			400	{object}		schema.APIResponse[string]				"A string describing the error"
+// @Description	"Returns the all of the professors of the course with given ID"
+// @Produce		json
+// @Param			id	path		string									true	"ID of the course to get"
+// @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseProfessorById(c *gin.Context) {
 	courseProfessor("ById", c)
 }
@@ -394,12 +394,12 @@ func getCourseQuery(flag string, c *gin.Context) (bson.M, error) {
 
 // @Id				trendsCourseSectionSearch
 // @Router			/course/sections/trends [get]
-// @Description		"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
-// @Produce			json
+// @Description	"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
+// @Produce		json
 // @Param			course_number	query		string									true	"The course's official number"
 // @Param			subject_prefix	query		string									true	"The course's subject prefix"
-// @Success			200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
-// @Failure			500				{object}	schema.APIResponse[string]				"A string describing the error"
+// @Success		200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
+// @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
 func TrendsCourseSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
