@@ -2,6 +2,8 @@ module github.com/UTDNebula/nebula-api/api
 
 go 1.24.0
 
+toolchain go1.24.2
+
 require (
 	cloud.google.com/go/storage v1.51.0
 	github.com/getsentry/sentry-go v0.33.0
