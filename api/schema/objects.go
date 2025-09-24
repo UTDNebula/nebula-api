@@ -257,6 +257,38 @@ type Letters struct {
 	Letters string `bson:"letters" json:"letters"`
 }
 
+// Academic Calendar type
+type AcademicCalendar struct {
+	Id                string  `bson:"_id" json:"_id"`
+	Timeline string `bson:"timeline" json:"timeline"`
+	Sessions                 []AcademicCalendarSession     `bson:"sessions" json:"sessions"`
+	EnrollmentOpens          string        `bson:"enrollment_opens" json:"enrollment_opens"`
+	SchedulePlannerAvailable string        `bson:"schedule_planner_available" json:"schedule_planner_available"`
+	OnlineAddSwapEnds        string        `bson:"online_add_swap_ends" json:"online_add_swap_ends"`
+	LastReadmission          string        `bson:"last_readmission" json:"last_readmission"`
+	LastFromWaitlist         string        `bson:"last_from_waitlist" json:"last_from_waitlist"`
+	MidtermsDue              string        `bson:"midterms_due" json:"midterms_due"`
+	UniversityClosings       [][]string    `bson:"university_closings" json:"university_closings"`
+	NoClasses                [][]string    `bson:"no_classes" json:"no_classes"`
+}
+type AcademicCalendarSession struct {
+	Name              string        `bson:"name" json:"name"`
+	LastRegistration  string        `bson:"last_registration" json:"last_registration"`
+	Begin             string        `bson:"begin" json:"begin"`
+	LateRegistration  []string      `bson:"late_registration" json:"late_registration"`
+	CensusDay         string        `bson:"census_day" json:"census_day"`
+	DropDeadlines     AcademicCalendarDropDeadlines `bson:"drop_deadlines" json:"drop_deadlines"`
+	End               string        `bson:"end" json:"end"`
+	ReadingDays       []string      `bson:"reading_days" json:"reading_days"`
+	Exams             []string      `bson:"exams" json:"exams"`
+	FinalGradingPeriod []string     `bson:"final_grading_period" json:"final_grading_period"`
+}
+type AcademicCalendarDropDeadlines struct {
+	WithoutW                  string `bson:"without_w" json:"without_w"`
+	UndergradApprovalRequired string `bson:"undergrad_approval_required" json:"undergrad_approval_required"`
+	GraduateWithdrawlEnds     string `bson:"graduate_withdrawl_ends" json:"graduate_withdrawl_ends"`
+}
+
 // Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
