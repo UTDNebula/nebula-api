@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -295,7 +296,7 @@ func courseProfessor(flag string, c *gin.Context) {
 	if courseQuery, err = getCourseQuery(flag, c); err != nil {
 		return
 	}
-
+	fmt.Println("getCourseQuery error:", courseQuery)
 	// determine the offset and limit for pagination stage and delete
 	// "offset" field in professorQuery
 	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
@@ -303,7 +304,7 @@ func courseProfessor(flag string, c *gin.Context) {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
-
+	fmt.Println("getCourseQuery error:", paginateMap)
 	// Pipeline to query the professors from the filtered courses
 	courseProfessorPipeline := mongo.Pipeline{
 		// filter the courses
@@ -337,7 +338,11 @@ func courseProfessor(flag string, c *gin.Context) {
 
 		// replace the courses with professors
 		bson.D{{Key: "$replaceWith", Value: "$professors"}},
-
+		bson.D{{Key: "$group", Value: bson.D{ // Groups all documents by professords _id
+			{Key: "_id", Value: "$_id"},
+			{Key: "doc", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}}, // Keeps first full document 
+		}}},
+		bson.D{{Key: "$replaceWith", Value: "$doc"}},
 		// keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
@@ -345,7 +350,7 @@ func courseProfessor(flag string, c *gin.Context) {
 		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
 		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
-
+	fmt.Println(courseProfessorPipeline)
 	// perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseProfessorPipeline)
 	if err != nil {
