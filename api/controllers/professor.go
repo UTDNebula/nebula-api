@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"time"
 
@@ -56,7 +55,7 @@ func ProfessorSearch(c *gin.Context) {
 	defer cancel()
 
 	// build query key value pairs (only one value per key)
-	query, err := getQuery[schema.Professor](c)
+	query, err := getQuery[schema.Professor]("Search", c)
 	if err != nil {
     	return
 	}
@@ -81,7 +80,7 @@ func ProfessorSearch(c *gin.Context) {
 	}
 
 	// return result
-	respond(c, http.StatusOK, "success", professors)
+	respond[[]schema.Professor](c, http.StatusOK, "success", professors)
 }
 
 // @Id				professorById
@@ -100,13 +99,13 @@ func ProfessorById(c *gin.Context) {
 	defer cancel()
 
 	// parse object id from id parameter
-	objId, err := objectIDFromParam(c, "id")
+	query, err := getQuery[schema.Professor]("ById", c)
 	if err != nil {
-		return
-	}
+    		return
+}
 
 	// find and parse matching professor
-	err = professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
+	err = professorCollection.FindOne(ctx, query).Decode(&professor)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -207,8 +206,9 @@ func professorCourse(flag string, c *gin.Context) {
 	defer cancel()
 
 	// determine the professor's query
-	if professorQuery, err = getProfessorQuery(flag, c); err != nil {
-		return // if there's an error, the response will have already been thrown to the consumer, halt the funcion here
+	professorQuery, err = getQuery[schema.Professor](flag, c)
+	if err != nil {
+    	return
 	}
 
 	// determine the offset and limit for pagination stage
@@ -276,6 +276,15 @@ func professorCourse(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
+	if flag == "ById" {
+		if len(professorCourses) > 0 {
+			respond(c, http.StatusOK, "success", professorCourses[0])
+		} else {
+			respond[*schema.Course](c, http.StatusNotFound, "not found", nil)
+		}
+		return
+	}	
+	
 	respond(c, http.StatusOK, "success", professorCourses)
 }
 
@@ -338,8 +347,9 @@ func professorSection(flag string, c *gin.Context) {
 	defer cancel()
 
 	// determine the professor's query
-	if professorQuery, err = getProfessorQuery(flag, c); err != nil {
-		return
+	professorQuery, err = getQuery[schema.Professor](flag, c)
+	if err != nil {
+   		return
 	}
 
 	// determine the offset and limit for pagination stage
@@ -398,36 +408,16 @@ func professorSection(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
+	if flag == "ById" {
+		if len(professorSections) > 0 {
+			respond(c, http.StatusOK, "success", professorSections[0])
+		} else {
+			respond[*schema.Section](c, http.StatusNotFound, "not found", nil)
+		}
+		return
+	}	
+	
 	respond(c, http.StatusOK, "success", professorSections)
-}
-
-// determine the query of the professor based on the parameters passed from context
-// if there's an error, throw an error response back to the API consumer and return only the error
-func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
-	var professorQuery bson.M
-	var err error
-
-	switch flag {
-	case "Search":
-		// if the flag is Search, filter professors based on query parameters
-		professorQuery, err = getQuery[schema.Professor](c)
-		if err != nil {
-    		return nil, err
-		}
-
-	case "ById":
-		// if the flag is ById, filter that single professor based on their _id
-		objId, err := objectIDFromParam(c, "id")
-		if err != nil {
-			return nil, err
-		}
-		professorQuery = bson.M{"_id": objId}
-	default:
-		err = errors.New("invalid type of filtering professors, either filtering based on available professor fields or ID")
-		respondWithInternalError(c, err)
-		return nil, err
-	}
-	return professorQuery, err
 }
 
 // @Id				trendsProfessorSectionSearch
@@ -445,13 +435,16 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 		Sections []schema.Section `bson:"sections" json:"sections"`
 	}
 
-	professorQuery, _ := getQuery[schema.Professor](c)
+	professorQuery, err := getQuery[schema.Professor]("Search", c)
+	if err != nil {
+    	return
+	}
 
 	defer cancel()
 
 	trendsCollection := configs.GetCollection("trends_prof_sections")
 
-	err := trendsCollection.FindOne(ctx, professorQuery).Decode(&profSectionsObject)
+	err = trendsCollection.FindOne(ctx, professorQuery).Decode(&profSectionsObject)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return

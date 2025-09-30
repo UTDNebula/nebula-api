@@ -57,9 +57,9 @@ func SectionSearch(c *gin.Context) {
 	defer cancel()
 
 	// build query key value pairs (only one value per key)
-	query, err := schema.FilterQuery[schema.Section](c)
+	query, err := getQuery[schema.Section]("Search", c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "schema validation error", err.Error())
+		respond(c, http.StatusBadRequest, "bad query paramters", err.Error())
 		return
 	}
 
@@ -176,7 +176,7 @@ func sectionCourse(flag string, c *gin.Context) {
 	var sectionCourses []schema.Course
 	var sectionQuery bson.M
 	var err error
-	if sectionQuery, err = getQuery[schema.Section](c); err != nil {
+	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
 		return
 	}
 	
@@ -235,14 +235,17 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	switch flag {
-	case "Search":
-		respond(c, http.StatusOK, "success", sectionCourses)
-	case "ById":
-		// Each section is only referenced by only one course, so returning a single course is ideal
-		// A better way of handling this might be needed in the future
-		respond(c, http.StatusOK, "success", sectionCourses[0])
+	if flag == "ById" {
+		if len(sectionCourses) > 0 {
+			respond(c, http.StatusOK, "success", sectionCourses[0])
+		} else {
+			respond[*schema.Course](c, http.StatusNotFound, "not found", nil)
+		}
+		return
 	}
+
+respond(c, http.StatusOK, "success", sectionCourses)
+
 }
 
 // @Id				sectionProfessorSearch
@@ -303,7 +306,7 @@ func sectionProfessor(flag string, c *gin.Context) {
 	var sectionProfessors []schema.Professor
 	var sectionQuery bson.M
 	var err error
-	if sectionQuery, err = getQuery[schema.Section](c); err != nil {
+	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
 		return
 	}
 	
@@ -354,5 +357,15 @@ func sectionProfessor(flag string, c *gin.Context) {
 		return
 	}
 
+	if flag == "ById" {
+		if len(sectionProfessors) > 0 {
+			respond(c, http.StatusOK, "success", sectionProfessors[0])
+		} else {
+			respond[*schema.Professor](c, http.StatusNotFound, "not found", nil)
+		}
+		return
+	}	
+	
 	respond(c, http.StatusOK, "success", sectionProfessors)
+	
 }

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"time"
 
@@ -48,7 +47,7 @@ func CourseSearch(c *gin.Context) {
 	var courses []schema.Course
 
 	// build query key value pairs (only one value per key)
-	query, err := getQuery[schema.Course](c)
+	query, err := getQuery[schema.Course]("Search", c)
 	if err != nil {
     	return
 	}
@@ -91,13 +90,13 @@ func CourseById(c *gin.Context) {
 	var course schema.Course
 
 	// parse object id from id parameter
-	objId, err := objectIDFromParam(c, "id")
+	query, err := getQuery[schema.Course]("ById", c)
 	if err != nil {
-		return
+    	return
 	}
 
 	// find and parse matching course
-	err = courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
+	err = courseCollection.FindOne(ctx, query).Decode(&course)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -188,27 +187,10 @@ func courseSection(flag string, c *gin.Context) {
 	var err error                       // error
 
 	// determine the course query
-	switch flag {
-	case "Search":
-		// filter courses based on the query parameters, build the key-value pair
-		courseQuery, err = getQuery[schema.Course](c)
-		if err != nil {
-			return
-		}
-	
-	case "ById":
-		// filter the single course based on it's Id, convert to ObjectID
-		objId, err := objectIDFromParam(c, "id")
-		if err != nil {
-			return
-		}
-		courseQuery = bson.M{"_id": objId}
-	default:
-		err = errors.New("invalid type of filtering courses, either filtering based on available course fields or ID")
-		// otherwise, something that messed up the server
-		respondWithInternalError(c, err)
-		return
-	}
+	courseQuery, err = getQuery[schema.Course](flag, c)
+	if err != nil {
+    	return
+	}	
 
 	// determine the offset and limit for pagination stage & delete "offset" fields in professorQuery
 	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
