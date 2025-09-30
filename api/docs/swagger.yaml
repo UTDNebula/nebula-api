@@ -1,20 +1,4 @@
 definitions:
-  schema.ObjectSignedURLBody:
-    description: request body
-    properties:
-      expiration:
-        description: timestamp for when the signed URL will expire
-        type: string
-      headers:
-        description: headers for signed URL
-        items:
-          type: string
-        type: array
-      method:
-        description: method to be used with signed URL
-        example: PUT
-        type: string
-    type: object
   schema.APIResponse-array_int:
     properties:
       data:
@@ -460,6 +444,20 @@ definitions:
       size:
         type: integer
       updated:
+        type: string
+    type: object
+  schema.ObjectSignedURLBody:
+    properties:
+      expiration:
+        description: timestamp for when the signed URL will expire
+        type: string
+      headers:
+        description: headers for signed URL
+        items:
+          type: string
+        type: array
+      method:
+        description: method to be used with signed URL. For example, PUT
         type: string
     type: object
   schema.Professor:
@@ -1773,8 +1771,7 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
   /section/{id}/course:
     get:
-      description: '"Returns the course of the section with given
-        ID"'
+      description: '"Returns the course of the section with given ID"'
       operationId: sectionCourseById
       parameters:
       - description: ID of the section to get
@@ -1855,13 +1852,13 @@ paths:
         for pagination details."'
       operationId: sectionCourseSearch
       parameters:
-      - description: The starting position of the current page of sections (e.g.
-          For starting at the 17th section, former_offset=16).
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
         in: query
         name: former_offset
         type: number
-      - description: The starting position of the current page of courses (e.g. For
-          starting at the 4th course, latter_offset=3).
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 17th professor, offset=16).
         in: query
         name: latter_offset
         type: number
@@ -1971,13 +1968,13 @@ paths:
         for pagination details."'
       operationId: sectionProfessorSearch
       parameters:
-      - description: The starting position of the current page of sections (e.g.
-          For starting at the 17th section, former_offset=16).
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
         in: query
         name: former_offset
         type: number
-      - description: The starting position of the current page of professors (e.g. For
-          starting at the 4th professor, latter_offset=3).
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 17th professor, offset=16).
         in: query
         name: latter_offset
         type: number
@@ -2240,7 +2237,7 @@ paths:
         name: objectID
         required: true
         type: string
-      - description: Request body 
+      - description: Request body
         in: body
         name: body
         required: true

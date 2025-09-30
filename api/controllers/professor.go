@@ -197,6 +197,84 @@ func ProfessorCourseById() gin.HandlerFunc {
 	}
 }
 
+// Pipeline builder for professor aggregate endpoints
+func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[string]int64) mongo.Pipeline {
+	// common stages
+	baseStages := mongo.Pipeline{
+		// filter the professors
+		bson.D{{Key: "$match", Value: professorQuery}},
+
+		// paginate the professors before pulling the courses from those professor
+		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of professors
+
+		// lookup the array of sections from sections collection
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "sections"},
+			{Key: "localField", Value: "sections"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections"},
+		}}},
+	}
+
+	// endpoint-specific stages
+	if endpoint == "courses" {
+		return append(baseStages,
+			// project the courses referenced by each section in the array
+			bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
+
+			// lookup the array of courses from coures collection
+			bson.D{{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "courses"},
+				{Key: "localField", Value: "courses"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "courses"},
+			}}},
+
+			// unwind the courses
+			bson.D{{Key: "$unwind", Value: bson.D{
+				{Key: "path", Value: "$courses"},
+				{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
+			}}},
+
+			// replace the combination of ids and courses with the courses entirely
+			bson.D{{Key: "$replaceWith", Value: "$courses"}},
+
+			// keep order deterministic between calls
+			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+
+			// paginate the courses
+			bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
+			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+		)
+	}
+
+	if endpoint == "sections" {
+		return append(baseStages,
+			// project the sections
+			bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
+
+			// unwind the sections
+			bson.D{{Key: "$unwind", Value: bson.D{
+				{Key: "path", Value: "$sections"},
+				{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
+			}}},
+
+			// replace the combination of ids and sections with the sections entirely
+			bson.D{{Key: "$replaceWith", Value: "$sections"}},
+
+			// keep order deterministic between calls
+			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+
+			// paginate the sections
+			bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
+			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+		)
+	}
+
+	return baseStages // fallback (shouldn't happen because we call with either courses or sections)
+}
+
 // Get all of the courses of the professors depending on the type of flag
 func professorCourse(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -221,49 +299,7 @@ func professorCourse(flag string, c *gin.Context) {
 	}
 
 	// Pipeline to query the courses from the filtered professors (or a single professor)
-	professorCoursePipeline := mongo.Pipeline{
-		// filter the professors
-		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// paginate the professors before pulling the courses from those professor
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of professors
-
-		// lookup the array of sections from sections collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
-
-		// project the courses referenced by each section in the array
-		bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
-
-		// lookup the array of courses from coures collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "courses"},
-			{Key: "localField", Value: "courses"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "courses"},
-		}}},
-
-		// unwind the courses
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$courses"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
-		}}},
-
-		// replace the combination of ids and courses with the courses entirely
-		bson.D{{Key: "$replaceWith", Value: "$courses"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-	}
+	professorCoursePipeline := professorPipeline("courses", professorQuery, paginateMap)
 
 	// Perform aggreration on the pipeline
 	cursor, err := professorCollection.Aggregate(ctx, professorCoursePipeline)
@@ -351,41 +387,7 @@ func professorSection(flag string, c *gin.Context) {
 	}
 
 	// Pipeline to query the courses from the filtered professors (or a single professor)
-	professorSectionPipeline := mongo.Pipeline{
-		// filter the professors
-		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// paginate the professors before pulling the courses from those professor
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of professors
-
-		// lookup the array of sections from sections collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
-
-		// project the sections
-		bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
-
-		// unwind the sections
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$sections"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
-		}}},
-
-		// replace the combination of ids and sections with the sections entirely
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the sections
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-	}
+	professorSectionPipeline := professorPipeline("sections", professorQuery, paginateMap)
 
 	// Perform aggreration on the pipeline
 	cursor, err := professorCollection.Aggregate(ctx, professorSectionPipeline)
