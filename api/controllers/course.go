@@ -404,26 +404,14 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var courseProfessors []schema.Section
-	var courseQuery bson.M
+	var courseSections []any
+	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
 	var err error
 
-	if courseQuery, err = getCourseQuery("Search", c); err != nil {
-		return
-	}
-
 	// Pipeline to query the Sections + Professors from the filtered courses
-	courseProfessorPipeline := mongo.Pipeline{
+	pipeline := mongo.Pipeline{
 		// filter the courses
 		bson.D{{Key: "$match", Value: courseQuery}},
-
-		// lookup the sections of the courses
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
 
 		// unwind the sections
 		bson.D{{Key: "$unwind", Value: bson.D{
@@ -436,26 +424,28 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 			{Key: "from", Value: "professors"},
 			{Key: "localField", Value: "sections.professors"},
 			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections.professor_details"},
+			{Key: "as", Value: "professor_details"},
 		}}},
 
-		// replace the courses with sections
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
+		// // replace the courses with sections
+		// bson.D{{Key: "$replaceWith", Value: "$professor_details"}},
 
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+		// // keep order deterministic between calls
+		// bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 	}
 
+	trendsCollection := configs.GetCollection("trends_course_sections")
 	// perform aggregation on the pipeline
-	cursor, err := courseCollection.Aggregate(ctx, courseProfessorPipeline)
+	cursor, err := trendsCollection.Aggregate(ctx, pipeline)
 	if err != nil {
 		// return error for any aggregation problem
 		respondWithInternalError(c, err)
 		return
 	}
-	// parse the array of professors of the course
-	if err = cursor.All(ctx, &courseProfessors); err != nil {
+
+	// parse the array of sections of the course
+	if err = cursor.All(ctx, &courseSections); err != nil {
 		panic(err)
 	}
-	respond(c, http.StatusOK, "success", courseProfessors)
+	respond(c, http.StatusOK, "success", courseSections)
 }
