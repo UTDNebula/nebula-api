@@ -394,7 +394,7 @@ func getCourseQuery(flag string, c *gin.Context) (bson.M, error) {
 
 // @Id				trendsCourseSectionSearch
 // @Router			/course/sections/trends [get]
-// @Description	"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
+// @Description	"Returns all of the given course's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
 // @Produce		json
 // @Param			course_number	query		string									true	"The course's official number"
 // @Param			subject_prefix	query		string									true	"The course's subject prefix"
@@ -402,22 +402,60 @@ func getCourseQuery(flag string, c *gin.Context) (bson.M, error) {
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
 func TrendsCourseSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	var courseSectionsObject struct {
-		Sections []schema.Section
-	}
-
-	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
-
 	defer cancel()
 
-	trendsCollection := configs.GetCollection("trends_course_sections")
+	var courseProfessors []schema.Section
+	var courseQuery bson.M
+	var err error
 
-	err := trendsCollection.FindOne(ctx, courseQuery).Decode(&courseSectionsObject)
-	if err != nil {
-		respondWithInternalError(c, err)
+	if courseQuery, err = getCourseQuery("Search", c); err != nil {
 		return
 	}
 
-	respond(c, http.StatusOK, "success", courseSectionsObject.Sections)
+	// Pipeline to query the Sections + Professors from the filtered courses
+	courseProfessorPipeline := mongo.Pipeline{
+		// filter the courses
+		bson.D{{Key: "$match", Value: courseQuery}},
+
+		// lookup the sections of the courses
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "sections"},
+			{Key: "localField", Value: "sections"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections"},
+		}}},
+
+		// unwind the sections
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$sections"},
+			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
+		}}},
+
+		// lookup the professors of the sections
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "professors"},
+			{Key: "localField", Value: "sections.professors"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections.professor_details"},
+		}}},
+
+		// replace the courses with sections
+		bson.D{{Key: "$replaceWith", Value: "$sections"}},
+
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+	}
+
+	// perform aggregation on the pipeline
+	cursor, err := courseCollection.Aggregate(ctx, courseProfessorPipeline)
+	if err != nil {
+		// return error for any aggregation problem
+		respondWithInternalError(c, err)
+		return
+	}
+	// parse the array of professors of the course
+	if err = cursor.All(ctx, &courseProfessors); err != nil {
+		panic(err)
+	}
+	respond(c, http.StatusOK, "success", courseProfessors)
 }

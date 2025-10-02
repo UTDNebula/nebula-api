@@ -76,6 +76,7 @@ type Section struct {
 	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri"`
 	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
+	Professor_details     []Professor            `bson:"professor_details" json:"professor_details"`
 }
 
 type Professor struct {

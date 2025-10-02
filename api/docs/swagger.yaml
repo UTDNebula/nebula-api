@@ -550,6 +550,10 @@ definitions:
         items:
           $ref: '#/definitions/schema.Meeting'
         type: array
+      professor_details:
+        items:
+          $ref: '#/definitions/schema.Professor'
+        type: array
       professors:
         items:
           type: string
@@ -1033,8 +1037,9 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
   /course/sections/trends:
     get:
-      description: '"Returns all of the given course''s sections. Specialized high-speed
-        convenience endpoint for UTD Trends internal use; limited query flexibility."'
+      description: '"Returns all of the given course''s sections with Course and Professor
+        data embedded. Specialized high-speed convenience endpoint for UTD Trends
+        internal use; limited query flexibility."'
       operationId: trendsCourseSectionSearch
       parameters:
       - description: The course's official number

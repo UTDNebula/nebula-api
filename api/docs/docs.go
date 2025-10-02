@@ -434,7 +434,7 @@ const docTemplate = `{
         },
         "/course/sections/trends": {
             "get": {
-                "description": "\"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "description": "\"Returns all of the given course's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
                 "produces": [
                     "application/json"
                 ],
@@ -3389,6 +3389,12 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.Meeting"
+                    }
+                },
+                "professor_details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Professor"
                     }
                 },
                 "professors": {
