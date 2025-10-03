@@ -275,6 +275,7 @@ func DeleteObject(c *gin.Context) {
 
 // @Id				objectUploadURL
 // @Router			/storage/{bucket}/{objectID}/url [put]
+// @Tags			Internal
 // @Accept			json
 // @Description	"Create's a new signed URL for target object"
 // @Param			bucket			path		string						true	"Name of the bucket"

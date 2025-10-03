@@ -123,6 +123,7 @@ func SectionById(c *gin.Context) {
 
 // @Id				sectionCourseSearch
 // @Router			/section/courses [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of courses of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
 // @Param			former_offset					query		number								false	"The starting position of the current page of sections (e.g. For starting at the 16th section, former_offset=16)."
@@ -159,6 +160,7 @@ func SectionCourseSearch() gin.HandlerFunc {
 
 // @Id				sectionCourseById
 // @Router			/section/{id}/course [get]
+// @Tags			Sections
 // @Description	"Returns the course of the section with given ID"
 // @Produce		json
 // @Param			id	path		string								true	"ID of the section to get"
@@ -250,6 +252,7 @@ func sectionCourse(flag string, c *gin.Context) {
 
 // @Id				sectionProfessorSearch
 // @Router			/section/professors [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of professors of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
 // @Param			former_offset					query		number									false	"The starting position of the current page of sections (e.g. For starting at the 16th sections, former_offset=16)."
@@ -286,6 +289,7 @@ func SectionProfessorSearch() gin.HandlerFunc {
 
 // @Id				sectionProfessorById
 // @Router			/section/{id}/professors [get]
+// @Tags			Sections
 // @Description	"Returns the paginated list of professors of the section with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the section to get"

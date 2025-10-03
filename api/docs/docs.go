@@ -220,6 +220,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Courses"
+                ],
                 "operationId": "courseProfessorSearch",
                 "parameters": [
                     {
@@ -570,6 +573,9 @@ const docTemplate = `{
                 "description": "\"Returns the all of the professors of the course with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "courseProfessorById",
                 "parameters": [
@@ -1858,6 +1864,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionCourseSearch",
                 "parameters": [
                     {
@@ -2026,6 +2035,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of professors of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Sections"
                 ],
                 "operationId": "sectionProfessorSearch",
                 "parameters": [
@@ -2237,6 +2249,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionCourseById",
                 "parameters": [
                     {
@@ -2315,6 +2330,9 @@ const docTemplate = `{
                 "description": "\"Returns the paginated list of professors of the section with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Sections"
                 ],
                 "operationId": "sectionProfessorById",
                 "parameters": [
@@ -2572,6 +2590,9 @@ const docTemplate = `{
                 "description": "\"Create's a new signed URL for target object\"",
                 "consumes": [
                     "application/json"
+                ],
+                "tags": [
+                    "Internal"
                 ],
                 "operationId": "objectUploadURL",
                 "parameters": [

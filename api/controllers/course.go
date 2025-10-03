@@ -253,6 +253,7 @@ func courseSection(flag string, c *gin.Context) {
 
 // @Id				courseProfessorSearch
 // @Router			/course/professors [get]
+// @Tags			Courses
 // @Description	"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
 // @Param			former_offset			query		number									false	"The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
@@ -278,6 +279,7 @@ func CourseProfessorSearch(c *gin.Context) {
 
 // @Id				courseProfessorById
 // @Router			/course/{id}/professors [get]
+// @Tags			Courses
 // @Description	"Returns the all of the professors of the course with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the course to get"
