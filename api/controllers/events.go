@@ -19,6 +19,7 @@ var eventsCollection *mongo.Collection = configs.GetCollection("events")
 
 // @Id				events
 // @Router			/events/{date} [get]
+// @Tags			Events
 // @Description	"Returns all sections with meetings on the specified date"
 // @Produce		json
 // @Param			date	path		string																	true	"ISO date of the set of events to get"
@@ -45,6 +46,7 @@ func Events(c *gin.Context) {
 
 // @Id				eventsByBuilding
 // @Router			/events/{date}/{building} [get]
+// @Tags			Events
 // @Description	"Returns all sections with meetings on the specified date in the specified building"
 // @Produce		json
 // @Param			date		path		string																	true	"ISO date of the set of events to get"
