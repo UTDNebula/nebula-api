@@ -21,6 +21,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "AstraEvents",
                 "parameters": [
                     {
@@ -53,6 +56,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Other"
+                ],
                 "operationId": "autocompleteDAG",
                 "responses": {
                     "200": {
@@ -75,6 +81,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "courseSearch",
                 "parameters": [
@@ -185,6 +194,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Courses"
+                ],
                 "operationId": "courseAll",
                 "responses": {
                     "200": {
@@ -207,6 +219,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "courseProfessorSearch",
                 "parameters": [
@@ -323,6 +338,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Courses"
+                ],
                 "operationId": "courseSectionSearch",
                 "parameters": [
                     {
@@ -438,6 +456,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Courses"
+                ],
                 "operationId": "trendsCourseSectionSearch",
                 "parameters": [
                     {
@@ -477,6 +498,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Courses"
+                ],
                 "operationId": "courseById",
                 "parameters": [
                     {
@@ -508,6 +532,9 @@ const docTemplate = `{
                 "description": "\"Returns the overall grade distribution for a course\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "GradesByCourseID",
                 "parameters": [
@@ -547,6 +574,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Courses"
+                ],
                 "operationId": "courseProfessorById",
                 "parameters": [
                     {
@@ -584,6 +614,9 @@ const docTemplate = `{
                 "description": "\"Returns the all of the sections of the course with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "courseSectionById",
                 "parameters": [
@@ -623,6 +656,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "events",
                 "parameters": [
                     {
@@ -654,6 +690,9 @@ const docTemplate = `{
                 "description": "\"Returns all sections with meetings on the specified date in the specified building\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Events"
                 ],
                 "operationId": "eventsByBuilding",
                 "parameters": [
@@ -699,6 +738,9 @@ const docTemplate = `{
                 "description": "\"Returns the overall grade distribution\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Grades"
                 ],
                 "operationId": "gradeAggregationOverall",
                 "parameters": [
@@ -761,6 +803,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Grades"
+                ],
                 "operationId": "gradeAggregationBySemester",
                 "parameters": [
                     {
@@ -821,6 +866,9 @@ const docTemplate = `{
                 "description": "\"Returns the grade distributions aggregated by semester and broken down into section type\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Grades"
                 ],
                 "operationId": "gradeAggregationSectionType",
                 "parameters": [
@@ -883,6 +931,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "MazevoEvents",
                 "parameters": [
                     {
@@ -914,6 +965,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "professorSearch",
                 "parameters": [
@@ -1066,6 +1120,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "professorAll",
                 "responses": {
                     "200": {
@@ -1088,6 +1145,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "professorCourseSearch",
                 "parameters": [
@@ -1246,6 +1306,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "professorSectionSearch",
                 "parameters": [
                     {
@@ -1403,6 +1466,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "trendsProfessorSectionSearch",
                 "parameters": [
                     {
@@ -1442,6 +1508,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "professorById",
                 "parameters": [
                     {
@@ -1479,6 +1548,9 @@ const docTemplate = `{
                 "description": "\"Returns all the courses taught by the professor with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "professorCourseById",
                 "parameters": [
@@ -1518,6 +1590,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "GradesByProfessorID",
                 "parameters": [
                     {
@@ -1555,6 +1630,9 @@ const docTemplate = `{
                 "description": "\"Returns all the sections taught by the professor with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "professorSectionById",
                 "parameters": [
@@ -1594,6 +1672,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "rooms",
                 "responses": {
                     "200": {
@@ -1616,6 +1697,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of sections matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Sections"
                 ],
                 "operationId": "sectionSearch",
                 "parameters": [
@@ -1779,6 +1863,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of courses of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Sections"
                 ],
                 "operationId": "sectionCourseSearch",
                 "parameters": [
@@ -1949,6 +2036,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionProfessorSearch",
                 "parameters": [
                     {
@@ -2118,6 +2208,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionById",
                 "parameters": [
                     {
@@ -2155,6 +2248,9 @@ const docTemplate = `{
                 "description": "\"Returns the course of the section with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Sections"
                 ],
                 "operationId": "sectionCourseById",
                 "parameters": [
@@ -2194,6 +2290,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "GradesBySectionID",
                 "parameters": [
                     {
@@ -2232,6 +2331,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionProfessorById",
                 "parameters": [
                     {
@@ -2267,6 +2369,9 @@ const docTemplate = `{
         "/storage/{bucket}": {
             "get": {
                 "description": "\"Get info on a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "bucketInfo",
                 "parameters": [
                     {
@@ -2301,6 +2406,9 @@ const docTemplate = `{
             },
             "delete": {
                 "description": "\"Delete a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "deleteBucket",
                 "parameters": [
                     {
@@ -2337,6 +2445,9 @@ const docTemplate = `{
         "/storage/{bucket}/{objectID}": {
             "get": {
                 "description": "\"Get info on an object in a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "objectInfo",
                 "parameters": [
                     {
@@ -2378,6 +2489,9 @@ const docTemplate = `{
             },
             "post": {
                 "description": "\"Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "postObject",
                 "parameters": [
                     {
@@ -2428,6 +2542,9 @@ const docTemplate = `{
             },
             "delete": {
                 "description": "\"Delete an object from a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "deleteObject",
                 "parameters": [
                     {
@@ -2473,6 +2590,9 @@ const docTemplate = `{
                 "description": "\"Create's a new signed URL for target object\"",
                 "consumes": [
                     "application/json"
+                ],
+                "tags": [
+                    "Internal"
                 ],
                 "operationId": "objectUploadURL",
                 "parameters": [
@@ -2527,6 +2647,9 @@ const docTemplate = `{
             "get": {
                 "security": [],
                 "description": "Returns the OpenAPI/swagger spec for the API",
+                "tags": [
+                    "Other"
+                ],
                 "operationId": "swagger",
                 "parameters": [
                     {
