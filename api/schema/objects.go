@@ -9,27 +9,27 @@ import (
 )
 
 type Course struct {
-	Id                       primitive.ObjectID     `bson:"_id" json:"_id" schema:"-"`
-	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" schema:"subject_prefix"`
-	Course_number            string                 `bson:"course_number" json:"course_number" schema:"course_number"`
-	Title                    string                 `bson:"title" json:"title" schema:"title"`
-	Description              string                 `bson:"description" json:"description" schema:"-"`
-	Enrollment_reqs          string                 `bson:"enrollment_reqs" json:"enrollment_reqs" schema:"-"`
-	School                   string                 `bson:"school" json:"school" schema:"school"`
-	Credit_hours             string                 `bson:"credit_hours" json:"credit_hours" schema:"credit_hours"`
-	Class_level              string                 `bson:"class_level" json:"class_level" schema:"class_level"`
-	Activity_type            string                 `bson:"activity_type" json:"activity_type" schema:"activity_type"`
-	Grading                  string                 `bson:"grading" json:"grading" schema:"grading"`
-	Internal_course_number   string                 `bson:"internal_course_number" json:"internal_course_number" schema:"internal_course_number"`
-	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites" schema:"-"`
-	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites" schema:"-"`
-	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites" schema:"-"`
-	Sections                 []primitive.ObjectID   `bson:"sections" json:"sections" schema:"-"`
-	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours" schema:"lecture_contact_hours"`
-	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours" schema:"laboratory_contact_hours"`
-	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency" schema:"offering_frequency"`
-	Catalog_year             string                 `bson:"catalog_year" json:"catalog_year" schema:"catalog_year"`
-	Attributes               interface{}            `bson:"attributes" json:"attributes" schema:"-"`
+	Id                       primitive.ObjectID     `bson:"_id" json:"_id"`
+	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
+	Course_number            string                 `bson:"course_number" json:"course_number" queryable:""`
+	Title                    string                 `bson:"title" json:"title" queryable:""`
+	Description              string                 `bson:"description" json:"description"`
+	Enrollment_reqs          string                 `bson:"enrollment_reqs" json:"enrollment_reqs"`
+	School                   string                 `bson:"school" json:"school" queryable:""`
+	Credit_hours             string                 `bson:"credit_hours" json:"credit_hours" queryable:""`
+	Class_level              string                 `bson:"class_level" json:"class_level" queryable:""`
+	Activity_type            string                 `bson:"activity_type" json:"activity_type" queryable:""`
+	Grading                  string                 `bson:"grading" json:"grading" queryable:""`
+	Internal_course_number   string                 `bson:"internal_course_number" json:"internal_course_number" queryable:""`
+	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites"`
+	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites"`
+	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites"`
+	Sections                 []primitive.ObjectID   `bson:"sections" json:"sections"`
+	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours" queryable:""`
+	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours" queryable:""`
+	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency" queryable:""`
+	Catalog_year             string                 `bson:"catalog_year" json:"catalog_year" queryable:""`
+	Attributes               interface{}            `bson:"attributes" json:"attributes"`
 }
 
 type AcademicSession struct {
@@ -62,34 +62,34 @@ type Meeting struct {
 }
 
 type Section struct {
-	Id                    primitive.ObjectID     `bson:"_id" json:"_id" schema:"-"`
-	Section_number        string                 `bson:"section_number" json:"section_number" schema:"section_number"`
-	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" schema:"course_reference"`
-	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites" schema:"-"`
-	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session" schema:"-"`
-	Professors            []primitive.ObjectID   `bson:"professors" json:"professors" schema:"-"`
-	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants" schema:"-"`
-	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" schema:"internal_class_number"`
-	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" schema:"instruction_mode"`
-	Meetings              []Meeting              `bson:"meetings" json:"meetings" schema:"-"`
-	Core_flags            []string               `bson:"core_flags" json:"core_flags" schema:"-"`
-	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri" schema:"-"`
-	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution" schema:"-"`
-	Attributes            interface{}            `bson:"attributes" json:"attributes" schema:"-"`
+	Id                    primitive.ObjectID     `bson:"_id" json:"_id"`
+	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
+	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" queryable:""`
+	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
+	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
+	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
+	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
+	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" queryable:""`
+	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" queryable:""`
+	Meetings              []Meeting              `bson:"meetings" json:"meetings"`
+	Core_flags            []string               `bson:"core_flags" json:"core_flags"`
+	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri"`
+	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
+	Attributes            interface{}            `bson:"attributes" json:"attributes"`
 }
 
 type Professor struct {
-	Id           primitive.ObjectID   `bson:"_id" json:"_id" schema:"-"`
-	First_name   string               `bson:"first_name" json:"first_name" schema:"first_name"`
-	Last_name    string               `bson:"last_name" json:"last_name" schema:"last_name"`
-	Titles       []string             `bson:"titles" json:"titles" schema:"titles"`
-	Email        string               `bson:"email" json:"email" schema:"email"`
-	Phone_number string               `bson:"phone_number" json:"phone_number" schema:"phone_number"`
-	Office       Location             `bson:"office" json:"office" schema:"-"`
-	Profile_uri  string               `bson:"profile_uri" json:"profile_uri" schema:"-"`
-	Image_uri    string               `bson:"image_uri" json:"image_uri" schema:"-"`
-	Office_hours []Meeting            `bson:"office_hours" json:"office_hours" schema:"-"`
-	Sections     []primitive.ObjectID `bson:"sections" json:"sections" schema:"-"`
+	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
+	First_name   string               `bson:"first_name" json:"first_name" queryable:""`
+	Last_name    string               `bson:"last_name" json:"last_name" queryable:""`
+	Titles       []string             `bson:"titles" json:"titles" queryable:""`
+	Email        string               `bson:"email" json:"email" queryable:""`
+	Phone_number string               `bson:"phone_number" json:"phone_number" queryable:""`
+	Office       Location             `bson:"office" json:"office"`
+	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
+	Image_uri    string               `bson:"image_uri" json:"image_uri"`
+	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
+	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
 }
 
 type Organization struct {
@@ -125,10 +125,12 @@ type MultiBuildingEvents[T any] struct {
 	Date      string                    `bson:"date" json:"date"`
 	Buildings []SingleBuildingEvents[T] `bson:"buildings" json:"buildings"`
 }
+
 type SingleBuildingEvents[T any] struct {
 	Building string          `bson:"building" json:"building"`
 	Rooms    []RoomEvents[T] `bson:"rooms" json:"rooms"`
 }
+
 type RoomEvents[T any] struct {
 	Room   string `bson:"room" json:"room"`
 	Events []T    `bson:"events" json:"events"`
@@ -140,6 +142,7 @@ type SectionWithTime struct {
 	StartTime string             `bson:"start_time" json:"start_time"`
 	EndTime   string             `bson:"end_time" json:"end_time"`
 }
+
 type AstraEvent struct {
 	ActivityName        *string  `bson:"activity_name" json:"activity_name"`
 	MeetingType         *string  `bson:"meeting_type" json:"meeting_type"`
@@ -241,6 +244,52 @@ func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
 	}
 }
 
+// Signed URL request body
+type ObjectSignedURLBody struct {
+	Method     string   `json:"method"`     // method to be used with signed URL. For example, PUT
+	Headers    []string `json:"headers"`    // headers for signed URL
+	Expiration string   `json:"expiration"` // timestamp for when the signed URL will expire
+}
+
+// Letters type
+type Letters struct {
+	Date    string `bson:"date" json:"date"`
+	Letters string `bson:"letters" json:"letters"`
+}
+
+// Academic Calendar type
+type AcademicCalendar struct {
+	Id                       string                    `bson:"_id" json:"_id"`
+	Timeline                 string                    `bson:"timeline" json:"timeline"`
+	Sessions                 []AcademicCalendarSession `bson:"sessions" json:"sessions"`
+	EnrollmentOpens          string                    `bson:"enrollment_opens" json:"enrollment_opens"`
+	SchedulePlannerAvailable string                    `bson:"schedule_planner_available" json:"schedule_planner_available"`
+	OnlineAddSwapEnds        string                    `bson:"online_add_swap_ends" json:"online_add_swap_ends"`
+	LastReadmission          string                    `bson:"last_readmission" json:"last_readmission"`
+	LastFromWaitlist         string                    `bson:"last_from_waitlist" json:"last_from_waitlist"`
+	MidtermsDue              string                    `bson:"midterms_due" json:"midterms_due"`
+	UniversityClosings       [][]string                `bson:"university_closings" json:"university_closings"`
+	NoClasses                [][]string                `bson:"no_classes" json:"no_classes"`
+}
+type AcademicCalendarSession struct {
+	Name               string                        `bson:"name" json:"name"`
+	LastRegistration   string                        `bson:"last_registration" json:"last_registration"`
+	Begin              string                        `bson:"begin" json:"begin"`
+	LateRegistration   []string                      `bson:"late_registration" json:"late_registration"`
+	CensusDay          string                        `bson:"census_day" json:"census_day"`
+	DropDeadlines      AcademicCalendarDropDeadlines `bson:"drop_deadlines" json:"drop_deadlines"`
+	End                string                        `bson:"end" json:"end"`
+	ReadingDays        []string                      `bson:"reading_days" json:"reading_days"`
+	Exams              []string                      `bson:"exams" json:"exams"`
+	FinalGradingPeriod []string                      `bson:"final_grading_period" json:"final_grading_period"`
+}
+type AcademicCalendarDropDeadlines struct {
+	WithoutW                  string `bson:"without_w" json:"without_w"`
+	UndergradApprovalRequired string `bson:"undergrad_approval_required" json:"undergrad_approval_required"`
+	GraduateWithdrawlEnds     string `bson:"graduate_withdrawl_ends" json:"graduate_withdrawl_ends"`
+}
+
+// Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`

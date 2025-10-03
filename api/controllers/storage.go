@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
@@ -63,7 +64,6 @@ func BucketInfo(c *gin.Context) {
 
 	// Get attributes
 	attrs, err := bucketHandle.Attrs(ctx)
-
 	// Catch all from above
 	if err != nil {
 		respondWithInternalError(c, err)
@@ -214,9 +214,6 @@ func PostObject(c *gin.Context) {
 
 	wc := objectHandle.NewWriter(ctx)
 	// Makes object public
-	wc.ACL = []storage.ACLRule{
-		{Entity: storage.AllUsers, EntityID: "", Role: storage.RoleReader, Domain: "", Email: "", ProjectTeam: nil},
-	}
 	// Set metadata
 	wc.CacheControl = "public, max-age=3600"
 
@@ -267,7 +264,6 @@ func DeleteObject(c *gin.Context) {
 		respond(c, http.StatusInternalServerError, "error", "invalid object id")
 		return
 	}
-
 	err = objectHandle.Delete(ctx)
 	if err != nil {
 		respondWithInternalError(c, err)
@@ -275,4 +271,53 @@ func DeleteObject(c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", 1)
+}
+
+// @Id				objectUploadURL
+// @Router			/storage/{bucket}/{objectID}/url [put]
+// @Accept			json
+// @Description	"Create's a new signed URL for target object"
+// @Param			bucket			path		string						true	"Name of the bucket"
+// @Param			objectID		path		string						true	"ID of the object"
+// @Param			body			body		schema.ObjectSignedURLBody	true	"Request body"
+// @Param			x-storage-key	header		string						true	"The internal storage key"
+// @Success		200				{object}	schema.APIResponse[string]	"Presigned url for the target Object"
+// @Failure		500				{object}	schema.APIResponse[string]	"A string describing the error"
+func ObjectSignedURL(c *gin.Context) {
+	bucket := c.Param("bucket")
+	objectID := c.Param("objectID")
+
+	var body schema.ObjectSignedURLBody
+	client := getClient(c)
+	err := c.ShouldBindJSON(&body)
+	if err != nil {
+		respond(c, http.StatusBadRequest, "error", "Bad Request Syntax")
+		return
+	}
+
+	expirationTime, err := time.Parse(time.RFC3339, body.Expiration)
+	if err != nil {
+		respond(c, http.StatusBadRequest, "error", "Malformatted expiration time")
+		return
+	}
+
+	bucketHandle, err := getOrCreateBucket(client, bucket)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	opts := &storage.SignedURLOptions{
+		Scheme:  storage.SigningSchemeV4,
+		Method:  body.Method,
+		Headers: body.Headers,
+		Expires: expirationTime,
+	}
+
+	url, err := bucketHandle.SignedURL(objectID, opts)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", url)
 }

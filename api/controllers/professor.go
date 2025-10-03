@@ -415,22 +415,22 @@ func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 	var professorQuery bson.M
 	var err error
 
-	if flag == "Search" { // if the flag is Search, filter professors based on query parameters
-		// build the key-value pairs of query parameters
+	switch flag {
+	case "Search":
+		// if the flag is Search, filter professors based on query parameters
 		professorQuery, err = schema.FilterQuery[schema.Professor](c)
 		if err != nil {
 			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-			return nil, err // return only the error
+			return nil, err
 		}
-	} else if flag == "ById" { // if the flag is ById, filter that single professor based on their _id
-		// parse the ObjectId
+	case "ById":
+		// if the flag is ById, filter that single professor based on their _id
 		objId, err := objectIDFromParam(c, "id")
 		if err != nil {
 			return nil, err
 		}
 		professorQuery = bson.M{"_id": objId}
-	} else {
-		// something wrong that messed up the server
+	default:
 		err = errors.New("invalid type of filtering professors, either filtering based on available professor fields or ID")
 		respondWithInternalError(c, err)
 		return nil, err

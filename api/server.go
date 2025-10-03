@@ -6,6 +6,8 @@ import (
 	"github.com/UTDNebula/nebula-api/api/configs"
 	_ "github.com/UTDNebula/nebula-api/api/docs"
 	"github.com/UTDNebula/nebula-api/api/routes"
+	"github.com/getsentry/sentry-go"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -22,18 +24,18 @@ import (
 //	@Success	200
 func swagger_controller_placeholder() {}
 
-// @title						dev-nebula-api
-// @description				The developer Nebula Labs API for access to pertinent UT Dallas data
-// @version					1.1.0
-// @host						api.utdnebula.com
-// @schemes					https http
-// @x-google-backend			{"address": "https://dev-nebula-api-1062216541483.us-south1.run.app"}
-// @x-google-endpoints			[{"name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
-// @x-google-management		{"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
-// @security					api_key
-// @securitydefinitions.apikey	api_key
-// @name						x-api-key
-// @in							header
+//	@title						dev-nebula-api
+//	@description				The developer Nebula Labs API for access to pertinent UT Dallas data
+//	@version					1.1.0
+//	@host						api.utdnebula.com
+//	@schemes					https http
+//	@x-google-backend			{"address": "https://dev-nebula-api-1062216541483.us-south1.run.app"}
+//	@x-google-endpoints			[{"name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
+//	@x-google-management		{"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
+//	@security					api_key
+//	@securitydefinitions.apikey	api_key
+//	@name						x-api-key
+//	@in							header
 
 func main() {
 
@@ -46,6 +48,13 @@ func main() {
 	// Establish the connection to the database
 	configs.ConnectDB()
 
+	// Set up Sentry
+	if err := sentry.Init(sentry.ClientOptions{
+		Dsn: "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
+	}); err != nil {
+		log.Printf("Sentry initialization failed: %v\n", err)
+	}
+
 	// Configure Gin Router
 	router := gin.New()
 	// Get rid of "trusted all proxies" warning -- we don't care
@@ -56,6 +65,9 @@ func main() {
 
 	// Enable Logging
 	router.Use(LogRequest)
+
+	// Attach Sentry
+	router.Use(sentrygin.New(sentrygin.Options{}))
 
 	// Setup swagger-ui hosted
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

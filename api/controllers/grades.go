@@ -525,7 +525,8 @@ func gradesAggregation(flag string, c *gin.Context) {
 		}
 	}
 
-	if flag == "overall" || flag == "course_endpoint" || flag == "section_endpoint" || flag == "professor_endpoint" {
+	switch flag {
+	case "overall", "course_endpoint", "section_endpoint", "professor_endpoint":
 		// combine all semester grade_distributions
 		overallResponse := [14]int{}
 		for _, sem := range grades {
@@ -534,9 +535,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 			}
 		}
 		respond(c, http.StatusOK, "success", overallResponse)
-	} else if flag == "semester" {
+	case "semester":
 		respond(c, http.StatusOK, "success", grades)
-	} else if flag == "section_type" {
+	case "section_type":
 		respond(c, http.StatusOK, "success", sectionTypeGrades)
 	}
 }

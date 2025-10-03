@@ -28,7 +28,7 @@ func Rooms(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var buildingRooms []schema.BuildingRooms //buildings and rooms to be returned
+	var buildingRooms []schema.BuildingRooms // buildings and rooms to be returned
 
 	//cursor is the pointer for the returned documents
 	cursor, err := buildingCollection.Find(ctx, bson.M{})
@@ -37,13 +37,13 @@ func Rooms(c *gin.Context) {
 		return
 	}
 
-	//use cursor to fill rooms slice to return
+	// use cursor to fill rooms slice to return
 	err = cursor.All(ctx, &buildingRooms)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	//serialize RoomsResponse struct data into JSON format
+	// serialize RoomsResponse struct data into JSON format
 	respond(c, http.StatusOK, "success", buildingRooms)
 }
