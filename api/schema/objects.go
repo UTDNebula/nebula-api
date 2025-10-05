@@ -32,6 +32,17 @@ type Course struct {
 	Attributes               interface{}            `bson:"attributes" json:"attributes"`
 }
 
+type BasicCourse struct {
+	Id             primitive.ObjectID `bson:"_id" json:"_id"`
+	Subject_prefix string             `bson:"subject_prefix" json:"subject_prefix" queryable:""`
+	Course_number  string             `bson:"course_number" json:"course_number" queryable:""`
+	Title          string             `bson:"title" json:"title" queryable:""`
+	Credit_hours   string             `bson:"credit_hours" json:"credit_hours" queryable:""`
+	Class_level    string             `bson:"class_level" json:"class_level" queryable:""`
+	Activity_type  string             `bson:"activity_type" json:"activity_type" queryable:""`
+	Catalog_year   string             `bson:"catalog_year" json:"catalog_year" queryable:""`
+}
+
 type AcademicSession struct {
 	Name       string    `bson:"name" json:"name"`
 	Start_date time.Time `bson:"start_date" json:"start_date"`
@@ -76,8 +87,8 @@ type Section struct {
 	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri"`
 	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
-	Professor_details     *[]Professor           `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
-	Course_details        *[]Course              `bson:"course_details,omitempty" json:"course_details,omitempty"`       // only shows if course_details was set by the endpoint
+	Professor_details     *[]BasicProfessor      `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
+	Course_details        *[]BasicCourse         `bson:"course_details,omitempty" json:"course_details,omitempty"`       // only shows if course_details was set by the endpoint
 }
 
 type Professor struct {
@@ -92,6 +103,16 @@ type Professor struct {
 	Image_uri    string               `bson:"image_uri" json:"image_uri"`
 	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
 	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
+}
+
+type BasicProfessor struct {
+	Id           primitive.ObjectID `bson:"_id" json:"_id"`
+	First_name   string             `bson:"first_name" json:"first_name" queryable:""`
+	Last_name    string             `bson:"last_name" json:"last_name" queryable:""`
+	Email        string             `bson:"email" json:"email" queryable:""`
+	Phone_number string             `bson:"phone_number" json:"phone_number" queryable:""`
+	Office       Location           `bson:"office" json:"office"`
+	Office_hours []Meeting          `bson:"office_hours" json:"office_hours"`
 }
 
 type Organization struct {

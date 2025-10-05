@@ -2924,6 +2924,64 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.BasicCourse": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "activity_type": {
+                    "type": "string"
+                },
+                "catalog_year": {
+                    "type": "string"
+                },
+                "class_level": {
+                    "type": "string"
+                },
+                "course_number": {
+                    "type": "string"
+                },
+                "credit_hours": {
+                    "type": "string"
+                },
+                "subject_prefix": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.BasicProfessor": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "office": {
+                    "$ref": "#/definitions/schema.Location"
+                },
+                "office_hours": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Meeting"
+                    }
+                },
+                "phone_number": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.BucketInfo": {
             "type": "object",
             "properties": {
@@ -3374,7 +3432,7 @@ const docTemplate = `{
                     "description": "only shows if course_details was set by the endpoint",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.Course"
+                        "$ref": "#/definitions/schema.BasicCourse"
                     }
                 },
                 "course_reference": {
@@ -3402,7 +3460,7 @@ const docTemplate = `{
                     "description": "only shows if professor_details was set by the endpoint",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.Professor"
+                        "$ref": "#/definitions/schema.BasicProfessor"
                     }
                 },
                 "professors": {
