@@ -551,6 +551,7 @@ definitions:
           $ref: '#/definitions/schema.Meeting'
         type: array
       professor_details:
+        description: only shows if professor_details was set by the endpoint
         items:
           $ref: '#/definitions/schema.Professor'
         type: array

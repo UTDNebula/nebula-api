@@ -404,7 +404,7 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var courseSections []any
+	var courseSections []schema.Section
 	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
 	var err error
 
@@ -424,14 +424,14 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 			{Key: "from", Value: "professors"},
 			{Key: "localField", Value: "sections.professors"},
 			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "professor_details"},
+			{Key: "as", Value: "sections.professor_details"},
 		}}},
 
-		// // replace the courses with sections
-		// bson.D{{Key: "$replaceWith", Value: "$professor_details"}},
+		// replace the courses with sections
+		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
-		// // keep order deterministic between calls
-		// bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 	}
 
 	trendsCollection := configs.GetCollection("trends_course_sections")

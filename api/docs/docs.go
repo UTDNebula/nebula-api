@@ -3392,6 +3392,7 @@ const docTemplate = `{
                     }
                 },
                 "professor_details": {
+                    "description": "only shows if professor_details was set by the endpoint",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.Professor"

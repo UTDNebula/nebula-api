@@ -76,7 +76,7 @@ type Section struct {
 	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri"`
 	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
-	Professor_details     []Professor            `bson:"professor_details" json:"professor_details"`
+	Professor_details     *[]Professor           `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
 }
 
 type Professor struct {
