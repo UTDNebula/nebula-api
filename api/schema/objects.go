@@ -77,6 +77,7 @@ type Section struct {
 	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
 	Professor_details     *[]Professor           `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
+	Course_details        *[]Course              `bson:"course_details,omitempty" json:"course_details,omitempty"`       // only shows if course_details was set by the endpoint
 }
 
 type Professor struct {

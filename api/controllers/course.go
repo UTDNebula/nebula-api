@@ -427,6 +427,14 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 			{Key: "as", Value: "sections.professor_details"},
 		}}},
 
+		// lookup the course of the sections
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "courses"},
+			{Key: "localField", Value: "sections.course_reference"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections.course_details"},
+		}}},
+
 		// replace the courses with sections
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 

@@ -536,6 +536,11 @@ definitions:
         items:
           type: string
         type: array
+      course_details:
+        description: only shows if course_details was set by the endpoint
+        items:
+          $ref: '#/definitions/schema.Course'
+        type: array
       course_reference:
         type: string
       grade_distribution:

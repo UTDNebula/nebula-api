@@ -3370,6 +3370,13 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "course_details": {
+                    "description": "only shows if course_details was set by the endpoint",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Course"
+                    }
+                },
                 "course_reference": {
                     "type": "string"
                 },
