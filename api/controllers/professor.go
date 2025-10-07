@@ -439,24 +439,59 @@ func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 // @Param			last_name	query		string									true	"The professor's last name"
 // @Success		200			{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+type SectionWithCourse struct {
+	schema.Section `bson:",inline"`
+	Course         schema.Course `bson:"course" json:"course"`
+}
+
 func TrendsProfessorSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	var profSectionsObject struct {
-		Sections []schema.Section `bson:"sections" json:"sections"`
-	}
 
 	professorQuery, _ := schema.FilterQuery[schema.Professor](c)
 
 	defer cancel()
 
+	pipeline := mongo.Pipeline{
+		// Match professor by first/last name
+		bson.D{{Key: "$match", Value: professorQuery}},
+
+		// Expand sections array into individual documents
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$sections"},
+			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
+		}}},
+
+		// Lookup course info using sections.course_reference
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "courses"},
+			{Key: "localField", Value: "sections.course_reference"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "course"},
+		}}},
+
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$course"},
+			{Key: "preserveNullAndEmptyArrays", Value: false}, // allow sections without a course
+		}}},
+
+		bson.D{{Key: "$replaceWith", Value: bson.D{{Key: "$mergeObjects", Value: bson.A{"$$ROOT.sections", bson.D{{Key: "course", Value: "$course"}}}}}}},
+	}
+
 	trendsCollection := configs.GetCollection("trends_prof_sections")
 
-	err := trendsCollection.FindOne(ctx, professorQuery).Decode(&profSectionsObject)
+	cursor, err := trendsCollection.Aggregate(ctx, pipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	respond(c, http.StatusOK, "success", profSectionsObject.Sections)
+	var results []SectionWithCourse
+
+	if err := cursor.All(ctx, &results); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", results)
+
 }
