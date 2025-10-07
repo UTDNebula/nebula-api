@@ -19,6 +19,7 @@ var professorCollection *mongo.Collection = configs.GetCollection("professors")
 
 // @Id				professorSearch
 // @Router			/professor [get]
+// @Tags			Professors
 // @Description	"Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce		json
 // @Param			offset							query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, offset=16)."
@@ -85,6 +86,7 @@ func ProfessorSearch(c *gin.Context) {
 
 // @Id				professorById
 // @Router			/professor/{id} [get]
+// @Tags			Professors
 // @Description	"Returns the professor with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the professor to get"
@@ -117,6 +119,7 @@ func ProfessorById(c *gin.Context) {
 
 // @Id				professorAll
 // @Router			/professor/all [get]
+// @Tags			Professors
 // @Description	"Returns all professors"
 // @Produce		json
 // @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"All professors"
@@ -147,6 +150,7 @@ func ProfessorAll(c *gin.Context) {
 
 // @Id				professorCourseSearch
 // @Router			/professor/courses [get]
+// @Tags			Professors
 // @Description	"Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
 // @Param			former_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
@@ -182,6 +186,7 @@ func ProfessorCourseSearch() gin.HandlerFunc {
 
 // @Id				professorCourseById
 // @Router			/professor/{id}/courses [get]
+// @Tags			Professors
 // @Description	"Returns all the courses taught by the professor with given ID"
 // @Produce		json
 // @Param			id	path		string								true	"ID of the professor to get"
@@ -290,6 +295,7 @@ func professorCourse(flag string, c *gin.Context) {
 
 // @Id				professorSectionSearch
 // @Router			/professor/sections [get]
+// @Tags			Professors
 // @Description	"Returns paginated list of the sections of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
 // @Param			former_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
@@ -324,6 +330,7 @@ func ProfessorSectionSearch() gin.HandlerFunc {
 
 // @Id				professorSectionById
 // @Router			/professor/{id}/sections [get]
+// @Tags			Professors
 // @Description	"Returns all the sections taught by the professor with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the professor to get"
@@ -422,6 +429,7 @@ func professorSection(flag string, c *gin.Context) {
 
 // @Id				trendsProfessorSectionSearch
 // @Router			/professor/sections/trends [get]
+// @Tags			Professors
 // @Description	"Returns all of the given professor's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
 // @Produce		json
 // @Param			first_name	query		string									true	"The professor's first name"

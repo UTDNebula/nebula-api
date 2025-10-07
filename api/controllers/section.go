@@ -19,6 +19,7 @@ var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 
 // @Id				sectionSearch
 // @Router			/section [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of sections matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce		json
 // @Param			offset							query		number									false	"The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
@@ -88,6 +89,7 @@ func SectionSearch(c *gin.Context) {
 
 // @Id				sectionById
 // @Router			/section/{id} [get]
+// @Tags			Sections
 // @Description	"Returns the section with given ID"
 // @Produce		json
 // @Param			id	path		string								true	"ID of the section to get"
@@ -120,34 +122,35 @@ func SectionById(c *gin.Context) {
 
 // @Id				sectionCourseSearch
 // @Router			/section/courses [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of courses of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
-// @Param			former_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
-// @Param			latter_offset					query		number								false	"The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
-// @Param			section_number					query		string									false	"The section's official number"
-// @Param			academic_session.name			query		string									false	"The name of the academic session of the section"
-// @Param			academic_session.start_date		query		string									false	"The date of classes starting for the section"
-// @Param			academic_session.end_date		query		string									false	"The date of classes ending for the section"
-// @Param			teaching_assistants.first_name	query		string									false	"The first name of one of the teaching assistants of the section"
-// @Param			teaching_assistants.last_name	query		string									false	"The last name of one of the teaching assistants of the section"
-// @Param			teaching_assistants.role		query		string									false	"The role of one of the teaching assistants of the section"
-// @Param			teaching_assistants.email		query		string									false	"The email of one of the teaching assistants of the section"
-// @Param			internal_class_number			query		string									false	"The internal (university) number used to reference this section"
-// @Param			instruction_mode				query		string									false	"The instruction modality for this section"
-// @Param			meetings.start_date				query		string									false	"The start date of one of the section's meetings"
-// @Param			meetings.end_date				query		string									false	"The end date of one of the section's meetings"
-// @Param			meetings.meeting_days			query		string									false	"One of the days that one of the section's meetings"
-// @Param			meetings.start_time				query		string									false	"The time one of the section's meetings starts"
-// @Param			meetings.end_time				query		string									false	"The time one of the section's meetings ends"
-// @Param			meetings.modality				query		string									false	"The modality of one of the section's meetings"
-// @Param			meetings.location.building		query		string									false	"The building of one of the section's meetings"
-// @Param			meetings.location.room			query		string									false	"The room of one of the section's meetings"
-// @Param			meetings.location.map_uri		query		string									false	"A hyperlink to the UTD room locator of one of the section's meetings"
-// @Param			core_flags						query		string									false	"One of core requirement codes this section fulfills"
-// @Param			syllabus_uri					query		string									false	"A link to the syllabus on the web"
+// @Param			former_offset					query		number								false	"The starting position of the current page of sections (e.g. For starting at the 16th section, former_offset=16)."
+// @Param			latter_offset					query		number								false	"The starting position of the current page of courses (e.g. For starting at the 16th course, latter_offset=16)."
+// @Param			section_number					query		string								false	"The section's official number"
+// @Param			academic_session.name			query		string								false	"The name of the academic session of the section"
+// @Param			academic_session.start_date		query		string								false	"The date of classes starting for the section"
+// @Param			academic_session.end_date		query		string								false	"The date of classes ending for the section"
+// @Param			teaching_assistants.first_name	query		string								false	"The first name of one of the teaching assistants of the section"
+// @Param			teaching_assistants.last_name	query		string								false	"The last name of one of the teaching assistants of the section"
+// @Param			teaching_assistants.role		query		string								false	"The role of one of the teaching assistants of the section"
+// @Param			teaching_assistants.email		query		string								false	"The email of one of the teaching assistants of the section"
+// @Param			internal_class_number			query		string								false	"The internal (university) number used to reference this section"
+// @Param			instruction_mode				query		string								false	"The instruction modality for this section"
+// @Param			meetings.start_date				query		string								false	"The start date of one of the section's meetings"
+// @Param			meetings.end_date				query		string								false	"The end date of one of the section's meetings"
+// @Param			meetings.meeting_days			query		string								false	"One of the days that one of the section's meetings"
+// @Param			meetings.start_time				query		string								false	"The time one of the section's meetings starts"
+// @Param			meetings.end_time				query		string								false	"The time one of the section's meetings ends"
+// @Param			meetings.modality				query		string								false	"The modality of one of the section's meetings"
+// @Param			meetings.location.building		query		string								false	"The building of one of the section's meetings"
+// @Param			meetings.location.room			query		string								false	"The room of one of the section's meetings"
+// @Param			meetings.location.map_uri		query		string								false	"A hyperlink to the UTD room locator of one of the section's meetings"
+// @Param			core_flags						query		string								false	"One of core requirement codes this section fulfills"
+// @Param			syllabus_uri					query		string								false	"A link to the syllabus on the web"
 // @Success		200								{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
-// @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		500								{object}	schema.APIResponse[string]			"A string describing the error"
+// @Failure		400								{object}	schema.APIResponse[string]			"A string describing the error"
 func SectionCourseSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sectionCourse("Search", c)
@@ -156,12 +159,13 @@ func SectionCourseSearch() gin.HandlerFunc {
 
 // @Id				sectionCourseById
 // @Router			/section/{id}/course [get]
+// @Tags			Sections
 // @Description	"Returns the course of the section with given ID"
 // @Produce		json
-// @Param			id	path		string									true	"ID of the section to get"
+// @Param			id	path		string								true	"ID of the section to get"
 // @Success		200	{object}	schema.APIResponse[schema.Course]	"A course"
-// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
 func SectionCourseById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sectionCourse("ById", c)
@@ -250,10 +254,11 @@ respond(c, http.StatusOK, "success", sectionCourses)
 
 // @Id				sectionProfessorSearch
 // @Router			/section/professors [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of professors of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
-// @Param			former_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
-// @Param			latter_offset					query		number								false	"The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
+// @Param			former_offset					query		number									false	"The starting position of the current page of sections (e.g. For starting at the 16th sections, former_offset=16)."
+// @Param			latter_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 16th professor, latter_offset=16)."
 // @Param			section_number					query		string									false	"The section's official number"
 // @Param			academic_session.name			query		string									false	"The name of the academic session of the section"
 // @Param			academic_session.start_date		query		string									false	"The date of classes starting for the section"
@@ -286,6 +291,7 @@ func SectionProfessorSearch() gin.HandlerFunc {
 
 // @Id				sectionProfessorById
 // @Router			/section/{id}/professors [get]
+// @Tags			Sections
 // @Description	"Returns the paginated list of professors of the section with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the section to get"
