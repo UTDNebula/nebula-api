@@ -300,7 +300,7 @@ func courseProfessor(flag string, c *gin.Context) {
 	var courseQuery bson.M
 	var err error
 
-	if courseQuery, err = getCourseQuery(flag, c); err != nil {
+	if courseQuery, err = getQuery[schema.Course](flag, c); err != nil {
 		return
 	}
 
@@ -366,38 +366,6 @@ func courseProfessor(flag string, c *gin.Context) {
 		panic(err)
 	}
 	respond(c, http.StatusOK, "success", courseProfessors)
-}
-
-// Determine the query of the courses based on the parameters passed from context.
-// If there's an error, throw an error response back to the client
-func getCourseQuery(flag string, c *gin.Context) (bson.M, error) {
-	var courseQuery bson.M
-	var err error
-
-	switch flag {
-	case "Search":
-		// filter courses based on the query parameters, build the key-value pair
-		courseQuery, err = schema.FilterQuery[schema.Course](c)
-		if err != nil {
-			// return the validation error if there's anything wrong
-			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-			return nil, err
-		}
-	case "ById":
-		// filter the single course based on it's Id, convert to ObjectID
-		objId, err := objectIDFromParam(c, "id")
-		if err != nil {
-			return nil, err
-		}
-		courseQuery = bson.M{"_id": objId}
-	default:
-		err = errors.New("invalid type of filter, either based on course fields or ID")
-		// otherwise, something that messed up the server
-		respondWithInternalError(c, err)
-		return nil, err
-	}
-
-	return courseQuery, nil
 }
 
 // @Id				trendsCourseSectionSearch
