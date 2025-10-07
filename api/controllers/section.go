@@ -52,10 +52,9 @@ func SectionSearch(c *gin.Context) {
 	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var sections []schema.Section
-
-	defer cancel()
 
 	// build query key value pairs (only one value per key)
 	query, err := getQuery[schema.Section]("Search", c)
@@ -98,10 +97,9 @@ func SectionSearch(c *gin.Context) {
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
 func SectionById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var section schema.Section
-
-	defer cancel()
 
 	// parse object id from id parameter
 	objId, err := objectIDFromParam(c, "id")

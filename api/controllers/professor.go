@@ -50,10 +50,10 @@ func ProfessorSearch(c *gin.Context) {
 	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var professors []schema.Professor
 
-	defer cancel()
 
 	// build query key value pairs (only one value per key)
 	query, err := getQuery[schema.Professor]("Search", c)
@@ -95,10 +95,9 @@ func ProfessorSearch(c *gin.Context) {
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var professor schema.Professor
-
-	defer cancel()
 
 	// parse object id from id parameter
 	query, err := getQuery[schema.Professor]("ById", c)
@@ -126,10 +125,9 @@ func ProfessorById(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
 	var professors []schema.Professor
-
-	defer cancel()
 
 	cursor, err := professorCollection.Find(ctx, bson.M{})
 
@@ -203,12 +201,11 @@ func ProfessorCourseById() gin.HandlerFunc {
 // Get all of the courses of the professors depending on the type of flag
 func professorCourse(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var professorCourses []schema.Course // array of courses of the professors (or single professor with Id)
 	var professorQuery bson.M            // query filter the professor
 	var err error
-
-	defer cancel()
 
 	// determine the professor's query
 	professorQuery, err = getQuery[schema.Professor](flag, c)
@@ -346,12 +343,11 @@ func ProfessorSectionById() gin.HandlerFunc {
 // Get all of the sections of the professors depending on the type of flag
 func professorSection(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var professorSections []schema.Section // array of sections of the professors (or single professor with Id)
 	var professorQuery bson.M              // query filter the professor
 	var err error
-
-	defer cancel()
 
 	// determine the professor's query
 	professorQuery, err = getQuery[schema.Professor](flag, c)
@@ -438,6 +434,7 @@ func professorSection(flag string, c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
 func TrendsProfessorSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var profSectionsObject struct {
 		Sections []schema.Section `bson:"sections" json:"sections"`
@@ -447,8 +444,6 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 	if err != nil {
     	return
 	}
-
-	defer cancel()
 
 	trendsCollection := configs.GetCollection("trends_prof_sections")
 
