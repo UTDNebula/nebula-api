@@ -417,9 +417,6 @@ func gradesAggregation(flag string, c *gin.Context) {
 		// and then we perform the grades aggregation against the sections collection,
 		// matching on the course_reference and professor
 
-		var profIDs []primitive.ObjectID
-		var courseIDs []primitive.ObjectID
-
 		collection = sectionCollection
 
 		// Find valid professor ids
@@ -441,6 +438,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 			return
 		}
 
+		profIDs := make([]primitive.ObjectID, 0, len(results))
 		for _, prof := range results {
 			profID := prof["_id"].(primitive.ObjectID)
 			profIDs = append(profIDs, profID)
@@ -465,6 +463,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 			return
 		}
 
+		courseIDs := make([]primitive.ObjectID, 0, len(results))
 		for _, course := range results {
 			courseID := course["_id"].(primitive.ObjectID)
 			courseIDs = append(courseIDs, courseID)
