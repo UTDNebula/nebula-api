@@ -244,13 +244,6 @@ func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[s
 
 			// replace the combination of ids and courses with the courses entirely
 			bson.D{{Key: "$replaceWith", Value: "$courses"}},
-
-			// keep order deterministic between calls
-			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-			// paginate the courses
-			bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 		)
 	}
 
@@ -267,15 +260,15 @@ func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[s
 
 			// replace the combination of ids and sections with the sections entirely
 			bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-			// keep order deterministic between calls
-			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-			// paginate the sections
-			bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 		)
 	}
+
+	// keep order deterministic between calls
+	bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+
+	// paginate the sections
+	bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
+	bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 
 	return baseStages // fallback (shouldn't happen because we call with either courses or sections)
 }
