@@ -59,7 +59,6 @@ func SectionSearch(c *gin.Context) {
 	// build query key value pairs (only one value per key)
 	query, err := getQuery[schema.Section]("Search", c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "bad query paramters", err.Error())
 		return
 	}
 
@@ -237,15 +236,6 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	if flag == "ById" {
-		if len(sectionCourses) > 0 {
-			respond(c, http.StatusOK, "success", sectionCourses[0])
-		} else {
-			respond[*schema.Course](c, http.StatusNotFound, "not found", nil)
-		}
-		return
-	}
-
 respond(c, http.StatusOK, "success", sectionCourses)
 
 }
@@ -360,15 +350,6 @@ func sectionProfessor(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-
-	if flag == "ById" {
-		if len(sectionProfessors) > 0 {
-			respond(c, http.StatusOK, "success", sectionProfessors[0])
-		} else {
-			respond[*schema.Professor](c, http.StatusNotFound, "not found", nil)
-		}
-		return
-	}	
 	
 	respond(c, http.StatusOK, "success", sectionProfessors)
 	

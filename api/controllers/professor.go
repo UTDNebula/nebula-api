@@ -102,7 +102,7 @@ func ProfessorById(c *gin.Context) {
 	// parse object id from id parameter
 	query, err := getQuery[schema.Professor]("ById", c)
 	if err != nil {
-    		return
+    	return
 }
 
 	// find and parse matching professor
@@ -278,15 +278,6 @@ func professorCourse(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	if flag == "ById" {
-		if len(professorCourses) > 0 {
-			respond(c, http.StatusOK, "success", professorCourses[0])
-		} else {
-			respond[*schema.Course](c, http.StatusNotFound, "not found", nil)
-		}
-		return
-	}	
-	
 	respond(c, http.StatusOK, "success", professorCourses)
 }
 
@@ -411,14 +402,6 @@ func professorSection(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	if flag == "ById" {
-		if len(professorSections) > 0 {
-			respond(c, http.StatusOK, "success", professorSections[0])
-		} else {
-			respond[*schema.Section](c, http.StatusNotFound, "not found", nil)
-		}
-		return
-	}	
 	
 	respond(c, http.StatusOK, "success", professorSections)
 }
