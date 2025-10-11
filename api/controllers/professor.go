@@ -54,11 +54,10 @@ func ProfessorSearch(c *gin.Context) {
 
 	var professors []schema.Professor
 
-
 	// build query key value pairs (only one value per key)
 	query, err := getQuery[schema.Professor]("Search", c)
 	if err != nil {
-    	return
+		return
 	}
 
 	optionLimit, err := configs.GetOptionLimit(&query, c)
@@ -81,7 +80,7 @@ func ProfessorSearch(c *gin.Context) {
 	}
 
 	// return result
-	respond[[]schema.Professor](c, http.StatusOK, "success", professors)
+	respond(c, http.StatusOK, "success", professors)
 }
 
 // @Id				professorById
@@ -102,8 +101,8 @@ func ProfessorById(c *gin.Context) {
 	// parse object id from id parameter
 	query, err := getQuery[schema.Professor]("ById", c)
 	if err != nil {
-    	return
-}
+		return
+	}
 
 	// find and parse matching professor
 	err = professorCollection.FindOne(ctx, query).Decode(&professor)
@@ -210,7 +209,7 @@ func professorCourse(flag string, c *gin.Context) {
 	// determine the professor's query
 	professorQuery, err = getQuery[schema.Professor](flag, c)
 	if err != nil {
-    	return
+		return
 	}
 
 	// determine the offset and limit for pagination stage
@@ -343,7 +342,7 @@ func professorSection(flag string, c *gin.Context) {
 	// determine the professor's query
 	professorQuery, err = getQuery[schema.Professor](flag, c)
 	if err != nil {
-   		return
+		return
 	}
 
 	// determine the offset and limit for pagination stage
@@ -402,7 +401,7 @@ func professorSection(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	
+
 	respond(c, http.StatusOK, "success", professorSections)
 }
 
@@ -425,7 +424,7 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 
 	professorQuery, err := getQuery[schema.Professor]("Search", c)
 	if err != nil {
-    	return
+		return
 	}
 
 	trendsCollection := configs.GetCollection("trends_prof_sections")

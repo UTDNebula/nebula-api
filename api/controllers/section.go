@@ -101,13 +101,13 @@ func SectionById(c *gin.Context) {
 	var section schema.Section
 
 	// parse object id from id parameter
-	objId, err := objectIDFromParam(c, "id")
+	query, err := getQuery[schema.Section]("ById", c)
 	if err != nil {
 		return
 	}
 
 	// find and parse matching section
-	err = sectionCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
+	err = sectionCollection.FindOne(ctx, query).Decode(&section)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -180,7 +180,7 @@ func sectionCourse(flag string, c *gin.Context) {
 	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
 		return
 	}
-	
+
 	paginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
@@ -310,7 +310,7 @@ func sectionProfessor(flag string, c *gin.Context) {
 	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
 		return
 	}
-	
+
 	paginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
@@ -357,7 +357,7 @@ func sectionProfessor(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	
+
 	respond(c, http.StatusOK, "success", sectionProfessors)
-	
+
 }
