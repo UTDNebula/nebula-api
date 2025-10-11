@@ -236,7 +236,14 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-respond(c, http.StatusOK, "success", sectionCourses)
+	switch flag {
+	case "Search":
+		respond(c, http.StatusOK, "success", sectionCourses)
+	case "ById":
+		// Each section is only referenced by only one course, so returning a single course is ideal
+		// A better way of handling this might be needed in the future
+		respond(c, http.StatusOK, "success", sectionCourses[0])
+	}
 
 }
 
