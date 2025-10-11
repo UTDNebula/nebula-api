@@ -9,6 +9,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,6 +17,33 @@ import (
 func respond[T any](c *gin.Context, status int, message string, data T) {
 	c.JSON(status, schema.APIResponse[T]{Status: status, Message: message, Data: data})
 }
+// Builds a MongoDB filter for type T based on the given flag search or byid
+
+func getQuery[T any](flag string, c *gin.Context) (bson.M, error) {
+	switch flag {
+	case "Search":
+		q, err := schema.FilterQuery[T](c)
+		if err != nil {
+			respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+			return nil, err
+		}
+		return q, nil
+
+	case "ById":
+		objId, err := objectIDFromParam(c, "id")
+		if err != nil {
+			// objectIDFromParam already responds with 400 if conversion fails
+			return nil, err
+		}
+		return bson.M{"_id": objId}, nil
+
+	default:
+		err := fmt.Errorf("invalid flag for getQuery: %s", flag)
+		respondWithInternalError(c, err)
+		return nil, err
+	}
+}
+
 
 // Helper function for logging and responding to a generic internal server error.
 func respondWithInternalError(c *gin.Context, err error) {
