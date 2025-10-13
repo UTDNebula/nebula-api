@@ -1399,7 +1399,7 @@ const docTemplate = `{
         },
         "/professor/sections/trends": {
             "get": {
-                "description": "\"Returns all of the given professor's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "description": "\"Returns all of the given professor's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
                 "produces": [
                     "application/json"
                 ],
