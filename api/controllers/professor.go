@@ -433,17 +433,12 @@ func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 
 // @Id				trendsProfessorSectionSearch
 // @Router			/professor/sections/trends [get]
-// @Description	"Returns all of the given professor's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
+// @Description	"Returns all of the given professor's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
 // @Produce		json
 // @Param			first_name	query		string									true	"The professor's first name"
 // @Param			last_name	query		string									true	"The professor's last name"
 // @Success		200			{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
-type SectionWithCourse struct {
-	schema.Section `bson:",inline"`
-	Course         schema.Course `bson:"course" json:"course"`
-}
-
 func TrendsProfessorSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 

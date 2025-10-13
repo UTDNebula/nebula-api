@@ -1747,8 +1747,9 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
   /professor/sections/trends:
     get:
-      description: '"Returns all of the given professor''s sections. Specialized high-speed
-        convenience endpoint for UTD Trends internal use; limited query flexibility."'
+      description: '"Returns all of the given professor''s sections with Course and Professor
+        data embedded. Specialized high-speed convenience endpoint for UTD Trends 
+        internal use; limited query flexibility."'
       operationId: trendsProfessorSectionSearch
       parameters:
       - description: The professor's first name
