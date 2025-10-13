@@ -466,15 +466,14 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 			{Key: "from", Value: "courses"},
 			{Key: "localField", Value: "sections.course_reference"},
 			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "course"},
+			{Key: "as", Value: "sections.course_details"},
 		}}},
 
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$course"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // allow sections without a course
-		}}},
+		// replace the courses with sections
+		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
-		bson.D{{Key: "$replaceWith", Value: bson.D{{Key: "$mergeObjects", Value: bson.A{"$$ROOT.sections", bson.D{{Key: "course", Value: "$course"}}}}}}},
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 	}
 
 	trendsCollection := configs.GetCollection("trends_prof_sections")
@@ -485,7 +484,7 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 		return
 	}
 
-	var results []SectionWithCourse
+	var results []schema.Section
 
 	if err := cursor.All(ctx, &results); err != nil {
 		respondWithInternalError(c, err)
