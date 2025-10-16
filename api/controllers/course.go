@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"time"
 
@@ -20,6 +19,7 @@ var courseCollection *mongo.Collection = configs.GetCollection("courses")
 
 // @Id				courseSearch
 // @Router			/course [get]
+// @Tags			Courses
 // @Description	"Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce		json
 // @Param			offset					query		number								false	"The starting position of the current page of courses (e.g. For starting at the 17th course, offset=16)."
@@ -48,9 +48,8 @@ func CourseSearch(c *gin.Context) {
 	var courses []schema.Course
 
 	// build query key value pairs (only one value per key)
-	query, err := schema.FilterQuery[schema.Course](c)
+	query, err := getQuery[schema.Course]("Search", c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "schema validation error", err.Error())
 		return
 	}
 
@@ -79,6 +78,7 @@ func CourseSearch(c *gin.Context) {
 
 // @Id				courseById
 // @Router			/course/{id} [get]
+// @Tags			Courses
 // @Description	"Returns the course with given ID"
 // @Produce		json
 // @Param			id	path		string								true	"ID of the course to get"
@@ -91,13 +91,13 @@ func CourseById(c *gin.Context) {
 	var course schema.Course
 
 	// parse object id from id parameter
-	objId, err := objectIDFromParam(c, "id")
+	query, err := getQuery[schema.Course]("ById", c)
 	if err != nil {
 		return
 	}
 
 	// find and parse matching course
-	err = courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
+	err = courseCollection.FindOne(ctx, query).Decode(&course)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -109,6 +109,7 @@ func CourseById(c *gin.Context) {
 
 // @Id				courseAll
 // @Router			/course/all [get]
+// @Tags			Courses
 // @Description	"Returns all courses"
 // @Produce		json
 // @Success		200	{object}	schema.APIResponse[[]schema.Course]	"All courses"
@@ -139,6 +140,7 @@ func CourseAll(c *gin.Context) {
 
 // @Id				courseSectionSearch
 // @Router			/course/sections [get]
+// @Tags			Courses
 // @Description	"Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
 // @Param			former_offset			query		number									false	"The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
@@ -166,6 +168,7 @@ func CourseSectionSearch() gin.HandlerFunc {
 
 // @Id				courseSectionById
 // @Router			/course/{id}/sections [get]
+// @Tags			Courses
 // @Description	"Returns the all of the sections of the course with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the course to get"
@@ -185,9 +188,11 @@ func courseSection(flag string, c *gin.Context) {
 
 	var courseSections []schema.Section // the list of sections of the filtered courses
 	var courseQuery bson.M              // query of the courses (or the single course)
-	var err error
+	var err error                       // error
 
-	if courseQuery, err = getCourseQuery(flag, c); err != nil {
+	// determine the course query
+	courseQuery, err = getQuery[schema.Course](flag, c)
+	if err != nil {
 		return
 	}
 
@@ -248,6 +253,7 @@ func courseSection(flag string, c *gin.Context) {
 
 // @Id				courseProfessorSearch
 // @Router			/course/professors [get]
+// @Tags			Courses
 // @Description	"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
 // @Param			former_offset			query		number									false	"The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
@@ -273,6 +279,7 @@ func CourseProfessorSearch(c *gin.Context) {
 
 // @Id				courseProfessorById
 // @Router			/course/{id}/professors [get]
+// @Tags			Courses
 // @Description	"Returns the all of the professors of the course with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the course to get"
@@ -292,7 +299,7 @@ func courseProfessor(flag string, c *gin.Context) {
 	var courseQuery bson.M
 	var err error
 
-	if courseQuery, err = getCourseQuery(flag, c); err != nil {
+	if courseQuery, err = getQuery[schema.Course](flag, c); err != nil {
 		return
 	}
 
@@ -360,40 +367,9 @@ func courseProfessor(flag string, c *gin.Context) {
 	respond(c, http.StatusOK, "success", courseProfessors)
 }
 
-// Determine the query of the courses based on the parameters passed from context.
-// If there's an error, throw an error response back to the client
-func getCourseQuery(flag string, c *gin.Context) (bson.M, error) {
-	var courseQuery bson.M
-	var err error
-
-	switch flag {
-	case "Search":
-		// filter courses based on the query parameters, build the key-value pair
-		courseQuery, err = schema.FilterQuery[schema.Course](c)
-		if err != nil {
-			// return the validation error if there's anything wrong
-			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-			return nil, err
-		}
-	case "ById":
-		// filter the single course based on it's Id, convert to ObjectID
-		objId, err := objectIDFromParam(c, "id")
-		if err != nil {
-			return nil, err
-		}
-		courseQuery = bson.M{"_id": objId}
-	default:
-		err = errors.New("invalid type of filter, either based on course fields or ID")
-		// otherwise, something that messed up the server
-		respondWithInternalError(c, err)
-		return nil, err
-	}
-
-	return courseQuery, nil
-}
-
 // @Id				trendsCourseSectionSearch
 // @Router			/course/sections/trends [get]
+// @Tags			Courses
 // @Description	"Returns all of the given course's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
 // @Produce		json
 // @Param			course_number	query		string									true	"The course's official number"
