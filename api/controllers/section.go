@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"time"
 
@@ -20,6 +19,7 @@ var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 
 // @Id				sectionSearch
 // @Router			/section [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of sections matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce		json
 // @Param			offset							query		number									false	"The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
@@ -52,15 +52,13 @@ func SectionSearch(c *gin.Context) {
 	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var sections []schema.Section
 
-	defer cancel()
-
 	// build query key value pairs (only one value per key)
-	query, err := schema.FilterQuery[schema.Section](c)
+	query, err := getQuery[schema.Section]("Search", c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "schema validation error", err.Error())
 		return
 	}
 
@@ -89,6 +87,7 @@ func SectionSearch(c *gin.Context) {
 
 // @Id				sectionById
 // @Router			/section/{id} [get]
+// @Tags			Sections
 // @Description	"Returns the section with given ID"
 // @Produce		json
 // @Param			id	path		string								true	"ID of the section to get"
@@ -97,19 +96,18 @@ func SectionSearch(c *gin.Context) {
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
 func SectionById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var section schema.Section
 
-	defer cancel()
-
 	// parse object id from id parameter
-	objId, err := objectIDFromParam(c, "id")
+	query, err := getQuery[schema.Section]("ById", c)
 	if err != nil {
 		return
 	}
 
 	// find and parse matching section
-	err = sectionCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
+	err = sectionCollection.FindOne(ctx, query).Decode(&section)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -121,6 +119,7 @@ func SectionById(c *gin.Context) {
 
 // @Id				sectionCourseSearch
 // @Router			/section/courses [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of courses of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
 // @Param			former_offset					query		number								false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
@@ -157,6 +156,7 @@ func SectionCourseSearch() gin.HandlerFunc {
 
 // @Id				sectionCourseById
 // @Router			/section/{id}/course [get]
+// @Tags			Sections
 // @Description	"Returns the course of the section with given ID"
 // @Produce		json
 // @Param			id	path		string								true	"ID of the section to get"
@@ -177,7 +177,7 @@ func sectionCourse(flag string, c *gin.Context) {
 	var sectionCourses []schema.Course
 	var sectionQuery bson.M
 	var err error
-	if sectionQuery, err = getSectionQuery(flag, c); err != nil {
+	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
 		return
 	}
 
@@ -244,14 +244,16 @@ func sectionCourse(flag string, c *gin.Context) {
 		// A better way of handling this might be needed in the future
 		respond(c, http.StatusOK, "success", sectionCourses[0])
 	}
+
 }
 
 // @Id				sectionProfessorSearch
 // @Router			/section/professors [get]
+// @Tags			Sections
 // @Description	"Returns paginated list of professors of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
-// @Param			former_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
-// @Param			latter_offset					query		number									false	"The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
+// @Param			former_offset					query		number									false	"The starting position of the current page of sections (e.g. For starting at the 16th sections, former_offset=16)."
+// @Param			latter_offset					query		number									false	"The starting position of the current page of professors (e.g. For starting at the 16th professor, latter_offset=16)."
 // @Param			section_number					query		string									false	"The section's official number"
 // @Param			academic_session.name			query		string									false	"The name of the academic session of the section"
 // @Param			academic_session.start_date		query		string									false	"The date of classes starting for the section"
@@ -284,6 +286,7 @@ func SectionProfessorSearch() gin.HandlerFunc {
 
 // @Id				sectionProfessorById
 // @Router			/section/{id}/professors [get]
+// @Tags			Sections
 // @Description	"Returns the paginated list of professors of the section with given ID"
 // @Produce		json
 // @Param			id	path		string									true	"ID of the section to get"
@@ -304,7 +307,7 @@ func sectionProfessor(flag string, c *gin.Context) {
 	var sectionProfessors []schema.Professor
 	var sectionQuery bson.M
 	var err error
-	if sectionQuery, err = getSectionQuery(flag, c); err != nil {
+	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
 		return
 	}
 
@@ -356,32 +359,5 @@ func sectionProfessor(flag string, c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", sectionProfessors)
-}
 
-// Determine the query of the section based on parameters passed from context.
-func getSectionQuery(flag string, c *gin.Context) (bson.M, error) {
-	var sectionQuery bson.M
-	var err error
-
-	switch flag {
-	case "Search":
-		sectionQuery, err = schema.FilterQuery[schema.Section](c)
-		if err != nil {
-			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-			return nil, err
-		}
-	case "ById":
-		sectionId, err := objectIDFromParam(c, "id")
-		if err != nil {
-			respond(c, http.StatusBadRequest, "invalid section id error", err.Error())
-			return nil, err
-		}
-		sectionQuery = bson.M{"_id": sectionId}
-	default:
-		err = errors.New("invalid type of filtering sections, either on fields or ids")
-		respondWithInternalError(c, err)
-		return nil, err
-	}
-
-	return sectionQuery, nil
 }
