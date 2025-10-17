@@ -215,11 +215,19 @@ func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[s
 			{Key: "foreignField", Value: "_id"},
 			{Key: "as", Value: "sections"},
 		}}},
+
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 	}
 
-	// endpoint-specific stages
+	// course pagination stages
+	paginationStages := mongo.Pipeline{
+		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
+		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+	}
+
 	if endpoint == "courses" {
-		return append(baseStages,
+		courseStages := mongo.Pipeline{
 			// project the courses referenced by each section in the array
 			bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
 
@@ -239,18 +247,13 @@ func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[s
 
 			// replace the combination of ids and courses with the courses entirely
 			bson.D{{Key: "$replaceWith", Value: "$courses"}},
+		}
 
-			// keep order deterministic between calls
-			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-			// paginate the courses
-			bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-		)
+		return append(append(baseStages, courseStages...), paginationStages...)
 	}
 
 	if endpoint == "sections" {
-		return append(baseStages,
+		sectionStages := mongo.Pipeline{
 			// project the sections
 			bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
 
@@ -262,17 +265,12 @@ func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[s
 
 			// replace the combination of ids and sections with the sections entirely
 			bson.D{{Key: "$replaceWith", Value: "$sections"}},
+		}
 
-			// keep order deterministic between calls
-			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-			// paginate the sections
-			bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-		)
+		return append(append(baseStages, sectionStages...), paginationStages...)
 	}
 
-	return baseStages // fallback (shouldn't happen because we call with either courses or sections)
+	return append(baseStages, paginationStages...) // fallback (shouldn't happen because we call with either courses or sections)
 }
 
 // Get all of the courses of the professors depending on the type of flag
