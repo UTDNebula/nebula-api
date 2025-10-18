@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -37,10 +38,14 @@ func Events(c *gin.Context) {
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			events.Date = date
+			events.Buildings = []schema.SingleBuildingEvents[schema.SectionWithTime]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
-
 	respond(c, http.StatusOK, "success", events)
 }
 
