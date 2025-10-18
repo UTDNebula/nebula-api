@@ -50,9 +50,8 @@ func CourseSearch(c *gin.Context) {
 	// build query key value pairs (only one value per key)
 	query, err := getQuery[schema.Course]("Search", c)
 	if err != nil {
-    	return
+		return
 	}
-
 
 	optionLimit, err := configs.GetOptionLimit(&query, c)
 	if err != nil {
@@ -94,7 +93,7 @@ func CourseById(c *gin.Context) {
 	// parse object id from id parameter
 	query, err := getQuery[schema.Course]("ById", c)
 	if err != nil {
-    	return
+		return
 	}
 
 	// find and parse matching course
@@ -194,8 +193,8 @@ func courseSection(flag string, c *gin.Context) {
 	// determine the course query
 	courseQuery, err = getQuery[schema.Course](flag, c)
 	if err != nil {
-    	return
-	}	
+		return
+	}
 
 	// determine the offset and limit for pagination stage & delete "offset" fields in professorQuery
 	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
@@ -371,7 +370,7 @@ func courseProfessor(flag string, c *gin.Context) {
 // @Id				trendsCourseSectionSearch
 // @Router			/course/sections/trends [get]
 // @Tags			Courses
-// @Description	"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
+// @Description	"Returns all of the given course's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
 // @Produce		json
 // @Param			course_number	query		string									true	"The course's official number"
 // @Param			subject_prefix	query		string									true	"The course's subject prefix"
@@ -379,22 +378,58 @@ func courseProfessor(flag string, c *gin.Context) {
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
 func TrendsCourseSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	var courseSectionsObject struct {
-		Sections []schema.Section
-	}
-
-	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
-
 	defer cancel()
 
-	trendsCollection := configs.GetCollection("trends_course_sections")
+	var courseSections []schema.Section
+	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
+	var err error
 
-	err := trendsCollection.FindOne(ctx, courseQuery).Decode(&courseSectionsObject)
+	// Pipeline to query the Sections + Professors from the filtered courses
+	pipeline := mongo.Pipeline{
+		// filter the courses
+		bson.D{{Key: "$match", Value: courseQuery}},
+
+		// unwind the sections
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$sections"},
+			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
+		}}},
+
+		// lookup the professors of the sections
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "professors"},
+			{Key: "localField", Value: "sections.professors"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections.professor_details"},
+		}}},
+
+		// lookup the course of the sections
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "courses"},
+			{Key: "localField", Value: "sections.course_reference"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections.course_details"},
+		}}},
+
+		// replace the courses with sections
+		bson.D{{Key: "$replaceWith", Value: "$sections"}},
+
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+	}
+
+	trendsCollection := configs.GetCollection("trends_course_sections")
+	// perform aggregation on the pipeline
+	cursor, err := trendsCollection.Aggregate(ctx, pipeline)
 	if err != nil {
+		// return error for any aggregation problem
 		respondWithInternalError(c, err)
 		return
 	}
 
-	respond(c, http.StatusOK, "success", courseSectionsObject.Sections)
+	// parse the array of sections of the course
+	if err = cursor.All(ctx, &courseSections); err != nil {
+		panic(err)
+	}
+	respond(c, http.StatusOK, "success", courseSections)
 }
