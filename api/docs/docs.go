@@ -452,7 +452,7 @@ const docTemplate = `{
         },
         "/course/sections/trends": {
             "get": {
-                "description": "\"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "description": "\"Returns all of the given course's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
                 "produces": [
                     "application/json"
                 ],
@@ -1462,7 +1462,7 @@ const docTemplate = `{
         },
         "/professor/sections/trends": {
             "get": {
-                "description": "\"Returns all of the given professor's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "description": "\"Returns all of the given professor's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
                 "produces": [
                     "application/json"
                 ],
@@ -3047,6 +3047,64 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.BasicCourse": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "activity_type": {
+                    "type": "string"
+                },
+                "catalog_year": {
+                    "type": "string"
+                },
+                "class_level": {
+                    "type": "string"
+                },
+                "course_number": {
+                    "type": "string"
+                },
+                "credit_hours": {
+                    "type": "string"
+                },
+                "subject_prefix": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.BasicProfessor": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "office": {
+                    "$ref": "#/definitions/schema.Location"
+                },
+                "office_hours": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Meeting"
+                    }
+                },
+                "phone_number": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.BucketInfo": {
             "type": "object",
             "properties": {
@@ -3493,6 +3551,13 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "course_details": {
+                    "description": "only shows if course_details was set by the endpoint",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.BasicCourse"
+                    }
+                },
                 "course_reference": {
                     "type": "string"
                 },
@@ -3512,6 +3577,13 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.Meeting"
+                    }
+                },
+                "professor_details": {
+                    "description": "only shows if professor_details was set by the endpoint",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.BasicProfessor"
                     }
                 },
                 "professors": {

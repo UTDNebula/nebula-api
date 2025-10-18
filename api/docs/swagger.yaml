@@ -243,6 +243,44 @@ definitions:
       subject_prefix:
         type: string
     type: object
+  schema.BasicCourse:
+    properties:
+      _id:
+        type: string
+      activity_type:
+        type: string
+      catalog_year:
+        type: string
+      class_level:
+        type: string
+      course_number:
+        type: string
+      credit_hours:
+        type: string
+      subject_prefix:
+        type: string
+      title:
+        type: string
+    type: object
+  schema.BasicProfessor:
+    properties:
+      _id:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      office:
+        $ref: '#/definitions/schema.Location'
+      office_hours:
+        items:
+          $ref: '#/definitions/schema.Meeting'
+        type: array
+      phone_number:
+        type: string
+    type: object
   schema.BucketInfo:
     properties:
       contents:
@@ -536,6 +574,11 @@ definitions:
         items:
           type: string
         type: array
+      course_details:
+        description: only shows if course_details was set by the endpoint
+        items:
+          $ref: '#/definitions/schema.BasicCourse'
+        type: array
       course_reference:
         type: string
       grade_distribution:
@@ -549,6 +592,11 @@ definitions:
       meetings:
         items:
           $ref: '#/definitions/schema.Meeting'
+        type: array
+      professor_details:
+        description: only shows if professor_details was set by the endpoint
+        items:
+          $ref: '#/definitions/schema.BasicProfessor'
         type: array
       professors:
         items:
@@ -1053,8 +1101,9 @@ paths:
       - Courses
   /course/sections/trends:
     get:
-      description: '"Returns all of the given course''s sections. Specialized high-speed
-        convenience endpoint for UTD Trends internal use; limited query flexibility."'
+      description: '"Returns all of the given course''s sections with Course and Professor
+        data embedded. Specialized high-speed convenience endpoint for UTD Trends
+        internal use; limited query flexibility."'
       operationId: trendsCourseSectionSearch
       parameters:
       - description: The course's official number
@@ -1748,8 +1797,9 @@ paths:
       - Professors
   /professor/sections/trends:
     get:
-      description: '"Returns all of the given professor''s sections. Specialized high-speed
-        convenience endpoint for UTD Trends internal use; limited query flexibility."'
+      description: '"Returns all of the given professor''s sections with Course and
+        Professor data embedded. Specialized high-speed convenience endpoint for UTD
+        Trends internal use; limited query flexibility."'
       operationId: trendsProfessorSectionSearch
       parameters:
       - description: The professor's first name

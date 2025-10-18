@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"time"
 
@@ -51,15 +50,13 @@ func ProfessorSearch(c *gin.Context) {
 	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var professors []schema.Professor
 
-	defer cancel()
-
 	// build query key value pairs (only one value per key)
-	query, err := schema.FilterQuery[schema.Professor](c)
+	query, err := getQuery[schema.Professor]("Search", c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "schema validation error", err.Error())
 		return
 	}
 
@@ -97,19 +94,18 @@ func ProfessorSearch(c *gin.Context) {
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var professor schema.Professor
 
-	defer cancel()
-
 	// parse object id from id parameter
-	objId, err := objectIDFromParam(c, "id")
+	query, err := getQuery[schema.Professor]("ById", c)
 	if err != nil {
 		return
 	}
 
 	// find and parse matching professor
-	err = professorCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&professor)
+	err = professorCollection.FindOne(ctx, query).Decode(&professor)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -128,10 +124,9 @@ func ProfessorById(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
 	var professors []schema.Professor
-
-	defer cancel()
 
 	cursor, err := professorCollection.Find(ctx, bson.M{})
 
@@ -205,16 +200,16 @@ func ProfessorCourseById() gin.HandlerFunc {
 // Get all of the courses of the professors depending on the type of flag
 func professorCourse(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var professorCourses []schema.Course // array of courses of the professors (or single professor with Id)
 	var professorQuery bson.M            // query filter the professor
 	var err error
 
-	defer cancel()
-
 	// determine the professor's query
-	if professorQuery, err = getProfessorQuery(flag, c); err != nil {
-		return // if there's an error, the response will have already been thrown to the consumer, halt the funcion here
+	professorQuery, err = getQuery[schema.Professor](flag, c)
+	if err != nil {
+		return
 	}
 
 	// determine the offset and limit for pagination stage
@@ -338,15 +333,15 @@ func ProfessorSectionById() gin.HandlerFunc {
 // Get all of the sections of the professors depending on the type of flag
 func professorSection(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var professorSections []schema.Section // array of sections of the professors (or single professor with Id)
 	var professorQuery bson.M              // query filter the professor
 	var err error
 
-	defer cancel()
-
 	// determine the professor's query
-	if professorQuery, err = getProfessorQuery(flag, c); err != nil {
+	professorQuery, err = getQuery[schema.Professor](flag, c)
+	if err != nil {
 		return
 	}
 
@@ -406,42 +401,14 @@ func professorSection(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
+
 	respond(c, http.StatusOK, "success", professorSections)
-}
-
-// determine the query of the professor based on the parameters passed from context
-// if there's an error, throw an error response back to the API consumer and return only the error
-func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
-	var professorQuery bson.M
-	var err error
-
-	switch flag {
-	case "Search":
-		// if the flag is Search, filter professors based on query parameters
-		professorQuery, err = schema.FilterQuery[schema.Professor](c)
-		if err != nil {
-			respond(c, http.StatusBadRequest, "schema validation error", err.Error())
-			return nil, err
-		}
-	case "ById":
-		// if the flag is ById, filter that single professor based on their _id
-		objId, err := objectIDFromParam(c, "id")
-		if err != nil {
-			return nil, err
-		}
-		professorQuery = bson.M{"_id": objId}
-	default:
-		err = errors.New("invalid type of filtering professors, either filtering based on available professor fields or ID")
-		respondWithInternalError(c, err)
-		return nil, err
-	}
-	return professorQuery, err
 }
 
 // @Id				trendsProfessorSectionSearch
 // @Router			/professor/sections/trends [get]
 // @Tags			Professors
-// @Description	"Returns all of the given professor's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
+// @Description	"Returns all of the given professor's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
 // @Produce		json
 // @Param			first_name	query		string									true	"The professor's first name"
 // @Param			last_name	query		string									true	"The professor's last name"
@@ -450,21 +417,58 @@ func getProfessorQuery(flag string, c *gin.Context) (bson.M, error) {
 func TrendsProfessorSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	var profSectionsObject struct {
-		Sections []schema.Section `bson:"sections" json:"sections"`
-	}
-
 	professorQuery, _ := schema.FilterQuery[schema.Professor](c)
 
 	defer cancel()
 
+	pipeline := mongo.Pipeline{
+		// Match professor by first/last name
+		bson.D{{Key: "$match", Value: professorQuery}},
+
+		// Expand sections array into individual documents
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$sections"},
+			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
+		}}},
+
+		// Lookup course info using sections.course_reference
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "courses"},
+			{Key: "localField", Value: "sections.course_reference"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections.course_details"},
+		}}},
+
+		// Lookup professor info using sections.course_reference
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "professors"},
+			{Key: "localField", Value: "sections.professors"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections.professor_details"},
+		}}},
+
+		// replace the courses with sections
+		bson.D{{Key: "$replaceWith", Value: "$sections"}},
+
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+	}
+
 	trendsCollection := configs.GetCollection("trends_prof_sections")
 
-	err := trendsCollection.FindOne(ctx, professorQuery).Decode(&profSectionsObject)
+	cursor, err := trendsCollection.Aggregate(ctx, pipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	respond(c, http.StatusOK, "success", profSectionsObject.Sections)
+	var results []schema.Section
+
+	if err := cursor.All(ctx, &results); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", results)
+
 }
