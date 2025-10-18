@@ -21,6 +21,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "AstraEvents",
                 "parameters": [
                     {
@@ -53,6 +56,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Other"
+                ],
                 "operationId": "autocompleteDAG",
                 "responses": {
                     "200": {
@@ -75,6 +81,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "courseSearch",
                 "parameters": [
@@ -185,6 +194,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Courses"
+                ],
                 "operationId": "courseAll",
                 "responses": {
                     "200": {
@@ -202,11 +214,132 @@ const docTemplate = `{
                 }
             }
         },
+        "/course/professors": {
+            "get": {
+                "description": "\"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Courses"
+                ],
+                "operationId": "courseProfessorSearch",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16).",
+                        "name": "former_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 4th professor, latter_offset=3).",
+                        "name": "latter_offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "course_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "subject_prefix",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's title",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's description",
+                        "name": "description",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's school",
+                        "name": "school",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The number of credit hours awarded by successful completion of the course",
+                        "name": "credit_hours",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The level of education that this course course corresponds to",
+                        "name": "class_level",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The type of class this course corresponds to",
+                        "name": "activity_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The grading status of this course",
+                        "name": "grading",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal (university) number used to reference this course",
+                        "name": "internal_course_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The weekly contact hours in lecture for a course",
+                        "name": "lecture_contact_hours",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The frequency of offering a course",
+                        "name": "offering_frequency",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of professors",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/course/sections": {
             "get": {
                 "description": "\"Returns paginated list of sections of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "courseSectionSearch",
                 "parameters": [
@@ -319,9 +452,12 @@ const docTemplate = `{
         },
         "/course/sections/trends": {
             "get": {
-                "description": "\"Returns all of the given course's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "description": "\"Returns all of the given course's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "trendsCourseSectionSearch",
                 "parameters": [
@@ -362,6 +498,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Courses"
+                ],
                 "operationId": "courseById",
                 "parameters": [
                     {
@@ -393,6 +532,9 @@ const docTemplate = `{
                 "description": "\"Returns the overall grade distribution for a course\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "GradesByCourseID",
                 "parameters": [
@@ -426,11 +568,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/course/{id}/professors": {
+            "get": {
+                "description": "\"Returns the all of the professors of the course with given ID\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Courses"
+                ],
+                "operationId": "courseProfessorById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the course to get",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of professors",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Professor"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/course/{id}/sections": {
             "get": {
                 "description": "\"Returns the all of the sections of the course with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Courses"
                 ],
                 "operationId": "courseSectionById",
                 "parameters": [
@@ -470,6 +656,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "events",
                 "parameters": [
                     {
@@ -501,6 +690,9 @@ const docTemplate = `{
                 "description": "\"Returns all sections with meetings on the specified date in the specified building\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Events"
                 ],
                 "operationId": "eventsByBuilding",
                 "parameters": [
@@ -546,6 +738,9 @@ const docTemplate = `{
                 "description": "\"Returns the overall grade distribution\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Grades"
                 ],
                 "operationId": "gradeAggregationOverall",
                 "parameters": [
@@ -608,6 +803,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Grades"
+                ],
                 "operationId": "gradeAggregationBySemester",
                 "parameters": [
                     {
@@ -668,6 +866,9 @@ const docTemplate = `{
                 "description": "\"Returns the grade distributions aggregated by semester and broken down into section type\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Grades"
                 ],
                 "operationId": "gradeAggregationSectionType",
                 "parameters": [
@@ -730,6 +931,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "MazevoEvents",
                 "parameters": [
                     {
@@ -761,6 +965,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "professorSearch",
                 "parameters": [
@@ -913,6 +1120,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "professorAll",
                 "responses": {
                     "200": {
@@ -935,6 +1145,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of the courses of all the professors matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "professorCourseSearch",
                 "parameters": [
@@ -1093,6 +1306,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "professorSectionSearch",
                 "parameters": [
                     {
@@ -1246,9 +1462,12 @@ const docTemplate = `{
         },
         "/professor/sections/trends": {
             "get": {
-                "description": "\"Returns all of the given professor's sections. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "description": "\"Returns all of the given professor's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "trendsProfessorSectionSearch",
                 "parameters": [
@@ -1289,6 +1508,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "professorById",
                 "parameters": [
                     {
@@ -1326,6 +1548,9 @@ const docTemplate = `{
                 "description": "\"Returns all the courses taught by the professor with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "professorCourseById",
                 "parameters": [
@@ -1365,6 +1590,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Professors"
+                ],
                 "operationId": "GradesByProfessorID",
                 "parameters": [
                     {
@@ -1402,6 +1630,9 @@ const docTemplate = `{
                 "description": "\"Returns all the sections taught by the professor with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Professors"
                 ],
                 "operationId": "professorSectionById",
                 "parameters": [
@@ -1441,6 +1672,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "rooms",
                 "responses": {
                     "200": {
@@ -1463,6 +1697,9 @@ const docTemplate = `{
                 "description": "\"Returns paginated list of sections matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Sections"
                 ],
                 "operationId": "sectionSearch",
                 "parameters": [
@@ -1627,17 +1864,20 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionCourseSearch",
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th section, former_offset=16).",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 16th section, former_offset=16).",
                         "name": "former_offset",
                         "in": "query"
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of courses from the predefined page of sections (e.g. For starting at the 18th course, latter_offset=17).",
+                        "description": "The starting position of the current page of courses (e.g. For starting at the 16th course, latter_offset=16).",
                         "name": "latter_offset",
                         "in": "query"
                     },
@@ -1796,17 +2036,20 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionProfessorSearch",
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of sections (e.g. For starting at the 17th section, former_offset=16).",
+                        "description": "The starting position of the current page of sections (e.g. For starting at the 16th sections, former_offset=16).",
                         "name": "former_offset",
                         "in": "query"
                     },
                     {
                         "type": "number",
-                        "description": "The starting position of the current page of professors from the predefined page of sections (e.g. For starting at the 18th professor, latter_offset=17).",
+                        "description": "The starting position of the current page of professors (e.g. For starting at the 16th professor, latter_offset=16).",
                         "name": "latter_offset",
                         "in": "query"
                     },
@@ -1965,6 +2208,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionById",
                 "parameters": [
                     {
@@ -2002,6 +2248,9 @@ const docTemplate = `{
                 "description": "\"Returns the course of the section with given ID\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Sections"
                 ],
                 "operationId": "sectionCourseById",
                 "parameters": [
@@ -2041,6 +2290,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "GradesBySectionID",
                 "parameters": [
                     {
@@ -2079,6 +2331,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Sections"
+                ],
                 "operationId": "sectionProfessorById",
                 "parameters": [
                     {
@@ -2114,6 +2369,9 @@ const docTemplate = `{
         "/storage/{bucket}": {
             "get": {
                 "description": "\"Get info on a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "bucketInfo",
                 "parameters": [
                     {
@@ -2148,6 +2406,9 @@ const docTemplate = `{
             },
             "delete": {
                 "description": "\"Delete a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "deleteBucket",
                 "parameters": [
                     {
@@ -2184,6 +2445,9 @@ const docTemplate = `{
         "/storage/{bucket}/{objectID}": {
             "get": {
                 "description": "\"Get info on an object in a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "objectInfo",
                 "parameters": [
                     {
@@ -2225,6 +2489,9 @@ const docTemplate = `{
             },
             "post": {
                 "description": "\"Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "postObject",
                 "parameters": [
                     {
@@ -2275,6 +2542,9 @@ const docTemplate = `{
             },
             "delete": {
                 "description": "\"Delete an object from a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "deleteObject",
                 "parameters": [
                     {
@@ -2321,6 +2591,9 @@ const docTemplate = `{
                 "consumes": [
                     "application/json"
                 ],
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "objectUploadURL",
                 "parameters": [
                     {
@@ -2338,7 +2611,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "params for Signed URL",
+                        "description": "Request body",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -2374,6 +2647,9 @@ const docTemplate = `{
             "get": {
                 "security": [],
                 "description": "Returns the OpenAPI/swagger spec for the API",
+                "tags": [
+                    "Other"
+                ],
                 "operationId": "swagger",
                 "parameters": [
                     {
@@ -2393,28 +2669,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "schema.ObjectSignedURLBody": {
-            "description": "request body",
-            "type": "object",
-            "properties": {
-                "expiration": {
-                    "description": "timestamp for when the signed URL will expire",
-                    "type": "string"
-                },
-                "headers": {
-                    "description": "headers for signed URL",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "method": {
-                    "description": "method to be used with signed URL",
-                    "type": "string",
-                    "example": "PUT"
-                }
-            }
-        },
         "schema.APIResponse-array_int": {
             "type": "object",
             "properties": {
@@ -2793,6 +3047,64 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.BasicCourse": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "activity_type": {
+                    "type": "string"
+                },
+                "catalog_year": {
+                    "type": "string"
+                },
+                "class_level": {
+                    "type": "string"
+                },
+                "course_number": {
+                    "type": "string"
+                },
+                "credit_hours": {
+                    "type": "string"
+                },
+                "subject_prefix": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.BasicProfessor": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "office": {
+                    "$ref": "#/definitions/schema.Location"
+                },
+                "office_hours": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Meeting"
+                    }
+                },
+                "phone_number": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.BucketInfo": {
             "type": "object",
             "properties": {
@@ -3103,6 +3415,26 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.ObjectSignedURLBody": {
+            "type": "object",
+            "properties": {
+                "expiration": {
+                    "description": "timestamp for when the signed URL will expire",
+                    "type": "string"
+                },
+                "headers": {
+                    "description": "headers for signed URL",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "method": {
+                    "description": "method to be used with signed URL. For example, PUT",
+                    "type": "string"
+                }
+            }
+        },
         "schema.Professor": {
             "type": "object",
             "properties": {
@@ -3219,6 +3551,13 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "course_details": {
+                    "description": "only shows if course_details was set by the endpoint",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.BasicCourse"
+                    }
+                },
                 "course_reference": {
                     "type": "string"
                 },
@@ -3238,6 +3577,13 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.Meeting"
+                    }
+                },
+                "professor_details": {
+                    "description": "only shows if professor_details was set by the endpoint",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.BasicProfessor"
                     }
                 },
                 "professors": {

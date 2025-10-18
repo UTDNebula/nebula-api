@@ -18,6 +18,7 @@ import (
 //	@Id				swagger
 //	@Param			file	path	string	true	"The swagger file to retrieve"
 //	@Router			/swagger/{file} [get]
+//	@Tags			Other
 //	@Description	Returns the OpenAPI/swagger spec for the API
 //	@Security
 //	@Success	200
