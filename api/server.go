@@ -116,6 +116,7 @@ func EventsRoute(router *gin.Engine) {
 	{
 		eventsGroup.GET("/:date", controllers.Events)
 		eventsGroup.GET("/:date/:building", controllers.EventsByBuilding)
-		eventsGroup.GET("/:date/:building/:room/sections", controllers.EventsByRoomSection) // ✅ this one
+		eventsGroup.GET("/:date/:building/:room/sections", controllers.EventsByRoom)
+		eventsGroup.GET("/:date/:building/:room/sections", controllers.SectionsByRoomDetailed)
 	}
 }
