@@ -91,17 +91,17 @@ func EventsByBuilding(c *gin.Context) {
 	respond(c, http.StatusOK, "success", eventsByBuilding)
 }
 
-// @Id				eventsByRoomSection
-// @Router			/events/{date}/{building}/{room}/{sections} [get]
-// @Description	"Returns all sections (now, as a section object) with meetings on the specified date in the specified building"
+// @Id				eventsByRoom
+// @Router			/events/{date}/{building}/{room} [get]
+// @Description	"Returns all sections with meetings on the specified date in the specified building and room"
 // @Produce		json
-// @Param			date		path		string																	true	"ISO date of the set of events to get"
-// @Param			building	path		string	                                                                true    "building abbreviation of the event location"
-// @Param           room        path        string                                                                true    "section ID (ObjectID)"
-// @Success     200         {object}    schema.APIResponse[[]schema.SectionWithTime] "All sections with meetings on the specified date in the specified building""All sections with meetings on the specified date in the specified building"
-// @Failure		500			{object}	schema.APIResponse[string]												"A string describing the error"
-// @Failure		404			{object}	schema.APIResponse[string]												"A string describing the error"
-func EventsByRoomSection(c *gin.Context) {
+// @Param			date		path		string														true	"ISO date of the set of events to get"
+// @Param			building	path		string	                                                    true    "building abbreviation of the event location"
+// @Param           room        path        string                                                      true    "room number"
+// @Success     	200         {object}    schema.APIResponse[[]schema.SectionWithTime] 				"All sections with meetings on the specified date in the specified building and room"
+// @Failure		500			{object}	schema.APIResponse[string]										"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]										"A string describing the error"
+func EventsByRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -128,6 +128,7 @@ func EventsByRoomSection(c *gin.Context) {
 					break
 				}
 			}
+			break
 		}
 	}
 
@@ -140,6 +141,5 @@ func EventsByRoomSection(c *gin.Context) {
 		return
 	}
 
-	// return all sections in the room
 	respond(c, http.StatusOK, "success", foundSections)
 }
