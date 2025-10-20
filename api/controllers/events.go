@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -142,4 +143,83 @@ func EventsByRoom(c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", foundSections)
+}
+
+// @Id				sectionsByRoomDetailed
+// @Router			/events/{date}/{building}/{room}/sections [get]
+// @Description	"Returns full section objects with meetings on the specified date in the specified building and room"
+// @Produce		json
+// @Param			date		path		string												true	"ISO date of the set of events to get"
+// @Param			building	path		string	                                            true    "building abbreviation of the event location"
+// @Param           room        path        string                                              true    "room number"
+// @Success     	200         {object}    schema.APIResponse[[]schema.Section] 				"Full section objects with meetings on the specified date in the specified building and room"
+// @Failure		500			{object}	schema.APIResponse[string]							"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]							"A string describing the error"
+func SectionsByRoomDetailed(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	date := c.Param("date")
+	building := c.Param("building")
+	room := c.Param("room")
+
+	var events schema.MultiBuildingEvents[schema.SectionWithTime]
+
+	// Step 1: Find events for the specified date
+	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// Step 2: Extract section IDs for the specified building and room
+	var sectionIDs []primitive.ObjectID
+	for _, b := range events.Buildings {
+		if b.Building == building {
+			for _, r := range b.Rooms {
+				if r.Room == room {
+					for _, event := range r.Events {
+						sectionIDs = append(sectionIDs, event.Section)
+					}
+					break
+				}
+			}
+			break
+		}
+	}
+
+	if len(sectionIDs) == 0 {
+		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
+			Status:  http.StatusNotFound,
+			Message: "error",
+			Data:    "No sections found for the specified building and room",
+		})
+		return
+	}
+
+	// Step 3: Fetch full section objects from the sections collection
+	sectionsCollection := configs.GetCollection("sections")
+	cursor, err := sectionsCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	defer cursor.Close(ctx)
+
+	var sections []schema.Section
+	if err = cursor.All(ctx, &sections); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	if len(sections) == 0 {
+		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
+			Status:  http.StatusNotFound,
+			Message: "error",
+			Data:    "No section details found",
+		})
+		return
+	}
+
+	respond(c, http.StatusOK, "success", sections)
 }
