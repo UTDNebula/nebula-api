@@ -32,6 +32,17 @@ type Course struct {
 	Attributes               interface{}            `bson:"attributes" json:"attributes"`
 }
 
+type BasicCourse struct {
+	Id             primitive.ObjectID `bson:"_id" json:"_id"`
+	Subject_prefix string             `bson:"subject_prefix" json:"subject_prefix" queryable:""`
+	Course_number  string             `bson:"course_number" json:"course_number" queryable:""`
+	Title          string             `bson:"title" json:"title" queryable:""`
+	Credit_hours   string             `bson:"credit_hours" json:"credit_hours" queryable:""`
+	Class_level    string             `bson:"class_level" json:"class_level" queryable:""`
+	Activity_type  string             `bson:"activity_type" json:"activity_type" queryable:""`
+	Catalog_year   string             `bson:"catalog_year" json:"catalog_year" queryable:""`
+}
+
 type AcademicSession struct {
 	Name       string    `bson:"name" json:"name"`
 	Start_date time.Time `bson:"start_date" json:"start_date"`
@@ -76,6 +87,8 @@ type Section struct {
 	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri"`
 	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
+	Professor_details     *[]BasicProfessor      `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
+	Course_details        *[]BasicCourse         `bson:"course_details,omitempty" json:"course_details,omitempty"`       // only shows if course_details was set by the endpoint
 }
 
 type Professor struct {
@@ -90,6 +103,16 @@ type Professor struct {
 	Image_uri    string               `bson:"image_uri" json:"image_uri"`
 	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
 	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
+}
+
+type BasicProfessor struct {
+	Id           primitive.ObjectID `bson:"_id" json:"_id"`
+	First_name   string             `bson:"first_name" json:"first_name" queryable:""`
+	Last_name    string             `bson:"last_name" json:"last_name" queryable:""`
+	Email        string             `bson:"email" json:"email" queryable:""`
+	Phone_number string             `bson:"phone_number" json:"phone_number" queryable:""`
+	Office       Location           `bson:"office" json:"office"`
+	Office_hours []Meeting          `bson:"office_hours" json:"office_hours"`
 }
 
 type Organization struct {
@@ -259,29 +282,29 @@ type Letters struct {
 
 // Academic Calendar type
 type AcademicCalendar struct {
-	Id                string  `bson:"_id" json:"_id"`
-	Timeline string `bson:"timeline" json:"timeline"`
-	Sessions                 []AcademicCalendarSession     `bson:"sessions" json:"sessions"`
-	EnrollmentOpens          string        `bson:"enrollment_opens" json:"enrollment_opens"`
-	SchedulePlannerAvailable string        `bson:"schedule_planner_available" json:"schedule_planner_available"`
-	OnlineAddSwapEnds        string        `bson:"online_add_swap_ends" json:"online_add_swap_ends"`
-	LastReadmission          string        `bson:"last_readmission" json:"last_readmission"`
-	LastFromWaitlist         string        `bson:"last_from_waitlist" json:"last_from_waitlist"`
-	MidtermsDue              string        `bson:"midterms_due" json:"midterms_due"`
-	UniversityClosings       [][]string    `bson:"university_closings" json:"university_closings"`
-	NoClasses                [][]string    `bson:"no_classes" json:"no_classes"`
+	Id                       string                    `bson:"_id" json:"_id"`
+	Timeline                 string                    `bson:"timeline" json:"timeline"`
+	Sessions                 []AcademicCalendarSession `bson:"sessions" json:"sessions"`
+	EnrollmentOpens          string                    `bson:"enrollment_opens" json:"enrollment_opens"`
+	SchedulePlannerAvailable string                    `bson:"schedule_planner_available" json:"schedule_planner_available"`
+	OnlineAddSwapEnds        string                    `bson:"online_add_swap_ends" json:"online_add_swap_ends"`
+	LastReadmission          string                    `bson:"last_readmission" json:"last_readmission"`
+	LastFromWaitlist         string                    `bson:"last_from_waitlist" json:"last_from_waitlist"`
+	MidtermsDue              string                    `bson:"midterms_due" json:"midterms_due"`
+	UniversityClosings       [][]string                `bson:"university_closings" json:"university_closings"`
+	NoClasses                [][]string                `bson:"no_classes" json:"no_classes"`
 }
 type AcademicCalendarSession struct {
-	Name              string        `bson:"name" json:"name"`
-	LastRegistration  string        `bson:"last_registration" json:"last_registration"`
-	Begin             string        `bson:"begin" json:"begin"`
-	LateRegistration  []string      `bson:"late_registration" json:"late_registration"`
-	CensusDay         string        `bson:"census_day" json:"census_day"`
-	DropDeadlines     AcademicCalendarDropDeadlines `bson:"drop_deadlines" json:"drop_deadlines"`
-	End               string        `bson:"end" json:"end"`
-	ReadingDays       []string      `bson:"reading_days" json:"reading_days"`
-	Exams             []string      `bson:"exams" json:"exams"`
-	FinalGradingPeriod []string     `bson:"final_grading_period" json:"final_grading_period"`
+	Name               string                        `bson:"name" json:"name"`
+	LastRegistration   string                        `bson:"last_registration" json:"last_registration"`
+	Begin              string                        `bson:"begin" json:"begin"`
+	LateRegistration   []string                      `bson:"late_registration" json:"late_registration"`
+	CensusDay          string                        `bson:"census_day" json:"census_day"`
+	DropDeadlines      AcademicCalendarDropDeadlines `bson:"drop_deadlines" json:"drop_deadlines"`
+	End                string                        `bson:"end" json:"end"`
+	ReadingDays        []string                      `bson:"reading_days" json:"reading_days"`
+	Exams              []string                      `bson:"exams" json:"exams"`
+	FinalGradingPeriod []string                      `bson:"final_grading_period" json:"final_grading_period"`
 }
 type AcademicCalendarDropDeadlines struct {
 	WithoutW                  string `bson:"without_w" json:"without_w"`

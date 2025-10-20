@@ -45,6 +45,7 @@ func getOrCreateBucket(client *storage.Client, bucket string) (*storage.BucketHa
 
 // @Id				bucketInfo
 // @Router			/storage/{bucket} [get]
+// @Tags			Internal
 // @Description	"Get info on a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param			bucket			path		string									true	"Name of the bucket"
 // @Param			x-storage-key	header		string									true	"The internal storage key"
@@ -92,6 +93,7 @@ func BucketInfo(c *gin.Context) {
 
 // @Id				deleteBucket
 // @Router			/storage/{bucket} [delete]
+// @Tags			Internal
 // @Description	"Delete a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param			bucket			path		string						true	"Name of the bucket"
 // @Param			x-storage-key	header		string						true	"The internal storage key"
@@ -138,6 +140,7 @@ func DeleteBucket(c *gin.Context) {
 
 // @Id				objectInfo
 // @Router			/storage/{bucket}/{objectID} [get]
+// @Tags			Internal
 // @Description	"Get info on an object in a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param			bucket			path		string									true	"Name of the bucket"
 // @Param			objectID		path		string									true	"ID of the object"
@@ -175,6 +178,7 @@ func ObjectInfo(c *gin.Context) {
 
 // @Id				postObject
 // @Router			/storage/{bucket}/{objectID} [post]
+// @Tags			Internal
 // @Description	"Upload an object to a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param			bucket			path		string									true	"Name of the bucket"
 // @Param			objectID		path		string									true	"ID of the object"
@@ -236,6 +240,7 @@ func PostObject(c *gin.Context) {
 
 // @Id				deleteObject
 // @Router			/storage/{bucket}/{objectID} [delete]
+// @Tags			Internal
 // @Description	"Delete an object from a bucket. This route is restricted to only Nebula Labs internal Projects."
 // @Param			bucket			path		string						true	"Name of the bucket"
 // @Param			objectID		path		string						true	"ID of the object"
@@ -270,6 +275,7 @@ func DeleteObject(c *gin.Context) {
 
 // @Id				objectUploadURL
 // @Router			/storage/{bucket}/{objectID}/url [put]
+// @Tags			Internal
 // @Accept			json
 // @Description	"Create's a new signed URL for target object"
 // @Param			bucket			path		string						true	"Name of the bucket"

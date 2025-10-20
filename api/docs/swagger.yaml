@@ -243,6 +243,44 @@ definitions:
       subject_prefix:
         type: string
     type: object
+  schema.BasicCourse:
+    properties:
+      _id:
+        type: string
+      activity_type:
+        type: string
+      catalog_year:
+        type: string
+      class_level:
+        type: string
+      course_number:
+        type: string
+      credit_hours:
+        type: string
+      subject_prefix:
+        type: string
+      title:
+        type: string
+    type: object
+  schema.BasicProfessor:
+    properties:
+      _id:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      office:
+        $ref: '#/definitions/schema.Location'
+      office_hours:
+        items:
+          $ref: '#/definitions/schema.Meeting'
+        type: array
+      phone_number:
+        type: string
+    type: object
   schema.BucketInfo:
     properties:
       contents:
@@ -536,6 +574,11 @@ definitions:
         items:
           type: string
         type: array
+      course_details:
+        description: only shows if course_details was set by the endpoint
+        items:
+          $ref: '#/definitions/schema.BasicCourse'
+        type: array
       course_reference:
         type: string
       grade_distribution:
@@ -549,6 +592,11 @@ definitions:
       meetings:
         items:
           $ref: '#/definitions/schema.Meeting'
+        type: array
+      professor_details:
+        description: only shows if professor_details was set by the endpoint
+        items:
+          $ref: '#/definitions/schema.BasicProfessor'
         type: array
       professors:
         items:
@@ -666,6 +714,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /autocomplete/dag:
     get:
       description: '"Returns an aggregation of courses for use in generating autocomplete
@@ -683,6 +733,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Other
   /course:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
@@ -758,6 +810,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
   /course/{id}:
     get:
       description: '"Returns the course with given ID"'
@@ -779,6 +833,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
   /course/{id}/grades:
     get:
       description: '"Returns the overall grade distribution for a course"'
@@ -804,6 +860,35 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
+  /course/{id}/professors:
+    get:
+      description: '"Returns the all of the professors of the course with given ID"'
+      operationId: courseProfessorById
+      parameters:
+      - description: ID of the course to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of professors
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
   /course/{id}/sections:
     get:
       description: '"Returns the all of the sections of the course with given ID"'
@@ -829,6 +914,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
   /course/all:
     get:
       description: '"Returns all courses"'
@@ -844,6 +931,91 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
+  /course/professors:
+    get:
+      description: '"Returns paginated list of professors of all the courses matching
+        the query''s string-typed key-value pairs. See former_offset and latter_offset
+        for pagination details."'
+      operationId: courseProfessorSearch
+      parameters:
+      - description: The starting position of the current page of courses (e.g. For
+          starting at the 17th course, former_offset=16).
+        in: query
+        name: former_offset
+        type: number
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 4th professor, latter_offset=3).
+        in: query
+        name: latter_offset
+        type: number
+      - description: The course's official number
+        in: query
+        name: course_number
+        type: string
+      - description: The course's subject prefix
+        in: query
+        name: subject_prefix
+        type: string
+      - description: The course's title
+        in: query
+        name: title
+        type: string
+      - description: The course's description
+        in: query
+        name: description
+        type: string
+      - description: The course's school
+        in: query
+        name: school
+        type: string
+      - description: The number of credit hours awarded by successful completion of
+          the course
+        in: query
+        name: credit_hours
+        type: string
+      - description: The level of education that this course course corresponds to
+        in: query
+        name: class_level
+        type: string
+      - description: The type of class this course corresponds to
+        in: query
+        name: activity_type
+        type: string
+      - description: The grading status of this course
+        in: query
+        name: grading
+        type: string
+      - description: The internal (university) number used to reference this course
+        in: query
+        name: internal_course_number
+        type: string
+      - description: The weekly contact hours in lecture for a course
+        in: query
+        name: lecture_contact_hours
+        type: string
+      - description: The frequency of offering a course
+        in: query
+        name: offering_frequency
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of professors
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Professor'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
   /course/sections:
     get:
       description: '"Returns paginated list of sections of all the courses matching
@@ -925,10 +1097,13 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
   /course/sections/trends:
     get:
-      description: '"Returns all of the given course''s sections. Specialized high-speed
-        convenience endpoint for UTD Trends internal use; limited query flexibility."'
+      description: '"Returns all of the given course''s sections with Course and Professor
+        data embedded. Specialized high-speed convenience endpoint for UTD Trends
+        internal use; limited query flexibility."'
       operationId: trendsCourseSectionSearch
       parameters:
       - description: The course's official number
@@ -952,6 +1127,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
   /events/{date}:
     get:
       description: '"Returns all sections with meetings on the specified date"'
@@ -973,6 +1150,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /events/{date}/{building}:
     get:
       description: '"Returns all sections with meetings on the specified date in the
@@ -1005,6 +1184,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /grades/overall:
     get:
       description: '"Returns the overall grade distribution"'
@@ -1045,6 +1226,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Grades
   /grades/semester:
     get:
       description: '"Returns grade distributions aggregated by semester"'
@@ -1085,6 +1268,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Grades
   /grades/semester/sectionType:
     get:
       description: '"Returns the grade distributions aggregated by semester and broken
@@ -1127,6 +1312,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Grades
   /mazevo/{date}:
     get:
       description: '"Returns MazevoEvent based on the input date"'
@@ -1148,6 +1335,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /professor:
     get:
       description: '"Returns paginated list of professors matching the query''s string-typed
@@ -1253,6 +1442,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /professor/{id}:
     get:
       description: '"Returns the professor with given ID"'
@@ -1278,6 +1469,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /professor/{id}/courses:
     get:
       description: '"Returns all the courses taught by the professor with given ID"'
@@ -1303,6 +1496,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /professor/{id}/grades:
     get:
       description: '"Returns the overall grade distribution for a professor"'
@@ -1328,6 +1523,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /professor/{id}/sections:
     get:
       description: '"Returns all the sections taught by the professor with given ID"'
@@ -1353,6 +1550,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /professor/all:
     get:
       description: '"Returns all professors"'
@@ -1368,6 +1567,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /professor/courses:
     get:
       description: '"Returns paginated list of the courses of all the professors matching
@@ -1479,6 +1680,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /professor/sections:
     get:
       description: '"Returns paginated list of the sections of all the professors
@@ -1590,10 +1793,13 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /professor/sections/trends:
     get:
-      description: '"Returns all of the given professor''s sections. Specialized high-speed
-        convenience endpoint for UTD Trends internal use; limited query flexibility."'
+      description: '"Returns all of the given professor''s sections with Course and
+        Professor data embedded. Specialized high-speed convenience endpoint for UTD
+        Trends internal use; limited query flexibility."'
       operationId: trendsProfessorSectionSearch
       parameters:
       - description: The professor's first name
@@ -1617,6 +1823,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Professors
   /rooms:
     get:
       description: '"Returns all schedulable rooms being used in the current and futures
@@ -1634,6 +1842,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /section:
     get:
       description: '"Returns paginated list of sections matching the query''s string-typed
@@ -1744,6 +1954,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Sections
   /section/{id}:
     get:
       description: '"Returns the section with given ID"'
@@ -1769,6 +1981,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Sections
   /section/{id}/course:
     get:
       description: '"Returns the course of the section with given ID"'
@@ -1794,6 +2008,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Sections
   /section/{id}/grades:
     get:
       description: '"Returns the overall grade distribution for a section"'
@@ -1819,6 +2035,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Sections
   /section/{id}/professors:
     get:
       description: '"Returns the paginated list of professors of the section with
@@ -1845,6 +2063,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Sections
   /section/courses:
     get:
       description: '"Returns paginated list of courses of all the sections matching
@@ -1852,13 +2072,13 @@ paths:
         for pagination details."'
       operationId: sectionCourseSearch
       parameters:
-      - description: The starting position of the current page of professors (e.g.
-          For starting at the 17th professor, former_offset=16).
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 16th section, former_offset=16).
         in: query
         name: former_offset
         type: number
-      - description: The starting position of the current page of sections (e.g. For
-          starting at the 17th professor, offset=16).
+      - description: The starting position of the current page of courses (e.g. For
+          starting at the 16th course, latter_offset=16).
         in: query
         name: latter_offset
         type: number
@@ -1961,6 +2181,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Sections
   /section/professors:
     get:
       description: '"Returns paginated list of professors of all the sections matching
@@ -1968,13 +2190,13 @@ paths:
         for pagination details."'
       operationId: sectionProfessorSearch
       parameters:
-      - description: The starting position of the current page of professors (e.g.
-          For starting at the 17th professor, former_offset=16).
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 16th sections, former_offset=16).
         in: query
         name: former_offset
         type: number
-      - description: The starting position of the current page of sections (e.g. For
-          starting at the 17th professor, offset=16).
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 16th professor, latter_offset=16).
         in: query
         name: latter_offset
         type: number
@@ -2077,6 +2299,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Sections
   /storage/{bucket}:
     delete:
       description: '"Delete a bucket. This route is restricted to only Nebula Labs
@@ -2102,6 +2326,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
     get:
       description: '"Get info on a bucket. This route is restricted to only Nebula
         Labs internal Projects."'
@@ -2126,6 +2352,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
   /storage/{bucket}/{objectID}:
     delete:
       description: '"Delete an object from a bucket. This route is restricted to only
@@ -2156,6 +2384,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
     get:
       description: '"Get info on an object in a bucket. This route is restricted to
         only Nebula Labs internal Projects."'
@@ -2185,6 +2415,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
     post:
       description: '"Upload an object to a bucket. This route is restricted to only
         Nebula Labs internal Projects."'
@@ -2220,6 +2452,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
   /storage/{bucket}/{objectID}/url:
     put:
       consumes:
@@ -2257,6 +2491,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
   /swagger/{file}:
     get:
       description: Returns the OpenAPI/swagger spec for the API
@@ -2271,6 +2507,8 @@ paths:
         "200":
           description: OK
       security: []
+      tags:
+      - Other
 schemes:
 - https
 - http

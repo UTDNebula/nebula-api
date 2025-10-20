@@ -53,6 +53,7 @@ import (
 
 // @Id				gradeAggregationBySemester
 // @Router			/grades/semester [get]
+// @Tags			Grades
 // @Description	"Returns grade distributions aggregated by semester"
 // @Produce		json
 // @Param			prefix			query		string									false	"The course's subject prefix"
@@ -71,6 +72,7 @@ func GradeAggregationSemester() gin.HandlerFunc {
 
 // @Id				gradeAggregationSectionType
 // @Router			/grades/semester/sectionType [get]
+// @Tags			Grades
 // @Description	"Returns the grade distributions aggregated by semester and broken down into section type"
 // @Produce		json
 // @Param			prefix			query		string										false	"The course's subject prefix"
@@ -89,6 +91,7 @@ func GradesAggregationSectionType() gin.HandlerFunc {
 
 // @Id				gradeAggregationOverall
 // @Router			/grades/overall [get]
+// @Tags			Grades
 // @Description	"Returns the overall grade distribution"
 // @Produce		json
 // @Param			prefix			query		string						false	"The course's subject prefix"
@@ -107,6 +110,7 @@ func GradesAggregationOverall() gin.HandlerFunc {
 
 // @Id				GradesByCourseID
 // @Router			/course/{id}/grades [get]
+// @Tags			Courses
 // @Description	"Returns the overall grade distribution for a course"
 // @Produce		json
 // @Param			id	path		string						true	"ID of course to get grades for"
@@ -121,6 +125,7 @@ func GradesByCourseID() gin.HandlerFunc {
 
 // @Id				GradesBySectionID
 // @Router			/section/{id}/grades [get]
+// @Tags			Sections
 // @Description	"Returns the overall grade distribution for a section"
 // @Produce		json
 // @Param			id	path		string						true	"ID of section to get grades for"
@@ -135,6 +140,7 @@ func GradesBySectionID() gin.HandlerFunc {
 
 // @Id				GradesByProfessorID
 // @Router			/professor/{id}/grades [get]
+// @Tags			Professors
 // @Description	"Returns the overall grade distribution for a professor"
 // @Produce		json
 // @Param			id	path		string						true	"ID of professor to get grades for"
@@ -417,9 +423,6 @@ func gradesAggregation(flag string, c *gin.Context) {
 		// and then we perform the grades aggregation against the sections collection,
 		// matching on the course_reference and professor
 
-		var profIDs []primitive.ObjectID
-		var courseIDs []primitive.ObjectID
-
 		collection = sectionCollection
 
 		// Find valid professor ids
@@ -441,6 +444,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 			return
 		}
 
+		profIDs := make([]primitive.ObjectID, 0, len(results))
 		for _, prof := range results {
 			profID := prof["_id"].(primitive.ObjectID)
 			profIDs = append(profIDs, profID)
@@ -465,6 +469,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 			return
 		}
 
+		courseIDs := make([]primitive.ObjectID, 0, len(results))
 		for _, course := range results {
 			courseID := course["_id"].(primitive.ObjectID)
 			courseIDs = append(courseIDs, courseID)
