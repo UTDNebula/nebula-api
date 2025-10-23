@@ -11,6 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	"github.com/UTDNebula/nebula-api/api/controllers"
 )
 
 // Unauthenticated placeholder endpoint for the built-in ginSwagger swagger documentation endpoint
@@ -108,4 +110,14 @@ func CORS(c *gin.Context) {
 func LogRequest(c *gin.Context) {
 	log.Printf("%s %s %s", c.Request.Method, c.Request.URL.Path, c.Request.Host)
 	c.Next()
+}
+
+func EventsRoute(router *gin.Engine) {
+	eventsGroup := router.Group("/events")
+	{
+		eventsGroup.GET("/:date", controllers.Events)
+		eventsGroup.GET("/:date/:building", controllers.EventsByBuilding)
+		eventsGroup.GET("/:date/:building/:room/sections", controllers.EventsByRoom)
+		eventsGroup.GET("/:date/:building/:room/sections", controllers.SectionsByRoomDetailed)
+	}
 }
