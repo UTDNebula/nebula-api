@@ -340,7 +340,7 @@ func courseProfessor(flag string, c *gin.Context) {
 		bson.D{{Key: "$replaceWith", Value: "$professors"}},
 		bson.D{{Key: "$group", Value: bson.D{ // Groups all documents by professords _id
 			{Key: "_id", Value: "$_id"},
-			{Key: "doc", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}}, // Keeps first full document 
+			{Key: "doc", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}}, // Keeps first full document
 		}}},
 		bson.D{{Key: "$replaceWith", Value: "$doc"}},
 		// keep order deterministic between calls
