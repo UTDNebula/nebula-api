@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -29,7 +28,7 @@ var courseCollection *mongo.Collection = configs.GetCollection("courses")
 // @Param			subject_prefix			query		string								false	"The course's subject prefix"
 // @Param			title					query		string								false	"The course's title"
 // @Param			description				query		string								false	"The course's description"
-// @Param			school					query		string								false	"The course's school"
+// @Param			school					query		string			a					false	"The course's school"
 // @Param			credit_hours			query		string								false	"The number of credit hours awarded by successful completion of the course"
 // @Param			class_level				query		string								false	"The level of education that this course course corresponds to"
 // @Param			activity_type			query		string								false	"The type of class this course corresponds to"
