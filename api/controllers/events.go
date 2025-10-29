@@ -74,8 +74,13 @@ func EventsByBuilding(c *gin.Context) {
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			events.Date = date
+			events.Buildings = []schema.SingleBuildingEvents[schema.SectionWithTime]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
 	// filter for the specified building
@@ -123,8 +128,13 @@ func EventsByRoom(c *gin.Context) {
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			events.Date = date
+			events.Buildings = []schema.SingleBuildingEvents[schema.SectionWithTime]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
 	// filter for the specified building and room
@@ -175,8 +185,13 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	// Step 1: Find events for the specified date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			events.Date = date
+			events.Buildings = []schema.SingleBuildingEvents[schema.SectionWithTime]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
 	// Step 2: Extract section IDs for the specified building and room

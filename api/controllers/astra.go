@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -31,14 +32,19 @@ func AstraEvents(c *gin.Context) {
 
 	date := c.Param("date")
 
-	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
+	var astraEvents schema.MultiBuildingEvents[schema.AstraEvent]
 
 	// Find astra event given date
-	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
+	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astraEvents)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			astraEvents.Date = date
+			astraEvents.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
-	respond(c, http.StatusOK, "success", astra_events)
+	respond(c, http.StatusOK, "success", astraEvents)
 }
