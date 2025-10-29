@@ -733,6 +733,110 @@ const docTemplate = `{
                 }
             }
         },
+        "/events/{date}/{building}/{room}": {
+            "get": {
+                "description": "\"Returns all sections with meetings on the specified date in the specified building and room\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "eventsByRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ISO date of the set of events to get",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of the event location",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "room number",
+                        "name": "room",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All sections with meetings on the specified date in the specified building and room",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_SectionWithTime"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/events/{date}/{building}/{room}/sections": {
+            "get": {
+                "description": "\"Returns full section objects with meetings on the specified date in the specified building and room\"",
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "sectionsByRoomDetailed",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ISO date of the set of events to get",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of the event location",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "room number",
+                        "name": "room",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Full section objects with meetings on the specified date in the specified building and room",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/grades/overall": {
             "get": {
                 "description": "\"Returns the overall grade distribution\"",
@@ -2778,6 +2882,23 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.Section"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-array_schema_SectionWithTime": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SectionWithTime"
                     }
                 },
                 "message": {

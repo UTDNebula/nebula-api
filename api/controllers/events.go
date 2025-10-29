@@ -103,12 +103,12 @@ func EventsByBuilding(c *gin.Context) {
 // @Router			/events/{date}/{building}/{room} [get]
 // @Description	"Returns all sections with meetings on the specified date in the specified building and room"
 // @Produce		json
-// @Param			date		path		string														true	"ISO date of the set of events to get"
-// @Param			building	path		string	                                                    true    "building abbreviation of the event location"
-// @Param           room        path        string                                                      true    "room number"
-// @Success     	200         {object}    schema.APIResponse[[]schema.SectionWithTime] 				"All sections with meetings on the specified date in the specified building and room"
-// @Failure		500			{object}	schema.APIResponse[string]										"A string describing the error"
-// @Failure		404			{object}	schema.APIResponse[string]										"A string describing the error"
+// @Param			date		path		string											true	"ISO date of the set of events to get"
+// @Param			building	path		string											true	"building abbreviation of the event location"
+// @Param			room		path		string											true	"room number"
+// @Success		200			{object}	schema.APIResponse[[]schema.SectionWithTime]	"All sections with meetings on the specified date in the specified building and room"
+// @Failure		500			{object}	schema.APIResponse[string]						"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]						"A string describing the error"
 func EventsByRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -156,12 +156,12 @@ func EventsByRoom(c *gin.Context) {
 // @Router			/events/{date}/{building}/{room}/sections [get]
 // @Description	"Returns full section objects with meetings on the specified date in the specified building and room"
 // @Produce		json
-// @Param			date		path		string												true	"ISO date of the set of events to get"
-// @Param			building	path		string	                                            true    "building abbreviation of the event location"
-// @Param           room        path        string                                              true    "room number"
-// @Success     	200         {object}    schema.APIResponse[[]schema.Section] 				"Full section objects with meetings on the specified date in the specified building and room"
-// @Failure		500			{object}	schema.APIResponse[string]							"A string describing the error"
-// @Failure		404			{object}	schema.APIResponse[string]							"A string describing the error"
+// @Param			date		path		string									true	"ISO date of the set of events to get"
+// @Param			building	path		string									true	"building abbreviation of the event location"
+// @Param			room		path		string									true	"room number"
+// @Success		200			{object}	schema.APIResponse[[]schema.Section]	"Full section objects with meetings on the specified date in the specified building and room"
+// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]				"A string describing the error"
 func SectionsByRoomDetailed(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
