@@ -739,6 +739,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Events"
+                ],
                 "operationId": "eventsByRoom",
                 "parameters": [
                     {
@@ -790,6 +793,9 @@ const docTemplate = `{
                 "description": "\"Returns full section objects with meetings on the specified date in the specified building and room\"",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Events"
                 ],
                 "operationId": "sectionsByRoomDetailed",
                 "parameters": [

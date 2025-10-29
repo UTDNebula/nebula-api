@@ -106,6 +106,7 @@ func EventsByBuilding(c *gin.Context) {
 
 // @Id				eventsByRoom
 // @Router			/events/{date}/{building}/{room} [get]
+// @Tags			Events
 // @Description	"Returns all sections with meetings on the specified date in the specified building and room"
 // @Produce		json
 // @Param			date		path		string											true	"ISO date of the set of events to get"
@@ -164,6 +165,7 @@ func EventsByRoom(c *gin.Context) {
 
 // @Id				sectionsByRoomDetailed
 // @Router			/events/{date}/{building}/{room}/sections [get]
+// @Tags			Events
 // @Description	"Returns full section objects with meetings on the specified date in the specified building and room"
 // @Produce		json
 // @Param			date		path		string									true	"ISO date of the set of events to get"

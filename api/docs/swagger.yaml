@@ -1234,6 +1234,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /events/{date}/{building}/{room}/sections:
     get:
       description: '"Returns full section objects with meetings on the specified date
@@ -1271,6 +1273,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /grades/overall:
     get:
       description: '"Returns the overall grade distribution"'
