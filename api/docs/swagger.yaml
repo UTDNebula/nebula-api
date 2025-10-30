@@ -76,6 +76,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_SectionWithTime:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.SectionWithTime'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_TypedGradeData:
     properties:
       data:
@@ -1176,6 +1187,84 @@ paths:
             building
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_SingleBuildingEvents-schema_SectionWithTime'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /events/{date}/{building}/{room}:
+    get:
+      description: '"Returns all sections with meetings on the specified date in the
+        specified building and room"'
+      operationId: eventsByRoom
+      parameters:
+      - description: ISO date of the set of events to get
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of the event location
+        in: path
+        name: building
+        required: true
+        type: string
+      - description: room number
+        in: path
+        name: room
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All sections with meetings on the specified date in the specified
+            building and room
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_SectionWithTime'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /events/{date}/{building}/{room}/sections:
+    get:
+      description: '"Returns full section objects with meetings on the specified date
+        in the specified building and room"'
+      operationId: sectionsByRoomDetailed
+      parameters:
+      - description: ISO date of the set of events to get
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of the event location
+        in: path
+        name: building
+        required: true
+        type: string
+      - description: room number
+        in: path
+        name: room
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Full section objects with meetings on the specified date in
+            the specified building and room
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Section'
         "404":
           description: A string describing the error
           schema:
