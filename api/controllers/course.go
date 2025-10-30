@@ -39,41 +39,7 @@ var courseCollection *mongo.Collection = configs.GetCollection("courses")
 // @Failure		500						{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseSearch(c *gin.Context) {
-	//name := c.Query("name")            	// value of specific query parameter: string
-	//queryParams := c.Request.URL.Query() 	// map of all query params: map[string][]string
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var courses []schema.Course
-
-	// build query key value pairs (only one value per key)
-	query, err := getQuery[schema.Course]("Search", c)
-	if err != nil {
-		return
-	}
-
-	optionLimit, err := configs.GetOptionLimit(&query, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
-		return
-	}
-
-	// get cursor for query results
-	cursor, err := courseCollection.Find(ctx, query, optionLimit)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &courses); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", courses)
+	findAndRespond[schema.Course](c, courseCollection, 10*time.Second)
 }
 
 // @Id				courseById
@@ -85,26 +51,7 @@ func CourseSearch(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[schema.Course]	"A course"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseById(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var course schema.Course
-
-	// parse object id from id parameter
-	query, err := getQuery[schema.Course]("ById", c)
-	if err != nil {
-		return
-	}
-
-	// find and parse matching course
-	err = courseCollection.FindOne(ctx, query).Decode(&course)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", course)
+	findOneByIdAndRespond[schema.Course](c, courseCollection, 10*time.Second)
 }
 
 // @Id				courseAll
@@ -115,27 +62,7 @@ func CourseById(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Course]	"All courses"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseAll(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-
-	var courses []schema.Course
-
-	defer cancel()
-
-	cursor, err := courseCollection.Find(ctx, bson.M{})
-
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &courses); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", courses)
+	findAllAndRespond[schema.Course](c, courseCollection, 30*time.Second)
 }
 
 // @Id				courseSectionSearch

@@ -46,41 +46,7 @@ var professorCollection *mongo.Collection = configs.GetCollection("professors")
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorSearch(c *gin.Context) {
-	//name := c.Query("name")            // value of specific query parameter: string
-	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var professors []schema.Professor
-
-	// build query key value pairs (only one value per key)
-	query, err := getQuery[schema.Professor]("Search", c)
-	if err != nil {
-		return
-	}
-
-	optionLimit, err := configs.GetOptionLimit(&query, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
-		return
-	}
-
-	// get cursor for query results
-	cursor, err := professorCollection.Find(ctx, query, optionLimit)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &professors); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", professors)
+	findAndRespond[schema.Professor](c, professorCollection, 10*time.Second)
 }
 
 // @Id				professorById
@@ -93,26 +59,7 @@ func ProfessorSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorById(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var professor schema.Professor
-
-	// parse object id from id parameter
-	query, err := getQuery[schema.Professor]("ById", c)
-	if err != nil {
-		return
-	}
-
-	// find and parse matching professor
-	err = professorCollection.FindOne(ctx, query).Decode(&professor)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", professor)
+	findOneByIdAndRespond[schema.Professor](c, professorCollection, 10*time.Second)
 }
 
 // @Id				professorAll
@@ -123,26 +70,7 @@ func ProfessorById(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"All professors"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorAll(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	var professors []schema.Professor
-
-	cursor, err := professorCollection.Find(ctx, bson.M{})
-
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &professors); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", professors)
+	findAllAndRespond[schema.Professor](c, professorCollection, 30*time.Second)
 }
 
 // @Id				professorCourseSearch
