@@ -205,3 +205,141 @@ func aggregateAndRespond[T any](c *gin.Context, collection *mongo.Collection, pi
 	// Return results
 	respond(c, http.StatusOK, "success", results)
 }
+
+// Builds a standard lookup stage for MongoDB aggregation pipeline.
+// Used to join collections by matching a local field to a foreign field.
+func buildLookupStage(fromCollection, localField, foreignField, asField string) bson.D {
+	return bson.D{{Key: "$lookup", Value: bson.D{
+		{Key: "from", Value: fromCollection},
+		{Key: "localField", Value: localField},
+		{Key: "foreignField", Value: foreignField},
+		{Key: "as", Value: asField},
+	}}}
+}
+
+// Builds a standard unwind stage for MongoDB aggregation pipeline.
+// Used to deconstruct an array field into separate documents.
+func buildUnwindStage(path string, preserveNullAndEmptyArrays bool) bson.D {
+	return bson.D{{Key: "$unwind", Value: bson.D{
+		{Key: "path", Value: path},
+		{Key: "preserveNullAndEmptyArrays", Value: preserveNullAndEmptyArrays},
+	}}}
+}
+
+// Builds a standard project stage for MongoDB aggregation pipeline.
+// Used to include/exclude fields or compute new fields.
+func buildProjectStage(fields bson.D) bson.D {
+	return bson.D{{Key: "$project", Value: fields}}
+}
+
+// Builds a standard replaceWith stage for MongoDB aggregation pipeline.
+// Used to replace the root document with a specified document.
+func buildReplaceWithStage(newRoot string) bson.D {
+	return bson.D{{Key: "$replaceWith", Value: newRoot}}
+}
+
+// Builds a standard sort stage for MongoDB aggregation pipeline.
+// Used to order documents by specified fields.
+func buildSortStage(sortFields bson.D) bson.D {
+	return bson.D{{Key: "$sort", Value: sortFields}}
+}
+
+// Builds standard pagination stages (skip and limit) for MongoDB aggregation pipeline.
+// Returns two stages: skip and limit.
+func buildPaginationStages(offset, limit interface{}) []bson.D {
+	return []bson.D{
+		{{Key: "$skip", Value: offset}},
+		{{Key: "$limit", Value: limit}},
+	}
+}
+
+// PipelineConfig holds configuration for building relation query pipelines.
+type PipelineConfig struct {
+	MatchQuery          bson.M
+	PaginateMap         map[string]interface{}
+	LookupFrom          string
+	LookupLocalField    string
+	LookupForeignField  string
+	LookupAs            string
+	UnwindPath          string
+	ProjectFields       bson.D
+	ReplaceWithField    string
+	NeedsPagination     bool
+	NeedsProjectStage   bool
+}
+
+// Builds a standard pipeline for querying related entities.
+// This handles the common pattern of: match -> paginate former -> lookup -> [project] -> unwind -> replace -> sort -> paginate latter
+func buildRelationPipeline(config PipelineConfig) mongo.Pipeline {
+	pipeline := mongo.Pipeline{
+		// Filter the source entities
+		bson.D{{Key: "$match", Value: config.MatchQuery}},
+	}
+
+	// Paginate the source entities before looking up related entities
+	if config.NeedsPagination {
+		formerStages := buildPaginationStages(config.PaginateMap["former_offset"], config.PaginateMap["limit"])
+		pipeline = append(pipeline, formerStages...)
+	}
+
+	// Lookup the related entities
+	pipeline = append(pipeline, buildLookupStage(
+		config.LookupFrom,
+		config.LookupLocalField,
+		config.LookupForeignField,
+		config.LookupAs,
+	))
+
+	// Optionally project to extract nested fields
+	if config.NeedsProjectStage {
+		pipeline = append(pipeline, buildProjectStage(config.ProjectFields))
+	}
+
+	// Unwind the related entities
+	pipeline = append(pipeline, buildUnwindStage(config.UnwindPath, false))
+
+	// Replace root document with the related entity
+	pipeline = append(pipeline, buildReplaceWithStage(config.ReplaceWithField))
+
+	// Keep order deterministic between calls
+	pipeline = append(pipeline, buildSortStage(bson.D{{Key: "_id", Value: 1}}))
+
+	// Paginate the related entities
+	if config.NeedsPagination {
+		latterStages := buildPaginationStages(config.PaginateMap["latter_offset"], config.PaginateMap["limit"])
+		pipeline = append(pipeline, latterStages...)
+	}
+
+	return pipeline
+}
+
+// Generic function to handle relation queries (e.g., getting sections of courses, courses of professors).
+// Reduces boilerplate by handling query building, pagination, aggregation, and responding.
+func queryRelatedEntitiesAndRespond[TResult any](
+	c *gin.Context,
+	collection *mongo.Collection,
+	config PipelineConfig,
+	timeout time.Duration,
+) {
+	ctx, cancel := createContext(timeout)
+	defer cancel()
+
+	var results []TResult
+
+	// Build and execute pipeline
+	pipeline := buildRelationPipeline(config)
+	cursor, err := collection.Aggregate(ctx, pipeline)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// Decode all results
+	if err = cursor.All(ctx, &results); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// Return results
+	respond(c, http.StatusOK, "success", results)
+}

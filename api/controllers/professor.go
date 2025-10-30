@@ -134,14 +134,13 @@ func professorCourse(flag string, c *gin.Context) {
 	var professorQuery bson.M            // query filter the professor
 	var err error
 
-	// determine the professor's query
+	// Determine the professor's query
 	professorQuery, err = getQuery[schema.Professor](flag, c)
 	if err != nil {
 		return
 	}
 
-	// determine the offset and limit for pagination stage
-	// and delete "offset" field in professorQuery
+	// Determine the offset and limit for pagination stage and delete "offset" field in professorQuery
 	paginateMap, err := configs.GetAggregateLimit(&professorQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
@@ -149,54 +148,42 @@ func professorCourse(flag string, c *gin.Context) {
 	}
 
 	// Pipeline to query the courses from the filtered professors (or a single professor)
+	// This is more complex than standard relation queries because it requires extracting courses from sections
 	professorCoursePipeline := mongo.Pipeline{
-		// filter the professors
+		// Filter the professors
 		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// paginate the professors before pulling the courses from those professor
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of professors
-
-		// lookup the array of sections from sections collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
-
-		// project the courses referenced by each section in the array
-		bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
-
-		// lookup the array of courses from coures collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "courses"},
-			{Key: "localField", Value: "courses"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "courses"},
-		}}},
-
-		// unwind the courses
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$courses"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
-		}}},
-
-		// replace the combination of ids and courses with the courses entirely
-		bson.D{{Key: "$replaceWith", Value: "$courses"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
 
-	// Perform aggreration on the pipeline
+	// Paginate the professors before pulling the courses from those professors
+	formerStages := buildPaginationStages(paginateMap["former_offset"], paginateMap["limit"])
+	professorCoursePipeline = append(professorCoursePipeline, formerStages...)
+
+	// Lookup the array of sections from sections collection
+	professorCoursePipeline = append(professorCoursePipeline, buildLookupStage("sections", "sections", "_id", "sections"))
+
+	// Project the courses referenced by each section in the array
+	professorCoursePipeline = append(professorCoursePipeline, buildProjectStage(bson.D{{Key: "courses", Value: "$sections.course_reference"}}))
+
+	// Lookup the array of courses from courses collection
+	professorCoursePipeline = append(professorCoursePipeline, buildLookupStage("courses", "courses", "_id", "courses"))
+
+	// Unwind the courses
+	professorCoursePipeline = append(professorCoursePipeline, buildUnwindStage("$courses", false))
+
+	// Replace the combination of ids and courses with the courses entirely
+	professorCoursePipeline = append(professorCoursePipeline, buildReplaceWithStage("$courses"))
+
+	// Keep order deterministic between calls
+	professorCoursePipeline = append(professorCoursePipeline, buildSortStage(bson.D{{Key: "_id", Value: 1}}))
+
+	// Paginate the courses
+	latterStages := buildPaginationStages(paginateMap["latter_offset"], paginateMap["limit"])
+	professorCoursePipeline = append(professorCoursePipeline, latterStages...)
+
+	// Perform aggregation on the pipeline
 	cursor, err := professorCollection.Aggregate(ctx, professorCoursePipeline)
 	if err != nil {
-		// return the error with there's something wrong with the aggregation
+		// Return the error if there's something wrong with the aggregation
 		respondWithInternalError(c, err)
 		return
 	}
@@ -267,60 +254,52 @@ func professorSection(flag string, c *gin.Context) {
 	var professorQuery bson.M              // query filter the professor
 	var err error
 
-	// determine the professor's query
+	// Determine the professor's query
 	professorQuery, err = getQuery[schema.Professor](flag, c)
 	if err != nil {
 		return
 	}
 
-	// determine the offset and limit for pagination stage
+	// Determine the offset and limit for pagination stage
 	paginateMap, err := configs.GetAggregateLimit(&professorQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
 
-	// Pipeline to query the courses from the filtered professors (or a single professor)
+	// Pipeline to query the sections from the filtered professors (or a single professor)
 	professorSectionPipeline := mongo.Pipeline{
-		// filter the professors
+		// Filter the professors
 		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// paginate the professors before pulling the courses from those professor
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of professors
-
-		// lookup the array of sections from sections collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
-
-		// project the sections
-		bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
-
-		// unwind the sections
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$sections"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
-		}}},
-
-		// replace the combination of ids and sections with the sections entirely
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the sections
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
 
-	// Perform aggreration on the pipeline
+	// Paginate the professors before pulling the sections from those professors
+	formerStages := buildPaginationStages(paginateMap["former_offset"], paginateMap["limit"])
+	professorSectionPipeline = append(professorSectionPipeline, formerStages...)
+
+	// Lookup the array of sections from sections collection
+	professorSectionPipeline = append(professorSectionPipeline, buildLookupStage("sections", "sections", "_id", "sections"))
+
+	// Project the sections
+	professorSectionPipeline = append(professorSectionPipeline, buildProjectStage(bson.D{{Key: "sections", Value: "$sections"}}))
+
+	// Unwind the sections
+	professorSectionPipeline = append(professorSectionPipeline, buildUnwindStage("$sections", false))
+
+	// Replace the combination of ids and sections with the sections entirely
+	professorSectionPipeline = append(professorSectionPipeline, buildReplaceWithStage("$sections"))
+
+	// Keep order deterministic between calls
+	professorSectionPipeline = append(professorSectionPipeline, buildSortStage(bson.D{{Key: "_id", Value: 1}}))
+
+	// Paginate the sections
+	latterStages := buildPaginationStages(paginateMap["latter_offset"], paginateMap["limit"])
+	professorSectionPipeline = append(professorSectionPipeline, latterStages...)
+
+	// Perform aggregation on the pipeline
 	cursor, err := professorCollection.Aggregate(ctx, professorSectionPipeline)
 	if err != nil {
-		// return the error with there's something wrong with the aggregation
+		// Return the error if there's something wrong with the aggregation
 		respondWithInternalError(c, err)
 		return
 	}
