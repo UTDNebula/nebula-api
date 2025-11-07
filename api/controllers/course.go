@@ -127,8 +127,9 @@ func courseSection(flag string, c *gin.Context) {
 	config := PipelineConfig{
 		MatchQuery: courseQuery,
 		PaginateMap: map[string]interface{}{
-			"$skip":  paginateMap["$skip"],
-			"$limit": paginateMap["$limit"],
+		 "former_offset": paginateMap["former_offset"],
+         "latter_offset": paginateMap["latter_offset"],
+         "limit":         paginateMap["limit"],
 		},
 		LookupFrom:         "sections",
 		LookupLocalField:   "sections",
