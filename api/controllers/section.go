@@ -48,41 +48,7 @@ var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
 func SectionSearch(c *gin.Context) {
-	//name := c.Query("name")            // value of specific query parameter: string
-	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var sections []schema.Section
-
-	// build query key value pairs (only one value per key)
-	query, err := getQuery[schema.Section]("Search", c)
-	if err != nil {
-		return
-	}
-
-	optionLimit, err := configs.GetOptionLimit(&query, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
-		return
-	}
-
-	// get cursor for query results
-	cursor, err := sectionCollection.Find(ctx, query, optionLimit)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &sections); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", sections)
+	findAndRespond[schema.Section](c, sectionCollection, 10*time.Second)
 }
 
 // @Id				sectionById
@@ -95,26 +61,7 @@ func SectionSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
 func SectionById(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var section schema.Section
-
-	// parse object id from id parameter
-	query, err := getQuery[schema.Section]("ById", c)
-	if err != nil {
-		return
-	}
-
-	// find and parse matching section
-	err = sectionCollection.FindOne(ctx, query).Decode(&section)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", section)
+	findOneByIdAndRespond[schema.Section](c, sectionCollection, 10*time.Second)
 }
 
 // @Id				sectionCourseSearch
@@ -169,7 +116,7 @@ func SectionCourseById() gin.HandlerFunc {
 	}
 }
 
-// Get an array of courses from sections, filtered based on the the flag
+// Get an array of courses from sections, filtered based on the flag
 func sectionCourse(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -187,42 +134,34 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	// pipeline of query an array of courses from filtered sections
+	// Pipeline to query an array of courses from filtered sections
 	sectionCoursePipeline := mongo.Pipeline{
-		// filter the sections
+		// Filter the sections
 		bson.D{{Key: "$match", Value: sectionQuery}},
-
-		// paginate the sections before pulling courses from those sections
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-
-		// lookup the course referenced by sections from the course collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "courses"},
-			{Key: "localField", Value: "course_reference"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "course_reference"},
-		}}},
-
-		// project to remove every other fields except for courses
-		bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$course_reference"}}}},
-
-		// unwind the courses
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$courses"},
-			{Key: "preserveNullAndEmptyArrays", Value: false},
-		}}},
-
-		// replace the combinations of id and course with courses entirely
-		bson.D{{Key: "$replaceWith", Value: "$courses"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
+
+	// Paginate the sections before pulling courses from those sections
+	formerStages := buildPaginationStages(paginateMap["former_offset"], paginateMap["limit"])
+	sectionCoursePipeline = append(sectionCoursePipeline, formerStages...)
+
+	// Lookup the course referenced by sections from the course collection
+	sectionCoursePipeline = append(sectionCoursePipeline, buildLookupStage("courses", "course_reference", "_id", "course_reference"))
+
+	// Project to remove every other field except for courses
+	sectionCoursePipeline = append(sectionCoursePipeline, buildProjectStage(bson.D{{Key: "courses", Value: "$course_reference"}}))
+
+	// Unwind the courses
+	sectionCoursePipeline = append(sectionCoursePipeline, buildUnwindStage("$courses", false))
+
+	// Replace the combinations of id and course with courses entirely
+	sectionCoursePipeline = append(sectionCoursePipeline, buildReplaceWithStage("$courses"))
+
+	// Keep order deterministic between calls
+	sectionCoursePipeline = append(sectionCoursePipeline, buildSortStage(bson.D{{Key: "_id", Value: 1}}))
+
+	// Paginate the courses
+	latterStages := buildPaginationStages(paginateMap["latter_offset"], paginateMap["limit"])
+	sectionCoursePipeline = append(sectionCoursePipeline, latterStages...)
 
 	cursor, err := sectionCollection.Aggregate(ctx, sectionCoursePipeline)
 	if err != nil {
@@ -299,7 +238,7 @@ func SectionProfessorById() gin.HandlerFunc {
 	}
 }
 
-// Get an array of professors from sections,
+// Get an array of professors from sections
 func sectionProfessor(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -317,34 +256,34 @@ func sectionProfessor(flag string, c *gin.Context) {
 		return
 	}
 
-	// pipeline to query an array of professors from filtered sections
+	// Pipeline to query an array of professors from filtered sections
 	sectionProfessorPipeline := mongo.Pipeline{
+		// Filter the sections
 		bson.D{{Key: "$match", Value: sectionQuery}},
-
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "professors"},
-			{Key: "localField", Value: "professors"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "professors"},
-		}}},
-
-		bson.D{{Key: "$project", Value: bson.D{{Key: "professors", Value: "$professors"}}}},
-
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$professors"},
-			{Key: "preserveNullAndEmptyArrays", Value: false},
-		}}},
-
-		bson.D{{Key: "$replaceWith", Value: "$professors"}},
-
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
+
+	// Paginate the sections before pulling professors from those sections
+	formerStages := buildPaginationStages(paginateMap["former_offset"], paginateMap["limit"])
+	sectionProfessorPipeline = append(sectionProfessorPipeline, formerStages...)
+
+	// Lookup the professors from the professors collection
+	sectionProfessorPipeline = append(sectionProfessorPipeline, buildLookupStage("professors", "professors", "_id", "professors"))
+
+	// Project to extract professors
+	sectionProfessorPipeline = append(sectionProfessorPipeline, buildProjectStage(bson.D{{Key: "professors", Value: "$professors"}}))
+
+	// Unwind the professors
+	sectionProfessorPipeline = append(sectionProfessorPipeline, buildUnwindStage("$professors", false))
+
+	// Replace the root with professors
+	sectionProfessorPipeline = append(sectionProfessorPipeline, buildReplaceWithStage("$professors"))
+
+	// Keep order deterministic between calls
+	sectionProfessorPipeline = append(sectionProfessorPipeline, buildSortStage(bson.D{{Key: "_id", Value: 1}}))
+
+	// Paginate the professors
+	latterStages := buildPaginationStages(paginateMap["latter_offset"], paginateMap["limit"])
+	sectionProfessorPipeline = append(sectionProfessorPipeline, latterStages...)
 
 	cursor, err := sectionCollection.Aggregate(ctx, sectionProfessorPipeline)
 	if err != nil {
@@ -352,7 +291,7 @@ func sectionProfessor(flag string, c *gin.Context) {
 		return
 	}
 
-	// Parse the array of courses
+	// Parse the array of professors
 	if err = cursor.All(ctx, &sectionProfessors); err != nil {
 		respondWithInternalError(c, err)
 		return

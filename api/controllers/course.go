@@ -39,41 +39,7 @@ var courseCollection *mongo.Collection = configs.GetCollection("courses")
 // @Failure		500						{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseSearch(c *gin.Context) {
-	//name := c.Query("name")            	// value of specific query parameter: string
-	//queryParams := c.Request.URL.Query() 	// map of all query params: map[string][]string
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var courses []schema.Course
-
-	// build query key value pairs (only one value per key)
-	query, err := getQuery[schema.Course]("Search", c)
-	if err != nil {
-		return
-	}
-
-	optionLimit, err := configs.GetOptionLimit(&query, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
-		return
-	}
-
-	// get cursor for query results
-	cursor, err := courseCollection.Find(ctx, query, optionLimit)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &courses); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", courses)
+	findAndRespond[schema.Course](c, courseCollection, 10*time.Second)
 }
 
 // @Id				courseById
@@ -85,26 +51,7 @@ func CourseSearch(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[schema.Course]	"A course"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseById(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var course schema.Course
-
-	// parse object id from id parameter
-	query, err := getQuery[schema.Course]("ById", c)
-	if err != nil {
-		return
-	}
-
-	// find and parse matching course
-	err = courseCollection.FindOne(ctx, query).Decode(&course)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", course)
+	findOneByIdAndRespond[schema.Course](c, courseCollection, 10*time.Second)
 }
 
 // @Id				courseAll
@@ -115,27 +62,7 @@ func CourseById(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Course]	"All courses"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseAll(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-
-	var courses []schema.Course
-
-	defer cancel()
-
-	cursor, err := courseCollection.Find(ctx, bson.M{})
-
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &courses); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", courses)
+	findAllAndRespond[schema.Course](c, courseCollection, 30*time.Second)
 }
 
 // @Id				courseSectionSearch
@@ -183,72 +110,38 @@ func CourseSectionById() gin.HandlerFunc {
 
 // get the sections of the courses, filters depending on the flag
 func courseSection(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var courseSections []schema.Section // the list of sections of the filtered courses
-	var courseQuery bson.M              // query of the courses (or the single course)
-	var err error                       // error
-
-	// determine the course query
-	courseQuery, err = getQuery[schema.Course](flag, c)
+	// Determine the course query
+	courseQuery, err := getQuery[schema.Course](flag, c)
 	if err != nil {
 		return
 	}
 
-	// determine the offset and limit for pagination stage & delete "offset" fields in professorQuery
+	// Determine the offset and limit for pagination stage & delete "offset" fields in courseQuery
 	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	// pipeline to query the sections from the filtered courses
-	courseSectionPipeline := mongo.Pipeline{
-		// filter the courses
-		bson.D{{Key: "$match", Value: courseQuery}},
-
-		// paginate the courses before pulling the sections from thoses courses
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of courses
-
-		// lookup the sections of the courses
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
-
-		// unwind the sections of the courses
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$sections"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
-		}}},
-
-		// replace the courses with sections
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the sections
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+	// Configure and execute the pipeline to query sections from filtered courses
+	config := PipelineConfig{
+		MatchQuery: courseQuery,
+		PaginateMap: map[string]interface{}{
+		    "former_offset": paginateMap["former_offset"],
+            "latter_offset": paginateMap["latter_offset"],
+            "limit":         paginateMap["limit"],
+		},
+		LookupFrom:         "sections",
+		LookupLocalField:   "sections",
+		LookupForeignField: "_id",
+		LookupAs:           "sections",
+		UnwindPath:         "$sections",
+		ReplaceWithField:   "$sections",
+		NeedsPagination:    true,
+		NeedsProjectStage:  false,
 	}
 
-	// perform aggregation on the pipeline
-	cursor, err := courseCollection.Aggregate(ctx, courseSectionPipeline)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-	if err = cursor.All(ctx, &courseSections); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", courseSections)
+	queryRelatedEntitiesAndRespond[schema.Section](c, courseCollection, config, 10*time.Second)
 }
 
 // @Id				courseProfessorSearch
@@ -303,8 +196,7 @@ func courseProfessor(flag string, c *gin.Context) {
 		return
 	}
 
-	// determine the offset and limit for pagination stage and delete
-	// "offset" field in professorQuery
+	// Determine the offset and limit for pagination stage and delete "offset" field in courseQuery
 	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
@@ -312,55 +204,44 @@ func courseProfessor(flag string, c *gin.Context) {
 	}
 
 	// Pipeline to query the professors from the filtered courses
+	// This is more complex than standard relation queries because it requires two lookups:
+	// courses -> sections -> professors
 	courseProfessorPipeline := mongo.Pipeline{
-		// filter the courses
+		// Filter the courses
 		bson.D{{Key: "$match", Value: courseQuery}},
-
-		// paginate the courses before pulling the sections from those courses
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-
-		// lookup the sections of the courses
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
-
-		// lookup the professors of the sections
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "professors"},
-			{Key: "localField", Value: "sections.professors"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "professors"},
-		}}},
-
-		// unwind the professors of the sections
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$professors"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
-		}}},
-
-		// replace the courses with professors
-		bson.D{{Key: "$replaceWith", Value: "$professors"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the professors
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
 
-	// perform aggregation on the pipeline
+	// Paginate the courses before pulling the sections from those courses
+	formerStages := buildPaginationStages(paginateMap["former_offset"], paginateMap["limit"])
+	courseProfessorPipeline = append(courseProfessorPipeline, formerStages...)
+
+	// Lookup the sections of the courses
+	courseProfessorPipeline = append(courseProfessorPipeline, buildLookupStage("sections", "sections", "_id", "sections"))
+
+	// Lookup the professors of the sections
+	courseProfessorPipeline = append(courseProfessorPipeline, buildLookupStage("professors", "sections.professors", "_id", "professors"))
+
+	// Unwind the professors of the sections
+	courseProfessorPipeline = append(courseProfessorPipeline, buildUnwindStage("$professors", false))
+
+	// Replace the courses with professors
+	courseProfessorPipeline = append(courseProfessorPipeline, buildReplaceWithStage("$professors"))
+
+	// Keep order deterministic between calls
+	courseProfessorPipeline = append(courseProfessorPipeline, buildSortStage(bson.D{{Key: "_id", Value: 1}}))
+
+	// Paginate the professors
+	latterStages := buildPaginationStages(paginateMap["latter_offset"], paginateMap["limit"])
+	courseProfessorPipeline = append(courseProfessorPipeline, latterStages...)
+
+	// Perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseProfessorPipeline)
 	if err != nil {
-		// return error for any aggregation problem
+		// Return error for any aggregation problem
 		respondWithInternalError(c, err)
 		return
 	}
-	// parse the array of professors of the course
+	// Parse the array of professors of the course
 	if err = cursor.All(ctx, &courseProfessors); err != nil {
 		panic(err)
 	}
