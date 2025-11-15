@@ -168,7 +168,11 @@ func ObjectInfo(c *gin.Context) {
 	// Get object attributes
 	attrs, err := objectHandle.Attrs(ctx)
 	if err != nil {
-		respondWithInternalError(c, err)
+		if errors.Is(err, storage.ErrObjectNotExist) {
+			respond(c, http.StatusNotFound, "error", "Object with given ID not found")
+		} else {
+			respondWithInternalError(c, err)
+		}
 		return
 	}
 

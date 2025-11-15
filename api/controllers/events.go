@@ -93,11 +93,7 @@ func EventsByBuilding(c *gin.Context) {
 
 	// If no building is found, return an error
 	if eventsByBuilding.Building == "" {
-		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
-			Status:  http.StatusNotFound,
-			Message: "error",
-			Data:    "No events found for the specified building",
-		})
+		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
 		return
 	}
 
@@ -152,11 +148,7 @@ func EventsByRoom(c *gin.Context) {
 	}
 
 	if eventsByRoom.Room == "" {
-		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
-			Status:  http.StatusNotFound,
-			Message: "error",
-			Data:    "No events found for the specified building and room",
-		})
+		respond(c, http.StatusNotFound, "error", "No events found for the specified building and room")
 		return
 	}
 
@@ -237,11 +229,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	}
 
 	if len(sectionsByRoom.Events) == 0 {
-		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
-			Status:  http.StatusNotFound,
-			Message: "error",
-			Data:    "No section details found",
-		})
+		respond(c, http.StatusNotFound, "error", "No section details found")
 		return
 	}
 
