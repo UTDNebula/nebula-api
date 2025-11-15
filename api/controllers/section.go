@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -109,7 +110,11 @@ func SectionById(c *gin.Context) {
 	// find and parse matching section
 	err = sectionCollection.FindOne(ctx, query).Decode(&section)
 	if err != nil {
-		respondWithInternalError(c, err)
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			respond(c, http.StatusNotFound, "error", "No sections with given ID")
+		} else {
+			respondWithInternalError(c, err)
+		}
 		return
 	}
 
