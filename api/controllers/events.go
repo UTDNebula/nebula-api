@@ -124,7 +124,7 @@ func EventsByRoom(c *gin.Context) {
 	room := c.Param("room")
 
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
-	var foundSections []schema.SectionWithTime
+	var eventsByRoom schema.RoomEvents[schema.SectionWithTime]
 
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
@@ -143,7 +143,7 @@ func EventsByRoom(c *gin.Context) {
 		if b.Building == building {
 			for _, r := range b.Rooms {
 				if r.Room == room {
-					foundSections = r.Events
+					eventsByRoom = r
 					break
 				}
 			}
@@ -151,7 +151,7 @@ func EventsByRoom(c *gin.Context) {
 		}
 	}
 
-	if len(foundSections) == 0 {
+	if eventsByRoom.Room == "" {
 		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
 			Status:  http.StatusNotFound,
 			Message: "error",
@@ -160,7 +160,7 @@ func EventsByRoom(c *gin.Context) {
 		return
 	}
 
-	respond(c, http.StatusOK, "success", foundSections)
+	respond(c, http.StatusOK, "success", eventsByRoom)
 }
 
 // @Id				sectionsByRoomDetailed
@@ -222,8 +222,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	}
 
 	// Step 3: Fetch full section objects from the sections collection
-	sectionsCollection := configs.GetCollection("sections")
-	cursor, err := sectionsCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
+	cursor, err := sectionCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
