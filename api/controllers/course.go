@@ -16,6 +16,7 @@ import (
 )
 
 var courseCollection *mongo.Collection = configs.GetCollection("courses")
+var trendsCourseCollection *mongo.Collection = configs.GetCollection("trends_course_sections")
 
 // @Id				courseSearch
 // @Router			/course [get]
@@ -418,9 +419,8 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 	}
 
-	trendsCollection := configs.GetCollection("trends_course_sections")
 	// perform aggregation on the pipeline
-	cursor, err := trendsCollection.Aggregate(ctx, pipeline)
+	cursor, err := trendsCourseCollection.Aggregate(ctx, pipeline)
 	if err != nil {
 		// return error for any aggregation problem
 		respondWithInternalError(c, err)

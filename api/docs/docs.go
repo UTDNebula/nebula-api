@@ -770,7 +770,7 @@ const docTemplate = `{
                     "200": {
                         "description": "All sections with meetings on the specified date in the specified building and room",
                         "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-array_schema_SectionWithTime"
+                            "$ref": "#/definitions/schema.APIResponse-schema_RoomEvents-schema_SectionWithTime"
                         }
                     },
                     "404": {
@@ -825,7 +825,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Full section objects with meetings on the specified date in the specified building and room",
                         "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                            "$ref": "#/definitions/schema.APIResponse-schema_RoomEvents-schema_Section"
                         }
                     },
                     "404": {
@@ -2898,23 +2898,6 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.APIResponse-array_schema_SectionWithTime": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schema.SectionWithTime"
-                    }
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
         "schema.APIResponse-array_schema_TypedGradeData": {
             "type": "object",
             "properties": {
@@ -3035,6 +3018,34 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/schema.Professor"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_RoomEvents-schema_Section": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.RoomEvents-schema_Section"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_RoomEvents-schema_SectionWithTime": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.RoomEvents-schema_SectionWithTime"
                 },
                 "message": {
                     "type": "string"
@@ -3641,6 +3652,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.MazevoEvent"
+                    }
+                },
+                "room": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.RoomEvents-schema_Section": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Section"
                     }
                 },
                 "room": {
