@@ -203,10 +203,11 @@ func gradesAggregation(flag string, c *gin.Context) {
 		{Key: "subject_prefix", Value: prefix},
 		{Key: "course_number", Value: number},
 	}
-	// Parse the queried document into the sample course
+
 	err = courseCollection.FindOne(ctx, sampleCourseFind).Decode(&sampleCourse)
-	// If the error is not that there is no matching documents, throw an internal server error
 	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+		// If the error is not that there is no matching documents,
+		// throw an internal server error
 		respondWithInternalError(c, err)
 		return
 	}
@@ -216,24 +217,25 @@ func gradesAggregation(flag string, c *gin.Context) {
 	typeRegexes := [14]string{"0[0-9][0-9]", "0W[0-9]", "0H[0-9]", "0L[0-9]", "5H[0-9]", "1[0-9][0-9]", "2[0-9][0-9]", "3[0-9][0-9]", "5[0-9][0-9]", "6[0-9][0-9]", "7[0-9][0-9]", "HN[0-9]", "HON", "[0-9]U[0-9]"}
 	typeStrings := [14]string{"0xx", "0Wx", "0Hx", "0Lx", "5Hx", "1xx", "2xx", "3xx", "5xx", "6xx", "7xx", "HNx", "HON", "xUx"}
 
-	var branches []bson.D            // for without section pipeline
-	var withSectionBranches []bson.D // for with section pipeline
+	var branches [14]bson.D            // for without-section pipeline
+	var withSectionBranches [14]bson.D // for with-section pipeline
+
 	for i, typeRegex := range typeRegexes {
-		branches = append(branches, bson.D{
+		branches[i] = bson.D{
 			{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
 				{Key: "input", Value: "$sections.section_number"},
 				{Key: "regex", Value: typeRegex},
 			}}}},
 			{Key: "then", Value: typeStrings[i]},
-		})
+		}
 
-		withSectionBranches = append(withSectionBranches, bson.D{
+		withSectionBranches[i] = bson.D{
 			{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
 				{Key: "input", Value: "$section_number"},
 				{Key: "regex", Value: typeRegex},
 			}}}},
 			{Key: "then", Value: typeStrings[i]},
-		})
+		}
 	}
 
 	// Stage to look up sections
@@ -293,7 +295,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		{Key: "ix", Value: "$ix"},
 	}
 	if flag == "section_type" {
-		// add section_type to _id to group grades by both academic_session and section_type
+		// Add section_type to _id to group grades by both academic_session and section_type
 		groupID = append(groupID, bson.E{Key: "section_type", Value: "$section_type"})
 	}
 	groupGradesStage := bson.D{
@@ -320,7 +322,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 	// Stage to group grade distribution
 	var groupDistributionID any = "$_id.academic_session"
 	if flag == "section_type" {
-		// add the section-type criteria
+		// Add the section-type criteria
 		groupDistributionID = bson.D{
 			{Key: "academic_section", Value: "$_id.academic_session"},
 			{Key: "section_type", Value: "$_id.section_type"},

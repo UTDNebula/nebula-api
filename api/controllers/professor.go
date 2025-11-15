@@ -16,6 +16,7 @@ import (
 )
 
 var professorCollection *mongo.Collection = configs.GetCollection("professors")
+var trendsProfCollection *mongo.Collection = configs.GetCollection("trends_prof_sections")
 
 // @Id				professorSearch
 // @Router			/professor [get]
@@ -454,9 +455,7 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 	}
 
-	trendsCollection := configs.GetCollection("trends_prof_sections")
-
-	cursor, err := trendsCollection.Aggregate(ctx, pipeline)
+	cursor, err := trendsProfCollection.Aggregate(ctx, pipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return

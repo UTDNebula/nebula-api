@@ -109,12 +109,12 @@ func EventsByBuilding(c *gin.Context) {
 // @Tags			Events
 // @Description	"Returns all sections with meetings on the specified date in the specified building and room"
 // @Produce		json
-// @Param			date		path		string											true	"ISO date of the set of events to get"
-// @Param			building	path		string											true	"building abbreviation of the event location"
-// @Param			room		path		string											true	"room number"
-// @Success		200			{object}	schema.APIResponse[[]schema.SectionWithTime]	"All sections with meetings on the specified date in the specified building and room"
-// @Failure		500			{object}	schema.APIResponse[string]						"A string describing the error"
-// @Failure		404			{object}	schema.APIResponse[string]						"A string describing the error"
+// @Param			date		path		string															true	"ISO date of the set of events to get"
+// @Param			building	path		string															true	"building abbreviation of the event location"
+// @Param			room		path		string															true	"room number"
+// @Success		200			{object}	schema.APIResponse[schema.RoomEvents[schema.SectionWithTime]]	"All sections with meetings on the specified date in the specified building and room"
+// @Failure		500			{object}	schema.APIResponse[string]										"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]										"A string describing the error"
 func EventsByRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -124,7 +124,7 @@ func EventsByRoom(c *gin.Context) {
 	room := c.Param("room")
 
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
-	var foundSections []schema.SectionWithTime
+	var eventsByRoom schema.RoomEvents[schema.SectionWithTime]
 
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
@@ -143,7 +143,7 @@ func EventsByRoom(c *gin.Context) {
 		if b.Building == building {
 			for _, r := range b.Rooms {
 				if r.Room == room {
-					foundSections = r.Events
+					eventsByRoom = r
 					break
 				}
 			}
@@ -151,7 +151,7 @@ func EventsByRoom(c *gin.Context) {
 		}
 	}
 
-	if len(foundSections) == 0 {
+	if eventsByRoom.Room == "" {
 		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
 			Status:  http.StatusNotFound,
 			Message: "error",
@@ -160,7 +160,7 @@ func EventsByRoom(c *gin.Context) {
 		return
 	}
 
-	respond(c, http.StatusOK, "success", foundSections)
+	respond(c, http.StatusOK, "success", eventsByRoom)
 }
 
 // @Id				sectionsByRoomDetailed
@@ -168,12 +168,12 @@ func EventsByRoom(c *gin.Context) {
 // @Tags			Events
 // @Description	"Returns full section objects with meetings on the specified date in the specified building and room"
 // @Produce		json
-// @Param			date		path		string									true	"ISO date of the set of events to get"
-// @Param			building	path		string									true	"building abbreviation of the event location"
-// @Param			room		path		string									true	"room number"
-// @Success		200			{object}	schema.APIResponse[[]schema.Section]	"Full section objects with meetings on the specified date in the specified building and room"
-// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		404			{object}	schema.APIResponse[string]				"A string describing the error"
+// @Param			date		path		string													true	"ISO date of the set of events to get"
+// @Param			building	path		string													true	"building abbreviation of the event location"
+// @Param			room		path		string													true	"room number"
+// @Success		200			{object}	schema.APIResponse[schema.RoomEvents[schema.Section]]	"Full section objects with meetings on the specified date in the specified building and room"
+// @Failure		500			{object}	schema.APIResponse[string]								"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]								"A string describing the error"
 func SectionsByRoomDetailed(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -183,6 +183,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	room := c.Param("room")
 
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
+	var sectionsByRoom schema.RoomEvents[schema.Section]
 
 	// Step 1: Find events for the specified date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
@@ -202,6 +203,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 		if b.Building == building {
 			for _, r := range b.Rooms {
 				if r.Room == room {
+					sectionsByRoom.Room = r.Room
 					for _, event := range r.Events {
 						sectionIDs = append(sectionIDs, event.Section)
 					}
@@ -222,21 +224,19 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	}
 
 	// Step 3: Fetch full section objects from the sections collection
-	sectionsCollection := configs.GetCollection("sections")
-	cursor, err := sectionsCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
+	cursor, err := sectionCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 	defer cursor.Close(ctx)
 
-	var sections []schema.Section
-	if err = cursor.All(ctx, &sections); err != nil {
+	if err = cursor.All(ctx, &sectionsByRoom.Events); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	if len(sections) == 0 {
+	if len(sectionsByRoom.Events) == 0 {
 		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
 			Status:  http.StatusNotFound,
 			Message: "error",
@@ -245,5 +245,5 @@ func SectionsByRoomDetailed(c *gin.Context) {
 		return
 	}
 
-	respond(c, http.StatusOK, "success", sections)
+	respond(c, http.StatusOK, "success", sectionsByRoom)
 }
