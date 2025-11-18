@@ -9,27 +9,30 @@ import (
 )
 
 type Course struct {
-	Id                       primitive.ObjectID     `bson:"_id" json:"_id"`
-	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
-	Course_number            string                 `bson:"course_number" json:"course_number" queryable:""`
-	Title                    string                 `bson:"title" json:"title" queryable:""`
-	Description              string                 `bson:"description" json:"description"`
-	Enrollment_reqs          string                 `bson:"enrollment_reqs" json:"enrollment_reqs"`
-	School                   string                 `bson:"school" json:"school" queryable:""`
-	Credit_hours             string                 `bson:"credit_hours" json:"credit_hours" queryable:""`
-	Class_level              string                 `bson:"class_level" json:"class_level" queryable:""`
-	Activity_type            string                 `bson:"activity_type" json:"activity_type" queryable:""`
-	Grading                  string                 `bson:"grading" json:"grading" queryable:""`
-	Internal_course_number   string                 `bson:"internal_course_number" json:"internal_course_number" queryable:""`
-	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites"`
-	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites"`
-	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites"`
-	Sections                 []primitive.ObjectID   `bson:"sections" json:"sections"`
-	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours" queryable:""`
-	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours" queryable:""`
-	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency" queryable:""`
-	Catalog_year             string                 `bson:"catalog_year" json:"catalog_year" queryable:""`
-	Attributes               interface{}            `bson:"attributes" json:"attributes"`
+	Id primitive.ObjectID `bson:"_id" json:"_id"`
+	// Compound key uniquely identifying a course
+	Key                    CourseKey              `bson:"key" json:"key"`
+	Subject_prefix         string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
+	Course_number          string                 `bson:"course_number" json:"course_number" queryable:""`
+	Title                  string                 `bson:"title" json:"title" queryable:""`
+	Description            string                 `bson:"description" json:"description"`
+	Enrollment_reqs        string                 `bson:"enrollment_reqs" json:"enrollment_reqs"`
+	School                 string                 `bson:"school" json:"school" queryable:""`
+	Credit_hours           string                 `bson:"credit_hours" json:"credit_hours" queryable:""`
+	Class_level            string                 `bson:"class_level" json:"class_level" queryable:""`
+	Activity_type          string                 `bson:"activity_type" json:"activity_type" queryable:""`
+	Grading                string                 `bson:"grading" json:"grading" queryable:""`
+	Internal_course_number string                 `bson:"internal_course_number" json:"internal_course_number" queryable:""`
+	Prerequisites          *CollectionRequirement `bson:"prerequisites" json:"prerequisites"`
+	Corequisites           *CollectionRequirement `bson:"corequisites" json:"corequisites"`
+	Co_or_pre_requisites   *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites"`
+	// List of associated sections referenced by their compound keys
+	Section_keys             []SectionKey `bson:"section_keys" json:"section_keys"`
+	Lecture_contact_hours    string       `bson:"lecture_contact_hours" json:"lecture_contact_hours" queryable:""`
+	Laboratory_contact_hours string       `bson:"laboratory_contact_hours" json:"laboratory_contact_hours" queryable:""`
+	Offering_frequency       string       `bson:"offering_frequency" json:"offering_frequency" queryable:""`
+	Catalog_year             string       `bson:"catalog_year" json:"catalog_year" queryable:""`
+	Attributes               interface{}  `bson:"attributes" json:"attributes"`
 }
 
 type BasicCourse struct {
@@ -73,9 +76,12 @@ type Meeting struct {
 }
 
 type Section struct {
-	Id                    primitive.ObjectID     `bson:"_id" json:"_id"`
-	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
-	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" queryable:""`
+	Id primitive.ObjectID `bson:"_id" json:"_id"`
+	// Compound key uniquely identifying a section
+	Key            SectionKey `bson:"key" json:"key"`
+	Section_number string     `bson:"section_number" json:"section_number" queryable:""`
+	// Reference to the parent course via its compound key
+	Course_key            CourseKey              `bson:"course_key" json:"course_key" queryable:""`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
 	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
 	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
@@ -89,6 +95,22 @@ type Section struct {
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
 	Professor_details     *[]BasicProfessor      `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
 	Course_details        *[]BasicCourse         `bson:"course_details,omitempty" json:"course_details,omitempty"`       // only shows if course_details was set by the endpoint
+}
+
+// Compound key for uniquely identifying a course
+type CourseKey struct {
+	Subject_prefix string `bson:"subject_prefix" json:"subject_prefix"`
+	Course_number  string `bson:"course_number" json:"course_number"`
+	Catalog_year   string `bson:"catalog_year" json:"catalog_year"`
+}
+
+// Compound key for uniquely identifying a section
+type SectionKey struct {
+	Subject_prefix string `bson:"subject_prefix" json:"subject_prefix"`
+	Course_number  string `bson:"course_number" json:"course_number"`
+	Catalog_year   string `bson:"catalog_year" json:"catalog_year"`
+	Term           string `bson:"term" json:"term"`
+	Section_number string `bson:"section_number" json:"section_number"`
 }
 
 type Professor struct {
