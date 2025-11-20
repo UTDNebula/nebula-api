@@ -121,6 +121,7 @@ type ProfessorKey struct {
 
 type Professor struct {
 	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
+	Key          ProfessorKey         `bson:"key" json:"key"`
 	First_name   string               `bson:"first_name" json:"first_name" queryable:""`
 	Last_name    string               `bson:"last_name" json:"last_name" queryable:""`
 	Titles       []string             `bson:"titles" json:"titles" queryable:""`
