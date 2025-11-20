@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -66,8 +67,13 @@ func AstraEventsByBuilding(c *gin.Context) {
 	// Find astra event given date
 	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			astra_events.Date = date
+			astra_events.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
 	//parse response for requested building
@@ -115,8 +121,13 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	// Find astra event given date
 	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			astra_events.Date = date
+			astra_events.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
 	//parse response for requested building and room
