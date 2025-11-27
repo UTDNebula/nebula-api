@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -19,6 +20,7 @@ var mazevoCollection *mongo.Collection = configs.GetCollection("mazevo")
 
 // @Id				MazevoEvents
 // @Router			/mazevo/{date} [get]
+// @Tags			Events
 // @Description	"Returns MazevoEvent based on the input date"
 // @Produce		json
 // @Param			date	path		string																true	"date (ISO format) to retrieve mazevo events"
@@ -30,14 +32,19 @@ func MazevoEvents(c *gin.Context) {
 
 	date := c.Param("date")
 
-	var mazevo_events schema.MultiBuildingEvents[schema.MazevoEvent]
+	var mazevoEvents schema.MultiBuildingEvents[schema.MazevoEvent]
 
 	// Find mazevo event for input date
-	err := mazevoCollection.FindOne(ctx, bson.M{"date": date}).Decode(&mazevo_events)
+	err := mazevoCollection.FindOne(ctx, bson.M{"date": date}).Decode(&mazevoEvents)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			mazevoEvents.Date = date
+			mazevoEvents.Buildings = []schema.SingleBuildingEvents[schema.MazevoEvent]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
-	respond(c, http.StatusOK, "success", mazevo_events)
+	respond(c, http.StatusOK, "success", mazevoEvents)
 }

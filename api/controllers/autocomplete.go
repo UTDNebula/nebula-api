@@ -19,6 +19,7 @@ var DAGCollection *mongo.Collection = configs.GetCollection("DAG")
 
 // @Id				autocompleteDAG
 // @Router			/autocomplete/dag [get]
+// @Tags			Other
 // @Description	"Returns an aggregation of courses for use in generating autocomplete DAGs"
 // @Produce		json
 // @Success		200	{object}	schema.APIResponse[[]schema.Autocomplete]	"An aggregation of courses for use in generating autocomplete DAGs"
