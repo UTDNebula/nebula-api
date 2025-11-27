@@ -65,7 +65,7 @@ func SectionSearch(c *gin.Context) {
 
 	optionLimit, err := configs.GetOptionLimit(&query, c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
+		respond[string](c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
 
@@ -83,7 +83,7 @@ func SectionSearch(c *gin.Context) {
 	}
 
 	// return result
-	respond(c, http.StatusOK, "success", sections)
+	respond[[]schema.Section](c, http.StatusOK, "success", sections)
 }
 
 // @Id				sectionById
@@ -119,7 +119,7 @@ func SectionById(c *gin.Context) {
 	}
 
 	// return result
-	respond(c, http.StatusOK, "success", section)
+	respond[schema.Section](c, http.StatusOK, "success", section)
 }
 
 // @Id				sectionCourseSearch
@@ -186,68 +186,41 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	paginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
+	rawPaginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	// pipeline of query an array of courses from filtered sections
-	sectionCoursePipeline := mongo.Pipeline{
-		// filter the sections
-		bson.D{{Key: "$match", Value: sectionQuery}},
-
-		// paginate the sections before pulling courses from those sections
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-
-		// lookup the course referenced by sections from the course collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "courses"},
-			{Key: "localField", Value: "course_reference"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "course_reference"},
-		}}},
-
-		// project to remove every other fields except for courses
-		bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$course_reference"}}}},
-
-		// unwind the courses
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$courses"},
-			{Key: "preserveNullAndEmptyArrays", Value: false},
-		}}},
-
-		// replace the combinations of id and course with courses entirely
-		bson.D{{Key: "$replaceWith", Value: "$courses"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+	paginateMap := make(map[string]int)
+	for k, v := range rawPaginateMap {
+		paginateMap[k] = int(v)
 	}
 
-	cursor, err := sectionCollection.Aggregate(ctx, sectionCoursePipeline)
+	pipeline := buildSectionPipeline(sectionQuery, paginateMap, "courses", flag == "ById")
+	cursor, err := sectionCollection.Aggregate(ctx, pipeline)
+
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-
-	// Parse the array of courses
-	if err = cursor.All(ctx, &sectionCourses); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	switch flag {
-	case "Search":
-		respond(c, http.StatusOK, "success", sectionCourses)
-	case "ById":
-		// Each section is only referenced by only one course, so returning a single course is ideal
-		// A better way of handling this might be needed in the future
-		respond(c, http.StatusOK, "success", sectionCourses[0])
+	if flag == "ById" {
+		var course schema.Course
+		if cursor.Next(ctx) {
+			if err := cursor.Decode(&course); err != nil {
+				respondWithInternalError(c, err)
+				return
+			}
+			respond[*schema.Course](c, http.StatusOK, "success", &course)
+			return
+		}
+		respond[interface{}](c, http.StatusOK, "success", nil)
+	} else {
+		if err := cursor.All(ctx, &sectionCourses); err != nil {
+			respondWithInternalError(c, err)
+			return
+		}
+		respond[[]schema.Course](c, http.StatusOK, "success", sectionCourses)
 	}
 
 }
@@ -298,13 +271,14 @@ func SectionProfessorSearch() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+
 func SectionProfessorById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sectionProfessor("ById", c)
 	}
 }
 
-// Get an array of professors from sections,
+// Get an array of professors sections,
 func sectionProfessor(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -316,48 +290,24 @@ func sectionProfessor(flag string, c *gin.Context) {
 		return
 	}
 
-	paginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
+	rawPaginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	// pipeline to query an array of professors from filtered sections
-	sectionProfessorPipeline := mongo.Pipeline{
-		bson.D{{Key: "$match", Value: sectionQuery}},
-
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
-
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "professors"},
-			{Key: "localField", Value: "professors"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "professors"},
-		}}},
-
-		bson.D{{Key: "$project", Value: bson.D{{Key: "professors", Value: "$professors"}}}},
-
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$professors"},
-			{Key: "preserveNullAndEmptyArrays", Value: false},
-		}}},
-
-		bson.D{{Key: "$replaceWith", Value: "$professors"}},
-
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+	paginateMap := make(map[string]int)
+	for k, v := range rawPaginateMap {
+		paginateMap[k] = int(v)
 	}
 
-	cursor, err := sectionCollection.Aggregate(ctx, sectionProfessorPipeline)
+	pipeline := buildSectionPipeline(sectionQuery, paginateMap, "professors", flag == "ById")
+	cursor, err := sectionCollection.Aggregate(ctx, pipeline)
+
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-
-	// Parse the array of courses
 	if err = cursor.All(ctx, &sectionProfessors); err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -365,4 +315,56 @@ func sectionProfessor(flag string, c *gin.Context) {
 
 	respond(c, http.StatusOK, "success", sectionProfessors)
 
+}
+
+func buildSectionPipeline(
+	sectionQuery bson.M,
+	paginateMap map[string]int,
+	lookupType string,
+	single bool,
+) mongo.Pipeline {
+	localField := "course_reference"
+	field := lookupType
+
+	if lookupType == "professors" {
+		localField = "professor_id"
+	}
+	pipeline := mongo.Pipeline{
+		bson.D{{Key: "$match", Value: sectionQuery}},
+	}
+	if !single {
+		pipeline = append(pipeline,
+			bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}},
+			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+		)
+	}
+
+	pipeline = append(pipeline,
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: lookupType},
+			{Key: "localField", Value: localField},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: field},
+		}}},
+		bson.D{{Key: "$project", Value: bson.D{{Key: field, Value: "$" + field}}}},
+	)
+	// unwind/replaceWith so the aggregation yields the joined document itself.
+	pipeline = append(pipeline,
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$" + field},
+			{Key: "preserveNullAndEmptyArrays", Value: false},
+		}}},
+		bson.D{{Key: "$replaceWith", Value: "$" + field}},
+	)
+
+	// For non-single (search) requests, apply sorting and latter_offset pagination
+	// after unwinding so we return a paginated list of the joined documents.
+	if !single {
+		pipeline = append(pipeline,
+			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+			bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
+			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+		)
+	}
+	return pipeline
 }
