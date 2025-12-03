@@ -168,7 +168,7 @@ func CourseAll(c *gin.Context) {
 // @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseSectionSearch() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		courseSection("Search", c)
+		CourseSectionV2("Search", c)
 	}
 }
 
@@ -183,42 +183,41 @@ func CourseSectionSearch() gin.HandlerFunc {
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseSectionById() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		courseSection("ById", c)
+		CourseSectionV2("ById", c)
 	}
 }
 
 // get the sections of the courses, filters depending on the flag
-func courseSection(flag string, c *gin.Context) {
+func CourseSection(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var courseSections []schema.Section // the list of sections of the filtered courses
-	var courseQuery bson.M              // query of the courses (or the single course)
-	var err error                       // error
+	// List of sections of the filtered courses
+	var courseSections []schema.Section
 
-	// determine the course query
-	courseQuery, err = getQuery[schema.Course](flag, c)
+	// Build the course query
+	courseQuery, err := getQuery[schema.Course](flag, c)
 	if err != nil {
 		return
 	}
 
-	// determine the offset and limit for pagination stage & delete "offset" fields in professorQuery
-	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
+	// Build the offset and limit for pagination stage
+	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	// pipeline to query the sections from the filtered courses
+	// Pipeline to get the sections from the filtered courses
 	courseSectionPipeline := mongo.Pipeline{
-		// filter the courses
+		// Filter the courses
 		bson.D{{Key: "$match", Value: courseQuery}},
 
-		// paginate the courses before pulling the sections from thoses courses
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of courses
+		// Paginate the courses before pulling the sections from thoses courses
+		bson.D{{Key: "$skip", Value: paginate["former_offset"]}}, // skip to the specified offset
+		bson.D{{Key: "$limit", Value: paginate["limit"]}},        // limit to the specified number of courses
 
-		// lookup the sections of the courses
+		// Lookup the sections of the courses
 		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "sections"},
 			{Key: "localField", Value: "sections"},
@@ -226,24 +225,24 @@ func courseSection(flag string, c *gin.Context) {
 			{Key: "as", Value: "sections"},
 		}}},
 
-		// unwind the sections of the courses
+		// Unwind the sections of the courses
 		bson.D{{Key: "$unwind", Value: bson.D{
 			{Key: "path", Value: "$sections"},
 			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
 		}}},
 
-		// replace the courses with sections
+		// Replace the courses with sections
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
-		// keep order deterministic between calls
+		// Keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
-		// paginate the sections
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+		// Paginate the sections
+		bson.D{{Key: "$skip", Value: paginate["latter_offset"]}},
+		bson.D{{Key: "$limit", Value: paginate["limit"]}},
 	}
 
-	// perform aggregation on the pipeline
+	// Perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseSectionPipeline)
 	if err != nil {
 		respondWithInternalError(c, err)

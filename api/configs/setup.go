@@ -58,20 +58,22 @@ func GetCollection(collectionName string) *mongo.Collection {
 
 // Returns *options.FindOptions with a limit and offset applied. Produces an error if user-provided offset isn't able to be parsed.
 func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error) {
-	delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
+	// Removes offset (if present) in query --offset is not field in collections
+	delete(*query, "offset")
 
-	// parses offset if included in the query
+	// Parses offset if included in the query
 	var offset int64
 	var err error
 
 	var limit int64 = GetEnvLimit()
 
 	if c.Query("offset") == "" {
-		offset = 0 // default value for offset
+		offset = 0 // Default value for offset
 	} else {
 		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
 		if err != nil {
-			return options.Find().SetSkip(0).SetLimit(limit), err // default value for offset
+			// Default value for offset
+			return options.Find().SetSkip(0).SetLimit(limit), err
 		}
 	}
 
@@ -80,25 +82,26 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 
 // Returns the offsets and limit for pagination stage for aggregate endpoints pipeline (map, err)
 func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]int64, error) {
-	// remove formerOffset and latterOffset field (if present) in the query
+	// Remove formerOffset and latterOffset field (if present) in the query
 	delete(*query, "former_offset")
 	delete(*query, "latter_offset")
 
-	// parses offsets if included in the query
+	// Parses offsets if included in the query
+	// Initialize the default value of offset & limit right in the map
 	paginateMap := map[string]int64{
-		"former_offset": 0, // initialize the default value of offset & limit right in the map
+		"former_offset": 0,
 		"latter_offset": 0,
 		"limit":         GetEnvLimit(),
 	}
 	var err error
 
-	// loop through offset types (keys indicating offset values)
 	for key := range paginateMap {
-		// only change values of the map if specified
+		// Only change values of the map if specified
 		if key != "limit" && c.Query(key) != "" {
 			offset, parseErr := strconv.ParseInt(c.Query(key), 10, 64)
 			if parseErr != nil {
-				return paginateMap, parseErr // return default value of offset
+				// Return default value of offset
+				return paginateMap, parseErr
 			}
 			paginateMap[key] = offset
 		}

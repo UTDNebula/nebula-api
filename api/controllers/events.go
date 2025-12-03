@@ -227,7 +227,6 @@ func SectionsByRoomDetailed(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-
 	if len(sectionsByRoom.Events) == 0 {
 		respond(c, http.StatusNotFound, "error", "No section details found")
 		return
