@@ -279,7 +279,7 @@ func CourseSection(flag string, c *gin.Context) {
 // @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseProfessorSearch(c *gin.Context) {
-	courseProfessor("Search", c)
+	CourseProfessorV2("Search", c)
 }
 
 // @Id				courseProfessorById
@@ -292,11 +292,11 @@ func CourseProfessorSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseProfessorById(c *gin.Context) {
-	courseProfessor("ById", c)
+	CourseProfessorV2("ById", c)
 }
 
 // Get the professors of the courses, filters depending on the flag
-func courseProfessor(flag string, c *gin.Context) {
+func CourseProfessor(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
