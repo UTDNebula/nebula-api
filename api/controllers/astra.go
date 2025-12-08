@@ -85,11 +85,7 @@ func AstraEventsByBuilding(c *gin.Context) {
 	}
 
 	if astra_eventsByBuilding.Building == "" {
-		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
-			Status:  http.StatusNotFound,
-			Message: "error",
-			Data:    "No events found for the specified building",
-		})
+		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
 		return
 	}
 
@@ -144,11 +140,7 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	}
 
 	if roomEvents.Room == "" {
-		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
-			Status:  http.StatusNotFound,
-			Message: "error",
-			Data:    "No rooms found for the specified building or event",
-		})
+		respond(c, http.StatusNotFound, "error", "No rooms found for the specified building or event")
 		return
 	}
 
