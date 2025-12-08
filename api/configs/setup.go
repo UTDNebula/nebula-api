@@ -56,7 +56,8 @@ func GetCollection(collectionName string) *mongo.Collection {
 	return collection
 }
 
-// Returns *options.FindOptions with a limit and offset applied. Produces an error if user-provided offset isn't able to be parsed.
+// Returns *options.FindOptions with a limit and offset applied.
+// Produces an error if user-provided offset isn't able to be parsed.
 func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error) {
 	delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
 

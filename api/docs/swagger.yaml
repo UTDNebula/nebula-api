@@ -186,6 +186,15 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-schema_SingleBuildingEvents-schema_AstraEvent:
+    properties:
+      data:
+        $ref: '#/definitions/schema.SingleBuildingEvents-schema_AstraEvent'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-schema_SingleBuildingEvents-schema_SectionWithTime:
     properties:
       data:
@@ -737,6 +746,78 @@ paths:
           description: All AstraEvents with events on the inputted date
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_AstraEvent'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /astra/{date}/{building}:
+    get:
+      description: '"Returns AstraEvent based on the input date and building name"'
+      operationId: AstraEventsByBuilding
+      parameters:
+      - description: date (ISO format) to retrieve astra events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of event locations
+        in: path
+        name: building
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All sections with meetings on the specified date in the specified
+            building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_SingleBuildingEvents-schema_AstraEvent'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /astra/{date}/{building}/{room}:
+    get:
+      description: '"Returns AstraEvent based on the input date building name and
+        room number"'
+      operationId: AstraEventsByBuildingandRoom
+      parameters:
+      - description: date (ISO format) to retrieve astra events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of event locations
+        in: path
+        name: building
+        required: true
+        type: string
+      - description: room number for event
+        in: path
+        name: room
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All sections with meetings on the specified date in the specified
+            building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_SingleBuildingEvents-schema_AstraEvent'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
         "500":
           description: A string describing the error
           schema:
