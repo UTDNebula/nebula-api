@@ -17,7 +17,6 @@ import (
 )
 
 var professorCollection *mongo.Collection = configs.GetCollection("professors")
-var trendsProfCollection *mongo.Collection = configs.GetCollection("trends_prof_sections")
 
 // @Id				professorSearch
 // @Router			/professor [get]
@@ -417,76 +416,4 @@ func professorSection(flag string, c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", professorSections)
-}
-
-// @Id				trendsProfessorSectionSearch
-// @Router			/professor/sections/trends [get]
-// @Tags			Professors
-// @Description	"Returns all of the given professor's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
-// @Produce		json
-// @Param			first_name	query		string									true	"The professor's first name"
-// @Param			last_name	query		string									true	"The professor's last name"
-// @Success		200			{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
-// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsProfessorSectionSearch(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	professorQuery, _ := schema.FilterQuery[schema.Professor](c)
-
-	defer cancel()
-
-	pipeline := mongo.Pipeline{
-		// Match professor by first/last name
-		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// Expand sections array into individual documents
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$sections"},
-				{Key: "preserveNullAndEmptyArrays", Value: false},
-			}},
-		},
-
-		// Lookup course info using sections.course_reference
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "sections.course_reference"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections.course_details"},
-			}},
-		},
-
-		// Lookup professor info using sections.course_reference
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "professors"},
-				{Key: "localField", Value: "sections.professors"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections.professor_details"},
-			}},
-		},
-
-		// replace the courses with sections
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-	}
-
-	cursor, err := trendsProfCollection.Aggregate(ctx, pipeline)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	var results []schema.Section
-
-	if err := cursor.All(ctx, &results); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", results)
-
 }

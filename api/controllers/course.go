@@ -18,7 +18,6 @@ import (
 )
 
 var courseCollection *mongo.Collection = configs.GetCollection("courses")
-var trendsCourseCollection *mongo.Collection = configs.GetCollection("trends_course_sections")
 
 // @Id				courseSearch
 // @Router			/course [get]
@@ -302,77 +301,6 @@ func courseProfessor(flag string, c *gin.Context) {
 	respond(c, http.StatusOK, "success", courseProfessors)
 }
 
-// @Id				trendsCourseSectionSearch
-// @Router			/course/sections/trends [get]
-// @Tags			Courses
-// @Description	"Returns all of the given course's sections with Course and Professor data embedded. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
-// @Produce		json
-// @Param			course_number	query		string									true	"The course's official number"
-// @Param			subject_prefix	query		string									true	"The course's subject prefix"
-// @Success		200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
-// @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsCourseSectionSearch(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var courseSections []schema.Section
-	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
-	var err error
-
-	// Pipeline to query the Sections + Professors from the filtered courses
-	pipeline := mongo.Pipeline{
-		// filter the courses
-		bson.D{{Key: "$match", Value: courseQuery}},
-
-		// unwind the sections
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$sections"},
-				{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
-			}},
-		},
-
-		// lookup the professors of the sections
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "professors"},
-				{Key: "localField", Value: "sections.professors"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections.professor_details"},
-			}},
-		},
-
-		// lookup the course of the sections
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "sections.course_reference"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections.course_details"},
-			}},
-		},
-
-		// replace the courses with sections
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-	}
-
-	// perform aggregation on the pipeline
-	cursor, err := trendsCourseCollection.Aggregate(ctx, pipeline)
-	if err != nil {
-		// return error for any aggregation problem
-		respondWithInternalError(c, err)
-		return
-	}
-	// parse the array of sections of the course
-	if err = cursor.All(ctx, &courseSections); err != nil {
-		panic(err)
-	}
-	respond(c, http.StatusOK, "success", courseSections)
-}
-
 // getCoursePipeline returns the pipeline to aggregate the list of objects from course
 func getCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) mongo.Pipeline {
 	pipeline := mongo.Pipeline{}
@@ -413,7 +341,7 @@ func getCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) m
 	}
 	pipeline = append(pipeline, lookupStages...)
 
-	// Post-lookup: replace list of courses with looked-up objects, order, and paginate them
+	// Post-lookup: Replace list of courses with looked-up objects, order, and paginate them
 	postLookupStages := mongo.Pipeline{
 		// Unwind the toObjs of the sections
 		bson.D{
