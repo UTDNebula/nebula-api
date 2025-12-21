@@ -193,17 +193,16 @@ func courseSection(flag string, c *gin.Context) {
 	defer cancel()
 
 	var courseSections []schema.Section // the list of sections of the filtered courses
-	var courseQuery bson.M              // query of the courses (or the single course)
-	var err error                       // error
+	var courseQuery bson.M              // query of the courses (or the single course)                    // error
 
 	// determine the course query
-	courseQuery, err = getQuery[schema.Course](flag, c)
+	courseQuery, err := getQuery[schema.Course](flag, c)
 	if err != nil {
 		return
 	}
 
 	// determine the offset and limit for pagination stage & delete "offset" fields in professorQuery
-	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
+	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
@@ -215,32 +214,37 @@ func courseSection(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: courseQuery}},
 
 		// paginate the courses before pulling the sections from thoses courses
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}}, // skip to the specified offset
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},        // limit to the specified number of courses
+		paginate["former_offset"], paginate["limit"],
 
 		// lookup the sections of the courses
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
+		bson.D{
+			{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "sections"},
+				{Key: "localField", Value: "sections"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "sections"},
+			}},
+		},
 
 		// unwind the sections of the courses
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$sections"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
-		}}},
+		bson.D{
+			{Key: "$unwind", Value: bson.D{
+				{Key: "path", Value: "$sections"},
+				// Avoid course documents that can't be replaced
+				{Key: "preserveNullAndEmptyArrays", Value: false},
+			}},
+		},
 
 		// replace the courses with sections
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
 		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+		bson.D{
+			{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}},
+		},
 
 		// paginate the sections
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+		paginate["latter_offset"], paginate["limit"],
 	}
 
 	// perform aggregation on the pipeline
@@ -303,15 +307,15 @@ func courseProfessor(flag string, c *gin.Context) {
 
 	var courseProfessors []schema.Professor
 	var courseQuery bson.M
-	var err error
 
-	if courseQuery, err = getQuery[schema.Course](flag, c); err != nil {
+	courseQuery, err := getQuery[schema.Course](flag, c)
+	if err != nil {
 		return
 	}
 
 	// determine the offset and limit for pagination stage and delete
 	// "offset" field in professorQuery
-	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
+	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
@@ -323,30 +327,36 @@ func courseProfessor(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: courseQuery}},
 
 		// paginate the courses before pulling the sections from those courses
-		bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+		paginate["former_offset"],
+		paginate["limit"],
 
 		// lookup the sections of the courses
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
+		bson.D{
+			{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "sections"},
+				{Key: "localField", Value: "sections"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "sections"},
+			}},
+		},
 
 		// lookup the professors of the sections
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "professors"},
-			{Key: "localField", Value: "sections.professors"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "professors"},
-		}}},
+		bson.D{
+			{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "professors"},
+				{Key: "localField", Value: "sections.professors"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "professors"},
+			}},
+		},
 
 		// unwind the professors of the sections
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$professors"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
-		}}},
+		bson.D{
+			{Key: "$unwind", Value: bson.D{
+				{Key: "path", Value: "$professors"},
+				{Key: "preserveNullAndEmptyArrays", Value: false},
+			}},
+		},
 
 		// replace the courses with professors
 		bson.D{{Key: "$replaceWith", Value: "$professors"}},
@@ -355,8 +365,7 @@ func courseProfessor(flag string, c *gin.Context) {
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
 		// paginate the professors
-		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+		paginate["latter_offset"], paginate["limit"],
 	}
 
 	// perform aggregation on the pipeline
@@ -396,26 +405,32 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 		bson.D{{Key: "$match", Value: courseQuery}},
 
 		// unwind the sections
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$sections"},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
-		}}},
+		bson.D{
+			{Key: "$unwind", Value: bson.D{
+				{Key: "path", Value: "$sections"},
+				{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
+			}},
+		},
 
 		// lookup the professors of the sections
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "professors"},
-			{Key: "localField", Value: "sections.professors"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections.professor_details"},
-		}}},
+		bson.D{
+			{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "professors"},
+				{Key: "localField", Value: "sections.professors"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "sections.professor_details"},
+			}},
+		},
 
 		// lookup the course of the sections
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "courses"},
-			{Key: "localField", Value: "sections.course_reference"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections.course_details"},
-		}}},
+		bson.D{
+			{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "courses"},
+				{Key: "localField", Value: "sections.course_reference"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "sections.course_details"},
+			}},
+		},
 
 		// replace the courses with sections
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
@@ -431,7 +446,6 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-
 	// parse the array of sections of the course
 	if err = cursor.All(ctx, &courseSections); err != nil {
 		panic(err)

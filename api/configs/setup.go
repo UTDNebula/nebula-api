@@ -33,7 +33,7 @@ func ConnectDB() *mongo.Client {
 
 		defer cancel()
 
-		//ping the database
+		// ping the database
 		err = client.Ping(ctx, nil)
 		if err != nil {
 			log.Fatalf("Unable to ping database")
@@ -79,29 +79,30 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 	return options.Find().SetSkip(offset).SetLimit(limit), err
 }
 
-// Returns the offsets and limit for pagination stage for aggregate endpoints pipeline (map, err)
-func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]int64, error) {
-	// remove formerOffset and latterOffset field (if present) in the query
-	delete(*query, "former_offset")
-	delete(*query, "latter_offset")
-
-	// parses offsets if included in the query
-	paginateMap := map[string]int64{
-		"former_offset": 0, // initialize the default value of offset & limit right in the map
-		"latter_offset": 0,
-		"limit":         GetEnvLimit(),
+// Returns the offsets and limit for pagination stage for aggregate endpoints pipeline
+func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]bson.D, error) {
+	// Parses offsets if included in the query
+	paginateMap := map[string]bson.D{
+		"former_offset": nil,
+		"latter_offset": nil,
+		"limit":         {{Key: "$limit", Value: GetEnvLimit()}},
 	}
 	var err error
 
-	// loop through offset types (keys indicating offset values)
-	for key := range paginateMap {
-		// only change values of the map if specified
-		if key != "limit" && c.Query(key) != "" {
-			offset, parseErr := strconv.ParseInt(c.Query(key), 10, 64)
-			if parseErr != nil {
-				return paginateMap, parseErr // return default value of offset
+	// Loop through offset types (keys indicating offset values)
+	for field := range paginateMap {
+		// Only change values of the map if specified
+		if field != "limit" && c.Query(field) != "" {
+			// Remove offset field (if present) in the query
+			delete(*query, field)
+
+			// Build the stage from the parsed field
+			offset, err := strconv.ParseInt(c.Query(field), 10, 64)
+			if err != nil {
+				// Return default value of offset
+				return paginateMap, err
 			}
-			paginateMap[key] = offset
+			paginateMap[field] = bson.D{{Key: "$skip", Value: offset}}
 		}
 	}
 
