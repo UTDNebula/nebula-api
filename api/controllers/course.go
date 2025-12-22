@@ -126,19 +126,16 @@ func CourseAll(c *gin.Context) {
 	var courses []schema.Course
 
 	cursor, err := courseCollection.Find(ctx, bson.M{})
-
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-
 	// retrieve and parse all valid documents
 	if err = cursor.All(ctx, &courses); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	// return result
 	respond(c, http.StatusOK, "success", courses)
 }
 
@@ -164,10 +161,8 @@ func CourseAll(c *gin.Context) {
 // @Success		200						{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
 // @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
-func CourseSectionSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		courseSection("Search", c)
-	}
+func CourseSectionSearch(c *gin.Context) {
+	courseSection("Search", c)
 }
 
 // @Id				courseSectionById
@@ -179,10 +174,8 @@ func CourseSectionSearch() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
-func CourseSectionById() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		courseSection("ById", c)
-	}
+func CourseSectionById(c *gin.Context) {
+	courseSection("ById", c)
 }
 
 // courseSection gets the sections of the courses, filters depending on the flag
@@ -300,8 +293,8 @@ func courseProfessor(flag string, c *gin.Context) {
 	respond(c, http.StatusOK, "success", courseProfessors)
 }
 
-// buildCoursePipeline build the pipeline to aggregate the list of
-// specified objects from course
+// buildCoursePipeline build the pipeline to aggregate the
+// list of specified objects from course
 func buildCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) mongo.Pipeline {
 	coursePipeline := mongo.Pipeline{}
 

@@ -21,10 +21,8 @@ import (
 // @Param			subject_prefix	query		string									true	"The course's subject prefix"
 // @Success		200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsCourseSectionSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		genericTrendsSectionSearch("Course", c)
-	}
+func TrendsCourseSectionSearch(c *gin.Context) {
+	genericTrendsSectionSearch("Course", c)
 }
 
 // @Id				trendsProfessorSectionSearch
@@ -36,10 +34,8 @@ func TrendsCourseSectionSearch() gin.HandlerFunc {
 // @Param			last_name	query		string									true	"The professor's last name"
 // @Success		200			{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsProfessorSectionSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		genericTrendsSectionSearch("Professor", c)
-	}
+func TrendsProfessorSectionSearch(c *gin.Context) {
+	genericTrendsSectionSearch("Professor", c)
 }
 
 // genericTrendsSectionSearch handles trend-based section search requests for both

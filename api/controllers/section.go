@@ -153,10 +153,8 @@ func SectionById(c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
 // @Failure		500								{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]			"A string describing the error"
-func SectionCourseSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sectionCourse("Search", c)
-	}
+func SectionCourseSearch(c *gin.Context) {
+	sectionCourse("Search", c)
 }
 
 // @Id				sectionCourseById
@@ -168,10 +166,8 @@ func SectionCourseSearch() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[schema.Course]	"A course"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
-func SectionCourseById() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sectionCourse("ById", c)
-	}
+func SectionCourseById(c *gin.Context) {
+	sectionCourse("ById", c)
 }
 
 // Get an array of courses from sections, filtered based on the the flag
@@ -283,10 +279,8 @@ func sectionCourse(flag string, c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Professor]	"A list of professor"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func SectionProfessorSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sectionProfessor("Search", c)
-	}
+func SectionProfessorSearch(c *gin.Context) {
+	sectionProfessor("Search", c)
 }
 
 // @Id				sectionProfessorById
@@ -298,10 +292,8 @@ func SectionProfessorSearch() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
-func SectionProfessorById() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sectionProfessor("ById", c)
-	}
+func SectionProfessorById(c *gin.Context) {
+	sectionProfessor("ById", c)
 }
 
 // Get an array of professors from sections,
