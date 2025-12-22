@@ -305,7 +305,7 @@ func courseProfessor(flag string, c *gin.Context) {
 func buildCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) mongo.Pipeline {
 	coursePipeline := mongo.Pipeline{}
 
-	// Before looking up to-objects collection: Filter, then paginage the courses
+	// Before looking up the to-objects collection: Filter, then paginage the courses
 	preLookupStages := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: query}},
 
@@ -314,7 +314,7 @@ func buildCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D)
 	}
 	coursePipeline = append(coursePipeline, preLookupStages...)
 
-	// Looking up: aggregate list of to-objects from list of courses
+	// Looking up: Aggregate list of to-objects from list of courses
 	lookupStages := mongo.Pipeline{
 		// Lookup the list of sections from the courses
 		bson.D{
@@ -341,7 +341,7 @@ func buildCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D)
 	}
 	coursePipeline = append(coursePipeline, lookupStages...)
 
-	// After looking up to-objects collection: replace, order, and paginate the looked-up objects
+	// After looking up to-objects collection: Replace, order, and paginate the looked-up objects
 	postLookupStages := mongo.Pipeline{
 		// Unwind the toObjs of the sections
 		bson.D{

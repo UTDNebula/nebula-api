@@ -21,30 +21,10 @@ import (
 // @Param			subject_prefix	query		string									true	"The course's subject prefix"
 // @Success		200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsCourseSectionSearch(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var courseSections []schema.Section
-
-	trendsCourseCollection := configs.GetCollection("trends_course_sections")
-	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
-
-	// Pipeline to query the Sections + Professors from the filtered courses
-	pipeline := buildTrendsPipeline(courseQuery)
-
-	// perform aggregation on the pipeline
-	cursor, err := trendsCourseCollection.Aggregate(ctx, pipeline)
-	if err != nil {
-		// return error for any aggregation problem
-		respondWithInternalError(c, err)
-		return
+func TrendsCourseSectionSearch() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		genericTrendsSectionSearch("Course", c)
 	}
-	// parse the array of sections of the course
-	if err = cursor.All(ctx, &courseSections); err != nil {
-		panic(err)
-	}
-	respond(c, http.StatusOK, "success", courseSections)
 }
 
 // @Id				trendsProfessorSectionSearch
@@ -56,32 +36,49 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 // @Param			last_name	query		string									true	"The professor's last name"
 // @Success		200			{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsProfessorSectionSearch(c *gin.Context) {
+func TrendsProfessorSectionSearch() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		genericTrendsSectionSearch("Professor", c)
+	}
+}
+
+// genericTrendsSectionSearch handles trend-based section search requests for both
+// course sections and professor sections.
+func genericTrendsSectionSearch(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var results []schema.Section
+	var detailedSections []schema.Section
+	var trendsQuery bson.M
+	var trendsCollection *mongo.Collection
+	var err error
 
-	trendsProfCollection := configs.GetCollection("trends_prof_sections")
-	professorQuery, err := schema.FilterQuery[schema.Professor](c)
-	if err != nil {
-		return
+	if flag == "Course" {
+		trendsCollection = configs.GetCollection("trends_course_sections")
+		trendsQuery = bson.M{
+			"_id": c.Query("subject_prefix") + c.Query("course_number"),
+		}
+	} else {
+		trendsCollection = configs.GetCollection("trends_prof_sections")
+		trendsQuery, err = schema.FilterQuery[schema.Professor](c)
+		if err != nil {
+			return
+		}
 	}
 
-	pipeline := buildTrendsPipeline(professorQuery)
+	pipeline := buildTrendsPipeline(trendsQuery)
 
-	cursor, err := trendsProfCollection.Aggregate(ctx, pipeline)
+	cursor, err := trendsCollection.Aggregate(ctx, pipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-	if err := cursor.All(ctx, &results); err != nil {
+	if err := cursor.All(ctx, &detailedSections); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	respond(c, http.StatusOK, "success", results)
-
+	respond(c, http.StatusOK, "success", detailedSections)
 }
 
 // buildTrendsPipeline build the pipeline to embed the list of professors and course details
