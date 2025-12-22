@@ -12,9 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var trendsCourseCollection *mongo.Collection = configs.GetCollection("trends_course_sections")
-var trendsProfCollection *mongo.Collection = configs.GetCollection("trends_prof_sections")
-
 // @Id				trendsCourseSectionSearch
 // @Router			/course/sections/trends [get]
 // @Tags			Courses
@@ -29,48 +26,12 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 	defer cancel()
 
 	var courseSections []schema.Section
+
+	trendsCourseCollection := configs.GetCollection("trends_course_sections")
 	courseQuery := bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}
-	var err error
 
 	// Pipeline to query the Sections + Professors from the filtered courses
-	pipeline := mongo.Pipeline{
-		// filter the courses
-		bson.D{{Key: "$match", Value: courseQuery}},
-
-		// unwind the sections
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$sections"},
-				{Key: "preserveNullAndEmptyArrays", Value: false}, // avoid course documents that can't be replaced
-			}},
-		},
-
-		// lookup the professors of the sections
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "professors"},
-				{Key: "localField", Value: "sections.professors"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections.professor_details"},
-			}},
-		},
-
-		// lookup the course of the sections
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "sections.course_reference"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections.course_details"},
-			}},
-		},
-
-		// replace the courses with sections
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-	}
+	pipeline := buildTrendsPipeline(courseQuery)
 
 	// perform aggregation on the pipeline
 	cursor, err := trendsCourseCollection.Aggregate(ctx, pipeline)
@@ -97,24 +58,48 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
 func TrendsProfessorSectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	professorQuery, _ := schema.FilterQuery[schema.Professor](c)
-
 	defer cancel()
 
-	pipeline := mongo.Pipeline{
-		// Match professor by first/last name
-		bson.D{{Key: "$match", Value: professorQuery}},
+	var results []schema.Section
+
+	trendsProfCollection := configs.GetCollection("trends_prof_sections")
+	professorQuery, err := schema.FilterQuery[schema.Professor](c)
+	if err != nil {
+		return
+	}
+
+	pipeline := buildTrendsPipeline(professorQuery)
+
+	cursor, err := trendsProfCollection.Aggregate(ctx, pipeline)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if err := cursor.All(ctx, &results); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", results)
+
+}
+
+// buildTrendsPipeline build the pipeline to embed the list of professors and course details
+// directly in the queried list of sections
+func buildTrendsPipeline(fromObjQuery bson.M) mongo.Pipeline {
+	return mongo.Pipeline{
+		// Match professors from the query
+		bson.D{{Key: "$match", Value: fromObjQuery}},
 
 		// Expand sections array into individual documents
 		bson.D{
 			{Key: "$unwind", Value: bson.D{
 				{Key: "path", Value: "$sections"},
-				{Key: "preserveNullAndEmptyArrays", Value: false},
+				{Key: "preserveNullAndEmptyArrays", Value: false}, // Avoid documents that can't be replaced
 			}},
 		},
 
-		// Lookup course info using sections.course_reference
+		// Lookup courses info using sections.course_reference
 		bson.D{
 			{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "courses"},
@@ -124,7 +109,7 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 			}},
 		},
 
-		// Lookup professor info using sections.course_reference
+		// Lookup professors info using sections.course_reference
 		bson.D{
 			{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "professors"},
@@ -134,26 +119,10 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 			}},
 		},
 
-		// replace the courses with sections
+		// Replace the original objects with sections
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
-		// keep order deterministic between calls
+		// Keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 	}
-
-	cursor, err := trendsProfCollection.Aggregate(ctx, pipeline)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	var results []schema.Section
-
-	if err := cursor.All(ctx, &results); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", results)
-
 }

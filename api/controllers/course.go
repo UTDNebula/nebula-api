@@ -67,7 +67,6 @@ func CourseSearch(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-
 	// retrieve and parse all valid documents
 	if err = cursor.All(ctx, &courses); err != nil {
 		respondWithInternalError(c, err)
@@ -122,10 +121,9 @@ func CourseById(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
 	var courses []schema.Course
-
-	defer cancel()
 
 	cursor, err := courseCollection.Find(ctx, bson.M{})
 
@@ -187,13 +185,13 @@ func CourseSectionById() gin.HandlerFunc {
 	}
 }
 
-// get the sections of the courses, filters depending on the flag
+// courseSection gets the sections of the courses, filters depending on the flag
 func courseSection(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var courseSections []schema.Section // the list of sections of the filtered courses
-	var courseQuery bson.M              // query of the courses (or the single course)                    // error
+	var courseSections []schema.Section
+	var courseQuery bson.M
 
 	// Determine the course query
 	courseQuery, err := getQuery[schema.Course](flag, c)
@@ -209,7 +207,7 @@ func courseSection(flag string, c *gin.Context) {
 	}
 
 	// Pipeline to query the sections from the filtered courses
-	courseSectionPipeline := getCoursePipeline("sections", courseQuery, paginate)
+	courseSectionPipeline := buildCoursePipeline("sections", courseQuery, paginate)
 
 	// perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseSectionPipeline)
@@ -264,7 +262,7 @@ func CourseProfessorById(c *gin.Context) {
 	courseProfessor("ById", c)
 }
 
-// Get the professors of the courses, filters depending on the flag
+// courseProfessor gets the professors of the courses, filters depending on the flag
 func courseProfessor(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -285,7 +283,7 @@ func courseProfessor(flag string, c *gin.Context) {
 	}
 
 	// Pipeline to query the professors from the filtered courses
-	courseProfessorPipeline := getCoursePipeline("professors", courseQuery, paginate)
+	courseProfessorPipeline := buildCoursePipeline("professors", courseQuery, paginate)
 
 	// perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseProfessorPipeline)
@@ -298,23 +296,25 @@ func courseProfessor(flag string, c *gin.Context) {
 	if err = cursor.All(ctx, &courseProfessors); err != nil {
 		panic(err)
 	}
+
 	respond(c, http.StatusOK, "success", courseProfessors)
 }
 
-// getCoursePipeline returns the pipeline to aggregate the list of objects from course
-func getCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) mongo.Pipeline {
-	pipeline := mongo.Pipeline{}
+// buildCoursePipeline build the pipeline to aggregate the list of
+// specified objects from course
+func buildCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) mongo.Pipeline {
+	coursePipeline := mongo.Pipeline{}
 
-	// Pre-lookup: Filter, then paginage the courses
+	// Before looking up to-objects collection: Filter, then paginage the courses
 	preLookupStages := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: query}},
 
 		// Skip to the offset, then limit to the number of courses
 		paginate["former_offset"], paginate["limit"],
 	}
-	pipeline = append(pipeline, preLookupStages...)
+	coursePipeline = append(coursePipeline, preLookupStages...)
 
-	// For professors, we need to do double look-ups
+	// Looking up: aggregate list of to-objects from list of courses
 	lookupStages := mongo.Pipeline{
 		// Lookup the list of sections from the courses
 		bson.D{
@@ -339,9 +339,9 @@ func getCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) m
 			},
 		)
 	}
-	pipeline = append(pipeline, lookupStages...)
+	coursePipeline = append(coursePipeline, lookupStages...)
 
-	// Post-lookup: Replace list of courses with looked-up objects, order, and paginate them
+	// After looking up to-objects collection: replace, order, and paginate the looked-up objects
 	postLookupStages := mongo.Pipeline{
 		// Unwind the toObjs of the sections
 		bson.D{
@@ -351,15 +351,15 @@ func getCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) m
 			}},
 		},
 
-		// replace the courses with professors
+		// Replace the courses with professors
 		bson.D{{Key: "$replaceWith", Value: fmt.Sprintf("$%s", toObj)}},
 
-		// keep order deterministic between calls
+		// Keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
-		// paginate the professors
+		// Paginate the professors
 		paginate["latter_offset"], paginate["limit"],
 	}
-	pipeline = append(pipeline, postLookupStages...)
-	return pipeline
+	coursePipeline = append(coursePipeline, postLookupStages...)
+	return coursePipeline
 }
