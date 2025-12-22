@@ -64,10 +64,8 @@ import (
 // @Success		200				{object}	schema.APIResponse[[]schema.GradeData]	"An array of grade distributions for each semester included"
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400				{object}	schema.APIResponse[string]				"A string describing the error"
-func GradeAggregationSemester() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		gradesAggregation("semester", c)
-	}
+func GradeAggregationSemester(c *gin.Context) {
+	gradesAggregation("semester", c)
 }
 
 // @Id				gradeAggregationSectionType
@@ -83,10 +81,8 @@ func GradeAggregationSemester() gin.HandlerFunc {
 // @Success		200				{object}	schema.APIResponse[[]schema.TypedGradeData]	"An array of grade distributions for each section type for each semester included"
 // @Failure		500				{object}	schema.APIResponse[string]					"A string describing the error"
 // @Failure		400				{object}	schema.APIResponse[string]					"A string describing the error"
-func GradesAggregationSectionType() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		gradesAggregation("section_type", c)
-	}
+func GradesAggregationSectionType(c *gin.Context) {
+	gradesAggregation("section_type", c)
 }
 
 // @Id				gradeAggregationOverall
@@ -102,10 +98,8 @@ func GradesAggregationSectionType() gin.HandlerFunc {
 // @Success		200				{object}	schema.APIResponse[[]int]	"A grade distribution array"
 // @Failure		500				{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400				{object}	schema.APIResponse[string]	"A string describing the error"
-func GradesAggregationOverall() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		gradesAggregation("overall", c)
-	}
+func GradesAggregationOverall(c *gin.Context) {
+	gradesAggregation("overall", c)
 }
 
 // @Id				GradesByCourseID
@@ -117,10 +111,8 @@ func GradesAggregationOverall() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the course"
 // @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
-func GradesByCourseID() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		gradesAggregation("course_endpoint", c)
-	}
+func GradesByCourseID(c *gin.Context) {
+	gradesAggregation("course_endpoint", c)
 }
 
 // @Id				GradesBySectionID
@@ -132,10 +124,8 @@ func GradesByCourseID() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the section"
 // @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
-func GradesBySectionID() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		gradesAggregation("section_endpoint", c)
-	}
+func GradesBySectionID(c *gin.Context) {
+	gradesAggregation("section_endpoint", c)
 }
 
 // @Id				GradesByProfessorID
@@ -147,13 +137,11 @@ func GradesBySectionID() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the professor"
 // @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
-func GradesByProfessorID() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		gradesAggregation("professor_endpoint", c)
-	}
+func GradesByProfessorID(c *gin.Context) {
+	gradesAggregation("professor_endpoint", c)
 }
 
-// base function, returns the grade distribution depending on type of flag
+// gradesAggregation is base function, returns the grade distribution depending on type of flag
 func gradesAggregation(flag string, c *gin.Context) {
 	var grades []schema.GradeData
 	var results []map[string]any
@@ -222,18 +210,22 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 	for i, typeRegex := range typeRegexes {
 		branches[i] = bson.D{
-			{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
-				{Key: "input", Value: "$sections.section_number"},
-				{Key: "regex", Value: typeRegex},
-			}}}},
+			{Key: "case", Value: bson.D{
+				{Key: "$regexMatch", Value: bson.D{
+					{Key: "input", Value: "$sections.section_number"},
+					{Key: "regex", Value: typeRegex},
+				}},
+			}},
 			{Key: "then", Value: typeStrings[i]},
 		}
 
 		withSectionBranches[i] = bson.D{
-			{Key: "case", Value: bson.D{{Key: "$regexMatch", Value: bson.D{
-				{Key: "input", Value: "$section_number"},
-				{Key: "regex", Value: typeRegex},
-			}}}},
+			{Key: "case", Value: bson.D{
+				{Key: "$regexMatch", Value: bson.D{
+					{Key: "input", Value: "$section_number"},
+					{Key: "regex", Value: typeRegex},
+				}},
+			}},
 			{Key: "then", Value: typeStrings[i]},
 		}
 	}
@@ -249,7 +241,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 	}
 
 	// Stage to unwind sections
-	unwindSectionsStage := bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sections"}}}}
+	unwindSectionsStage := bson.D{
+		{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sections"}}},
+	}
 
 	// Stage to project grade distribution stage
 	project := bson.D{
@@ -301,7 +295,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 	groupGradesStage := bson.D{
 		{Key: "$group", Value: bson.D{
 			{Key: "_id", Value: groupID},
-			{Key: "grades", Value: bson.D{{Key: "$push", Value: "$grade_distribution"}}},
+			{Key: "grades", Value: bson.D{
+				{Key: "$push", Value: "$grade_distribution"},
+			}},
 		}},
 	}
 
@@ -502,8 +498,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 	// if this is for section type, add the 2 additional stages to the pipeline
 	if flag == "section_type" {
-		pipeline = append(pipeline, sortGradeDistributionsStage)
-		pipeline = append(pipeline, groupSemesterGradeDistributionsStage)
+		pipeline = append(pipeline, sortGradeDistributionsStage, groupSemesterGradeDistributionsStage)
 	}
 
 	// peform aggregation

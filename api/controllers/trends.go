@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -22,7 +23,7 @@ import (
 // @Success		200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
 func TrendsCourseSectionSearch(c *gin.Context) {
-	genericTrendsSectionSearch("Course", c)
+	trendsSectionSearch("Course", c)
 }
 
 // @Id				trendsProfessorSectionSearch
@@ -35,36 +36,42 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
 func TrendsProfessorSectionSearch(c *gin.Context) {
-	genericTrendsSectionSearch("Professor", c)
+	trendsSectionSearch("Professor", c)
 }
 
-// genericTrendsSectionSearch handles trend-based section search requests for both
-// course sections and professor sections.
-func genericTrendsSectionSearch(flag string, c *gin.Context) {
+// trendsSectionSearch handles trends-based section routes for both course and professor query.
+//
+// This is to reduce the repetitiveness of routes whose aggregation behaviors are basically similar.
+// This is subject to change as requests may be more complex in the future.
+func trendsSectionSearch(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	var detailedSections []schema.Section
+
+	// Note: If the branches become more complicated, we will have to refactor
 	var trendsQuery bson.M
 	var trendsCollection *mongo.Collection
 	var err error
-
-	if flag == "Course" {
+	switch flag {
+	case "Course":
 		trendsCollection = configs.GetCollection("trends_course_sections")
 		trendsQuery = bson.M{
 			"_id": c.Query("subject_prefix") + c.Query("course_number"),
 		}
-	} else {
+	case "Professor":
 		trendsCollection = configs.GetCollection("trends_prof_sections")
 		trendsQuery, err = schema.FilterQuery[schema.Professor](c)
 		if err != nil {
 			return
 		}
+	default:
+		// This should never happen, but acts as a fallback
+		respondWithInternalError(c, fmt.Errorf("invalid flag for trendsSectionSearch: %s", flag))
 	}
+	trendsPipeline := buildTrendsPipeline(trendsQuery)
 
-	pipeline := buildTrendsPipeline(trendsQuery)
-
-	cursor, err := trendsCollection.Aggregate(ctx, pipeline)
+	cursor, err := trendsCollection.Aggregate(ctx, trendsPipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
