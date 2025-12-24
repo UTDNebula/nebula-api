@@ -49,13 +49,15 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 
 	var detailedSections []schema.Section
 
-	// Note: If the branches become more complicated, we will have to refactor
-	var trendsQuery bson.M
+	// If the branches become complicated, refactor to make it more generic.
 	var trendsCollection *mongo.Collection
+	var trendsQuery bson.M
 	var err error
+
 	switch flag {
 	case "Course":
 		trendsCollection = configs.GetCollection("trends_course_sections")
+		// UTDTrends only uses prefix and number
 		trendsQuery = bson.M{
 			"_id": c.Query("subject_prefix") + c.Query("course_number"),
 		}
@@ -66,9 +68,11 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 			return
 		}
 	default:
-		// This should never happen, but acts as a fallback
-		respondWithInternalError(c, fmt.Errorf("invalid flag for trendsSectionSearch: %s", flag))
+		// This should never happen, but act as a fallback
+		err = fmt.Errorf("invalid flag for trendsSectionSearch: %s", flag)
+		respondWithInternalError(c, err)
 	}
+
 	trendsPipeline := buildTrendsPipeline(trendsQuery)
 
 	cursor, err := trendsCollection.Aggregate(ctx, trendsPipeline)
@@ -76,6 +80,8 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
+	defer cursor.Close(ctx)
+
 	if err := cursor.All(ctx, &detailedSections); err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -86,10 +92,10 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 
 // buildTrendsPipeline build the pipeline to embed the list of professors and course details
 // directly in the queried list of sections
-func buildTrendsPipeline(fromObjQuery bson.M) mongo.Pipeline {
+func buildTrendsPipeline(srcObjQuery bson.M) mongo.Pipeline {
 	return mongo.Pipeline{
-		// Match professors from the query
-		bson.D{{Key: "$match", Value: fromObjQuery}},
+		// Match the original objects from the query
+		bson.D{{Key: "$match", Value: srcObjQuery}},
 
 		// Expand sections array into individual documents
 		bson.D{
@@ -99,7 +105,7 @@ func buildTrendsPipeline(fromObjQuery bson.M) mongo.Pipeline {
 			}},
 		},
 
-		// Lookup courses info using sections.course_reference
+		// Embed the course details to the list of sections
 		bson.D{
 			{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "courses"},
@@ -109,7 +115,7 @@ func buildTrendsPipeline(fromObjQuery bson.M) mongo.Pipeline {
 			}},
 		},
 
-		// Lookup professors info using sections.course_reference
+		// Embed the professor details to the list of sections
 		bson.D{
 			{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "professors"},
@@ -123,6 +129,8 @@ func buildTrendsPipeline(fromObjQuery bson.M) mongo.Pipeline {
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
 		// Keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+		bson.D{
+			{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}},
+		},
 	}
 }

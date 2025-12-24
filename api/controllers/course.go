@@ -49,7 +49,7 @@ func CourseSearch(c *gin.Context) {
 
 	var courses []schema.Course
 
-	// build query key value pairs (only one value per key)
+	// Build query key value pairs (only one value per key)
 	query, err := getQuery[schema.Course]("Search", c)
 	if err != nil {
 		return
@@ -61,13 +61,15 @@ func CourseSearch(c *gin.Context) {
 		return
 	}
 
-	// get cursor for query results
+	// Get cursor for query results
 	cursor, err := courseCollection.Find(ctx, query, optionLimit)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-	// retrieve and parse all valid documents
+	defer cursor.Close(ctx)
+
+	// Retrieve and parse all valid documents
 	if err = cursor.All(ctx, &courses); err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -130,6 +132,8 @@ func CourseAll(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
+	defer cursor.Close(ctx)
+
 	// retrieve and parse all valid documents
 	if err = cursor.All(ctx, &courses); err != nil {
 		respondWithInternalError(c, err)
@@ -193,14 +197,14 @@ func courseSection(flag string, c *gin.Context) {
 	}
 
 	// Determine the offset and limit for pagination & delete offset fields
-	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
+	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
 	// Pipeline to query the sections from the filtered courses
-	courseSectionPipeline := buildCoursePipeline("sections", courseQuery, paginate)
+	courseSectionPipeline := buildCoursePipeline("sections", courseQuery, paginateMap)
 
 	// perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseSectionPipeline)
@@ -208,6 +212,8 @@ func courseSection(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
+	defer cursor.Close(ctx)
+
 	if err = cursor.All(ctx, &courseSections); err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -269,22 +275,24 @@ func courseProfessor(flag string, c *gin.Context) {
 	}
 
 	// Determine the offset and limit for pagination and delete offset field
-	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
+	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
 	// Pipeline to query the professors from the filtered courses
-	courseProfessorPipeline := buildCoursePipeline("professors", courseQuery, paginate)
+	courseProfPipeline := buildCoursePipeline("professors", courseQuery, paginateMap)
 
 	// perform aggregation on the pipeline
-	cursor, err := courseCollection.Aggregate(ctx, courseProfessorPipeline)
+	cursor, err := courseCollection.Aggregate(ctx, courseProfPipeline)
 	if err != nil {
 		// return error for any aggregation problem
 		respondWithInternalError(c, err)
 		return
 	}
+	defer cursor.Close(ctx)
+
 	// parse the array of professors of the course
 	if err = cursor.All(ctx, &courseProfessors); err != nil {
 		panic(err)
@@ -293,21 +301,20 @@ func courseProfessor(flag string, c *gin.Context) {
 	respond(c, http.StatusOK, "success", courseProfessors)
 }
 
-// buildCoursePipeline build the pipeline to aggregate the
-// list of specified objects from course
-func buildCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D) mongo.Pipeline {
+// buildCoursePipeline builds the pipeline to aggregate the list of specified objects from list of courses
+func buildCoursePipeline(targetObj string, query bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
 	coursePipeline := mongo.Pipeline{}
 
-	// Before looking up the to-objects collection: Filter, then paginage the courses
+	// Before looking up the target collection: Filter, then paginage the courses
 	preLookupStages := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: query}},
 
 		// Skip to the offset, then limit to the number of courses
-		paginate["former_offset"], paginate["limit"],
+		paginateMap["former_offset"], paginateMap["limit"],
 	}
 	coursePipeline = append(coursePipeline, preLookupStages...)
 
-	// Looking up: Aggregate list of to-objects from list of courses
+	// Looking up: Aggregate list of target objects from list of courses
 	lookupStages := mongo.Pipeline{
 		// Lookup the list of sections from the courses
 		bson.D{
@@ -319,7 +326,7 @@ func buildCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D)
 			}},
 		},
 	}
-	if toObj == "professors" {
+	if targetObj == "professors" {
 		lookupStages = append(lookupStages,
 			// Lookup the list of professors from the list of sections
 			bson.D{
@@ -334,25 +341,26 @@ func buildCoursePipeline(toObj string, query bson.M, paginate map[string]bson.D)
 	}
 	coursePipeline = append(coursePipeline, lookupStages...)
 
-	// After looking up to-objects collection: Replace, order, and paginate the looked-up objects
+	// After looking up target collection: Replace with, order, and paginate the looked-up objects
 	postLookupStages := mongo.Pipeline{
-		// Unwind the toObjs of the sections
+		// Unwind the target object of the sections
 		bson.D{
 			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: fmt.Sprintf("$%s", toObj)},
+				{Key: "path", Value: fmt.Sprintf("$%s", targetObj)},
 				{Key: "preserveNullAndEmptyArrays", Value: false},
 			}},
 		},
 
-		// Replace the courses with professors
-		bson.D{{Key: "$replaceWith", Value: fmt.Sprintf("$%s", toObj)}},
+		// Replace the courses with the target objects
+		bson.D{{Key: "$replaceWith", Value: fmt.Sprintf("$%s", targetObj)}},
 
 		// Keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
-		// Paginate the professors
-		paginate["latter_offset"], paginate["limit"],
+		// Paginate the target objects
+		paginateMap["latter_offset"], paginateMap["limit"],
 	}
+
 	coursePipeline = append(coursePipeline, postLookupStages...)
 	return coursePipeline
 }
