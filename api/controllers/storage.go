@@ -269,7 +269,7 @@ func DeleteObject(c *gin.Context) {
 		return
 	}
 	err = objectHandle.Delete(ctx)
-	if err != nil {
+	if err != nil && !errors.Is(err, storage.ErrObjectNotExist) {
 		respondWithInternalError(c, err)
 		return
 	}

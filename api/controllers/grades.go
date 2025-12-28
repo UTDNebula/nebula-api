@@ -156,7 +156,7 @@ func GradesByProfessorID() gin.HandlerFunc {
 // base function, returns the grade distribution depending on type of flag
 func gradesAggregation(flag string, c *gin.Context) {
 	var grades []schema.GradeData
-	var results []map[string]interface{}
+	var results []map[string]any
 
 	var sectionTypeGrades []schema.TypedGradeData // used to parse the response to section-type endpoints
 
