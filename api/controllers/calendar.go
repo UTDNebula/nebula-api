@@ -68,7 +68,8 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 	date := c.Param("date")
 
 	// URL decode the building parameter in case it contains special characters
-	buildingParam, err := url.QueryUnescape(c.Param("building"))
+	// Use PathUnescape for path parameters (not QueryUnescape)
+	buildingParam, err := url.PathUnescape(c.Param("building"))
 	if err != nil {
 		buildingParam = c.Param("building")
 	}
@@ -129,13 +130,14 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	date := c.Param("date")
 
 	// URL decode the building and room parameters in case they contain special characters
-	buildingParam, err := url.QueryUnescape(c.Param("building"))
+	// Use PathUnescape for path parameters (not QueryUnescape)
+	buildingParam, err := url.PathUnescape(c.Param("building"))
 	if err != nil {
 		buildingParam = c.Param("building")
 	}
 	building := strings.TrimSpace(buildingParam)
 
-	roomParam, err := url.QueryUnescape(c.Param("room"))
+	roomParam, err := url.PathUnescape(c.Param("room"))
 	if err != nil {
 		roomParam = c.Param("room")
 	}
@@ -164,17 +166,32 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 
 	// Parse response for requested building and room (case-insensitive matching)
 	buildingFound := false
+	var availableBuildings []string
+	var availableRooms []string
+
 	for _, b := range cometCalendarEvents.Buildings {
-		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
+		buildingName := strings.TrimSpace(b.Building)
+		availableBuildings = append(availableBuildings, buildingName)
+
+		if strings.EqualFold(buildingName, building) {
 			buildingFound = true
 			// Check if any rooms exist for this building
 			if len(b.Rooms) == 0 {
 				respond(c, http.StatusNotFound, "error", "No rooms found for the specified building")
 				return
 			}
-			// Look for the room
+			// Look for the room - try exact match first, then case-insensitive
 			for _, r := range b.Rooms {
-				if strings.EqualFold(strings.TrimSpace(r.Room), room) {
+				roomName := strings.TrimSpace(r.Room)
+				availableRooms = append(availableRooms, roomName)
+
+				// Try exact match first
+				if roomName == room {
+					roomEvents = r
+					break
+				}
+				// Try case-insensitive match
+				if strings.EqualFold(roomName, room) {
 					roomEvents = r
 					break
 				}
@@ -184,12 +201,16 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	}
 
 	if !buildingFound {
-		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
+		// Return helpful error with available buildings
+		respond(c, http.StatusNotFound, "error",
+			"No events found for the specified building. Available buildings: "+strings.Join(availableBuildings, ", "))
 		return
 	}
 
 	if roomEvents.Room == "" {
-		respond(c, http.StatusNotFound, "error", "No events found for the specified room")
+		// Return helpful error with available rooms
+		respond(c, http.StatusNotFound, "error",
+			"No events found for the specified room. Available rooms: "+strings.Join(availableRooms, ", "))
 		return
 	}
 
