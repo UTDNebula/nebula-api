@@ -166,51 +166,75 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 
 	// Parse response for requested building and room (case-insensitive matching)
 	buildingFound := false
-	var availableBuildings []string
-	var availableRooms []string
+	var matchedBuilding *schema.SingleBuildingEvents[schema.CometCalendarEvent]
 
 	for _, b := range cometCalendarEvents.Buildings {
 		buildingName := strings.TrimSpace(b.Building)
-		availableBuildings = append(availableBuildings, buildingName)
 
 		if strings.EqualFold(buildingName, building) {
 			buildingFound = true
-			// Check if any rooms exist for this building
-			if len(b.Rooms) == 0 {
-				respond(c, http.StatusNotFound, "error", "No rooms found for the specified building")
-				return
-			}
-			// Look for the room - try exact match first, then case-insensitive
-			for _, r := range b.Rooms {
-				roomName := strings.TrimSpace(r.Room)
-				availableRooms = append(availableRooms, roomName)
-
-				// Try exact match first
-				if roomName == room {
-					roomEvents = r
-					break
-				}
-				// Try case-insensitive match
-				if strings.EqualFold(roomName, room) {
-					roomEvents = r
-					break
-				}
-			}
+			matchedBuilding = &b
 			break
 		}
 	}
 
 	if !buildingFound {
-		// Return helpful error with available buildings
+		// Collect available buildings only when needed (limit to first 10 for performance)
+		maxBuildings := 10
+		if len(cometCalendarEvents.Buildings) < maxBuildings {
+			maxBuildings = len(cometCalendarEvents.Buildings)
+		}
+		availableBuildings := make([]string, 0, maxBuildings)
+		for i := 0; i < maxBuildings; i++ {
+			availableBuildings = append(availableBuildings, strings.TrimSpace(cometCalendarEvents.Buildings[i].Building))
+		}
+		buildingList := strings.Join(availableBuildings, ", ")
+		if len(cometCalendarEvents.Buildings) > 10 {
+			buildingList += " (and more...)"
+		}
 		respond(c, http.StatusNotFound, "error",
-			"No events found for the specified building. Available buildings: "+strings.Join(availableBuildings, ", "))
+			"No events found for the specified building. Available buildings: "+buildingList)
 		return
 	}
 
+	// Check if any rooms exist for this building
+	if len(matchedBuilding.Rooms) == 0 {
+		respond(c, http.StatusNotFound, "error", "No rooms found for the specified building")
+		return
+	}
+
+	// Look for the room - try exact match first, then case-insensitive
+	for _, r := range matchedBuilding.Rooms {
+		roomName := strings.TrimSpace(r.Room)
+
+		// Try exact match first
+		if roomName == room {
+			roomEvents = r
+			break
+		}
+		// Try case-insensitive match
+		if strings.EqualFold(roomName, room) {
+			roomEvents = r
+			break
+		}
+	}
+
 	if roomEvents.Room == "" {
-		// Return helpful error with available rooms
+		// Collect available rooms only when needed (limit to first 20 for performance)
+		maxRooms := 20
+		if len(matchedBuilding.Rooms) < maxRooms {
+			maxRooms = len(matchedBuilding.Rooms)
+		}
+		availableRooms := make([]string, 0, maxRooms)
+		for i := 0; i < maxRooms; i++ {
+			availableRooms = append(availableRooms, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
+		}
+		roomList := strings.Join(availableRooms, ", ")
+		if len(matchedBuilding.Rooms) > 20 {
+			roomList += " (and more...)"
+		}
 		respond(c, http.StatusNotFound, "error",
-			"No events found for the specified room. Available rooms: "+strings.Join(availableRooms, ", "))
+			"No events found for the specified room. Available rooms: "+roomList)
 		return
 	}
 
