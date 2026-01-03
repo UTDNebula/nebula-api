@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -113,8 +114,8 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	defer cancel()
 
 	date := c.Param("date")
-	building := c.Param("building")
-	room := c.Param("room")
+	building := strings.TrimSpace(c.Param("building"))
+	room := strings.TrimSpace(c.Param("room"))
 
 	var cometCalendarEvents schema.MultiBuildingEvents[schema.CometCalendarEvent]
 	var roomEvents schema.RoomEvents[schema.CometCalendarEvent]
@@ -131,11 +132,11 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 		}
 	}
 
-	//parse response for requested building and room
+	//parse response for requested building and room (case-insensitive matching)
 	for _, b := range cometCalendarEvents.Buildings {
-		if b.Building == building {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
 			for _, r := range b.Rooms {
-				if r.Room == room {
+				if strings.EqualFold(strings.TrimSpace(r.Room), room) {
 					roomEvents = r
 					break
 				}

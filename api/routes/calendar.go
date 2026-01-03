@@ -10,7 +10,8 @@ func CalendarRoute(router *gin.Engine) {
 	calendarGroup := router.Group("/calendar")
 
 	calendarGroup.OPTIONS("", controllers.Preflight)
-	calendarGroup.GET(":date", controllers.CometCalendarEvents)
-	calendarGroup.GET(":date/:building", controllers.CometCalendarEventsByBuilding)
+	// More specific routes must be defined first in Gin
 	calendarGroup.GET(":date/:building/:room", controllers.CometCalendarEventsByBuildingAndRoom)
+	calendarGroup.GET(":date/:building", controllers.CometCalendarEventsByBuilding)
+	calendarGroup.GET(":date", controllers.CometCalendarEvents)
 }
