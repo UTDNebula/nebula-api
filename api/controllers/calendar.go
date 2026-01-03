@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -65,26 +66,38 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 	defer cancel()
 
 	date := c.Param("date")
-	building := c.Param("building")
+
+	// URL decode the building parameter in case it contains special characters
+	buildingParam, err := url.QueryUnescape(c.Param("building"))
+	if err != nil {
+		buildingParam = c.Param("building")
+	}
+	building := strings.TrimSpace(buildingParam)
 
 	var cometCalendarEvents schema.MultiBuildingEvents[schema.CometCalendarEvent]
 	var cometCalendarEventsByBuilding schema.SingleBuildingEvents[schema.CometCalendarEvent]
 
 	// Find comet calendar event given date
-	err := cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
+	err = cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			cometCalendarEvents.Date = date
-			cometCalendarEvents.Buildings = []schema.SingleBuildingEvents[schema.CometCalendarEvent]{}
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
+			return
 		} else {
 			respondWithInternalError(c, err)
 			return
 		}
 	}
 
-	//parse response for requested building
+	// Check if any buildings exist
+	if len(cometCalendarEvents.Buildings) == 0 {
+		respond(c, http.StatusNotFound, "error", "No buildings found for the specified date")
+		return
+	}
+
+	// Parse response for requested building (case-insensitive matching)
 	for _, b := range cometCalendarEvents.Buildings {
-		if b.Building == building {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
 			cometCalendarEventsByBuilding = b
 			break
 		}
@@ -114,27 +127,52 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	defer cancel()
 
 	date := c.Param("date")
-	building := strings.TrimSpace(c.Param("building"))
-	room := strings.TrimSpace(c.Param("room"))
+
+	// URL decode the building and room parameters in case they contain special characters
+	buildingParam, err := url.QueryUnescape(c.Param("building"))
+	if err != nil {
+		buildingParam = c.Param("building")
+	}
+	building := strings.TrimSpace(buildingParam)
+
+	roomParam, err := url.QueryUnescape(c.Param("room"))
+	if err != nil {
+		roomParam = c.Param("room")
+	}
+	room := strings.TrimSpace(roomParam)
 
 	var cometCalendarEvents schema.MultiBuildingEvents[schema.CometCalendarEvent]
 	var roomEvents schema.RoomEvents[schema.CometCalendarEvent]
 
 	// Find comet calendar event given date
-	err := cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
+	err = cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			cometCalendarEvents.Date = date
-			cometCalendarEvents.Buildings = []schema.SingleBuildingEvents[schema.CometCalendarEvent]{}
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
+			return
 		} else {
 			respondWithInternalError(c, err)
 			return
 		}
 	}
 
-	//parse response for requested building and room (case-insensitive matching)
+	// Check if any buildings exist
+	if len(cometCalendarEvents.Buildings) == 0 {
+		respond(c, http.StatusNotFound, "error", "No buildings found for the specified date")
+		return
+	}
+
+	// Parse response for requested building and room (case-insensitive matching)
+	buildingFound := false
 	for _, b := range cometCalendarEvents.Buildings {
 		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
+			buildingFound = true
+			// Check if any rooms exist for this building
+			if len(b.Rooms) == 0 {
+				respond(c, http.StatusNotFound, "error", "No rooms found for the specified building")
+				return
+			}
+			// Look for the room
 			for _, r := range b.Rooms {
 				if strings.EqualFold(strings.TrimSpace(r.Room), room) {
 					roomEvents = r
@@ -145,8 +183,13 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 		}
 	}
 
+	if !buildingFound {
+		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
+		return
+	}
+
 	if roomEvents.Room == "" {
-		respond(c, http.StatusNotFound, "error", "No events found for the specified building or room")
+		respond(c, http.StatusNotFound, "error", "No events found for the specified room")
 		return
 	}
 
