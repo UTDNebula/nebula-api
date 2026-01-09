@@ -27,7 +27,7 @@ var cometCalendarCollection *mongo.Collection = configs.GetCollection("cometCale
 // @Description	"Returns CometCalendarEvent based on the input date"
 // @Produce		json
 // @Param			date	path		string																		true	"date (ISO format) to retrieve comet calendar events"
-// @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.CometCalendarEvent]]	"All CometCalendarEvents with events on the inputted date"
+// @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.Event]]	"All CometCalendarEvents with events on the inputted date"
 // @Failure		500		{object}	schema.APIResponse[string]													"A string describing the error"
 func CometCalendarEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -35,14 +35,14 @@ func CometCalendarEvents(c *gin.Context) {
 
 	date := c.Param("date")
 
-	var cometCalendarEvents schema.MultiBuildingEvents[schema.CometCalendarEvent]
+	var cometCalendarEvents schema.MultiBuildingEvents[schema.Event]
 
 	// Find comet calendar event given date
 	err := cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			cometCalendarEvents.Date = date
-			cometCalendarEvents.Buildings = []schema.SingleBuildingEvents[schema.CometCalendarEvent]{}
+			cometCalendarEvents.Buildings = []schema.SingleBuildingEvents[schema.Event]{}
 		} else {
 			respondWithInternalError(c, err)
 			return
@@ -59,7 +59,7 @@ func CometCalendarEvents(c *gin.Context) {
 // @Produce		json
 // @Param			date		path		string																			true	"date (ISO format) to retrieve comet calendar events"
 // @Param			building	path		string																			true	"building abbreviation of event locations"
-// @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.CometCalendarEvent]]	"All events on the specified date in the specified building"
+// @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.Event]]	"All events on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]													"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]													"A string describing the error"
 func CometCalendarEventsByBuilding(c *gin.Context) {
@@ -76,8 +76,8 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 	}
 	building := strings.TrimSpace(buildingParam)
 
-	var cometCalendarEvents schema.MultiBuildingEvents[schema.CometCalendarEvent]
-	var cometCalendarEventsByBuilding schema.SingleBuildingEvents[schema.CometCalendarEvent]
+	var cometCalendarEvents schema.MultiBuildingEvents[schema.Event]
+	var cometCalendarEventsByBuilding schema.SingleBuildingEvents[schema.Event]
 
 	// Find comet calendar event given date
 	err = cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
@@ -121,7 +121,7 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 // @Param			date		path		string																		true	"date (ISO format) to retrieve comet calendar events"
 // @Param			building	path		string																		true	"building abbreviation of event locations"
 // @Param			room		path		string																		true	"room number for event"
-// @Success		200			{object}	schema.APIResponse[schema.RoomEvents[schema.CometCalendarEvent]]	"All events on the specified date in the specified building and room"
+// @Success		200			{object}	schema.APIResponse[schema.RoomEvents[schema.Event]]	"All events on the specified date in the specified building and room"
 // @Failure		500			{object}	schema.APIResponse[string]												"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]												"A string describing the error"
 func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
@@ -144,8 +144,8 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	}
 	room := strings.TrimSpace(roomParam)
 
-	var cometCalendarEvents schema.MultiBuildingEvents[schema.CometCalendarEvent]
-	var roomEvents schema.RoomEvents[schema.CometCalendarEvent]
+	var cometCalendarEvents schema.MultiBuildingEvents[schema.Event]
+	var roomEvents schema.RoomEvents[schema.Event]
 
 	// Find comet calendar event given date
 	log.Printf("Querying cometCalendar collection for date: %s", date)
@@ -171,7 +171,7 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 
 	// Parse response for requested building and room (case-insensitive matching)
 	buildingFound := false
-	var matchedBuilding *schema.SingleBuildingEvents[schema.CometCalendarEvent]
+	var matchedBuilding *schema.SingleBuildingEvents[schema.Event]
 
 	for _, b := range cometCalendarEvents.Buildings {
 		buildingName := strings.TrimSpace(b.Building)
