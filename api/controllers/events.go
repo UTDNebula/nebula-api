@@ -177,7 +177,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 	var sectionsByRoom schema.RoomEvents[schema.Section]
 
-	// Step 1: Find events for the specified date
+	// Find events for the specified date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -189,7 +189,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 		}
 	}
 
-	// Step 2: Extract section IDs for the specified building and room
+	// Extract section IDs for the specified building and room
 	var sectionIDs []primitive.ObjectID
 	for _, b := range events.Buildings {
 		if b.Building == building {
@@ -215,7 +215,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 		return
 	}
 
-	// Step 3: Fetch full section objects from the sections collection
+	// Fetch full section objects from the sections collection
 	cursor, err := sectionCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
 	if err != nil {
 		respondWithInternalError(c, err)

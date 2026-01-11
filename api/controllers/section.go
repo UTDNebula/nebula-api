@@ -194,7 +194,8 @@ func sectionCourse(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: sectionQuery}},
 
 		// paginate the sections before pulling courses from those sections
-		paginate["former_offset"], paginate["limit"],
+		paginate["former_offset"],
+		paginate["limit"],
 
 		// lookup the course referenced by sections from the course collection
 		bson.D{
@@ -207,7 +208,11 @@ func sectionCourse(flag string, c *gin.Context) {
 		},
 
 		// project to remove every other fields except for courses
-		bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$course_reference"}}}},
+		bson.D{
+			{Key: "$project", Value: bson.D{
+				{Key: "courses", Value: "$course_reference"},
+			}},
+		},
 
 		// unwind the courses
 		bson.D{
@@ -224,7 +229,8 @@ func sectionCourse(flag string, c *gin.Context) {
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
 		// paginate the courses
-		paginate["latter_offset"], paginate["limit"],
+		paginate["latter_offset"],
+		paginate["limit"],
 	}
 
 	cursor, err := sectionCollection.Aggregate(ctx, sectionCoursePipeline)
@@ -316,10 +322,14 @@ func sectionProfessor(flag string, c *gin.Context) {
 
 	// pipeline to query an array of professors from filtered sections
 	sectionProfessorPipeline := mongo.Pipeline{
+		// filter the sections
 		bson.D{{Key: "$match", Value: sectionQuery}},
 
-		paginate["former_offset"], paginate["limit"],
+		// paginate the sections before pulling courses from those sections
+		paginate["former_offset"],
+		paginate["limit"],
 
+		// lookup the professors referenced by sections from the course collection
 		bson.D{
 			{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "professors"},
@@ -329,8 +339,14 @@ func sectionProfessor(flag string, c *gin.Context) {
 			}},
 		},
 
-		bson.D{{Key: "$project", Value: bson.D{{Key: "professors", Value: "$professors"}}}},
+		// project to remove every other fields except for professors
+		bson.D{
+			{Key: "$project", Value: bson.D{
+				{Key: "professors", Value: "$professors"},
+			}},
+		},
 
+		// unwind the professors
 		bson.D{
 			{Key: "$unwind", Value: bson.D{
 				{Key: "path", Value: "$professors"},
@@ -338,11 +354,15 @@ func sectionProfessor(flag string, c *gin.Context) {
 			}},
 		},
 
+		// replace the combinations of id and course with courses entirely
 		bson.D{{Key: "$replaceWith", Value: "$professors"}},
 
+		// keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
-		paginate["latter_offset"], paginate["limit"],
+		// paginate the courses
+		paginate["latter_offset"],
+		paginate["limit"],
 	}
 
 	cursor, err := sectionCollection.Aggregate(ctx, sectionProfessorPipeline)

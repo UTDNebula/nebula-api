@@ -230,7 +230,8 @@ func professorCourse(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: professorQuery}},
 
 		// paginate the professors before pulling the courses from those professor
-		paginate["former_offset"], paginate["limit"],
+		paginate["former_offset"],
+		paginate["limit"],
 
 		// lookup the array of sections from sections collection
 		bson.D{
@@ -272,7 +273,8 @@ func professorCourse(flag string, c *gin.Context) {
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
 		// paginate the courses
-		paginate["latter_offset"], paginate["limit"],
+		paginate["latter_offset"],
+		paginate["limit"],
 	}
 
 	// Perform aggreration on the pipeline
@@ -367,7 +369,8 @@ func professorSection(flag string, c *gin.Context) {
 		bson.D{{Key: "$match", Value: professorQuery}},
 
 		// paginate the professors before pulling the courses from those professor
-		paginate["former_offset"], paginate["limit"],
+		paginate["former_offset"],
+		paginate["limit"],
 
 		// lookup the array of sections from sections collection
 		bson.D{
@@ -399,7 +402,8 @@ func professorSection(flag string, c *gin.Context) {
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
 		// paginate the sections
-		paginate["latter_offset"], paginate["limit"],
+		paginate["latter_offset"],
+		paginate["limit"],
 	}
 
 	// Perform aggreration on the pipeline

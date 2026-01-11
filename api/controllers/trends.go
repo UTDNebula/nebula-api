@@ -40,9 +40,8 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 }
 
 // trendsSectionSearch handles trends-based section routes for both course and professor query.
-//
-// This is to reduce the repetitiveness of routes whose aggregation behaviors are basically similar.
-// This is subject to change as requests may be more complex in the future.
+// Reduce the repetitiveness of routes whose aggregation behaviors are identical.
+// This is subject to change as requests might be more complex.
 func trendsSectionSearch(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -73,9 +72,7 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 	}
 
-	trendsPipeline := buildTrendsPipeline(trendsQuery)
-
-	cursor, err := trendsCollection.Aggregate(ctx, trendsPipeline)
+	cursor, err := trendsCollection.Aggregate(ctx, buildTrendsPipeline(trendsQuery))
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -101,7 +98,8 @@ func buildTrendsPipeline(srcObjQuery bson.M) mongo.Pipeline {
 		bson.D{
 			{Key: "$unwind", Value: bson.D{
 				{Key: "path", Value: "$sections"},
-				{Key: "preserveNullAndEmptyArrays", Value: false}, // Avoid documents that can't be replaced
+				// Avoid documents that can't be replaced
+				{Key: "preserveNullAndEmptyArrays", Value: false},
 			}},
 		},
 
@@ -129,8 +127,6 @@ func buildTrendsPipeline(srcObjQuery bson.M) mongo.Pipeline {
 		bson.D{{Key: "$replaceWith", Value: "$sections"}},
 
 		// Keep order deterministic between calls
-		bson.D{
-			{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}},
-		},
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 	}
 }
