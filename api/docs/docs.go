@@ -4006,12 +4006,12 @@ const docTemplate = `{
         }
     ],
     "x-google-backend": {
-        "address": "https://nebula-api-1062216541483.us-central1.run.app"
+        "address": "https://dev-nebula-api-1062216541483.us-south1.run.app"
     },
     "x-google-endpoints": [
         {
             "allowCors": true,
-            "name": "nebula-api-2lntm5dxoflqn.apigateway.nebula-api-368223.cloud.goog"
+            "name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog"
         }
     ],
     "x-google-management": {
@@ -4040,12 +4040,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.2.0",
+	Version:          "1.1.0",
 	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"https", "http"},
-	Title:            "nebula-api",
-	Description:      "The public Nebula Labs API for access to pertinent UT Dallas data",
+	Title:            "dev-nebula-api",
+	Description:      "The developer Nebula Labs API for access to pertinent UT Dallas data",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
