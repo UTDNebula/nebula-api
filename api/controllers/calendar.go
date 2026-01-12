@@ -26,9 +26,9 @@ var cometCalendarCollection *mongo.Collection = configs.GetCollection("cometCale
 // @Tags			Events
 // @Description	"Returns CometCalendarEvent based on the input date"
 // @Produce		json
-// @Param			date	path		string																		true	"date (ISO format) to retrieve comet calendar events"
+// @Param			date	path		string															true	"date (ISO format) to retrieve comet calendar events"
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.Event]]	"All CometCalendarEvents with events on the inputted date"
-// @Failure		500		{object}	schema.APIResponse[string]													"A string describing the error"
+// @Failure		500		{object}	schema.APIResponse[string]										"A string describing the error"
 func CometCalendarEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -57,11 +57,11 @@ func CometCalendarEvents(c *gin.Context) {
 // @Tags			Events
 // @Description	"Returns CometCalendarEvent based on the input date and building name"
 // @Produce		json
-// @Param			date		path		string																			true	"date (ISO format) to retrieve comet calendar events"
-// @Param			building	path		string																			true	"building abbreviation of event locations"
+// @Param			date		path		string															true	"date (ISO format) to retrieve comet calendar events"
+// @Param			building	path		string															true	"building abbreviation of event locations"
 // @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.Event]]	"All events on the specified date in the specified building"
-// @Failure		500			{object}	schema.APIResponse[string]													"A string describing the error"
-// @Failure		404			{object}	schema.APIResponse[string]													"A string describing the error"
+// @Failure		500			{object}	schema.APIResponse[string]										"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]										"A string describing the error"
 func CometCalendarEventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -118,12 +118,12 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 // @Tags			Events
 // @Description	"Returns CometCalendarEvent based on the input date building name and room number"
 // @Produce		json
-// @Param			date		path		string																		true	"date (ISO format) to retrieve comet calendar events"
-// @Param			building	path		string																		true	"building abbreviation of event locations"
-// @Param			room		path		string																		true	"room number for event"
+// @Param			date		path		string												true	"date (ISO format) to retrieve comet calendar events"
+// @Param			building	path		string												true	"building abbreviation of event locations"
+// @Param			room		path		string												true	"room number for event"
 // @Success		200			{object}	schema.APIResponse[schema.RoomEvents[schema.Event]]	"All events on the specified date in the specified building and room"
-// @Failure		500			{object}	schema.APIResponse[string]												"A string describing the error"
-// @Failure		404			{object}	schema.APIResponse[string]												"A string describing the error"
+// @Failure		500			{object}	schema.APIResponse[string]							"A string describing the error"
+// @Failure		404			{object}	schema.APIResponse[string]							"A string describing the error"
 func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

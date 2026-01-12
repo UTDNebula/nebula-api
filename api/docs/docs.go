@@ -179,6 +179,144 @@ const docTemplate = `{
                 }
             }
         },
+        "/calendar/{date}": {
+            "get": {
+                "description": "\"Returns CometCalendarEvent based on the input date\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "CometCalendarEvents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve comet calendar events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All CometCalendarEvents with events on the inputted date",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_Event"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/calendar/{date}/{building}": {
+            "get": {
+                "description": "\"Returns CometCalendarEvent based on the input date and building name\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "CometCalendarEventsByBuilding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve comet calendar events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of event locations",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All events on the specified date in the specified building",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_SingleBuildingEvents-schema_Event"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/calendar/{date}/{building}/{room}": {
+            "get": {
+                "description": "\"Returns CometCalendarEvent based on the input date building name and room number\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "CometCalendarEventsByBuildingAndRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve comet calendar events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of event locations",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "room number for event",
+                        "name": "room",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All events on the specified date in the specified building and room",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_RoomEvents-schema_Event"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/course": {
             "get": {
                 "description": "\"Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
@@ -3074,6 +3212,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-schema_MultiBuildingEvents-schema_Event": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.MultiBuildingEvents-schema_Event"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent": {
             "type": "object",
             "properties": {
@@ -3130,6 +3282,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-schema_RoomEvents-schema_Event": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.RoomEvents-schema_Event"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-schema_RoomEvents-schema_Section": {
             "type": "object",
             "properties": {
@@ -3177,6 +3343,20 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/schema.SingleBuildingEvents-schema_AstraEvent"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_SingleBuildingEvents-schema_Event": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.SingleBuildingEvents-schema_Event"
                 },
                 "message": {
                     "type": "string"
@@ -3504,6 +3684,71 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.Event": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "contact_email": {
+                    "type": "string"
+                },
+                "contact_name": {
+                    "type": "string"
+                },
+                "contact_phone_number": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "event_tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "event_type": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "event_website": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "target_audience": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "topic": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "schema.GradeData": {
             "type": "object",
             "properties": {
@@ -3600,6 +3845,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.SingleBuildingEvents-schema_AstraEvent"
+                    }
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MultiBuildingEvents-schema_Event": {
+            "type": "object",
+            "properties": {
+                "buildings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SingleBuildingEvents-schema_Event"
                     }
                 },
                 "date": {
@@ -3755,6 +4014,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.AstraEvent"
+                    }
+                },
+                "room": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.RoomEvents-schema_Event": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Event"
                     }
                 },
                 "room": {
@@ -3935,6 +4208,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.RoomEvents-schema_AstraEvent"
+                    }
+                }
+            }
+        },
+        "schema.SingleBuildingEvents-schema_Event": {
+            "type": "object",
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.RoomEvents-schema_Event"
                     }
                 }
             }
