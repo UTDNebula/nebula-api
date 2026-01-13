@@ -585,6 +585,8 @@ definitions:
         type: string
       name:
         type: string
+      public_url:
+        type: string
       size:
         type: integer
       updated:
