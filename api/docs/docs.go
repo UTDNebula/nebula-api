@@ -3662,6 +3662,9 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "public_url": {
+                    "type": "string"
+                },
                 "size": {
                     "type": "integer"
                 },
