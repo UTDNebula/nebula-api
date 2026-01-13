@@ -3,10 +3,8 @@ package controllers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -178,15 +176,7 @@ func ObjectInfo(c *gin.Context) {
 		return
 	}
 
-	// Generate public URL
-	escapedObject := url.PathEscape(objectID)
-	url := fmt.Sprintf(
-		"https://storage.googleapis.com/%s/%s",
-		bucket,
-		escapedObject,
-	)
-
-	objectInfo := schema.ObjectInfoFromAttrs(attrs, url)
+	objectInfo := schema.ObjectInfoFromAttrs(attrs)
 	respond(c, http.StatusOK, "success", objectInfo)
 }
 
@@ -242,22 +232,13 @@ func PostObject(c *gin.Context) {
 		return
 	}
 
-	// Get object attributes
 	attrs, err := objectHandle.Attrs(ctx)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	// Generate public URL
-	escapedObject := url.PathEscape(objectID)
-	url := fmt.Sprintf(
-		"https://storage.googleapis.com/%s/%s",
-		bucket,
-		escapedObject,
-	)
-
-	objectInfo := schema.ObjectInfoFromAttrs(attrs, url)
+	objectInfo := schema.ObjectInfoFromAttrs(attrs)
 	respond(c, http.StatusOK, "success", objectInfo)
 }
 

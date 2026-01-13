@@ -260,10 +260,9 @@ type ObjectInfo struct {
 	MediaLink       string    `bson:"media_link" json:"media_link"`
 	Created         time.Time `bson:"created" json:"created"`
 	Updated         time.Time `bson:"updated" json:"updated"`
-	PublicUrl       string    `bson:"public_url" json:"public_url"`
 }
 
-func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs, url string) ObjectInfo {
+func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
 	// Don't show the bucket prefix externally
 	bucketName, _ := strings.CutPrefix(attrs.Bucket, BUCKET_PREFIX)
 	return ObjectInfo{
@@ -276,7 +275,6 @@ func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs, url string) ObjectInfo {
 		attrs.MediaLink,
 		attrs.Created,
 		attrs.Updated,
-		url,
 	}
 }
 
