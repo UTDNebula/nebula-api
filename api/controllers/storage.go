@@ -182,7 +182,7 @@ func ObjectInfo(c *gin.Context) {
 	escapedObject := url.PathEscape(objectID)
 	url := fmt.Sprintf(
 		"https://storage.googleapis.com/%s/%s",
-		bucket,
+		schema.BUCKET_PREFIX + bucket,
 		escapedObject,
 	)
 
@@ -253,7 +253,7 @@ func PostObject(c *gin.Context) {
 	escapedObject := url.PathEscape(objectID)
 	url := fmt.Sprintf(
 		"https://storage.googleapis.com/%s/%s",
-		bucket,
+		schema.BUCKET_PREFIX + bucket,
 		escapedObject,
 	)
 
