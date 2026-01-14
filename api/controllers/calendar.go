@@ -148,20 +148,16 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	var roomEvents schema.RoomEvents[schema.Event]
 
 	// Find comet calendar event given date
-	log.Printf("Querying cometCalendar collection for date: %s", date)
 	err = cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			log.Printf("No documents found for date: %s", date)
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		} else {
-			log.Printf("Database error for date %s: %v", date, err)
 			respondWithInternalError(c, err)
 			return
 		}
 	}
-	log.Printf("Found data for date %s with %d buildings", date, len(cometCalendarEvents.Buildings))
 
 	// Check if any buildings exist
 	if len(cometCalendarEvents.Buildings) == 0 {
@@ -185,12 +181,10 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 
 	if !buildingFound {
 		// Collect available buildings only when needed (limit to first 10 for performance)
-		maxBuildings := 10
-		if len(cometCalendarEvents.Buildings) < maxBuildings {
-			maxBuildings = len(cometCalendarEvents.Buildings)
-		}
+		maxBuildings := min(len(cometCalendarEvents.Buildings), 10)
+
 		availableBuildings := make([]string, 0, maxBuildings)
-		for i := 0; i < maxBuildings; i++ {
+		for i := range maxBuildings {
 			availableBuildings = append(availableBuildings, strings.TrimSpace(cometCalendarEvents.Buildings[i].Building))
 		}
 		buildingList := strings.Join(availableBuildings, ", ")
@@ -209,7 +203,6 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	}
 
 	// Look for the room - try exact match first, then case-insensitive
-	log.Printf("Searching for room '%s' in building '%s' with %d rooms", room, building, len(matchedBuilding.Rooms))
 	for _, r := range matchedBuilding.Rooms {
 		roomName := strings.TrimSpace(r.Room)
 
@@ -221,21 +214,16 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 		}
 		// Try case-insensitive match
 		if strings.EqualFold(roomName, room) {
-			log.Printf("Found case-insensitive match for room: %s (matched: %s)", room, roomName)
 			roomEvents = r
 			break
 		}
 	}
 
 	if roomEvents.Room == "" {
-		log.Printf("Room '%s' not found in building '%s'", room, building)
 		// Collect available rooms only when needed (limit to first 20 for performance)
-		maxRooms := 20
-		if len(matchedBuilding.Rooms) < maxRooms {
-			maxRooms = len(matchedBuilding.Rooms)
-		}
+		maxRooms := min(len(matchedBuilding.Rooms), 20)
 		availableRooms := make([]string, 0, maxRooms)
-		for i := 0; i < maxRooms; i++ {
+		for i := range maxRooms {
 			availableRooms = append(availableRooms, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
 		}
 		roomList := strings.Join(availableRooms, ", ")
@@ -247,6 +235,5 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 		return
 	}
 
-	log.Printf("Successfully found room events for %s/%s/%s", date, building, room)
 	respond(c, http.StatusOK, "success", roomEvents)
 }
