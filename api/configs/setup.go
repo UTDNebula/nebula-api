@@ -83,8 +83,8 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]bson.D, error) {
 	// Parses offsets if included in the query
 	paginateMap := map[string]bson.D{
-		"former_offset": nil,
-		"latter_offset": nil,
+		"former_offset": {{Key: "$skip", Value: 0}}, // Init the default value of offset
+		"latter_offset": {{Key: "$skip", Value: 0}},
 		"limit":         {{Key: "$limit", Value: GetEnvLimit()}},
 	}
 	var err error
