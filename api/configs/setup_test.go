@@ -118,3 +118,6 @@ func TestGetAggregateLimit(t *testing.T) {
 		}
 	})
 }
+
+// the new version:  paginateMap[former_offset] is no longer an int so we are testing for Key($skip) and the Value
+// we are also verifying delete(*query, field) logic 
