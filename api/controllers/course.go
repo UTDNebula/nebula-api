@@ -351,14 +351,22 @@ func courseProfessor(flag string, c *gin.Context) {
 		// replace the courses with professors
 		bson.D{{Key: "$replaceWith", Value: "$professors"}},
 
-		// keep order deterministic between calls
+		// remove duplicates by grouping on id and keeping the first duplicate
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$_id"},
+			{Key: "professor", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}}, // keep first duplicate in key: "professor", ignore the rest of the duplicates
+		}}},
+		
+		// extract professor out of "professor" key
+		bson.D{{Key: "$replaceWith", Value: "$professor"}},
+		
+		//keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
 		// paginate the professors
 		bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
 		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
-
 	// perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseProfessorPipeline)
 	if err != nil {
