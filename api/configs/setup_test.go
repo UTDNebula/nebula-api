@@ -61,28 +61,60 @@ func TestGetOptionLimit(t *testing.T) {
 	})
 }
 
-// TestGetAggregateLimit checks if multi-offset pagination works for aggregation pipelines
+// TestGetAggregateLimit now achieves regression testing
 func TestGetAggregateLimit(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	t.Run("MultipleOffsets", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		c, _ := gin.CreateTestContext(w)
-		c.Request = httptest.NewRequest("GET", "/?former_offset=10&latter_offset=5", nil)
+	t.Run("DefaultValuesWhenNoParams", func(t *testing.T) {
+		c, _ := gin.CreateTestContext(httptest.NewRecorder())
+		c.Request = httptest.NewRequest("GET", "/", nil)
 
-		query := bson.M{"former_offset": 10, "latter_offset": 5}
+		query := bson.M{}
 		paginateMap, err := GetAggregateLimit(&query, c)
 
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
-		// Check if former_offset was parsed correctly
-		if paginateMap["former_offset"] != 10 {
-			t.Errorf("Expected former_offset 10, got %d", paginateMap["former_offset"])
+
+		// Verify default initialization (The core of your refactor)
+		for _, key := range []string{"former_offset", "latter_offset"} {
+			stage := paginateMap[key]
+			if len(stage) == 0 || stage[0].Key != "$skip" || stage[0].Value != int64(0) {
+				t.Errorf("Expected default $skip 0 for %s, got %v", key, stage)
+			}
 		}
-		// Check if latter_offset was parsed correctly
-		if paginateMap["latter_offset"] != 5 {
-			t.Errorf("Expected latter_offset 5, got %d", paginateMap["latter_offset"])
+	})
+
+	t.Run("ValidOverrideFromQuery", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+		// Provide only one offset to see if the other remains default
+		c.Request = httptest.NewRequest("GET", "/?former_offset=50", nil)
+
+		query := bson.M{"former_offset": "to-be-deleted"}
+		paginateMap, _ := GetAggregateLimit(&query, c)
+
+		// Check override
+		former := paginateMap["former_offset"]
+		if former[0].Value != int64(50) {
+			t.Errorf("Expected former_offset to be 50, got %v", former[0].Value)
+		}
+
+		// Verify the query map was cleaned
+		if _, exists := query["former_offset"]; exists {
+			t.Error("Expected 'former_offset' to be deleted from query map")
+		}
+	})
+
+	t.Run("InvalidParamReturnsErrorAndDefaults", func(t *testing.T) {
+		c, _ := gin.CreateTestContext(httptest.NewRecorder())
+		c.Request = httptest.NewRequest("GET", "/?former_offset=invalid", nil)
+
+		query := bson.M{}
+		_, err := GetAggregateLimit(&query, c)
+
+		if err == nil {
+			t.Error("Expected error for non-integer offset")
 		}
 	})
 }
