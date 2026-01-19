@@ -287,12 +287,6 @@ type ObjectSignedURLBody struct {
 	Expiration string   `json:"expiration"` // timestamp for when the signed URL will expire
 }
 
-// Letters type
-type Letters struct {
-	Date    string `bson:"date" json:"date"`
-	Letters string `bson:"letters" json:"letters"`
-}
-
 // Academic Calendar type
 type AcademicCalendar struct {
 	Id                       string                    `bson:"_id" json:"_id"`
