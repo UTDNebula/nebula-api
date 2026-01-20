@@ -325,11 +325,55 @@ type AcademicCalendarDropDeadlines struct {
 	GraduateWithdrawlEnds     string `bson:"graduate_withdrawl_ends" json:"graduate_withdrawl_ends"`
 }
 
+// Study Abroad Schema
+// https://utdallas-ea.terradotta.com/models/services/REST/index.cfm?endpoint=/v3/program/10064/brochure
+
 // Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 	Data    T      `json:"data"`
+}
+
+type ProgramFacts struct {
+	Program_type            string   `bson:"program_type" json:"program_type"`
+	Majors                  []string `bson:"majors" json:"majors"`
+	Academic_level          []string `bson:"academic_level" json:"academic_level"`
+	Language_of_instruction []string `bson:"language_of_instruction" json:"language_of_instruction"`
+	Housing                 []string `bson:"housing" json:"housing"`
+}
+
+// BrochureMapProperties represents map properties for Google map widgets in program brochures
+type BrochureMapProperties struct {
+	Zoom *float64 `bson:"zoom,omitempty" json:"zoom,omitempty"`
+	Lat  *float64 `bson:"lat,omitempty" json:"lat,omitempty"`
+	Lng  *float64 `bson:"lng,omitempty" json:"lng,omitempty"`
+}
+
+// BrochureMedia represents media content (Image, Video, or Google map) in brochure widgets
+// Source: Terradotta /v3/program/{programId}/brochure endpoint
+type BrochureMedia struct {
+	Type          string                 `bson:"type" json:"type"` // "Image" | "Video" | "Google map"
+	ImageId       string                 `bson:"image_id,omitempty" json:"image_id,omitempty"`
+	ImageAltText  string                 `bson:"image_alt_text,omitempty" json:"image_alt_text,omitempty"`
+	EmbedCode     string                 `bson:"embed_code,omitempty" json:"embed_code,omitempty"`
+	MapProperties *BrochureMapProperties `bson:"map_properties,omitempty" json:"map_properties,omitempty"`
+}
+
+// BrochureParameter represents a single parameter row in an information sheet widget (e.g., Program Facts)
+type BrochureParameter struct {
+	ParameterId       string   `bson:"parameter_id" json:"parameter_id"`
+	ParameterName     string   `bson:"parameter_name" json:"parameter_name"`
+	ParameterType     string   `bson:"parameter_type" json:"parameter_type"`
+	ParameterOrdinal  int      `bson:"parameter_ordinal" json:"parameter_ordinal"`
+	ParameterGlossary string   `bson:"parameter_glossary,omitempty" json:"parameter_glossary,omitempty"`
+	AssignedValues    []string `bson:"assigned_values" json:"assigned_values"`
+}
+
+// BrochureInformationSheet represents an information sheet widget containing parameter rows
+// Source: Terradotta /v3/program/{programId}/brochure endpoint
+type BrochureInformationSheet struct {
+	Parameters []BrochureParameter `bson:"parameters" json:"parameters"`
 }
 
 /* Can uncomment these if we ever get evals
