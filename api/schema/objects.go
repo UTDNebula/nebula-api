@@ -327,53 +327,119 @@ type AcademicCalendarDropDeadlines struct {
 
 // Study Abroad Schema
 // https://utdallas-ea.terradotta.com/models/services/REST/index.cfm?endpoint=/v3/program/10064/brochure
-
-// Type for all API responses
-type APIResponse[T any] struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    T      `json:"data"`
+type Program struct {
+	ProgramID        int               `json:"programId"`
+	DateCreated      string            `json:"dateCreated"`
+	DateModified     string            `json:"dateModified"`
+	BannerImageID    int               `json:"bannerImageFileId"`
+	BannerImageTxt   string            `json:"bannerImageAltText"`
+	BrochureSections []BrochureSection `json:"sections"`
+	Costs            Cost              `json:"-"`
 }
 
-type ProgramFacts struct {
-	Program_type            string   `bson:"program_type" json:"program_type"`
-	Majors                  []string `bson:"majors" json:"majors"`
-	Academic_level          []string `bson:"academic_level" json:"academic_level"`
-	Language_of_instruction []string `bson:"language_of_instruction" json:"language_of_instruction"`
-	Housing                 []string `bson:"housing" json:"housing"`
+type BrochureSection struct {
+	ID          int      `json:"sectionId"`
+	DisplayName string   `json:"sectionDisplayName"`
+	Ordinal     int      `json:"sectionOrdinal"`
+	Default     int      `json:"sectionIsDefault"`
+	Widgets     []Widget `json:"sectionWidgets"`
+}
+type Widget struct {
+	Cols                    int               `json:"cols"`
+	Rows                    int               `json:"rows"`
+	X                       int               `json:"x"`
+	Y                       int               `json:"y"`
+	MinItemCols             int               `json:"minItemCols"`
+	ContentID               int               `json:"contentId"`
+	ContentType             string            `json:"contentType"`
+	ContentHTML             string            `json:"contentHTML"`
+	HeaderText              string            `json:"headerText"`
+	ContentInformationSheet *InformationSheet `json:"contentInformationSheet,omitempty"` // Often "". Making it a ptr will help w/ null handling
+	ContentMedia            *Media            `json:"contentMedia,omitempty"`
 }
 
-// BrochureMapProperties represents map properties for Google map widgets in program brochures
-type BrochureMapProperties struct {
-	Zoom *float64 `bson:"zoom,omitempty" json:"zoom,omitempty"`
-	Lat  *float64 `bson:"lat,omitempty" json:"lat,omitempty"`
-	Lng  *float64 `bson:"lng,omitempty" json:"lng,omitempty"`
+// Widget structs
+type InformationSheet struct {
+	Parameters []Parameter `json:"parameters"`
 }
 
-// BrochureMedia represents media content (Image, Video, or Google map) in brochure widgets
-// Source: Terradotta /v3/program/{programId}/brochure endpoint
-type BrochureMedia struct {
-	Type          string                 `bson:"type" json:"type"` // "Image" | "Video" | "Google map"
-	ImageId       string                 `bson:"image_id,omitempty" json:"image_id,omitempty"`
-	ImageAltText  string                 `bson:"image_alt_text,omitempty" json:"image_alt_text,omitempty"`
-	EmbedCode     string                 `bson:"embed_code,omitempty" json:"embed_code,omitempty"`
-	MapProperties *BrochureMapProperties `bson:"map_properties,omitempty" json:"map_properties,omitempty"`
+type Parameter struct {
+	ParameterId       int      `json:"parameterId"`
+	ParameterName     string   `json:"parameterName"`
+	ParameterType     string   `json:"parameterType"`
+	ParameterOrdinal  int      `json:"parameterOrdinal"`
+	ParameterGlossary string   `json:"parameterGlossary"`
+	AssignedValues    []string `json:"assignedValues"`
 }
 
-// BrochureParameter represents a single parameter row in an information sheet widget (e.g., Program Facts)
-type BrochureParameter struct {
-	ParameterId       string   `bson:"parameter_id" json:"parameter_id"`
-	ParameterName     string   `bson:"parameter_name" json:"parameter_name"`
-	ParameterType     string   `bson:"parameter_type" json:"parameter_type"`
-	ParameterOrdinal  int      `bson:"parameter_ordinal" json:"parameter_ordinal"`
-	ParameterGlossary string   `bson:"parameter_glossary,omitempty" json:"parameter_glossary,omitempty"`
-	AssignedValues    []string `bson:"assigned_values" json:"assigned_values"`
+type Media struct {
+	Type          string        `json:"type"`
+	ImageId       int           `json:"imageId"`
+	ImageAltText  string        `json:"imageAltText"`
+	EmbedCode     string        `json:"embedCode"`
+	MapProperties MapProperties `json:"mapProperties"`
 }
 
-// BrochureInformationSheet represents an information sheet widget containing parameter rows
-// Source: Terradotta /v3/program/{programId}/brochure endpoint
-type BrochureInformationSheet struct {
-	Parameters []BrochureParameter `bson:"parameters" json:"parameters"`
+type MapProperties struct {
+	ZoomLevel       int     `json:"zoomLevel"`
+	CenterLatitude  float64 `json:"centerLatitude"`
+	CenterLongitude float64 `json:"centerLongitude"`
+}
+
+// Cost Structs
+type Cost struct {
+	CostSheets            []CostSheetObject `json:"costSheets"`
+	NextAppCycleCostSheet NextAppCycle      `json:"nextAppCycleCostSheet"`
+}
+
+type CostSheetObject struct {
+	CostSheetID         int    `json:"costSheetId"`
+	Term                string `json:"term"`
+	Year                int    `json:"year"`
+	ProgramID           int    `json:"programId"`
+	Public              bool   `json:"public"`
+	DualYear            bool   `json:"dualYear"`
+	ApplicationDeadline string `json:"applicationDeadline"`
+}
+
+type NextAppCycle struct {
+	ID                        int        `json:"costSheetId"`
+	Term                      string     `json:"term"`
+	Year                      int        `json:"year"`
+	ProgramID                 int        `json:"programId"`
+	CostSheetNotes            string     `json:"costSheetNotes"`
+	Public                    bool       `json:"public"`
+	DtCreated                 string     `json:"dtCreated"`
+	DtModified                string     `json:"dtModified"`
+	UserID                    int        `json:"userId"`
+	IsAdmin                   bool       `json:"isAdmin"`
+	BillableCostSheetItems    []CostItem `json:"billableCostSheetItems"`
+	NonBillableCostSheetItems []CostItem `json:"nonBillableCostSheetItems"`
+	CreditCostSheetItems      []CostItem `json:"creditCostSheetItems"`
+	LocaleCurrencyData        LocaleData `json:"localeCurrencyData"`
+}
+
+// NextAppCycle helper struct
+type CostItem struct {
+	CostSheetItemID       int          `json:"costSheetItemId"`
+	CostSheetItemName     string       `json:"costSheetItemName"`
+	CostSheetItemCategory string       `json:"costSheetItemCategory"`
+	CostSheetItemType     string       `json:"costSheetItemType"`
+	CostSheetItemGlossary string       `json:"costSheetItemGlossary"`
+	CostSheetItemHint     string       `json:"costSheetItemHint"`
+	Ordinal               int          `json:"ordinal"`
+	Costs                 []CostDetail `json:"costs"`
+}
+
+type CostDetail struct {
+	CostKey      string  `json:"costKey"`
+	CostValue    float64 `json:"costValue"`
+	CostCurrency string  `json:"costCurrency"`
+}
+
+type LocaleData struct {
+	Locale                          string `json:"locale"`
+	ThreeLetterCurrencyAbbreviation string `json:"threeLetterCurrencyAbbreviation"`
 }
 
 /* Can uncomment these if we ever get evals
