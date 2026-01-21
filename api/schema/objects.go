@@ -325,6 +325,13 @@ type AcademicCalendarDropDeadlines struct {
 	GraduateWithdrawlEnds     string `bson:"graduate_withdrawl_ends" json:"graduate_withdrawl_ends"`
 }
 
+// Type for all API responses
+type APIResponse[T any] struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Data    T      `json:"data"`
+}
+
 // Study Abroad Schema
 // https://utdallas-ea.terradotta.com/models/services/REST/index.cfm?endpoint=/v3/program/10064/brochure
 type Program struct {
