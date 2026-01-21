@@ -333,15 +333,14 @@ type APIResponse[T any] struct {
 }
 
 
-// SearchResponse handles the 1:1 mapping of the discovery/search endpoint
+// SearchResponse Struct
 type SearchResponse struct {
 	Status     int               `json:"status"`
 	Message    string            `json:"message"`
 	TotalFound int               `json:"totalFound"` // Total matching programs (e.g., 27)
 	Start      int               `json:"start"`      // Offset for pagination
 	Limit      int               `json:"limit"`      // Results per page
-	// This slice contains the summary objects used to find the IDs
-	Items      []ProgramSummary  `json:"items"`
+	Items      []Program  `json:"items"`
 }
 
 // Program Schema
