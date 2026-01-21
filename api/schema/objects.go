@@ -332,8 +332,19 @@ type APIResponse[T any] struct {
 	Data    T      `json:"data"`
 }
 
-// Study Abroad Schema
-// https://utdallas-ea.terradotta.com/models/services/REST/index.cfm?endpoint=/v3/program/10064/brochure
+
+// SearchResponse handles the 1:1 mapping of the discovery/search endpoint
+type SearchResponse struct {
+	Status     int               `json:"status"`
+	Message    string            `json:"message"`
+	TotalFound int               `json:"totalFound"` // Total matching programs (e.g., 27)
+	Start      int               `json:"start"`      // Offset for pagination
+	Limit      int               `json:"limit"`      // Results per page
+	// This slice contains the summary objects used to find the IDs
+	Items      []ProgramSummary  `json:"items"`
+}
+
+// Program Schema
 type Program struct {
 	ProgramID        int               `json:"programId"`
 	DateCreated      string            `json:"dateCreated"`
