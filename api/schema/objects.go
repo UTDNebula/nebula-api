@@ -260,9 +260,10 @@ type ObjectInfo struct {
 	MediaLink       string    `bson:"media_link" json:"media_link"`
 	Created         time.Time `bson:"created" json:"created"`
 	Updated         time.Time `bson:"updated" json:"updated"`
+	PublicUrl       string    `bson:"public_url" json:"public_url"`
 }
 
-func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
+func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs, url string) ObjectInfo {
 	// Don't show the bucket prefix externally
 	bucketName, _ := strings.CutPrefix(attrs.Bucket, BUCKET_PREFIX)
 	return ObjectInfo{
@@ -275,6 +276,7 @@ func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
 		attrs.MediaLink,
 		attrs.Created,
 		attrs.Updated,
+		url,
 	}
 }
 
@@ -283,12 +285,6 @@ type ObjectSignedURLBody struct {
 	Method     string   `json:"method"`     // method to be used with signed URL. For example, PUT
 	Headers    []string `json:"headers"`    // headers for signed URL
 	Expiration string   `json:"expiration"` // timestamp for when the signed URL will expire
-}
-
-// Letters type
-type Letters struct {
-	Date    string `bson:"date" json:"date"`
-	Letters string `bson:"letters" json:"letters"`
 }
 
 // Academic Calendar type

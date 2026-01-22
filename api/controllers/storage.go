@@ -3,8 +3,10 @@ package controllers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -168,11 +170,23 @@ func ObjectInfo(c *gin.Context) {
 	// Get object attributes
 	attrs, err := objectHandle.Attrs(ctx)
 	if err != nil {
-		respondWithInternalError(c, err)
+		if errors.Is(err, storage.ErrObjectNotExist) {
+			respond(c, http.StatusNotFound, "error", "Object with given ID not found")
+		} else {
+			respondWithInternalError(c, err)
+		}
 		return
 	}
 
-	objectInfo := schema.ObjectInfoFromAttrs(attrs)
+	// Generate public URL
+	escapedObject := url.PathEscape(objectID)
+	url := fmt.Sprintf(
+		"https://storage.googleapis.com/%s/%s",
+		schema.BUCKET_PREFIX + bucket,
+		escapedObject,
+	)
+
+	objectInfo := schema.ObjectInfoFromAttrs(attrs, url)
 	respond(c, http.StatusOK, "success", objectInfo)
 }
 
@@ -228,13 +242,22 @@ func PostObject(c *gin.Context) {
 		return
 	}
 
+	// Get object attributes
 	attrs, err := objectHandle.Attrs(ctx)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	objectInfo := schema.ObjectInfoFromAttrs(attrs)
+	// Generate public URL
+	escapedObject := url.PathEscape(objectID)
+	url := fmt.Sprintf(
+		"https://storage.googleapis.com/%s/%s",
+		schema.BUCKET_PREFIX + bucket,
+		escapedObject,
+	)
+
+	objectInfo := schema.ObjectInfoFromAttrs(attrs, url)
 	respond(c, http.StatusOK, "success", objectInfo)
 }
 
@@ -265,7 +288,7 @@ func DeleteObject(c *gin.Context) {
 		return
 	}
 	err = objectHandle.Delete(ctx)
-	if err != nil {
+	if err != nil && !errors.Is(err, storage.ErrObjectNotExist) {
 		respondWithInternalError(c, err)
 		return
 	}

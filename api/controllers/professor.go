@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -108,7 +109,11 @@ func ProfessorById(c *gin.Context) {
 	// find and parse matching professor
 	err = professorCollection.FindOne(ctx, query).Decode(&professor)
 	if err != nil {
-		respondWithInternalError(c, err)
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			respond(c, http.StatusNotFound, "error", "No professors with given ID")
+		} else {
+			respondWithInternalError(c, err)
+		}
 		return
 	}
 

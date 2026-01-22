@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -100,7 +101,11 @@ func CourseById(c *gin.Context) {
 	// find and parse matching course
 	err = courseCollection.FindOne(ctx, query).Decode(&course)
 	if err != nil {
-		respondWithInternalError(c, err)
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			respond(c, http.StatusNotFound, "error", "No courses with given ID")
+		} else {
+			respondWithInternalError(c, err)
+		}
 		return
 	}
 
