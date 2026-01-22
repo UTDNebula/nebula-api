@@ -232,7 +232,8 @@ func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[s
 		bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
 	}
 
-	if endpoint == "courses" {
+	switch endpoint {
+	case "courses":
 		courseStages := mongo.Pipeline{
 			// project the courses referenced by each section in the array
 			bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
@@ -256,9 +257,8 @@ func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[s
 		}
 
 		return append(append(baseStages, courseStages...), paginationStages...)
-	}
 
-	if endpoint == "sections" {
+	case "sections":
 		sectionStages := mongo.Pipeline{
 			// project the sections
 			bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
@@ -274,9 +274,10 @@ func professorPipeline(endpoint string, professorQuery bson.M, paginateMap map[s
 		}
 
 		return append(append(baseStages, sectionStages...), paginationStages...)
-	}
 
-	return append(baseStages, paginationStages...) // fallback (shouldn't happen because we call with either courses or sections)
+	default:
+		panic("invalid endpoint for professorPipeline: " + endpoint)
+	}
 }
 
 // Get all of the courses of the professors depending on the type of flag
