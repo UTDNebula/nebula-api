@@ -3139,23 +3139,6 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.APIResponse-array_schema_SectionWithTime": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schema.SectionWithTime"
-                    }
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
         "schema.APIResponse-array_schema_TypedGradeData": {
             "type": "object",
             "properties": {
