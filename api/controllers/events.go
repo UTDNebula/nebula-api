@@ -62,6 +62,7 @@ func Events(c *gin.Context) {
 // @Failure		404			{object}	schema.APIResponse[string]												"A string describing the error"
 func EventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	date := c.Param("date")
 	building := c.Param("building")
@@ -69,7 +70,6 @@ func EventsByBuilding(c *gin.Context) {
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 	var eventsByBuilding schema.SingleBuildingEvents[schema.SectionWithTime]
 
-	defer cancel()
 
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
@@ -82,22 +82,26 @@ func EventsByBuilding(c *gin.Context) {
 			return
 		}
 	}
-
-	// filter for the specified building
+	
+	// case insensitive filter after data is retrieved
 	for _, b := range events.Buildings {
-		if b.Building == building {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
 			eventsByBuilding = b
 			break
 		}
 	}
-
-	// If no building is found, return an error
+	
+	// if no building is found, return an err with suggestion
 	if eventsByBuilding.Building == "" {
-		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
+		maxBuildings := min(len(events.Buildings), 10)
+		available := make([]string, 0, maxBuildings)
+		for i := 0; i < maxBuildings; i++ {
+			available = append(available, strings.TrimSpace(events.Buildings[i].Building))
+		}
+		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
-
-	respond(c, http.StatusOK, "success", eventsByBuilding)
+	respond(c, hhtp.StatusOK, "success", eventsByBuilding)
 }
 
 // @Id				eventsByRoom
