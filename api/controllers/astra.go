@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"time"
-
+	"strings" // adding missing import	
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
