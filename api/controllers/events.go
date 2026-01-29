@@ -188,8 +188,8 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	defer cancel()
 
 	date := c.Param("date")
-	building := c.Param("building")
-	room := c.Param("room")
+	building := strings.TrimSpace(c.Param("building"))
+	room := strings.TrimSpace(c.Param("room"))
 
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 	var sectionsByRoom schema.RoomEvents[schema.Section]
@@ -198,20 +198,21 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			events.Date = date
-			events.Buildings = []schema.SingleBuildingEvents[schema.SectionWithTime]{}
-		} else {
-			respondWithInternalError(c, err)
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
+		respondWithInternalError(c, err)
+		return
 	}
 
-	// Extract section IDs for the specified building and room
+	// Extract section IDs for the specified building and room using case-insensitive matching
 	var sectionIDs []primitive.ObjectID
+	buildingFound := false
 	for _, b := range events.Buildings {
-		if b.Building == building {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
+			buildingFound = true
 			for _, r := range b.Rooms {
-				if r.Room == room {
+				if strings.EqualFold(strings.TrimSpace(r.Room), room) {
 					sectionsByRoom.Room = r.Room
 					for _, event := range r.Events {
 						sectionIDs = append(sectionIDs, event.Section)
@@ -223,16 +224,17 @@ func SectionsByRoomDetailed(c *gin.Context) {
 		}
 	}
 
-	if len(sectionIDs) == 0 {
-		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
-			Status:  http.StatusNotFound,
-			Message: "error",
-			Data:    "No sections found for the specified building and room",
-		})
+	if !buildingFound {
+		respond(c, http.StatusNotFound, "error", "Building not found")
 		return
 	}
 
-	// Fetch full section objects from the sections collection
+	if len(sectionIDs) == 0 {
+		respond(c, http.StatusNotFound, "error", "No sections found for the specified room")
+		return
+	}
+
+	// Fetch full section objects from the sections collection using the extracted IDs
 	cursor, err := sectionCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
 	if err != nil {
 		respondWithInternalError(c, err)
