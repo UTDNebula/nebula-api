@@ -3892,6 +3892,9 @@ const docTemplate = `{
                 },
                 "section_number": {
                     "type": "string"
+                },
+                "total_students": {
+                    "type": "integer"
                 }
             }
         },

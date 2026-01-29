@@ -659,6 +659,8 @@ definitions:
         type: array
       section_number:
         type: string
+      total_students:
+        type: integer
     type: object
   schema.SectionWithTime:
     properties:
