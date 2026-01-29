@@ -76,7 +76,7 @@ func AstraEventsByBuilding(c *gin.Context) {
 			respond(c, hhtp.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
-		repondWithInternalError(c, err)
+		respondWithInternalError(c, err)
 		return
 	}	
 
@@ -151,7 +151,7 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 
 	// match room case-insesitively
 	for _, r := range matchedBuilding.Rooms {
-		if strings.EqualFold(strings.TrimSpace(r.room), room) {
+		if strings.EqualFold(strings.TrimSpace(r.Room), room) {
 			roomEvents = r
 			break
 		}
@@ -164,7 +164,7 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 			available = append(available, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
 		}
 		
-		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+Strings.Join(available, ", "))
+		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
 		return
 	}
 
