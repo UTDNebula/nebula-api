@@ -73,7 +73,7 @@ func AstraEventsByBuilding(c *gin.Context) {
 	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			respond(c, hhtp.StatusNotFound, "error", "No events found for the specified date")
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
 		respondWithInternalError(c, err)
