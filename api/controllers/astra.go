@@ -118,8 +118,8 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	defer cancel()
 
 	date := c.Param("date")
-	building := c.Param("building")
-	room := c.Param("room")
+	building := strings.TrimSpace(c.Param("building"))
+	room := strings.TrimSpace(c.Param("room"))
 
 	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
 	var roomEvents schema.RoomEvents[schema.AstraEvent]
@@ -128,29 +128,43 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			astra_events.Date = date
-			astra_events.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
-		} else {
-			respondWithInternalError(c, err)
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
+		}
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// matching buildings case-insensitively
+	var matchedBuilding *schema.SingleBuildingEvents[schema.AstraEvent]
+	for _, b := range astra_events.Buildings {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
+			matchedBuilding = &b
+			break
 		}
 	}
 
-	//parse response for requested building and room
-	for _, b := range astra_events.Buildings {
-		if b.Building == building {
-			for _, r := range b.Rooms {
-				if r.Room == room {
-					roomEvents = r
-					break
-				}
-			}
+	if matchedBuilding == nil {
+		respond(c, http.StatusNotFound, "error", "Building not found")
+		return
+	}
+
+	// match room case-insesitively
+	for _, r := range matchedBuilding.Rooms {
+		if strings.EqualFold(strings.TrimSpace(r.room), room) {
+			roomEvents = r
 			break
 		}
 	}
 
 	if roomEvents.Room == "" {
-		respond(c, http.StatusNotFound, "error", "No rooms found for the specified building or event")
+		maxRooms := min(len(matchedBuilding.Rooms), 20)
+		available := make([]string, 0, maxRooms)
+		for i := 0; i < maxRooms; i++ {
+			available = append(available, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
+		}
+		
+		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+Strings.Join(available, ", "))
 		return
 	}
 
