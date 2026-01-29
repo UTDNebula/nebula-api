@@ -62,7 +62,7 @@ func TestGetOptionLimit(t *testing.T) {
 
 // TestGetAggregateLimit achieves regression testing for the refactored logic
 func TestGetAggregateLimit(t *testing.T) {
-	gin.SetMode(gin.SetMode)
+	gin.SetMode(gin.TestMode)
 
 	t.Run("DefaultValuesWhenNoParams", func(t *testing.T) {
 		c, _ := gin.CreateTestContext(httptest.NewRecorder())
