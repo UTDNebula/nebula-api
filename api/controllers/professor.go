@@ -202,78 +202,6 @@ func ProfessorCourseById() gin.HandlerFunc {
 	}
 }
 
-// Pipeline builder for professor aggregate endpoints
-func professorPipeline(endpoint string, professorQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
-	// common stages
-	baseStages := mongo.Pipeline{
-		// filter the professors
-		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// paginate the professors before pulling the courses/sections from those professor
-		paginate["former_offset"],
-		paginate["limit"],
-
-		// lookup the array of sections from sections collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
-	}
-
-	var middleStages mongo.Pipeline
-	var unwindPath string
-
-	switch endpoint {
-	case "courses":
-		middleStages = mongo.Pipeline{
-			// project the courses referenced by each section in the array
-			bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
-
-			// lookup the array of courses from coures collection
-			bson.D{{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "courses"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "courses"},
-			}}},
-		}
-		unwindPath = "$courses"
-
-	case "sections":
-		middleStages = mongo.Pipeline{
-			// project the sections
-			bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
-		}
-		unwindPath = "$sections"
-
-	default:
-		panic("invalid endpoint for professorPipeline: " + endpoint)
-	}
-
-	// common pagination stages
-	paginationStages := mongo.Pipeline{
-		// unwind the courses/sections
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: unwindPath},
-			{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
-		}}},
-
-		// replace the combination of ids and courses/sections with the courses/sections entirely
-		bson.D{{Key: "$replaceWith", Value: unwindPath}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses/sections
-		paginate["latter_offset"],
-		paginate["limit"],
-	}
-
-	return append(append(baseStages, middleStages...), paginationStages...)
-}
-
 // Get all of the courses of the professors depending on the type of flag
 func professorCourse(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -402,4 +330,76 @@ func professorSection(flag string, c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", professorSections)
+}
+
+// Pipeline builder for professor aggregate endpoints
+func professorPipeline(endpoint string, professorQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
+	// common stages
+	baseStages := mongo.Pipeline{
+		// filter the professors
+		bson.D{{Key: "$match", Value: professorQuery}},
+
+		// paginate the professors before pulling the courses/sections from those professor
+		paginate["former_offset"],
+		paginate["limit"],
+
+		// lookup the array of sections from sections collection
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "sections"},
+			{Key: "localField", Value: "sections"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections"},
+		}}},
+	}
+
+	var middleStages mongo.Pipeline
+	var unwindPath string
+
+	switch endpoint {
+	case "courses":
+		middleStages = mongo.Pipeline{
+			// project the courses referenced by each section in the array
+			bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
+
+			// lookup the array of courses from coures collection
+			bson.D{{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "courses"},
+				{Key: "localField", Value: "courses"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "courses"},
+			}}},
+		}
+		unwindPath = "$courses"
+
+	case "sections":
+		middleStages = mongo.Pipeline{
+			// project the sections
+			bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
+		}
+		unwindPath = "$sections"
+
+	default:
+		panic("invalid endpoint for professorPipeline: " + endpoint)
+	}
+
+	// common pagination stages
+	paginationStages := mongo.Pipeline{
+		// unwind the courses/sections
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: unwindPath},
+			{Key: "preserveNullAndEmptyArrays", Value: false}, // to avoid the professor documents that can't be replaced
+		}}},
+
+		// replace the combination of ids and courses/sections with the courses/sections entirely
+		bson.D{{Key: "$replaceWith", Value: unwindPath}},
+
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+
+		// paginate the courses/sections
+		paginate["latter_offset"],
+		paginate["limit"],
+	}
+
+	return append(append(baseStages, middleStages...), paginationStages...)
 }
