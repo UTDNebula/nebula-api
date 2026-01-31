@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"encoding/json"
 	"strings"
 	"time"
 
@@ -324,6 +325,73 @@ type APIResponse[T any] struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 	Data    T      `json:"data"`
+}
+
+// Program Schema
+type Program struct {
+	Id               int               `json:"programId"`
+	Date_created      string            `json:"dateCreated"`
+	Date_modified     string            `json:"dateModified"`
+	BrochureSections []BrochureSection `json:"sections"`
+}
+
+type BrochureSection struct {
+	Id           int      `json:"sectionId"`
+	Display_name string   `json:"sectionDisplayName"` // EX: (Program Overview, About , Academices and Courses, Costs, Practical Infrormation, Apply For exchagne, etc. )
+	Default      int      `json:"sectionIsDefault"`   // isDefault means this section is a section in every program
+	Widgets      []Widget `json:"sectionWidgets"`     // Widgets in section EX: (content (text), media, information sheet, etc.)
+}
+
+type Widget struct {
+	Id                  int             `json:"contentId"`   // There can exist widgets in different programs with the same Widget (so same contentid) - identifies duplicates.
+	Content_type        string          `json:"contentType"` // EX: content (text), media, information sheet, etc.
+	Content_HTML        string          `json:"contentHTML"`
+	Header_text         string          `json:"headerText"`
+	Content_information json.RawMessage `json:"contentInformationSheet"` // Fields: id, glossary, assignedValues, name, ordinal, type. Search Queries can be filtered with this information.
+	Content_media       json.RawMessage `json:"contentMedia"`            // Fields: type, imageId, locationId, embedCode, imageAltText, mapProperties {Zoom Level, center latitude, center longitude}. Images or Videos.
+}
+
+// Cost Structs
+type Cost struct {
+	Id                int             `json:"costSheetId"`
+	Term              string          `json:"term"`
+	Year              int             `json:"year"`
+	Program_id        int             `json:"programId"`
+	Public            bool            `json:"public"`
+	Cost_sheet_notes  string          `json:"costSheetNotes"` // Disclaimers at the bottom of the page. Probably legally important.
+	DtCreated         string          `json:"dtCreated"`
+	DtModified        string          `json:"dtModified"`
+	Billable_items    []CostItem      `json:"billableCostSheetItems"`    // Items students pay to UTD. EX: Tuition etc.
+	Nonbillable_items []CostItem      `json:"nonBillableCostSheetItems"` // Items students are responsible for paying for (not to UTD)	EX: airfare and housing
+	Credit_cost_items []CostItem      `json:"creditCostSheetItems"`      // Scholarships and other financial aid
+	Cycle_metadata    []CycleMetadata `json:"costSheets"`                // Metadata information about previous and upcoming cycles
+}
+
+// NextAppCycle helper struct
+type CostItem struct {
+	Id            int          `json:"costSheetItemId"`
+	Item_name     string       `json:"costSheetItemName"`
+	Item_category string       `json:"costSheetItemCategory"`
+	Item_type     string       `json:"costSheetItemType"`
+	Item_glossary string       `json:"costSheetItemGlossary"`
+	Item_hint     string       `json:"costSheetItemHint"`
+	Costs         []CostDetail `json:"costs"` // This is an array which has a lot of irrelevant fields, therefore its worth making a structure too retain only the important ones.
+}
+
+type CostDetail struct {
+	Id           int     `json:"costSheetItemCostsId"` // Unique ID for this specific price record
+	CostValue    float64 `json:"costValue"`
+	CostCurrency string  `json:"costCurrency"`
+}
+
+type CycleMetadata struct {
+	Id                  int    `json:"costSheetId"`
+	Term                string `json:"term"`
+	Year                int    `json:"year"`
+	Program_id          int    `json:"programId"`
+	Public              bool   `json:"public"`
+	DualYear            bool   `json:"dualYear"`
+	ApplicationDeadline string `json:"applicationDeadline"`
 }
 
 /* Can uncomment these if we ever get evals
