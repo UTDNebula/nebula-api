@@ -127,8 +127,8 @@ func SectionById(c *gin.Context) {
 // @Tags			Sections
 // @Description	"Returns paginated list of courses of all the sections matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
 // @Produce		json
-// @Param			former_offset					query		number								false	"The starting position of the current page of sections (e.g. For starting at the 16th section, former_offset=16)."
-// @Param			latter_offset					query		number								false	"The starting position of the current page of courses (e.g. For starting at the 16th course, latter_offset=16)."
+// @Param			former_offset					query		number								false	"The starting position of the current page of professors (e.g. For starting at the 17th professor, former_offset=16)."
+// @Param			latter_offset					query		number								false	"The starting position of the current page of sections (e.g. For starting at the 17th professor, offset=16)."
 // @Param			section_number					query		string								false	"The section's official number"
 // @Param			academic_session.name			query		string								false	"The name of the academic session of the section"
 // @Param			academic_session.start_date		query		string								false	"The date of classes starting for the section"
