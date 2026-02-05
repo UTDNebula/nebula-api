@@ -301,78 +301,70 @@ func courseProfessor(flag string, c *gin.Context) {
 }
 
 // buildCoursePipeline builds the pipeline to aggregate the list of specified objects from list of courses
-func buildCoursePipeline(target string, query bson.M, paginate map[string]bson.D) mongo.Pipeline {
-	coursePipeline := mongo.Pipeline{}
-
-	// Filter and paginate the list of courses
-	filterStages := mongo.Pipeline{
-		bson.D{{Key: "$match", Value: query}},
+func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
+	baseStages := mongo.Pipeline{
+		bson.D{{Key: "$match", Value: courseQuery}},
 
 		// Skip to the offset, then limit to the number of courses
 		paginate["former_offset"],
 		paginate["limit"],
-	}
-	coursePipeline = append(coursePipeline, filterStages...)
 
-	// Look up the list of target objects from list of courses
-	lookupStages := mongo.Pipeline{
 		// Lookup the list of sections from the courses
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "sections"},
-				{Key: "localField", Value: "sections"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections"},
-			}},
-		},
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "sections"},
+			{Key: "localField", Value: "sections"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections"},
+		}}},
 	}
-	if target == "professors" {
+
+	var lookupStages, removeDupStages mongo.Pipeline
+
+	switch endpoint {
+	case "sections":
+		lookupStages, removeDupStages = mongo.Pipeline{}, mongo.Pipeline{}
+
+	case "professors":
 		// Lookup the list of professors from the list of sections
-		lookupStages = append(lookupStages,
-			bson.D{
-				{Key: "$lookup", Value: bson.D{
-					{Key: "from", Value: "professors"},
-					{Key: "localField", Value: "sections.professors"},
-					{Key: "foreignField", Value: "_id"},
-					{Key: "as", Value: "professors"},
-				}},
-			},
-		)
-	}
-	coursePipeline = append(coursePipeline, lookupStages...)
+		lookupStages = mongo.Pipeline{
+			bson.D{{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "professors"},
+				{Key: "localField", Value: "sections.professors"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "professors"},
+			}}},
+		}
 
-	replaceStages := mongo.Pipeline{
-		// Unwind the target object of the sections
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$" + target},
-				{Key: "preserveNullAndEmptyArrays", Value: false}, // Avoid documents that can't be replaced
-			}},
-		},
-
-		// Replace the courses with the target objects
-		bson.D{{Key: "$replaceWith", Value: "$" + target}},
-	}
-	coursePipeline = append(coursePipeline, replaceStages...)
-
-	if target == "professors" {
 		// Remove the duplicate professors
-		removeDuplicateStages := mongo.Pipeline{
-			bson.D{
-				{Key: "$group", Value: bson.D{
-					{Key: "_id", Value: "$_id"},
-					{Key: "professor", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}}, // Keep first duplicate in key: "professor"
-				}},
-			},
+		removeDupStages = mongo.Pipeline{
+			// Group all duplicate professors by ID, and keep first duplicate in key: "professor"
+			bson.D{{Key: "$group", Value: bson.D{
+				{Key: "_id", Value: "$_id"},
+				{Key: "professor", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
+			}}},
 
 			// Extract professor out of "professor" key
 			bson.D{{Key: "$replaceWith", Value: "$professor"}},
 		}
-		coursePipeline = append(coursePipeline, removeDuplicateStages...)
+
+	default:
+		panic("invalid endpoint for coursePipeline: " + endpoint)
 	}
 
-	// Sort and then paginate the list of target objs
-	sortStages := mongo.Pipeline{
+	replaceStages := mongo.Pipeline{
+		// Unwind the target object of the sections
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$" + endpoint},
+			{Key: "preserveNullAndEmptyArrays", Value: false},
+		}}},
+
+		// Replace the courses with the target objects
+		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
+	}
+
+	middleStages := append(append(lookupStages, replaceStages...), removeDupStages...)
+
+	paginationStages := mongo.Pipeline{
 		// Keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
@@ -380,7 +372,6 @@ func buildCoursePipeline(target string, query bson.M, paginate map[string]bson.D
 		paginate["latter_offset"],
 		paginate["limit"],
 	}
-	coursePipeline = append(coursePipeline, sortStages...)
 
-	return coursePipeline
+	return append(append(baseStages, middleStages...), paginationStages...)
 }
