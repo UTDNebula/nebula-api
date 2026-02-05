@@ -207,11 +207,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	}
 
 	if len(sectionIDs) == 0 {
-		c.JSON(http.StatusNotFound, schema.APIResponse[string]{
-			Status:  http.StatusNotFound,
-			Message: "error",
-			Data:    "No sections found for the specified building and room",
-		})
+		respond(c, http.StatusNotFound, "error", "No sections found for the specified building and room")
 		return
 	}
 
