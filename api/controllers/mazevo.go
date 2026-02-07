@@ -12,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
-
 	"github.com/UTDNebula/nebula-api/api/schema"
 )
 
