@@ -326,6 +326,7 @@ type Degree struct {
 	Department   string        `bson:"department" json:"department"`
 	StemDesigned bool          `bson:"stem_designated" json:"stem_designated"`
 	DegreeLevels []DegreeLevel `bson:"degreeLevels" json:"degreeLevels"`
+	PublicUrl    string        `bson:"public_url" json:"public_url"`
 }
 
 type DegreeLevel struct {
