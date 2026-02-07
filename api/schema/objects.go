@@ -323,6 +323,20 @@ type AcademicCalendarDropDeadlines struct {
 	GraduateWithdrawlEnds     string `bson:"graduate_withdrawl_ends" json:"graduate_withdrawl_ends"`
 }
 
+type Degree struct {
+	Id           string        `bson:"id" json:"id"`
+	Name         string        `bson:"name" json:"name"`
+	School       string        `bson:"school" json:"school"`
+	Department   string        `bson:"department" json:"department"`
+	StemDesigned bool          `bson:"stem_designated" json:"stem_designated"`
+	DegreeLevels []DegreeLevel `bson:"degreeLevels" json:"degreeLevels"`
+}
+
+type DegreeLevel struct {
+	Level        string `bson:"level" json:"level"`
+	Abbreviation string `bson:"abbreviation" json:"abbreviation"`
+}
+
 // Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
