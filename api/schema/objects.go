@@ -84,7 +84,7 @@ type Section struct {
 	Course_key            CourseKey              `bson:"course_key" json:"course_key" queryable:""`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
 	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
-	Professors            []ProfessorKey         `bson:"professors" json:"professors"`
+	Professor_keys        []ProfessorKey         `bson:"professor_keys" json:"professor_keys"`
 	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
 	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" queryable:""`
 	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" queryable:""`
@@ -131,7 +131,7 @@ type Professor struct {
 	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
 	Image_uri    string               `bson:"image_uri" json:"image_uri"`
 	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
-	Sections     []SectionKey         `bson:"sections" json:"sections"`
+	Section_keys     []SectionKey         `bson:"sections" json:"sections"`
 }
 
 type BasicProfessor struct {
