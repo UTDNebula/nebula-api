@@ -131,7 +131,7 @@ type Professor struct {
 	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
 	Image_uri    string               `bson:"image_uri" json:"image_uri"`
 	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
-	Section_keys     []SectionKey         `bson:"sections" json:"sections"`
+	Section_keys []SectionKey         `bson:"section_keys" json:"section_keys"`
 }
 
 type BasicProfessor struct {
