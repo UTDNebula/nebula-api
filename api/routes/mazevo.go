@@ -11,4 +11,6 @@ func MazevoRoute(router *gin.Engine) {
 
 	mazevoGroup.OPTIONS("", controllers.Preflight)
 	mazevoGroup.GET(":date", controllers.MazevoEvents)
+	mazevoGroup.GET(":date/:building", controllers.MazevoEventsByBuilding)
+	mazevoGroup.GET(":date/:building/:room", controllers.MazevoEventsByRoom)
 }
