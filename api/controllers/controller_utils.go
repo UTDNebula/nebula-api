@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Sets the API's response to a request, producing valid JSON given a status code and data.
@@ -29,12 +31,12 @@ func respond[T any](c *gin.Context, status int, message string, data T) {
 func getQuery[T any](flag string, c *gin.Context) (bson.M, error) {
 	switch flag {
 	case "Search":
-		q, err := schema.FilterQuery[T](c)
+		query, err := schema.FilterQuery[T](c)
 		if err != nil {
 			respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
 			return nil, err
 		}
-		return q, nil
+		return query, nil
 
 	case "ById":
 		objId, err := objectIDFromParam(c, "id")
@@ -81,4 +83,32 @@ func objectIDFromParam(c *gin.Context, paramName string) (*primitive.ObjectID, e
 		return nil, convertIdErr
 	}
 	return &objectId, nil
+}
+
+// PrettyPrint prints the Mongo pipeline in log with a specific format.
+// This is used strictly for testing.
+//
+// Credit: https://www.mongodb.com/community/forums/t/pretty-print-golang-pipelines/213173?msockid=23090051006c64c83c6a16a401496501
+func PrettyPrint(pipeline mongo.Pipeline) {
+	var prettyStages []bson.M
+	for _, stage := range pipeline {
+		var prettyStage bson.M
+		bsonStage, err := bson.Marshal(stage)
+		if err != nil {
+			panic(err)
+		}
+
+		err = bson.Unmarshal(bsonStage, &prettyStage)
+		if err != nil {
+			panic(err)
+		}
+		prettyStages = append(prettyStages, prettyStage)
+	}
+
+	pipelineJSON, err := json.MarshalIndent(prettyStages, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(string(pipelineJSON))
 }

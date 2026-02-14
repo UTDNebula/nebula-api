@@ -11,4 +11,6 @@ func AstraRoute(router *gin.Engine) {
 
 	astraGroup.OPTIONS("", controllers.Preflight)
 	astraGroup.GET(":date", controllers.AstraEvents)
+	astraGroup.GET(":date/:building", controllers.AstraEventsByBuilding)
+	astraGroup.GET(":date/:building/:room", controllers.AstraEventsByBuildingAndRoom)
 }

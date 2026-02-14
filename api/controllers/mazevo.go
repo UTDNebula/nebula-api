@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
-
 	"github.com/UTDNebula/nebula-api/api/schema"
 )
 
@@ -31,14 +31,19 @@ func MazevoEvents(c *gin.Context) {
 
 	date := c.Param("date")
 
-	var mazevo_events schema.MultiBuildingEvents[schema.MazevoEvent]
+	var mazevoEvents schema.MultiBuildingEvents[schema.MazevoEvent]
 
 	// Find mazevo event for input date
-	err := mazevoCollection.FindOne(ctx, bson.M{"date": date}).Decode(&mazevo_events)
+	err := mazevoCollection.FindOne(ctx, bson.M{"date": date}).Decode(&mazevoEvents)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			mazevoEvents.Date = date
+			mazevoEvents.Buildings = []schema.SingleBuildingEvents[schema.MazevoEvent]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
-	respond(c, http.StatusOK, "success", mazevo_events)
+	respond(c, http.StatusOK, "success", mazevoEvents)
 }
