@@ -319,19 +319,18 @@ type AcademicCalendarDropDeadlines struct {
 	GraduateWithdrawlEnds     string `bson:"graduate_withdrawl_ends" json:"graduate_withdrawl_ends"`
 }
 
-type Degree struct {
-	Id           string        `bson:"id" json:"id"`
-	Name         string        `bson:"name" json:"name"`
-	School       string        `bson:"school" json:"school"`
-	Department   string        `bson:"department" json:"department"`
-	StemDesigned bool          `bson:"stem_designated" json:"stem_designated"`
-	DegreeLevels []DegreeLevel `bson:"degreeLevels" json:"degreeLevels"`
-	PublicUrl    string        `bson:"public_url" json:"public_url"`
+type Program struct {
+	Title           string   `bson:"name" json:"name"`
+	School          string   `bson:"school" json:"school"`
+	DegreeOptions   []Degree `bson:"degree_levels" json:"degree_levels"`
+	AreasOfInterest []string `bson:"areas_of_interest" json:"areas_of_interest"`
 }
 
-type DegreeLevel struct {
-	Level        string `bson:"level" json:"level"`
-	Abbreviation string `bson:"abbreviation" json:"abbreviation"`
+type Degree struct {
+	Level          string `bson:"level" json:"level"`
+	PublicUrl      string `bson:"public_url" json:"public_url"`
+	CipCode        string `bson:"cip_code" json:"cip_code"`
+	StemDesignated bool   `bson:"stem_designated" json:"stem_designated"`
 }
 
 // Type for all API responses
