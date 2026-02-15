@@ -30,7 +30,6 @@ var (
 // Returns an error if:
 //   - A query parameter key is not defined in the struct
 //   - A field exists but is not marked as queryable
-//   - The "offset" parameter cannot be parsed as an integer
 func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 	queryable, err := loadQueryable(reflect.TypeFor[F]())
 	if err != nil {
