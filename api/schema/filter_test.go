@@ -71,6 +71,22 @@ type _nestedInfinite struct {
 	Nested *_nestedInfinite `bson:"nested" json:"nested" queryable:""`
 }
 
+type _slice struct {
+	Names []string `bson:"names" json:"names" queryable:""`
+}
+
+type _array struct {
+	Names [12]string `bson:"names" json:"names" queryable:""`
+}
+
+type _slicePointer struct {
+	Names []*string `bson:"names" json:"names" queryable:""`
+}
+
+type _sliceDoublePointer struct {
+	Names *[]*string `bson:"names" json:"names" queryable:""`
+}
+
 type _jsonExcluded struct {
 	Name   string `bson:"name" json:"name" queryable:""`
 	Number int    `bson:"-" json:"-"`
@@ -258,11 +274,28 @@ func TestLoadQueryable(t *testing.T) {
 				"nested.nested.hidden": false,
 			},
 		},
-		"Json Excluded": {
-			Type: reflect.TypeFor[_jsonExcluded](),
+		"Slice": {
+			Type: reflect.TypeFor[_slice](),
 			Expected: map[string]bool{
-				"name":   true,
-				"hidden": false,
+				"names": true,
+			},
+		},
+		"Array": {
+			Type: reflect.TypeFor[_array](),
+			Expected: map[string]bool{
+				"names": true,
+			},
+		},
+		"Slice Pointer": {
+			Type: reflect.TypeFor[_slicePointer](),
+			Expected: map[string]bool{
+				"names": true,
+			},
+		},
+		"Slice Double Pointer": {
+			Type: reflect.TypeFor[_sliceDoublePointer](),
+			Expected: map[string]bool{
+				"names": true,
 			},
 		},
 		"Nested Infinite": {
@@ -277,6 +310,13 @@ func TestLoadQueryable(t *testing.T) {
 				"nested.nested.name":   true,
 				"nested.nested.number": true,
 				"nested.nested.hidden": false,
+			},
+		},
+		"Json Excluded": {
+			Type: reflect.TypeFor[_jsonExcluded](),
+			Expected: map[string]bool{
+				"name":   true,
+				"hidden": false,
 			},
 		},
 	}

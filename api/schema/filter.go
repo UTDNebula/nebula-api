@@ -7,11 +7,19 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var queryableCache sync.Map
+var (
+	queryableCache sync.Map
+	baseStruct     = map[reflect.Type]bool{
+		reflect.TypeFor[time.Time]():          true,
+		reflect.TypeFor[primitive.ObjectID](): true,
+	}
+)
 
 // FilterQuery converts URL query parameters into a MongoDB BSON query filter.
 // It validates that each query parameter corresponds to a field in type F that is
@@ -40,7 +48,7 @@ func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 				query[key] = num
 				continue
 			} else {
-				return nil, fmt.Errorf("offest must be an integer")
+				return nil, fmt.Errorf("offset must be an integer")
 			}
 		}
 
@@ -73,11 +81,10 @@ func loadQueryable(t reflect.Type) (map[string]bool, error) {
 	}
 
 	queryable := make(map[string]bool)
-	err := recBuild(t, "", queryable, make([]reflect.Type, 0))
-	if err != nil {
+	if err := recBuild(t, "", queryable, make([]reflect.Type, 0)); err != nil {
 		return nil, err
-
 	}
+
 	actual, _ := queryableCache.LoadOrStore(t.String(), queryable)
 	if queryMap, ok := actual.(map[string]bool); ok {
 		return queryMap, nil
@@ -95,9 +102,7 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 	}
 
 	newVisited := append(visited, t)
-	for t.Kind() == reflect.Ptr {
-		t = t.Elem()
-	}
+	t = drillType(t)
 
 	if t.Kind() != reflect.Struct {
 		return nil
@@ -105,10 +110,9 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
-
 		json, hasJson := field.Tag.Lookup("json")
 		if !hasJson {
-			return fmt.Errorf("exported field '%s.%s' missing json tag (use json:\"-\" to exclude)", t.Name(), field.Name)
+			return fmt.Errorf("exported field '%s.%s' missing json tag", t.Name(), field.Name)
 		} else if json == "-" {
 			continue
 		}
@@ -119,15 +123,14 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 			fullPath = prefix + "." + fullPath
 		}
 
-		fieldType := field.Type
-		for fieldType.Kind() == reflect.Ptr {
-			fieldType = fieldType.Elem()
-		}
-
+		fieldType := drillType(field.Type)
 		_, queryable := field.Tag.Lookup("queryable")
 		if fieldType.Kind() == reflect.Struct {
 			if queryable {
-				if err := recBuild(field.Type, fullPath, queryableMap, newVisited); err != nil {
+				// do not recurse into time.Time
+				if _, ok := baseStruct[fieldType]; ok {
+					queryableMap[fullPath] = true
+				} else if err := recBuild(field.Type, fullPath, queryableMap, newVisited); err != nil {
 					return err
 				}
 			} else {
@@ -147,13 +150,18 @@ func willCreateLoop(visited []reflect.Type, value reflect.Type) bool {
 		return false
 	}
 
-	index := -1
-	for i := len(visited) - 1; i >= 0; i-- {
+	for i := len(visited) - 1; i > 0; i-- {
 		if visited[i] == value {
-			index = i
-			break
+			return visited[i-1] == visited[len(visited)-1]
 		}
 	}
+	return false
+}
 
-	return index > 0 && visited[index-1] == visited[len(visited)-1]
+// drill type gets the base of a type, removing pointers and slices/arrays
+func drillType(t reflect.Type) reflect.Type {
+	for t.Kind() == reflect.Ptr || t.Kind() == reflect.Slice || t.Kind() == reflect.Array {
+		t = t.Elem()
+	}
+	return t
 }

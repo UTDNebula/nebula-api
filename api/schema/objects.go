@@ -13,7 +13,7 @@ type Course struct {
 	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
 	Course_number            string                 `bson:"course_number" json:"course_number" queryable:""`
 	Title                    string                 `bson:"title" json:"title" queryable:""`
-	Description              string                 `bson:"description" json:"description"`
+	Description              string                 `bson:"description" json:"description" queryable:""`
 	Enrollment_reqs          string                 `bson:"enrollment_reqs" json:"enrollment_reqs"`
 	School                   string                 `bson:"school" json:"school" queryable:""`
 	Credit_hours             string                 `bson:"credit_hours" json:"credit_hours" queryable:""`
@@ -45,8 +45,8 @@ type BasicCourse struct {
 
 type AcademicSession struct {
 	Name       string    `bson:"name" json:"name" queryable:""`
-	Start_date time.Time `bson:"start_date" json:"start_date"`
-	End_date   time.Time `bson:"end_date" json:"end_date"`
+	Start_date time.Time `bson:"start_date" json:"start_date" queryable:""`
+	End_date   time.Time `bson:"end_date" json:"end_date" queryable:""`
 }
 
 type Assistant struct {
@@ -63,13 +63,13 @@ type Location struct {
 }
 
 type Meeting struct {
-	Start_date   time.Time `bson:"start_date" json:"start_date"`
-	End_date     time.Time `bson:"end_date" json:"end_date"`
-	Meeting_days []string  `bson:"meeting_days" json:"meeting_days"`
-	Start_time   string    `bson:"start_time" json:"start_time"`
-	End_time     string    `bson:"end_time" json:"end_time"`
-	Modality     string    `bson:"modality" json:"modality"`
-	Location     Location  `bson:"location" json:"location"`
+	Start_date   time.Time `bson:"start_date" json:"start_date" queryable:""`
+	End_date     time.Time `bson:"end_date" json:"end_date" queryable:""`
+	Meeting_days []string  `bson:"meeting_days" json:"meeting_days" queryable:""`
+	Start_time   string    `bson:"start_time" json:"start_time" queryable:""`
+	End_time     string    `bson:"end_time" json:"end_time" queryable:""`
+	Modality     string    `bson:"modality" json:"modality" queryable:""`
+	Location     Location  `bson:"location" json:"location" queryable:""`
 }
 
 type Section struct {
@@ -79,11 +79,11 @@ type Section struct {
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
 	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session" queryable:""`
 	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
-	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
+	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants" queryable:""`
 	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" queryable:""`
 	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" queryable:""`
-	Meetings              []Meeting              `bson:"meetings" json:"meetings"`
-	Core_flags            []string               `bson:"core_flags" json:"core_flags"`
+	Meetings              []Meeting              `bson:"meetings" json:"meetings" queryable:""`
+	Core_flags            []string               `bson:"core_flags" json:"core_flags" queryable:""`
 	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri" queryable:""`
 	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
@@ -95,13 +95,13 @@ type Professor struct {
 	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
 	First_name   string               `bson:"first_name" json:"first_name" queryable:""`
 	Last_name    string               `bson:"last_name" json:"last_name" queryable:""`
-	Titles       []string             `bson:"titles" json:"titles" `
+	Titles       []string             `bson:"titles" json:"titles" queryable:""`
 	Email        string               `bson:"email" json:"email" queryable:""`
 	Phone_number string               `bson:"phone_number" json:"phone_number" queryable:""`
 	Office       Location             `bson:"office" json:"office" queryable:""`
 	Profile_uri  string               `bson:"profile_uri" json:"profile_uri" queryable:""`
 	Image_uri    string               `bson:"image_uri" json:"image_uri" queryable:""`
-	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
+	Office_hours []Meeting            `bson:"office_hours" json:"office_hours" queryable:""`
 	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
 }
 
@@ -111,7 +111,7 @@ type BasicProfessor struct {
 	Last_name    string             `bson:"last_name" json:"last_name" queryable:""`
 	Email        string             `bson:"email" json:"email" queryable:""`
 	Phone_number string             `bson:"phone_number" json:"phone_number" queryable:""`
-	Office       Location           `bson:"office" json:"office" queryable:""`
+	Office       Location           `bson:"office" json:"office"`
 	Office_hours []Meeting          `bson:"office_hours" json:"office_hours"`
 }
 
