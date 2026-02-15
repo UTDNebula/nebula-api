@@ -127,15 +127,13 @@ func TestFilterQuery(t *testing.T) {
 				"nested.number": "0",
 			},
 		},
-		"Normal with Offest": {
-			Function: FilterQuery[_normal],
+		"Multiple values": {
+			Function: FilterQuery[_nested],
 			UrlQuery: map[string][]string{
-				"name":   {"bob"},
-				"offset": {"0"},
+				"name": {"false", "true"},
 			},
 			Expected: bson.M{
-				"name":   "bob",
-				"offset": 0,
+				"name": bson.M{"$in": []string{"false", "true"}},
 			},
 		},
 		"Fail empty parameter": {
@@ -149,13 +147,6 @@ func TestFilterQuery(t *testing.T) {
 			Function: FilterQuery[_nested],
 			UrlQuery: map[string][]string{
 				"hidden": {"false"},
-			},
-			Fail: true,
-		},
-		"Fail multiple values": {
-			Function: FilterQuery[_nested],
-			UrlQuery: map[string][]string{
-				"": {"false", "true"},
 			},
 			Fail: true,
 		},

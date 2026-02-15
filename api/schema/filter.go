@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -19,21 +18,18 @@ var (
 		reflect.TypeFor[time.Time]():          true,
 		reflect.TypeFor[primitive.ObjectID](): true,
 	}
+	ignoredParameters = map[string]bool{
+		"offset": true,
+	}
 )
 
 // FilterQuery converts URL query parameters into a MongoDB BSON query filter.
 // It validates that each query parameter corresponds to a field in type F that is
-// marked as queryable. Additionally, parameter offest can be included, referring to
-// mongo query pagination.
-//
-// Notes:
-//   - Currently filter only supports exact matching and treats fields as strings
-//   - More "meta" filters may need to be added in the future.
+// marked as queryable.
 //
 // Returns an error if:
 //   - A query parameter key is not defined in the struct
 //   - A field exists but is not marked as queryable
-//   - Multiple values are provided for a single parameter
 //   - The "offset" parameter cannot be parsed as an integer
 func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 	queryable, err := loadQueryable(reflect.TypeFor[F]())
@@ -43,17 +39,8 @@ func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 
 	query := bson.M{}
 	for key, values := range urlValues {
-		if key == "offset" {
-			if num, err := strconv.Atoi(values[0]); err == nil {
-				query[key] = num
-				continue
-			} else {
-				return nil, fmt.Errorf("offset must be an integer")
-			}
-		}
-
-		if len(values) > 1 {
-			return nil, fmt.Errorf("multi-value queries are not supported")
+		if _, ok := ignoredParameters[key]; ok {
+			continue
 		}
 
 		allowed, exists := queryable[key]
@@ -63,7 +50,12 @@ func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 		if !allowed {
 			return nil, fmt.Errorf("field '%s' cannot be used for filtering", key)
 		}
-		query[key] = values[0]
+
+		if len(values) > 1 {
+			query[key] = bson.M{"$in": values}
+		} else {
+			query[key] = values[0]
+		}
 	}
 
 	return query, nil
