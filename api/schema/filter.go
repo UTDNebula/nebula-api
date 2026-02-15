@@ -13,6 +13,20 @@ import (
 
 var queryableCache sync.Map
 
+// FilterQuery converts URL query parameters into a MongoDB BSON query filter.
+// It validates that each query parameter corresponds to a field in type F that is
+// marked as queryable. Additionally, parameter offest can be included, referring to
+// mongo query pagination.
+//
+// Notes:
+//   - Currently filter only supports exact matching and treats fields as strings
+//   - More "meta" filters may need to be added in the future.
+//
+// Returns an error if:
+//   - A query parameter key is not defined in the struct
+//   - A field exists but is not marked as queryable
+//   - Multiple values are provided for a single parameter
+//   - The "offset" parameter cannot be parsed as an integer
 func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 	queryable, err := loadQueryable(reflect.TypeFor[F]())
 	if err != nil {
@@ -29,11 +43,6 @@ func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 				return nil, fmt.Errorf("offest must be an integer")
 			}
 		}
-
-		// empty string is not necessarily false ?
-		//if len(values) == 0 || values[0] == "" {
-		//	return nil, fmt.Errorf("query parameter '%s' requires a value", key)
-		//}
 
 		if len(values) > 1 {
 			return nil, fmt.Errorf("multi-value queries are not supported")
@@ -52,6 +61,7 @@ func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 	return query, nil
 }
 
+// loadQueryable returns a map indicating which fields of the given type are queryable.
 func loadQueryable(t reflect.Type) (map[string]bool, error) {
 	if cached, ok := queryableCache.Load(t.String()); ok {
 		//should literally never fail but its best practice to check casts
@@ -76,6 +86,9 @@ func loadQueryable(t reflect.Type) (map[string]bool, error) {
 	return nil, fmt.Errorf("queryableCache was corrupted: %s was not of type map[string]bool", t.String())
 }
 
+// recBuild recursively traverses a struct type to build a map of queryable fields.
+// It constructs dot-notation paths for nested fields and determines whether each field
+// can be used for filtering based on the "queryable" tag.
 func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visited []reflect.Type) error {
 	if willCreateLoop(visited, t) {
 		return nil
@@ -127,15 +140,8 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 	return nil
 }
 
-// willCreateLoop determines if adding `value` to the `visited` stack creates
-// an infinite recursion cycle.
-//
-// It detects cycles by checking if the `value` (a pointer) has been seen before
-// and if its previous "parent" type matches the current "parent" type.
-// This allows for type reuse (e.g., A -> B -> A) while blocking
-// infinite loops (e.g., A -> *A -> A -> *A).
-//
-// Non-pointer types are ignored as they cannot cause infinite recursion.
+// willCreateLoop determines if adding `value` to the `visited` list would create
+// a loop.
 func willCreateLoop(visited []reflect.Type, value reflect.Type) bool {
 	if value.Kind() != reflect.Ptr {
 		return false
