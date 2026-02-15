@@ -44,22 +44,22 @@ type BasicCourse struct {
 }
 
 type AcademicSession struct {
-	Name       string    `bson:"name" json:"name"`
+	Name       string    `bson:"name" json:"name" queryable:""`
 	Start_date time.Time `bson:"start_date" json:"start_date"`
 	End_date   time.Time `bson:"end_date" json:"end_date"`
 }
 
 type Assistant struct {
-	First_name string `bson:"first_name" json:"first_name"`
-	Last_name  string `bson:"last_name" json:"last_name"`
-	Role       string `bson:"role" json:"role"`
-	Email      string `bson:"email" json:"email"`
+	First_name string `bson:"first_name" json:"first_name" queryable:""`
+	Last_name  string `bson:"last_name" json:"last_name" queryable:""`
+	Role       string `bson:"role" json:"role" queryable:""`
+	Email      string `bson:"email" json:"email" queryable:""`
 }
 
 type Location struct {
-	Building string `bson:"building" json:"building"`
-	Room     string `bson:"room" json:"room"`
-	Map_uri  string `bson:"map_uri" json:"map_uri"`
+	Building string `bson:"building" json:"building" queryable:""`
+	Room     string `bson:"room" json:"room" queryable:""`
+	Map_uri  string `bson:"map_uri" json:"map_uri" queryable:""`
 }
 
 type Meeting struct {
@@ -77,14 +77,14 @@ type Section struct {
 	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
 	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" queryable:""`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
-	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
+	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session" queryable:""`
 	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
 	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
 	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" queryable:""`
 	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" queryable:""`
 	Meetings              []Meeting              `bson:"meetings" json:"meetings"`
 	Core_flags            []string               `bson:"core_flags" json:"core_flags"`
-	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri"`
+	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri" queryable:""`
 	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
 	Professor_details     *[]BasicProfessor      `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
@@ -95,12 +95,12 @@ type Professor struct {
 	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
 	First_name   string               `bson:"first_name" json:"first_name" queryable:""`
 	Last_name    string               `bson:"last_name" json:"last_name" queryable:""`
-	Titles       []string             `bson:"titles" json:"titles" queryable:""`
+	Titles       []string             `bson:"titles" json:"titles" `
 	Email        string               `bson:"email" json:"email" queryable:""`
 	Phone_number string               `bson:"phone_number" json:"phone_number" queryable:""`
-	Office       Location             `bson:"office" json:"office"`
-	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
-	Image_uri    string               `bson:"image_uri" json:"image_uri"`
+	Office       Location             `bson:"office" json:"office" queryable:""`
+	Profile_uri  string               `bson:"profile_uri" json:"profile_uri" queryable:""`
+	Image_uri    string               `bson:"image_uri" json:"image_uri" queryable:""`
 	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
 	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
 }
@@ -111,7 +111,7 @@ type BasicProfessor struct {
 	Last_name    string             `bson:"last_name" json:"last_name" queryable:""`
 	Email        string             `bson:"email" json:"email" queryable:""`
 	Phone_number string             `bson:"phone_number" json:"phone_number" queryable:""`
-	Office       Location           `bson:"office" json:"office"`
+	Office       Location           `bson:"office" json:"office" queryable:""`
 	Office_hours []Meeting          `bson:"office_hours" json:"office_hours"`
 }
 
