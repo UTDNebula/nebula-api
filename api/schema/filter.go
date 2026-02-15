@@ -150,7 +150,7 @@ func willCreateLoop(visited []reflect.Type, value reflect.Type) bool {
 	return false
 }
 
-// drill type gets the base of a type, removing pointers and slices/arrays
+// drillType gets the base of a type, removing pointers and slices/arrays
 func drillType(t reflect.Type) reflect.Type {
 	for t.Kind() == reflect.Ptr || t.Kind() == reflect.Slice || t.Kind() == reflect.Array {
 		t = t.Elem()
