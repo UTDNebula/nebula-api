@@ -130,10 +130,10 @@ func TestFilterQuery(t *testing.T) {
 		"Multiple values": {
 			Function: FilterQuery[_nested],
 			UrlQuery: map[string][]string{
-				"name": {"false", "true"},
+				"name": {"first", "true"},
 			},
 			Expected: bson.M{
-				"name": bson.M{"$in": []string{"false", "true"}},
+				"name": "first",
 			},
 		},
 		"Fail empty parameter": {

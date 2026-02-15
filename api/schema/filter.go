@@ -51,8 +51,8 @@ func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 			return nil, fmt.Errorf("field '%s' cannot be used for filtering", key)
 		}
 
-		if len(values) > 1 {
-			query[key] = bson.M{"$in": values}
+		if len(values) == 0 {
+			query[key] = ""
 		} else {
 			query[key] = values[0]
 		}
@@ -150,7 +150,7 @@ func willCreateLoop(visited []reflect.Type, value reflect.Type) bool {
 	return false
 }
 
-// drill type gets the base of a type, removing pointers and slices/arrays
+// drillType gets the base of a type, removing pointers and slices/arrays
 func drillType(t reflect.Type) reflect.Type {
 	for t.Kind() == reflect.Ptr || t.Kind() == reflect.Slice || t.Kind() == reflect.Array {
 		t = t.Elem()
