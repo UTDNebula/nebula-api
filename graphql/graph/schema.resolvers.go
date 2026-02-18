@@ -7,18 +7,81 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"graphql/graph/model"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Courses is the resolver for the courses field.
-func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter, limit *int32, offset *int32) ([]*model.Course, error) {
-	panic(fmt.Errorf("not implemented: Courses - courses"))
+func (r *queryResolver) Courses(
+	ctx context.Context,
+	filter *model.CourseFilter,
+	limit *int32,
+	offset *int32,
+) ([]*model.Course, error) {
+	timedoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	var courses []*model.Course
+	var err error
+
+	// TODO: Dynamically build the query from the filter for bigger one later
+	var query = bson.M{}
+	if filter != nil {
+		if filter.CourseNumber != nil {
+			query["course_number"] = filter.CourseNumber
+		}
+		if filter.SubjectPrefix != nil {
+			query["subject_prefix"] = filter.SubjectPrefix
+		}
+		if filter.Title != nil {
+			query["title"] = filter.Title
+		}
+		if filter.CatalogYear != nil {
+			query["catalog_year"] = filter.CatalogYear
+		}
+	}
+	// TODO: Gracefully handle conversion issues that might happen
+	optionLimit := options.Find().SetSkip(int64(*offset)).SetLimit(int64(*limit))
+
+	// Query from DB
+	cursor, err := r.CourseCollection.Find(timedoutCtx, query, optionLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(timedoutCtx)
+
+	// Parse the cursor from DB to the course types
+	if err = cursor.All(timedoutCtx, courses); err != nil {
+		return nil, err
+	}
+
+	return courses, err
 }
 
 // Course is the resolver for the course field.
 func (r *queryResolver) Course(ctx context.Context, id string) (*model.Course, error) {
-	panic(fmt.Errorf("not implemented: Course - course"))
+	timedoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	var course *model.Course
+	var err error
+
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	query := bson.M{"_id": objId}
+
+	err = r.CourseCollection.FindOne(timedoutCtx, query).Decode(course)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, err
 }
 
 // Query returns QueryResolver implementation.

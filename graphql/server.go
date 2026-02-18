@@ -1,6 +1,7 @@
 package main
 
 import (
+	"graphql/configs"
 	"graphql/graph"
 	"log"
 	"net/http"
@@ -22,7 +23,12 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	resolver := graph.Resolver{
+		CourseCollection: configs.GetCollection("courses"),
+	}
+
+	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
+	srv.Use(extension.FixedComplexityLimit(100)) // Avoid unlimited nesting (later)
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
