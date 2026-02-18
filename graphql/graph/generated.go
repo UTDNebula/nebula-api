@@ -50,6 +50,7 @@ type ComplexityRoot struct {
 		Name     func(childComplexity int) int
 		Options  func(childComplexity int) int
 		Required func(childComplexity int) int
+		Type     func(childComplexity int) int
 	}
 
 	Course struct {
@@ -124,6 +125,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.CollectionRequirement.Required(childComplexity), true
+	case "CollectionRequirement.type":
+		if e.complexity.CollectionRequirement.Type == nil {
+			break
+		}
+
+		return e.complexity.CollectionRequirement.Type(childComplexity), true
 
 	case "Course.activity_type":
 		if e.complexity.Course.ActivityType == nil {
@@ -191,7 +198,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Course.Grading(childComplexity), true
-	case "Course.id":
+	case "Course._id":
 		if e.complexity.Course.ID == nil {
 			break
 		}
@@ -452,6 +459,35 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _CollectionRequirement_type(ctx context.Context, field graphql.CollectedField, obj *model.CollectionRequirement) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_CollectionRequirement_type,
+		func(ctx context.Context) (any, error) {
+			return obj.Type, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_CollectionRequirement_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CollectionRequirement",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _CollectionRequirement_name(ctx context.Context, field graphql.CollectedField, obj *model.CollectionRequirement) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -462,9 +498,9 @@ func (ec *executionContext) _CollectionRequirement_name(ctx context.Context, fie
 			return obj.Name, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -491,9 +527,9 @@ func (ec *executionContext) _CollectionRequirement_required(ctx context.Context,
 			return obj.Required, nil
 		},
 		nil,
-		ec.marshalOInt2ᚖint32,
+		ec.marshalNInt2int32,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -520,7 +556,7 @@ func (ec *executionContext) _CollectionRequirement_options(ctx context.Context, 
 			return obj.Options, nil
 		},
 		nil,
-		ec.marshalOJSON2ᚕᚖstring,
+		ec.marshalOAny2interface,
 		true,
 		false,
 	)
@@ -533,18 +569,18 @@ func (ec *executionContext) fieldContext_CollectionRequirement_options(_ context
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSON does not have child fields")
+			return nil, errors.New("field of type Any does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Course_id(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
+func (ec *executionContext) _Course__id(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Course_id,
+		ec.fieldContext_Course__id,
 		func(ctx context.Context) (any, error) {
 			return obj.ID, nil
 		},
@@ -555,7 +591,7 @@ func (ec *executionContext) _Course_id(ctx context.Context, field graphql.Collec
 	)
 }
 
-func (ec *executionContext) fieldContext_Course_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Course__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Course",
 		Field:      field,
@@ -578,9 +614,9 @@ func (ec *executionContext) _Course_subject_prefix(ctx context.Context, field gr
 			return obj.SubjectPrefix, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -607,9 +643,9 @@ func (ec *executionContext) _Course_course_number(ctx context.Context, field gra
 			return obj.CourseNumber, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -636,9 +672,9 @@ func (ec *executionContext) _Course_title(ctx context.Context, field graphql.Col
 			return obj.Title, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -665,9 +701,9 @@ func (ec *executionContext) _Course_description(ctx context.Context, field graph
 			return obj.Description, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -694,9 +730,9 @@ func (ec *executionContext) _Course_enrollment_reqs(ctx context.Context, field g
 			return obj.EnrollmentReqs, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -723,9 +759,9 @@ func (ec *executionContext) _Course_school(ctx context.Context, field graphql.Co
 			return obj.School, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -752,9 +788,9 @@ func (ec *executionContext) _Course_credit_hours(ctx context.Context, field grap
 			return obj.CreditHours, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -781,9 +817,9 @@ func (ec *executionContext) _Course_class_level(ctx context.Context, field graph
 			return obj.ClassLevel, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -810,9 +846,9 @@ func (ec *executionContext) _Course_activity_type(ctx context.Context, field gra
 			return obj.ActivityType, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -839,9 +875,9 @@ func (ec *executionContext) _Course_grading(ctx context.Context, field graphql.C
 			return obj.Grading, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -868,9 +904,9 @@ func (ec *executionContext) _Course_internal_course_number(ctx context.Context, 
 			return obj.InternalCourseNumber, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -911,6 +947,8 @@ func (ec *executionContext) fieldContext_Course_prerequisites(_ context.Context,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "type":
+				return ec.fieldContext_CollectionRequirement_type(ctx, field)
 			case "name":
 				return ec.fieldContext_CollectionRequirement_name(ctx, field)
 			case "required":
@@ -948,6 +986,8 @@ func (ec *executionContext) fieldContext_Course_corequisites(_ context.Context, 
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "type":
+				return ec.fieldContext_CollectionRequirement_type(ctx, field)
 			case "name":
 				return ec.fieldContext_CollectionRequirement_name(ctx, field)
 			case "required":
@@ -985,6 +1025,8 @@ func (ec *executionContext) fieldContext_Course_co_or_pre_requisites(_ context.C
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "type":
+				return ec.fieldContext_CollectionRequirement_type(ctx, field)
 			case "name":
 				return ec.fieldContext_CollectionRequirement_name(ctx, field)
 			case "required":
@@ -1037,9 +1079,9 @@ func (ec *executionContext) _Course_lecture_contact_hours(ctx context.Context, f
 			return obj.LectureContactHours, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -1066,9 +1108,9 @@ func (ec *executionContext) _Course_laboratory_contact_hours(ctx context.Context
 			return obj.LaboratoryContactHours, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -1095,9 +1137,9 @@ func (ec *executionContext) _Course_offering_frequency(ctx context.Context, fiel
 			return obj.OfferingFrequency, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -1124,9 +1166,9 @@ func (ec *executionContext) _Course_catalog_year(ctx context.Context, field grap
 			return obj.CatalogYear, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalNString2string,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -1153,7 +1195,7 @@ func (ec *executionContext) _Course_attributes(ctx context.Context, field graphq
 			return obj.Attributes, nil
 		},
 		nil,
-		ec.marshalOJSON2ᚖstring,
+		ec.marshalOAny2interface,
 		true,
 		false,
 	)
@@ -1166,7 +1208,7 @@ func (ec *executionContext) fieldContext_Course_attributes(_ context.Context, fi
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSON does not have child fields")
+			return nil, errors.New("field of type Any does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1196,8 +1238,8 @@ func (ec *executionContext) fieldContext_Query_courses(_ context.Context, field 
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Course_id(ctx, field)
+			case "_id":
+				return ec.fieldContext_Course__id(ctx, field)
 			case "subject_prefix":
 				return ec.fieldContext_Course_subject_prefix(ctx, field)
 			case "course_number":
@@ -1270,8 +1312,8 @@ func (ec *executionContext) fieldContext_Query_course(ctx context.Context, field
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Course_id(ctx, field)
+			case "_id":
+				return ec.fieldContext_Course__id(ctx, field)
 			case "subject_prefix":
 				return ec.fieldContext_Course_subject_prefix(ctx, field)
 			case "course_number":
@@ -2903,10 +2945,21 @@ func (ec *executionContext) _CollectionRequirement(ctx context.Context, sel ast.
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("CollectionRequirement")
+		case "type":
+			out.Values[i] = ec._CollectionRequirement_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "name":
 			out.Values[i] = ec._CollectionRequirement_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "required":
 			out.Values[i] = ec._CollectionRequirement_required(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "options":
 			out.Values[i] = ec._CollectionRequirement_options(ctx, field, obj)
 		default:
@@ -2943,33 +2996,66 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Course")
-		case "id":
-			out.Values[i] = ec._Course_id(ctx, field, obj)
+		case "_id":
+			out.Values[i] = ec._Course__id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "subject_prefix":
 			out.Values[i] = ec._Course_subject_prefix(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "course_number":
 			out.Values[i] = ec._Course_course_number(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "title":
 			out.Values[i] = ec._Course_title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "description":
 			out.Values[i] = ec._Course_description(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "enrollment_reqs":
 			out.Values[i] = ec._Course_enrollment_reqs(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "school":
 			out.Values[i] = ec._Course_school(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "credit_hours":
 			out.Values[i] = ec._Course_credit_hours(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "class_level":
 			out.Values[i] = ec._Course_class_level(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "activity_type":
 			out.Values[i] = ec._Course_activity_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "grading":
 			out.Values[i] = ec._Course_grading(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "internal_course_number":
 			out.Values[i] = ec._Course_internal_course_number(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "prerequisites":
 			out.Values[i] = ec._Course_prerequisites(ctx, field, obj)
 		case "corequisites":
@@ -2980,12 +3066,24 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = ec._Course_sections(ctx, field, obj)
 		case "lecture_contact_hours":
 			out.Values[i] = ec._Course_lecture_contact_hours(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "laboratory_contact_hours":
 			out.Values[i] = ec._Course_laboratory_contact_hours(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "offering_frequency":
 			out.Values[i] = ec._Course_offering_frequency(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "catalog_year":
 			out.Values[i] = ec._Course_catalog_year(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "attributes":
 			out.Values[i] = ec._Course_attributes(ctx, field, obj)
 		default:
@@ -3447,7 +3545,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	res := graphql.MarshalBoolean(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
 		}
 	}
 	return res
@@ -3500,7 +3598,7 @@ func (ec *executionContext) marshalNCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCours
 func (ec *executionContext) marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
 		}
 		return graphql.Null
 	}
@@ -3517,7 +3615,23 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	res := graphql.MarshalID(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
+	res, err := graphql.UnmarshalInt32(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalInt32(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
 		}
 	}
 	return res
@@ -3533,7 +3647,7 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	res := graphql.MarshalString(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
 		}
 	}
 	return res
@@ -3597,7 +3711,7 @@ func (ec *executionContext) marshalN__DirectiveLocation2string(ctx context.Conte
 	res := graphql.MarshalString(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
 		}
 	}
 	return res
@@ -3769,7 +3883,7 @@ func (ec *executionContext) marshalN__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgen�
 func (ec *executionContext) marshalN__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx context.Context, sel ast.SelectionSet, v *introspection.Type) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
 		}
 		return graphql.Null
 	}
@@ -3786,9 +3900,27 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	res := graphql.MarshalString(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
 		}
 	}
+	return res
+}
+
+func (ec *executionContext) unmarshalOAny2interface(ctx context.Context, v any) (any, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalAny(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOAny2interface(ctx context.Context, sel ast.SelectionSet, v any) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalAny(v)
 	return res
 }
 
@@ -3870,72 +4002,6 @@ func (ec *executionContext) marshalOID2ᚕstringᚄ(ctx context.Context, sel ast
 	}
 
 	return ret
-}
-
-func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v any) (*int32, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalInt32(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.SelectionSet, v *int32) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	_ = sel
-	_ = ctx
-	res := graphql.MarshalInt32(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOJSON2ᚕᚖstring(ctx context.Context, v any) ([]*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []any
-	vSlice = graphql.CoerceList(v)
-	var err error
-	res := make([]*string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOJSON2ᚖstring(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOJSON2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOJSON2ᚖstring(ctx, sel, v[i])
-	}
-
-	return ret
-}
-
-func (ec *executionContext) unmarshalOJSON2ᚖstring(ctx context.Context, v any) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalString(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOJSON2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	_ = sel
-	_ = ctx
-	res := graphql.MarshalString(*v)
-	return res
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {

@@ -3,33 +3,34 @@
 package model
 
 type CollectionRequirement struct {
-	Name     *string   `json:"name,omitempty"`
-	Required *int32    `json:"required,omitempty"`
-	Options  []*string `json:"options,omitempty"`
+	Type     string `json:"type"`
+	Name     string `json:"name"`
+	Required int32  `json:"required"`
+	Options  any    `json:"options,omitempty"`
 }
 
 type Course struct {
-	ID                     string                 `json:"id"`
-	SubjectPrefix          *string                `json:"subject_prefix,omitempty"`
-	CourseNumber           *string                `json:"course_number,omitempty"`
-	Title                  *string                `json:"title,omitempty"`
-	Description            *string                `json:"description,omitempty"`
-	EnrollmentReqs         *string                `json:"enrollment_reqs,omitempty"`
-	School                 *string                `json:"school,omitempty"`
-	CreditHours            *string                `json:"credit_hours,omitempty"`
-	ClassLevel             *string                `json:"class_level,omitempty"`
-	ActivityType           *string                `json:"activity_type,omitempty"`
-	Grading                *string                `json:"grading,omitempty"`
-	InternalCourseNumber   *string                `json:"internal_course_number,omitempty"`
+	ID                     string                 `json:"_id"`
+	SubjectPrefix          string                 `json:"subject_prefix"`
+	CourseNumber           string                 `json:"course_number"`
+	Title                  string                 `json:"title"`
+	Description            string                 `json:"description"`
+	EnrollmentReqs         string                 `json:"enrollment_reqs"`
+	School                 string                 `json:"school"`
+	CreditHours            string                 `json:"credit_hours"`
+	ClassLevel             string                 `json:"class_level"`
+	ActivityType           string                 `json:"activity_type"`
+	Grading                string                 `json:"grading"`
+	InternalCourseNumber   string                 `json:"internal_course_number"`
 	Prerequisites          *CollectionRequirement `json:"prerequisites,omitempty"`
 	Corequisites           *CollectionRequirement `json:"corequisites,omitempty"`
 	CoOrPreRequisites      *CollectionRequirement `json:"co_or_pre_requisites,omitempty"`
 	Sections               []string               `json:"sections,omitempty"`
-	LectureContactHours    *string                `json:"lecture_contact_hours,omitempty"`
-	LaboratoryContactHours *string                `json:"laboratory_contact_hours,omitempty"`
-	OfferingFrequency      *string                `json:"offering_frequency,omitempty"`
-	CatalogYear            *string                `json:"catalog_year,omitempty"`
-	Attributes             *string                `json:"attributes,omitempty"`
+	LectureContactHours    string                 `json:"lecture_contact_hours"`
+	LaboratoryContactHours string                 `json:"laboratory_contact_hours"`
+	OfferingFrequency      string                 `json:"offering_frequency"`
+	CatalogYear            string                 `json:"catalog_year"`
+	Attributes             any                    `json:"attributes,omitempty"`
 }
 
 type Query struct {

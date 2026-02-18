@@ -1,37 +1,34 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
-scalar JSON
+scalar Any
 
 type CollectionRequirement {
-  name: String
-  required: Int
-  options: [JSON]
+  type: String!
+  name: String!
+  required: Int!
+  options: Any
 }
 
 type Course {
-  id: ID!
-  subject_prefix: String
-  course_number: String
-  title: String
-  description: String
-  enrollment_reqs: String
-  school: String
-  credit_hours: String
-  class_level: String
-  activity_type: String
-  grading: String
-  internal_course_number: String
+  _id: ID!
+  subject_prefix: String!
+  course_number: String!
+  title: String!
+  description: String!
+  enrollment_reqs: String!
+  school: String!
+  credit_hours: String!
+  class_level: String!
+  activity_type: String!
+  grading: String!
+  internal_course_number: String!
   prerequisites: CollectionRequirement
   corequisites: CollectionRequirement
   co_or_pre_requisites: CollectionRequirement
   sections: [ID!]
-  lecture_contact_hours: String
-  laboratory_contact_hours: String
-  offering_frequency: String
-  catalog_year: String
-  attributes: JSON
+  lecture_contact_hours: String!
+  laboratory_contact_hours: String!
+  offering_frequency: String!
+  catalog_year: String!
+  attributes: Any
 }
 
 type Query {
