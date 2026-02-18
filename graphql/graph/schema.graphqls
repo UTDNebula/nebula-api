@@ -4,7 +4,7 @@ type CollectionRequirement {
   type: String!
   name: String!
   required: Int!
-  options: Any
+  options: Any!
 }
 
 type Course {
@@ -20,18 +20,25 @@ type Course {
   activity_type: String!
   grading: String!
   internal_course_number: String!
-  prerequisites: CollectionRequirement
-  corequisites: CollectionRequirement
-  co_or_pre_requisites: CollectionRequirement
+  prerequisites: CollectionRequirement!
+  corequisites: CollectionRequirement!
+  co_or_pre_requisites: CollectionRequirement!
   sections: [ID!]
   lecture_contact_hours: String!
   laboratory_contact_hours: String!
   offering_frequency: String!
   catalog_year: String!
-  attributes: Any
+  attributes: Any!
+}
+
+input CourseFilter {
+  subject_prefix: String
+  course_number: String
+  title: String
+  catalog_year: String
 }
 
 type Query {
-  courses: [Course!]!
+  courses(filter: CourseFilter, limit: Int = 20, offset: Int = 0): [Course!]!
   course(id: ID!): Course
 }

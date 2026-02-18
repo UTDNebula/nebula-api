@@ -12,7 +12,7 @@ import (
 )
 
 // Courses is the resolver for the courses field.
-func (r *queryResolver) Courses(ctx context.Context) ([]*model.Course, error) {
+func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter, limit *int32, offset *int32) ([]*model.Course, error) {
 	panic(fmt.Errorf("not implemented: Courses - courses"))
 }
 

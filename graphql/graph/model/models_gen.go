@@ -6,7 +6,7 @@ type CollectionRequirement struct {
 	Type     string `json:"type"`
 	Name     string `json:"name"`
 	Required int32  `json:"required"`
-	Options  any    `json:"options,omitempty"`
+	Options  any    `json:"options"`
 }
 
 type Course struct {
@@ -22,15 +22,22 @@ type Course struct {
 	ActivityType           string                 `json:"activity_type"`
 	Grading                string                 `json:"grading"`
 	InternalCourseNumber   string                 `json:"internal_course_number"`
-	Prerequisites          *CollectionRequirement `json:"prerequisites,omitempty"`
-	Corequisites           *CollectionRequirement `json:"corequisites,omitempty"`
-	CoOrPreRequisites      *CollectionRequirement `json:"co_or_pre_requisites,omitempty"`
+	Prerequisites          *CollectionRequirement `json:"prerequisites"`
+	Corequisites           *CollectionRequirement `json:"corequisites"`
+	CoOrPreRequisites      *CollectionRequirement `json:"co_or_pre_requisites"`
 	Sections               []string               `json:"sections,omitempty"`
 	LectureContactHours    string                 `json:"lecture_contact_hours"`
 	LaboratoryContactHours string                 `json:"laboratory_contact_hours"`
 	OfferingFrequency      string                 `json:"offering_frequency"`
 	CatalogYear            string                 `json:"catalog_year"`
-	Attributes             any                    `json:"attributes,omitempty"`
+	Attributes             any                    `json:"attributes"`
+}
+
+type CourseFilter struct {
+	SubjectPrefix *string `json:"subject_prefix,omitempty"`
+	CourseNumber  *string `json:"course_number,omitempty"`
+	Title         *string `json:"title,omitempty"`
+	CatalogYear   *string `json:"catalog_year,omitempty"`
 }
 
 type Query struct {
