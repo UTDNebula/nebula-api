@@ -7,6 +7,7 @@ package graph
 
 import (
 	"context"
+	"graphql/configs"
 	"graphql/graph/model"
 	"time"
 
@@ -16,7 +17,7 @@ import (
 )
 
 // Courses is the resolver for the courses field.
-func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter, limit *int32, offset *int32) ([]*model.Course, error) {
+func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter, offset *int32) ([]*model.Course, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
@@ -34,7 +35,7 @@ func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter,
 		return nil, err
 	}
 	// Paginate the list of courses
-	paginate := options.Find().SetSkip(int64(*offset)).SetLimit(int64(*limit))
+	paginate := options.Find().SetSkip(int64(*offset)).SetLimit(configs.GetEnvLimit())
 
 	// Query from Database
 	cursor, err := r.CourseCollection.Find(timeoutCtx, courseQuery, paginate)

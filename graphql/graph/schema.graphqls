@@ -72,7 +72,7 @@ type BuildingRooms {
 }
 
 type Query {
-  courses(filter: CourseFilter, limit: Int = 20, offset: Int = 0): [Course!]
+  courses(filter: CourseFilter, offset: Int = 0): [Course!]
   course(id: ID!): Course
 
   rooms: [BuildingRooms!]

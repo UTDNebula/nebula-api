@@ -75,7 +75,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Course  func(childComplexity int, id string) int
-		Courses func(childComplexity int, filter *model.CourseFilter, limit *int32, offset *int32) int
+		Courses func(childComplexity int, filter *model.CourseFilter, offset *int32) int
 		Rooms   func(childComplexity int) int
 	}
 
@@ -86,7 +86,7 @@ type ComplexityRoot struct {
 }
 
 type QueryResolver interface {
-	Courses(ctx context.Context, filter *model.CourseFilter, limit *int32, offset *int32) ([]*model.Course, error)
+	Courses(ctx context.Context, filter *model.CourseFilter, offset *int32) ([]*model.Course, error)
 	Course(ctx context.Context, id string) (*model.Course, error)
 	Rooms(ctx context.Context) ([]*model.BuildingRooms, error)
 }
@@ -303,7 +303,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.Courses(childComplexity, args["filter"].(*model.CourseFilter), args["limit"].(*int32), args["offset"].(*int32)), true
+		return e.ComplexityRoot.Query.Courses(childComplexity, args["filter"].(*model.CourseFilter), args["offset"].(*int32)), true
 
 	case "Query.rooms":
 		if e.ComplexityRoot.Query.Rooms == nil {
@@ -443,16 +443,11 @@ func (ec *executionContext) field_Query_courses_args(ctx context.Context, rawArg
 		return nil, err
 	}
 	args["filter"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "limit", ec.unmarshalOInt2ᚖint32)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
 	if err != nil {
 		return nil, err
 	}
-	args["limit"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
-	if err != nil {
-		return nil, err
-	}
-	args["offset"] = arg2
+	args["offset"] = arg1
 	return args, nil
 }
 
@@ -1393,7 +1388,7 @@ func (ec *executionContext) _Query_courses(ctx context.Context, field graphql.Co
 		ec.fieldContext_Query_courses,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Courses(ctx, fc.Args["filter"].(*model.CourseFilter), fc.Args["limit"].(*int32), fc.Args["offset"].(*int32))
+			return ec.Resolvers.Query().Courses(ctx, fc.Args["filter"].(*model.CourseFilter), fc.Args["offset"].(*int32))
 		},
 		nil,
 		ec.marshalOCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCourseᚄ,

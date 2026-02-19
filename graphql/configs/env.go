@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 
@@ -17,9 +16,7 @@ func GetPortString() string {
 		portNumber = "8080"
 	}
 
-	portString := fmt.Sprintf(":%s", portNumber)
-
-	return portString
+	return portNumber
 }
 
 // Get the connection string of the MongoDB from environment
