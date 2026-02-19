@@ -20,6 +20,8 @@ func transformColReq(dbColReq *DBCollectionRequirement) *CollectionRequirement {
 	}
 }
 
+// NOTE: For now, course on Mongo side is identical to course on GraphQL side
+// However, in the near future, when we implement the REFERENCE RESOLVER, there will be diffs
 type DBCourse struct {
 	ID                     string                   `bson:"_id"`
 	SubjectPrefix          string                   `bson:"subject_prefix"`
@@ -45,8 +47,8 @@ type DBCourse struct {
 }
 
 // Transform the course object that interacts with Mongo to the course object that interacts with GraphQL
-func transformCourse(dbCourse *DBCourse) Course {
-	return Course{
+func TransformCourse(dbCourse *DBCourse) *Course {
+	return &Course{
 		dbCourse.ID,
 		dbCourse.SubjectPrefix,
 		dbCourse.CourseNumber,
