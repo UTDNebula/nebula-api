@@ -13,7 +13,7 @@ import (
 func GetPortString() string {
 	portNumber, exist := os.LookupEnv("PORT")
 	if !exist {
-		portNumber = "8080"
+		portNumber = "8000" // 8080 for REST, 8000 for GRAPHQL
 	}
 
 	return portNumber
