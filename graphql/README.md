@@ -1,10 +1,10 @@
 # IMPLEMENTING THE GRAPHQL RESOLVER
 
-Most of the GraphQL frameworks, including ```gqlgen```(Go), follow the **schema-first** approach & auto-generate the boilerplate code resolving the GraphQL schema.
+Most of the GraphQL frameworks, including gqlgen(Go), follow the **schema-first** approach & auto-generate the boilerplate code resolving the GraphQL schema.
 
 Our responsibility is:
 - Define or update the schema 
-- Implement the resolver to fetch (aggregate) data from the database (equivalent to REST controllers implementation)
+- Implement the resolver to fetch (aggregate) data from the database
 
 ## Define or update the schema (model)
 Define or update schema in ```schema.graphqls```. You should rely on ```../api/schema/``` for objects we already have in the database.
@@ -45,3 +45,25 @@ Currently, ```Course``` & ```DBCourse``` are identical, but once we start implem
 For other objects without **ID REFERENCE** (astra events, rooms, etc), we can combine DB object and GraphQL object as one using ```@goTag```. Since we won't ever implement reference resolver on these objects, there's no need for different schemas.
 
 ## Implement the Resolver
+When you run
+```
+make generate
+```
+Resolver methods for new objects will be auto-generated in 
+```
+schema.resolvers.go
+```
+This happens because gqlgen requires you to implement resolvers to all defined schemas (no missing), and by default all resolvers take place in that file.
+
+**OUR STRUCTURE:**
+We want more structured organization, so we will move resolver methods into dedicated files per object
+
+For example, 
+- ```course.resolvers.go``` contains all course-related resolvers
+- ```astra.resolvers.go``` contains all astra-related resolvers.
+
+**ISSUE:**
+- When you run ```make generate``` again, the existing methods will be generated back to ```schema.resolvers.go```.
+- Remove the re-generated methods as a temporary solution.
+
+Implementation of GraphQL resolvers are very similar to REST controllers implementation, which includes querying and aggregating MongoDB and parse them into the schemas.
