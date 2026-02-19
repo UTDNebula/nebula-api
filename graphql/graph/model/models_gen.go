@@ -3,34 +3,34 @@
 package model
 
 type CollectionRequirement struct {
-	Type     string `json:"type" bson:"type"`
-	Name     string `json:"name" bson:"name"`
-	Required int32  `json:"required" bson:"required"`
-	Options  any    `json:"options,omitempty" bson:"options"`
+	Type     string `json:"type"`
+	Name     string `json:"name"`
+	Required int32  `json:"required"`
+	Options  any    `json:"options,omitempty"`
 }
 
 type Course struct {
-	ID                     string                 `json:"_id" bson:"_id"`
-	SubjectPrefix          string                 `json:"subject_prefix" bson:"subject_prefix"`
-	CourseNumber           string                 `json:"course_number" bson:"course_number"`
-	Title                  string                 `json:"title" bson:"title"`
-	Description            string                 `json:"description" bson:"description"`
-	EnrollmentReqs         string                 `json:"enrollment_reqs" bson:"enrollment_reqs"`
-	School                 string                 `json:"school" bson:"school"`
-	CreditHours            string                 `json:"credit_hours" bson:"credit_hours"`
-	ClassLevel             string                 `json:"class_level" bson:"class_level"`
-	ActivityType           string                 `json:"activity_type" bson:"activity_type"`
-	Grading                string                 `json:"grading" bson:"grading"`
-	InternalCourseNumber   string                 `json:"internal_course_number" bson:"internal_course_number"`
-	Prerequisites          *CollectionRequirement `json:"prerequisites,omitempty" bson:"prerequisites"`
-	Corequisites           *CollectionRequirement `json:"corequisites,omitempty" bson:"corequisites"`
-	CoOrPreRequisites      *CollectionRequirement `json:"co_or_pre_requisites,omitempty" bson:"co_or_pre_requisites"`
-	Sections               []string               `json:"sections" bson:"sections"`
-	LectureContactHours    string                 `json:"lecture_contact_hours" bson:"lecture_contact_hours"`
-	LaboratoryContactHours string                 `json:"laboratory_contact_hours" bson:"laboratory_contact_hours"`
-	OfferingFrequency      string                 `json:"offering_frequency" bson:"offering_frequency"`
-	CatalogYear            string                 `json:"catalog_year" bson:"catalog_year"`
-	Attributes             any                    `json:"attributes,omitempty" bson:"attributes"`
+	ID                     string                 `json:"_id"`
+	SubjectPrefix          string                 `json:"subject_prefix"`
+	CourseNumber           string                 `json:"course_number"`
+	Title                  string                 `json:"title"`
+	Description            string                 `json:"description"`
+	EnrollmentReqs         string                 `json:"enrollment_reqs"`
+	School                 string                 `json:"school"`
+	CreditHours            string                 `json:"credit_hours"`
+	ClassLevel             string                 `json:"class_level"`
+	ActivityType           string                 `json:"activity_type"`
+	Grading                string                 `json:"grading"`
+	InternalCourseNumber   string                 `json:"internal_course_number"`
+	Prerequisites          *CollectionRequirement `json:"prerequisites,omitempty"`
+	Corequisites           *CollectionRequirement `json:"corequisites,omitempty"`
+	CoOrPreRequisites      *CollectionRequirement `json:"co_or_pre_requisites,omitempty"`
+	Sections               []string               `json:"sections"`
+	LectureContactHours    string                 `json:"lecture_contact_hours"`
+	LaboratoryContactHours string                 `json:"laboratory_contact_hours"`
+	OfferingFrequency      string                 `json:"offering_frequency"`
+	CatalogYear            string                 `json:"catalog_year"`
+	Attributes             any                    `json:"attributes,omitempty"`
 }
 
 type CourseFilter struct {
