@@ -152,6 +152,9 @@ models:
     model:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
+  Float64:
+    model:
+      - github.com/99designs/gqlgen/graphql.Float
   Any:
     model:
       - github.com/99designs/gqlgen/graphql.Any

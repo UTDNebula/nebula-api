@@ -5,6 +5,7 @@ directive @goTag(
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 
 scalar Any
+scalar Float64
 
 type CollectionRequirement {
   type: String!
@@ -13,6 +14,10 @@ type CollectionRequirement {
   options: Any
 }
 
+# NOTES: Only objects that have ID REFERENCE needs separate of concerns
+# For other objects, we can combine DB object and GraphQL object as one using goTag
+
+# Course needs seperate of concerns
 type Course {
   _id: ID!
   subject_prefix: String!
@@ -53,7 +58,22 @@ input CourseFilter {
   catalog_year: String @goTag(key: "bson", value: "catalog_year,omitempty")
 }
 
+# Building rooms don't need seprate of concerns
+type Room {
+  room: String! @goTag(key: "bson", value: "room")
+  capacity: Int! @goTag(key: "bson", value: "capacity")
+}
+
+type BuildingRooms {
+  building: String! @goTag(key: "bson", value: "building")
+  rooms: [Room!] @goTag(key: "bson", value: "rooms")
+  lat: Float64! @goTag(key: "bson", value: "lat")
+  lon: Float64! @goTag(key: "bson", value: "lon")
+}
+
 type Query {
   courses(filter: CourseFilter, limit: Int = 20, offset: Int = 0): [Course!]
   course(id: ID!): Course
+
+  rooms: [BuildingRooms!]
 }

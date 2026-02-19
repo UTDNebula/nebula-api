@@ -2,6 +2,13 @@
 
 package model
 
+type BuildingRooms struct {
+	Building string  `json:"building" bson:"building"`
+	Rooms    []*Room `json:"rooms,omitempty" bson:"rooms"`
+	Lat      float64 `json:"lat" bson:"lat"`
+	Lon      float64 `json:"lon" bson:"lon"`
+}
+
 type CollectionRequirement struct {
 	Type     string `json:"type"`
 	Name     string `json:"name"`
@@ -49,4 +56,9 @@ type CourseFilter struct {
 }
 
 type Query struct {
+}
+
+type Room struct {
+	Room     string `json:"room" bson:"room"`
+	Capacity int32  `json:"capacity" bson:"capacity"`
 }

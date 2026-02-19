@@ -35,6 +35,13 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	BuildingRooms struct {
+		Building func(childComplexity int) int
+		Lat      func(childComplexity int) int
+		Lon      func(childComplexity int) int
+		Rooms    func(childComplexity int) int
+	}
+
 	CollectionRequirement struct {
 		Name     func(childComplexity int) int
 		Options  func(childComplexity int) int
@@ -69,12 +76,19 @@ type ComplexityRoot struct {
 	Query struct {
 		Course  func(childComplexity int, id string) int
 		Courses func(childComplexity int, filter *model.CourseFilter, limit *int32, offset *int32) int
+		Rooms   func(childComplexity int) int
+	}
+
+	Room struct {
+		Capacity func(childComplexity int) int
+		Room     func(childComplexity int) int
 	}
 }
 
 type QueryResolver interface {
 	Courses(ctx context.Context, filter *model.CourseFilter, limit *int32, offset *int32) ([]*model.Course, error)
 	Course(ctx context.Context, id string) (*model.Course, error)
+	Rooms(ctx context.Context) ([]*model.BuildingRooms, error)
 }
 
 type executableSchema graphql.ExecutableSchemaState[ResolverRoot, DirectiveRoot, ComplexityRoot]
@@ -90,6 +104,31 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	ec := newExecutionContext(nil, e, nil)
 	_ = ec
 	switch typeName + "." + field {
+
+	case "BuildingRooms.building":
+		if e.ComplexityRoot.BuildingRooms.Building == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BuildingRooms.Building(childComplexity), true
+	case "BuildingRooms.lat":
+		if e.ComplexityRoot.BuildingRooms.Lat == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BuildingRooms.Lat(childComplexity), true
+	case "BuildingRooms.lon":
+		if e.ComplexityRoot.BuildingRooms.Lon == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BuildingRooms.Lon(childComplexity), true
+	case "BuildingRooms.rooms":
+		if e.ComplexityRoot.BuildingRooms.Rooms == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BuildingRooms.Rooms(childComplexity), true
 
 	case "CollectionRequirement.name":
 		if e.ComplexityRoot.CollectionRequirement.Name == nil {
@@ -265,6 +304,26 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Query.Courses(childComplexity, args["filter"].(*model.CourseFilter), args["limit"].(*int32), args["offset"].(*int32)), true
+
+	case "Query.rooms":
+		if e.ComplexityRoot.Query.Rooms == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Query.Rooms(childComplexity), true
+
+	case "Room.capacity":
+		if e.ComplexityRoot.Room.Capacity == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Room.Capacity(childComplexity), true
+	case "Room.room":
+		if e.ComplexityRoot.Room.Room == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Room.Room(childComplexity), true
 
 	}
 	return 0, false
@@ -448,6 +507,128 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _BuildingRooms_building(ctx context.Context, field graphql.CollectedField, obj *model.BuildingRooms) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BuildingRooms_building,
+		func(ctx context.Context) (any, error) {
+			return obj.Building, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BuildingRooms_building(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BuildingRooms",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BuildingRooms_rooms(ctx context.Context, field graphql.CollectedField, obj *model.BuildingRooms) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BuildingRooms_rooms,
+		func(ctx context.Context) (any, error) {
+			return obj.Rooms, nil
+		},
+		nil,
+		ec.marshalORoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomᚄ,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_BuildingRooms_rooms(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BuildingRooms",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "room":
+				return ec.fieldContext_Room_room(ctx, field)
+			case "capacity":
+				return ec.fieldContext_Room_capacity(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Room", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BuildingRooms_lat(ctx context.Context, field graphql.CollectedField, obj *model.BuildingRooms) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BuildingRooms_lat,
+		func(ctx context.Context) (any, error) {
+			return obj.Lat, nil
+		},
+		nil,
+		ec.marshalNFloat642float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BuildingRooms_lat(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BuildingRooms",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BuildingRooms_lon(ctx context.Context, field graphql.CollectedField, obj *model.BuildingRooms) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BuildingRooms_lon,
+		func(ctx context.Context) (any, error) {
+			return obj.Lon, nil
+		},
+		nil,
+		ec.marshalNFloat642float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BuildingRooms_lon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BuildingRooms",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _CollectionRequirement_type(ctx context.Context, field graphql.CollectedField, obj *model.CollectionRequirement) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
@@ -1374,6 +1555,45 @@ func (ec *executionContext) fieldContext_Query_course(ctx context.Context, field
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_rooms(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_rooms,
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.Query().Rooms(ctx)
+		},
+		nil,
+		ec.marshalOBuildingRooms2ᚕᚖgraphqlᚋgraphᚋmodelᚐBuildingRoomsᚄ,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_rooms(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "building":
+				return ec.fieldContext_BuildingRooms_building(ctx, field)
+			case "rooms":
+				return ec.fieldContext_BuildingRooms_rooms(ctx, field)
+			case "lat":
+				return ec.fieldContext_BuildingRooms_lat(ctx, field)
+			case "lon":
+				return ec.fieldContext_BuildingRooms_lon(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BuildingRooms", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -1477,6 +1697,64 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Room_room(ctx context.Context, field graphql.CollectedField, obj *model.Room) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Room_room,
+		func(ctx context.Context) (any, error) {
+			return obj.Room, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Room_room(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Room",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Room_capacity(ctx context.Context, field graphql.CollectedField, obj *model.Room) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Room_capacity,
+		func(ctx context.Context) (any, error) {
+			return obj.Capacity, nil
+		},
+		nil,
+		ec.marshalNInt2int32,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Room_capacity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Room",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3039,6 +3317,57 @@ func (ec *executionContext) unmarshalInputCourseFilter(ctx context.Context, obj 
 
 // region    **************************** object.gotpl ****************************
 
+var buildingRoomsImplementors = []string{"BuildingRooms"}
+
+func (ec *executionContext) _BuildingRooms(ctx context.Context, sel ast.SelectionSet, obj *model.BuildingRooms) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, buildingRoomsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BuildingRooms")
+		case "building":
+			out.Values[i] = ec._BuildingRooms_building(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "rooms":
+			out.Values[i] = ec._BuildingRooms_rooms(ctx, field, obj)
+		case "lat":
+			out.Values[i] = ec._BuildingRooms_lat(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "lon":
+			out.Values[i] = ec._BuildingRooms_lon(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var collectionRequirementImplementors = []string{"CollectionRequirement"}
 
 func (ec *executionContext) _CollectionRequirement(ctx context.Context, sel ast.SelectionSet, obj *model.CollectionRequirement) graphql.Marshaler {
@@ -3274,6 +3603,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "rooms":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_rooms(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -3282,6 +3630,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var roomImplementors = []string{"Room"}
+
+func (ec *executionContext) _Room(ctx context.Context, sel ast.SelectionSet, obj *model.Room) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, roomImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Room")
+		case "room":
+			out.Values[i] = ec._Room_room(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "capacity":
+			out.Values[i] = ec._Room_capacity(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3656,6 +4048,16 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNBuildingRooms2ᚖgraphqlᚋgraphᚋmodelᚐBuildingRooms(ctx context.Context, sel ast.SelectionSet, v *model.BuildingRooms) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._BuildingRooms(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -3664,6 +4066,22 @@ func (ec *executionContext) marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(c
 		return graphql.Null
 	}
 	return ec._Course(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNFloat642float64(ctx context.Context, v any) (float64, error) {
+	res, err := graphql.UnmarshalFloat(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNFloat642float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalFloat(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {
@@ -3726,6 +4144,16 @@ func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNRoom2ᚖgraphqlᚋgraphᚋmodelᚐRoom(ctx context.Context, sel ast.SelectionSet, v *model.Room) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Room(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {
@@ -3933,6 +4361,25 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) marshalOBuildingRooms2ᚕᚖgraphqlᚋgraphᚋmodelᚐBuildingRoomsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.BuildingRooms) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNBuildingRooms2ᚖgraphqlᚋgraphᚋmodelᚐBuildingRooms(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement(ctx context.Context, sel ast.SelectionSet, v *model.CollectionRequirement) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -3990,6 +4437,25 @@ func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.Se
 	_ = ctx
 	res := graphql.MarshalInt32(*v)
 	return res
+}
+
+func (ec *executionContext) marshalORoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Room) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNRoom2ᚖgraphqlᚋgraphᚋmodelᚐRoom(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {
