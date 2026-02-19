@@ -584,9 +584,9 @@ func (ec *executionContext) _CollectionRequirement_options(ctx context.Context, 
 			return obj.Options, nil
 		},
 		nil,
-		ec.marshalNAny2interface,
+		ec.marshalOAny2interface,
 		true,
-		true,
+		false,
 	)
 }
 
@@ -961,9 +961,9 @@ func (ec *executionContext) _Course_prerequisites(ctx context.Context, field gra
 			return obj.Prerequisites, nil
 		},
 		nil,
-		ec.marshalNCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
+		ec.marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
 		true,
-		true,
+		false,
 	)
 }
 
@@ -1000,9 +1000,9 @@ func (ec *executionContext) _Course_corequisites(ctx context.Context, field grap
 			return obj.Corequisites, nil
 		},
 		nil,
-		ec.marshalNCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
+		ec.marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
 		true,
-		true,
+		false,
 	)
 }
 
@@ -1039,9 +1039,9 @@ func (ec *executionContext) _Course_co_or_pre_requisites(ctx context.Context, fi
 			return obj.CoOrPreRequisites, nil
 		},
 		nil,
-		ec.marshalNCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
+		ec.marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
 		true,
-		true,
+		false,
 	)
 }
 
@@ -1078,9 +1078,9 @@ func (ec *executionContext) _Course_sections(ctx context.Context, field graphql.
 			return obj.Sections, nil
 		},
 		nil,
-		ec.marshalOID2ᚕstringᚄ,
+		ec.marshalNID2ᚕstringᚄ,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -1223,9 +1223,9 @@ func (ec *executionContext) _Course_attributes(ctx context.Context, field graphq
 			return obj.Attributes, nil
 		},
 		nil,
-		ec.marshalNAny2interface,
+		ec.marshalOAny2interface,
 		true,
-		true,
+		false,
 	)
 }
 
@@ -1253,9 +1253,9 @@ func (ec *executionContext) _Query_courses(ctx context.Context, field graphql.Co
 			return ec.resolvers.Query().Courses(ctx, fc.Args["filter"].(*model.CourseFilter), fc.Args["limit"].(*int32), fc.Args["offset"].(*int32))
 		},
 		nil,
-		ec.marshalNCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCourseᚄ,
+		ec.marshalOCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCourseᚄ,
 		true,
-		true,
+		false,
 	)
 }
 
@@ -2973,7 +2973,7 @@ func (ec *executionContext) unmarshalInputCourseFilter(ctx context.Context, obj 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"subject_prefix", "course_number", "title", "catalog_year"}
+	fieldsInOrder := [...]string{"subject_prefix", "course_number", "school", "credit_hours", "class_level", "activity_type", "grading", "internal_course_number", "lecture_contact_hours", "laboratory_contact_hours", "offering_frequency", "catalog_year"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -2994,13 +2994,69 @@ func (ec *executionContext) unmarshalInputCourseFilter(ctx context.Context, obj 
 				return it, err
 			}
 			it.CourseNumber = data
-		case "title":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+		case "school":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("school"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Title = data
+			it.School = data
+		case "credit_hours":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("credit_hours"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreditHours = data
+		case "class_level":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("class_level"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClassLevel = data
+		case "activity_type":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("activity_type"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ActivityType = data
+		case "grading":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("grading"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Grading = data
+		case "internal_course_number":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("internal_course_number"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.InternalCourseNumber = data
+		case "lecture_contact_hours":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lecture_contact_hours"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.LectureContactHours = data
+		case "laboratory_contact_hours":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("laboratory_contact_hours"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.LaboratoryContactHours = data
+		case "offering_frequency":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offering_frequency"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OfferingFrequency = data
 		case "catalog_year":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("catalog_year"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -3050,9 +3106,6 @@ func (ec *executionContext) _CollectionRequirement(ctx context.Context, sel ast.
 			}
 		case "options":
 			out.Values[i] = ec._CollectionRequirement_options(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3149,21 +3202,15 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 			}
 		case "prerequisites":
 			out.Values[i] = ec._Course_prerequisites(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "corequisites":
 			out.Values[i] = ec._Course_corequisites(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "co_or_pre_requisites":
 			out.Values[i] = ec._Course_co_or_pre_requisites(ctx, field, obj)
+		case "sections":
+			out.Values[i] = ec._Course_sections(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "sections":
-			out.Values[i] = ec._Course_sections(ctx, field, obj)
 		case "lecture_contact_hours":
 			out.Values[i] = ec._Course_lecture_contact_hours(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -3186,9 +3233,6 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 			}
 		case "attributes":
 			out.Values[i] = ec._Course_attributes(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3234,16 +3278,13 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "courses":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Query_courses(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -3638,28 +3679,6 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNAny2interface(ctx context.Context, v any) (any, error) {
-	res, err := graphql.UnmarshalAny(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNAny2interface(ctx context.Context, sel ast.SelectionSet, v any) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	_ = sel
-	res := graphql.MarshalAny(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
-}
-
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3674,60 +3693,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalNCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement(ctx context.Context, sel ast.SelectionSet, v *model.CollectionRequirement) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._CollectionRequirement(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Course) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
@@ -3754,6 +3719,36 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
@@ -4041,6 +4036,24 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
+func (ec *executionContext) unmarshalOAny2interface(ctx context.Context, v any) (any, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalAny(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOAny2interface(ctx context.Context, sel ast.SelectionSet, v any) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalAny(v)
+	return res
+}
+
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4071,6 +4084,60 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement(ctx context.Context, sel ast.SelectionSet, v *model.CollectionRequirement) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._CollectionRequirement(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Course) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) marshalOCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -4084,42 +4151,6 @@ func (ec *executionContext) unmarshalOCourseFilter2ᚖgraphqlᚋgraphᚋmodelᚐ
 	}
 	res, err := ec.unmarshalInputCourseFilter(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOID2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []any
-	vSlice = graphql.CoerceList(v)
-	var err error
-	res := make([]string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v any) (*int32, error) {
