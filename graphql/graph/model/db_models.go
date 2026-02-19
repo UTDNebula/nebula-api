@@ -12,6 +12,9 @@ type DBCollectionRequirement struct {
 }
 
 func transformColReq(dbColReq *DBCollectionRequirement) *CollectionRequirement {
+	if dbColReq == nil {
+		return nil
+	}
 	return &CollectionRequirement{
 		dbColReq.Type,
 		dbColReq.Name,
@@ -48,6 +51,9 @@ type DBCourse struct {
 
 // Transform the course object that interacts with Mongo to the course object that interacts with GraphQL
 func TransformCourse(dbCourse *DBCourse) *Course {
+	if dbCourse == nil {
+		return nil
+	}
 	return &Course{
 		dbCourse.ID,
 		dbCourse.SubjectPrefix,
