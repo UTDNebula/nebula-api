@@ -21,6 +21,7 @@ func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter,
 	defer cancel()
 
 	var courses []*model.Course
+	var err error
 
 	// Build the mongo query from the filter's struct
 	var courseQuery bson.M
@@ -31,7 +32,7 @@ func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter,
 	if err = bson.Unmarshal(bsonEncode, &courseQuery); err != nil {
 		return courses, err
 	}
-
+	// Paginate the list of courses
 	paginate := options.Find().SetSkip(int64(*offset)).SetLimit(int64(*limit))
 
 	// Query from Database
@@ -41,7 +42,7 @@ func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter,
 	}
 	defer cursor.Close(timeoutCtx)
 
-	// Parse the cursor from DB to the course types
+	// Parse the cursor from database to the course types
 	if err = cursor.All(timeoutCtx, &courses); err != nil {
 		return courses, err
 	}
@@ -61,9 +62,9 @@ func (r *queryResolver) Course(ctx context.Context, id string) (*model.Course, e
 	if err != nil {
 		return course, err
 	}
-	query := bson.M{"_id": objectId}
 
-	err = r.CourseCollection.FindOne(timeoutCtx, query).Decode(course)
+	err = r.CourseCollection.FindOne(
+		timeoutCtx, bson.M{"_id": objectId}).Decode(course)
 	if err != nil {
 		return course, err
 	}

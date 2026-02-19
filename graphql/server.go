@@ -24,7 +24,9 @@ func main() {
 	}
 
 	resolver := graph.Resolver{
-		CourseCollection: configs.GetCollection("courses"),
+		CourseCollection:  configs.GetCollection("courses"),
+		SectionCollection: configs.GetCollection("sections"),
+		ProfCollection:    configs.GetCollection("professors"),
 	}
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
