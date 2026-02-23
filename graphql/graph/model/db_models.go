@@ -78,3 +78,33 @@ func TransformCourse(dbCourse *DBCourse) *Course {
 		dbCourse.Attributes,
 	}
 }
+
+// DBAcademicCalendar represents the database model for an academic calendar.
+type DBAcademicCalendar struct {
+	ID                       string     `bson:"_id"`
+	Timeline                 string     `bson:"timeline"`
+	EnrollmentOpens          string     `bson:"enrollment_opens"`
+	SchedulePlannerAvailable string     `bson:"schedule_planner_available"`
+	OnlineAddSwapEnds        string     `bson:"online_add_swap_ends"`
+	LastReadmission          string     `bson:"last_readmission"`
+	LastFromWaitlist         string     `bson:"last_from_waitlist"`
+	MidtermsDue              string     `bson:"midterms_due"`
+	UniversityClosings       [][]string `bson:"university_closings"`
+	NoClasses                [][]string `bson:"no_classes"`
+}
+
+// TransformCalendar converts a database calendar model into a GraphQL AcademicCalendar type.
+func TransformCalendar(dbAcademicCalendar *DBAcademicCalendar) *AcademicCalendar {
+	return &AcademicCalendar{
+		ID:                       dbAcademicCalendar.ID,
+		Timeline:                 dbAcademicCalendar.Timeline,
+		EnrollmentOpens:          dbAcademicCalendar.EnrollmentOpens,
+		SchedulePlannerAvailable: dbAcademicCalendar.SchedulePlannerAvailable,
+		OnlineAddSwapEnds:        dbAcademicCalendar.OnlineAddSwapEnds,
+		LastReadmission:          dbAcademicCalendar.LastReadmission,
+		LastFromWaitlist:         dbAcademicCalendar.LastFromWaitlist,
+		MidtermsDue:              dbAcademicCalendar.MidtermsDue,
+		UniversityClosings:       dbAcademicCalendar.UniversityClosings,
+		NoClasses:                dbAcademicCalendar.NoClasses,
+	}
+}
