@@ -33,13 +33,14 @@ func (r *queryResolver) AcademicCalendars(ctx context.Context, filter *model.Aca
 		}
 	}
 
-	// Pagination
+	// Pagination with sorting by id
 	skip := int64(0)
 	if offset != nil {
 		skip = int64(*offset)
 	}
+
 	limit := configs.GetEnvLimit()
-	paginate := options.Find().SetSkip(skip).SetLimit(limit)
+	paginate := options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"_id": 1})
 
 	// Query the correct collection
 	cursor, err := r.AcademicCalendarCollection.Find(timeoutCtx, query, paginate)
@@ -67,19 +68,16 @@ func (r *queryResolver) AcademicCalendar(ctx context.Context, id string) (*model
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	var dbCourse *model.DBAcademicCalendar
-	var err error
-
-	objectId, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	err = r.CourseCollection.FindOne(
-		timeoutCtx, bson.M{"_id": objectId}).Decode(dbCourse)
+	var dbCalendar model.DBAcademicCalendar
+	err = r.AcademicCalendarCollection.FindOne(timeoutCtx, bson.M{"_id": objectID}).Decode(&dbCalendar)
 	if err != nil {
 		return nil, err
 	}
 
-	return model.TransformCalendar(dbCourse), err
+	return model.TransformCalendar(&dbCalendar), nil
 }
