@@ -7,12 +7,12 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"graphql/configs"
 	"graphql/graph/model"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -64,5 +64,22 @@ func (r *queryResolver) AcademicCalendars(ctx context.Context, filter *model.Aca
 
 // AcademicCalendar is the resolver for the academicCalendar field.
 func (r *queryResolver) AcademicCalendar(ctx context.Context, id string) (*model.AcademicCalendar, error) {
-	panic(fmt.Errorf("not implemented: AcademicCalendar - academicCalendar"))
+	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	var dbCourse *model.DBAcademicCalendar
+	var err error
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = r.CourseCollection.FindOne(
+		timeoutCtx, bson.M{"_id": objectId}).Decode(dbCourse)
+	if err != nil {
+		return nil, err
+	}
+
+	return model.TransformCalendar(dbCourse), err
 }
