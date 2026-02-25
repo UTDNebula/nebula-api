@@ -108,7 +108,18 @@ type AcademicCalendar {
 }
 
 input AcademicCalendarFilter {
-	_id: ID!
-	start_date: String!
-	end_date: String!
+	_id: ID! @goTag(key: "bson", value: "_id")
+	timeline: String! @goTag(key: "bson", value: "timeline")
+	# sessions: [AcademicCalendarSession!]! @goTag(key: "bson", value: "sessions")
+	enrollment_opens: String! @goTag(key: "bson", value: "enrollment_opens")
+	schedule_planner_available: String!
+		@goTag(key: "bson", value: "schedule_planner_available")
+	online_add_swap_ends: String!
+		@goTag(key: "bson", value: "online_add_swap_ends")
+	last_readmission: String! @goTag(key: "bson", value: "last_readmission")
+	last_from_waitlist: String! @goTag(key: "bson", value: "last_from_waitlist")
+	midterms_due: String! @goTag(key: "bson", value: "midterms_due")
+	university_closings: [[String!]!]!
+		@goTag(key: "bson", value: "university_closings")
+	no_classes: [[String!]!]! @goTag(key: "bson", value: "no_classes")
 }
