@@ -1,0 +1,4 @@
+# graphql.config.yml
+
+schema: "schema.graphql" # or 'http://localhost:9876/graphql'
+documents: "src/**/*.{graphql,js,ts,jsx,tsx}"
