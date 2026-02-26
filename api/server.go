@@ -30,7 +30,7 @@ func swagger_controller_placeholder() {}
 //	@host						api.utdnebula.com
 //	@schemes					https http
 //	@x-google-backend			{"address": "https://dev-nebula-api-1062216541483.us-south1.run.app"}
-//	@x-google-endpoints			[{"name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
+//	@x-google-endpints			[{"name": "dev-nebula-api-2wy9quu2ri5uq.apigateway.nebula-api-368223.cloud.goog", "allowCors": true}]
 //	@x-google-management		{"metrics": [{"name": "read-requests", "displayName": "Read Requests CUSTOM", "valueType": "INT64", "metricKind": "DELTA"}], "quota": {"limits": [{"name": "read-limit", "metric": "read-requests", "unit": "1/min/{project}", "values": {"STANDARD": 1000}}]}}
 //	@security					api_key
 //	@securitydefinitions.apikey	api_key
@@ -38,7 +38,6 @@ func swagger_controller_placeholder() {}
 //	@in							header
 
 func main() {
-
 	// To avoid unused error on swagger_controller_placeholder
 	swagger_controller_placeholder()
 
@@ -50,7 +49,9 @@ func main() {
 
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
+		Dsn:              "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
+		TracesSampleRate: 1.0,
+		EnableTracing:    true,
 	}); err != nil {
 		log.Printf("Sentry initialization failed: %v\n", err)
 	}
@@ -95,7 +96,7 @@ func main() {
 func CORS(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, x-api-key")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, x-api-key, Origin, Content-type, Authorization, sentry-trace, baggage")
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET")
 
 	if c.Request.Method == "OPTIONS" {
