@@ -84,7 +84,7 @@ type Section struct {
 	Course_key            CourseKey              `bson:"course_key" json:"course_key" queryable:""`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
 	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
-	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
+	Professor_keys        []ProfessorKey         `bson:"professor_keys" json:"professor_keys"`
 	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
 	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" queryable:""`
 	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" queryable:""`
@@ -113,8 +113,15 @@ type SectionKey struct {
 	Section_number string `bson:"section_number" json:"section_number"`
 }
 
+// Compound key for professors
+type ProfessorKey struct {
+	First_name string `bson:"first_name" json:"first_name" queryable:""`
+	Last_name  string `bson:"last_name" json:"last_name" queryable:""`
+}
+
 type Professor struct {
 	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
+	Key          ProfessorKey         `bson:"key" json:"key"`
 	First_name   string               `bson:"first_name" json:"first_name" queryable:""`
 	Last_name    string               `bson:"last_name" json:"last_name" queryable:""`
 	Titles       []string             `bson:"titles" json:"titles" queryable:""`
@@ -124,7 +131,7 @@ type Professor struct {
 	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
 	Image_uri    string               `bson:"image_uri" json:"image_uri"`
 	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
-	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
+	Section_keys []SectionKey         `bson:"section_keys" json:"section_keys"`
 }
 
 type BasicProfessor struct {
@@ -145,6 +152,17 @@ type Organization struct {
 	President_name string             `bson:"president_name" json:"president_name"`
 	Emails         []string           `bson:"emails" json:"emails"`
 	Picture_data   string             `bson:"picture_data" json:"picture_data"`
+}
+
+type DiscountProgram struct {
+	Id       primitive.ObjectID `bson:"_id" json:"_id"`
+	Category string             `bson:"category" json:"category"`
+	Business string             `bson:"business" json:"business"`
+	Address  string             `bson:"address" json:"address"`
+	Phone    string             `bson:"phone" json:"phone"`
+	Email    string             `bson:"email" json:"email"`
+	Website  string             `bson:"website" json:"website"`
+	Discount string             `bson:"discount" json:"discount"`
 }
 
 type Event struct {
@@ -271,9 +289,10 @@ type ObjectInfo struct {
 	MediaLink       string    `bson:"media_link" json:"media_link"`
 	Created         time.Time `bson:"created" json:"created"`
 	Updated         time.Time `bson:"updated" json:"updated"`
+	PublicUrl       string    `bson:"public_url" json:"public_url"`
 }
 
-func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
+func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs, url string) ObjectInfo {
 	// Don't show the bucket prefix externally
 	bucketName, _ := strings.CutPrefix(attrs.Bucket, BUCKET_PREFIX)
 	return ObjectInfo{
@@ -286,6 +305,7 @@ func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
 		attrs.MediaLink,
 		attrs.Created,
 		attrs.Updated,
+		url,
 	}
 }
 
@@ -294,12 +314,6 @@ type ObjectSignedURLBody struct {
 	Method     string   `json:"method"`     // method to be used with signed URL. For example, PUT
 	Headers    []string `json:"headers"`    // headers for signed URL
 	Expiration string   `json:"expiration"` // timestamp for when the signed URL will expire
-}
-
-// Letters type
-type Letters struct {
-	Date    string `bson:"date" json:"date"`
-	Letters string `bson:"letters" json:"letters"`
 }
 
 // Academic Calendar type
