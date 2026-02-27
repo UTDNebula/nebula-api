@@ -1,4 +1,20 @@
 definitions:
+  controllers.EmailRequest:
+    properties:
+      body:
+        type: string
+      from:
+        type: string
+      subject:
+        type: string
+      to:
+        type: string
+    required:
+    - body
+    - from
+    - subject
+    - to
+    type: object
   schema.APIResponse-array_int:
     properties:
       data:
@@ -1433,6 +1449,34 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Courses
+  /email:
+    post:
+      consumes:
+      - application/json
+      description: '"Send an email via SMTP"'
+      operationId: sendEmail
+      parameters:
+      - description: Email Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.EmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email sent successfully
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
   /events/{date}:
     get:
       description: '"Returns all sections with meetings on the specified date"'

@@ -891,6 +891,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/email": {
+            "post": {
+                "description": "\"Send an email via SMTP\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "sendEmail",
+                "parameters": [
+                    {
+                        "description": "Email Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.EmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email sent successfully",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/events/{date}": {
             "get": {
                 "description": "\"Returns all sections with meetings on the specified date\"",
@@ -3020,6 +3063,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.EmailRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "from",
+                "subject",
+                "to"
+            ],
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.APIResponse-array_int": {
             "type": "object",
             "properties": {
