@@ -6,6 +6,7 @@ directive @goTag(
 
 scalar Any
 scalar Float64
+scalar DateTime
 
 type CollectionRequirement {
 	type: String!
@@ -82,44 +83,50 @@ type Query {
 
 	rooms: [BuildingRooms!]
 
-	# Academic calendar queries
-	academicCalendars(
-		filter: AcademicCalendarFilter
+	# comet calendar queries
+	CometCalendars(
+		filter: CometCalendarFilter
 		offset: Int = 0
-	): [AcademicCalendar!]
-	academicCalendar(id: ID!): AcademicCalendar
+	): [CometCalendar!]
+	CometCalendar(id: ID!): CometCalendar
 }
 
-type AcademicCalendar {
-	_id: ID! @goTag(key: "bson", value: "_id")
-	timeline: String! @goTag(key: "bson", value: "timeline")
-	# sessions: [AcademicCalendarSession!]! @goTag(key: "bson", value: "sessions")
-	enrollment_opens: String! @goTag(key: "bson", value: "enrollment_opens")
-	schedule_planner_available: String!
-		@goTag(key: "bson", value: "schedule_planner_available")
-	online_add_swap_ends: String!
-		@goTag(key: "bson", value: "online_add_swap_ends")
-	last_readmission: String! @goTag(key: "bson", value: "last_readmission")
-	last_from_waitlist: String! @goTag(key: "bson", value: "last_from_waitlist")
-	midterms_due: String! @goTag(key: "bson", value: "midterms_due")
-	university_closings: [[String!]!]!
-		@goTag(key: "bson", value: "university_closings")
-	no_classes: [[String!]!]! @goTag(key: "bson", value: "no_classes")
+type Event {
+	_id: String! @goTag(key: "bson", value: "_id")
+	summary: String! @goTag(key: "bson", value: "summary")
+	location: String! @goTag(key: "bson", value: "location")
+	start_time: DateTime! @goTag(key: "bson", value: "start_time")
+	end_time: DateTime! @goTag(key: "bson", value: "end_time")
+	description: String! @goTag(key: "bson", value: "description")
+	event_type: [String!]! @goTag(key: "bson", value: "event_type")
+	target_audience: [String!]! @goTag(key: "bson", value: "target_audience")
+	topic: [String!]! @goTag(key: "bson", value: "topic")
+	event_tags: [String!]! @goTag(key: "bson", value: "event_tags")
+	event_website: String! @goTag(key: "bson", value: "event_website")
+	department: [String!]! @goTag(key: "bson", value: "department")
+	contact_name: String! @goTag(key: "bson", value: "contact_name")
+	contact_email: String! @goTag(key: "bson", value: "contact_email")
+	contact_phone_number: String!
+		@goTag(key: "bson", value: "contact_phone_number")
 }
 
-input AcademicCalendarFilter {
-	_id: ID! @goTag(key: "bson", value: "_id")
-	timeline: String! @goTag(key: "bson", value: "timeline")
-	# sessions: [AcademicCalendarSession!]! @goTag(key: "bson", value: "sessions")
-	enrollment_opens: String! @goTag(key: "bson", value: "enrollment_opens")
-	schedule_planner_available: String!
-		@goTag(key: "bson", value: "schedule_planner_available")
-	online_add_swap_ends: String!
-		@goTag(key: "bson", value: "online_add_swap_ends")
-	last_readmission: String! @goTag(key: "bson", value: "last_readmission")
-	last_from_waitlist: String! @goTag(key: "bson", value: "last_from_waitlist")
-	midterms_due: String! @goTag(key: "bson", value: "midterms_due")
-	university_closings: [[String!]!]!
-		@goTag(key: "bson", value: "university_closings")
-	no_classes: [[String!]!]! @goTag(key: "bson", value: "no_classes")
+type CometCalendarRoom {
+	room: String! @goTag(key: "bson", value: "room")
+	events: [Event!]! @goTag(key: "bson", value: "events")
+}
+
+type CometCalendarBuilding {
+	building: String! @goTag(key: "bson", value: "building")
+	rooms: [CometCalendarRoom!]! @goTag(key: "bson", value: "rooms")
+}
+
+type CometCalendar {
+	_id: String! @goTag(key: "bson", value: "_id")
+	date: String! @goTag(key: "bson", value: "date")
+	buildings: [CometCalendarBuilding!]! @goTag(key: "bson", value: "buildings")
+}
+
+input CometCalendarFilter {
+	_id: String
+	date: String
 }
