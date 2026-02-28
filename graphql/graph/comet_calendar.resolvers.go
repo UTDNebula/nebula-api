@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"graphql/configs"
 	"graphql/graph/model"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,31 +18,23 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// FIXME: Filtering does not work, make it work
 // CometCalendars is the resolver for the CometCalendars field.
 func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset *int32) ([]*model.CometCalendar, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	// Build query from filter
-	var query bson.M
-	if filter != nil {
-		bsonBytes, err := bson.Marshal(filter)
-		if err != nil {
-			return nil, err
-		}
-		if err = bson.Unmarshal(bsonBytes, &query); err != nil {
-			return nil, err
-		}
-	}
+	// Build query from filter explicity
+	query := bson.M{}
 
-	// Pagination with sorting by id
+	// Pagination
 	skip := int64(0)
 	if offset != nil {
 		skip = int64(*offset)
 	}
 
 	limit := configs.GetEnvLimit()
-	paginate := options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"_id": 1})
+	paginate := options.Find().SetSkip(skip).SetLimit(limit)
 
 	// Query the correct collection
 	cursor, err := r.CometCalendarCollection.Find(timeoutCtx, query, paginate)
@@ -71,9 +62,6 @@ func (r *queryResolver) CometCalendar(ctx context.Context, id string) (*model.Co
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	count, _ := r.CometCalendarCollection.CountDocuments(timeoutCtx, bson.M{})
-	log.Printf("In Function:\tCometCalendar count: %d", count)
-
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -89,4 +77,53 @@ func (r *queryResolver) CometCalendar(ctx context.Context, id string) (*model.Co
 	}
 
 	return model.TransformCalendar(&dbCalendar), nil
+}
+
+// This function builds a bson query manually to avoid errors converting from filter to mongo format
+func buildCometCalendarQuery(filter *model.CometCalendarFilter) bson.M {
+	query := bson.M{}
+
+	if filter != nil {
+		if filter.ID != nil {
+			query["_id"] = *filter.ID
+		}
+		if filter.Date != nil {
+			query["date"] = *filter.Date
+		}
+
+		if len(filter.Buildings) > 0 {
+			var buildingNames []string
+			var roomNames []string
+
+			for _, b := range filter.Buildings {
+				// Collect building names
+				if b != nil && b.Building != nil {
+					buildingNames = append(buildingNames, *b.Building)
+				}
+
+				// Collect room names inside each building
+				if b != nil && b.Rooms != nil {
+					for _, r := range b.Rooms {
+						if r != nil && r.Room != nil {
+							roomNames = append(roomNames, *r.Room)
+						}
+					}
+				}
+			}
+
+			// Filter by room(s) if any
+			if len(roomNames) > 0 {
+				query["buildings.rooms.room"] = bson.M{
+					"$in": roomNames,
+				}
+			}
+			if len(buildingNames) > 0 {
+				query["buildings.building"] = bson.M{
+					"$in": buildingNames,
+				}
+			}
+		}
+	}
+
+	return query
 }
