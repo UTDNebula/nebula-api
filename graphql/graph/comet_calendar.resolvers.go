@@ -18,7 +18,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// FIXME: Filtering does not work, make it work
 // CometCalendars is the resolver for the CometCalendars field.
 func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset *int32) ([]*model.CometCalendar, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
@@ -26,6 +25,7 @@ func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometC
 
 	// Build query from filter explicity
 	query := bson.M{}
+	query = buildCometCalendarQuery(filter)
 
 	// Pagination
 	skip := int64(0)
@@ -79,7 +79,8 @@ func (r *queryResolver) CometCalendar(ctx context.Context, id string) (*model.Co
 	return model.TransformCalendar(&dbCalendar), nil
 }
 
-// This function builds a bson query manually to avoid errors converting from filter to mongo format
+// buildCometCalendarQuery constructs a MongoDB query from the filter,
+// handling buildings and rooms manually to avoid issues converting nested GraphQL filters to BSON.
 func buildCometCalendarQuery(filter *model.CometCalendarFilter) bson.M {
 	query := bson.M{}
 
