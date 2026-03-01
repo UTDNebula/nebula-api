@@ -92,7 +92,7 @@ type Query {
 }
 
 type Event {
-	_id: String! @goTag(key: "bson", value: "_id")
+	_id: ID! @goTag(key: "bson", value: "_id")
 	summary: String! @goTag(key: "bson", value: "summary")
 	location: String! @goTag(key: "bson", value: "location")
 	start_time: DateTime! @goTag(key: "bson", value: "start_time")
@@ -121,7 +121,7 @@ type CometCalendarBuilding {
 }
 
 type CometCalendar {
-	_id: String! @goTag(key: "bson", value: "_id")
+	_id: ID! @goTag(key: "bson", value: "_id")
 	date: String! @goTag(key: "bson", value: "date")
 	buildings: [CometCalendarBuilding!]! @goTag(key: "bson", value: "buildings")
 }
@@ -143,7 +143,7 @@ input CometCalendarRoomInput {
 }
 
 input EventInput {
-	_id: String
+	_id: ID
 	summary: String
 	location: String
 	start_time: DateTime

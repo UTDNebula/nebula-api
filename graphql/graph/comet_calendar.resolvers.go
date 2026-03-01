@@ -23,7 +23,7 @@ func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometC
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	// Build query from filter explicity
+	// Build query from filter explicitly
 	query := bson.M{}
 	query = buildCometCalendarQuery(filter)
 
