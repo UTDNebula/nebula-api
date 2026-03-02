@@ -11,6 +11,7 @@ import (
 	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
 )
 
+// TODO: This should be in schema
 type EmailRequest struct {
 	From    string `json:"from" binding:"required"`
 	To      string `json:"to" binding:"required,email"`
@@ -65,13 +66,14 @@ func getQueueUrl(c *gin.Context) string {
 
 // @Id				sendEmail
 // @Router			/email [post]
-// @Description	"Send an email via SMTP"
+// @Description	"Send an email via SMTP. This route is restricted to only Nebula Labs internal Projects."
 // @Accept			json
 // @Produce		json
-// @Param			request	body		EmailRequest				true	"Email Request Body"
-// @Success		200		{object}	schema.APIResponse[string]	"Email sent successfully"
-// @Failure		500		{object}	schema.APIResponse[string]	"A string describing the error"
-// @Failure		400		{object}	schema.APIResponse[string]	"A string describing the error"
+// @Param			request				body		EmailRequest				true	"Email Request Body"
+// @Param			x-email-send-key	header		string						true	"The internal email send key"
+// @Success		200					{object}	schema.APIResponse[string]	"Email sent successfully"
+// @Failure		500					{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400					{object}	schema.APIResponse[string]	"A string describing the error"
 func SendEmail(c *gin.Context) {
 	var req EmailRequest
 
@@ -105,6 +107,16 @@ func SendEmail(c *gin.Context) {
 	respond(c, http.StatusOK, "success", "Email sent successfully")
 }
 
+// @Id				QueueEmail
+// @Router			/email [post]
+// @Description	"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects."
+// @Accept			json
+// @Produce		json
+// @Param			request				body		EmailRequest				true	"Email Request Body"
+// @Param			x-email-queue-key	header		string						true	"The internal email queue key"
+// @Success		200					{object}	schema.APIResponse[string]	"Email queued successfully"
+// @Failure		500					{object}	schema.APIResponse[string]	"A string describing the error"
+// @Failure		400					{object}	schema.APIResponse[string]	"A string describing the error"
 func QueueEmail(c *gin.Context) {
 	// Request must be able to bind to email request
 	if err := c.ShouldBindJSON(&EmailRequest{}); err != nil {
@@ -143,5 +155,4 @@ func QueueEmail(c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", "Email queued successfully") // TODO: Change the response
-
 }

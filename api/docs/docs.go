@@ -893,14 +893,14 @@ const docTemplate = `{
         },
         "/email": {
             "post": {
-                "description": "\"Send an email via SMTP\"",
+                "description": "\"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects.\"",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "operationId": "sendEmail",
+                "operationId": "QueueEmail",
                 "parameters": [
                     {
                         "description": "Email Request Body",
@@ -910,11 +910,18 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.EmailRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal email queue key",
+                        "name": "x-email-queue-key",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Email sent successfully",
+                        "description": "Email queued successfully",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-string"
                         }

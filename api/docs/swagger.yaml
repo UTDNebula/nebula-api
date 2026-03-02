@@ -1453,8 +1453,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: '"Send an email via SMTP"'
-      operationId: sendEmail
+      description: '"Queue an email to be sent via SMTP. This route is restricted
+        to only Nebula Labs internal Projects."'
+      operationId: QueueEmail
       parameters:
       - description: Email Request Body
         in: body
@@ -1462,11 +1463,16 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.EmailRequest'
+      - description: The internal email queue key
+        in: header
+        name: x-email-queue-key
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Email sent successfully
+          description: Email queued successfully
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
         "400":
