@@ -25,9 +25,10 @@ var queueUrl string
 var tasksClientOnce sync.Once
 
 func initTasksClient() (*cloudtasks.Client, string, string) {
+	// Singleton to prevent multiple clients
 	tasksClientOnce.Do(func() {
-		qPath := os.Getenv("QUEUE_PATH")
-		qUrl := os.Getenv("EMAIL_URL") // TODO: Consider a different name
+		qPath := os.Getenv("GCLOUD_EMAIL_QUEUE_PATH")
+		qUrl := os.Getenv("GCLOUD_EMAIL_QUEUE_URL")
 
 		if qPath == "" || qUrl == "" {
 			log.Println("Cloud Tasks environment variables are not fully configured; skipping email queuing routes")
@@ -48,6 +49,7 @@ func initTasksClient() (*cloudtasks.Client, string, string) {
 }
 
 func initEmailClient() (*mail.Client, string) {
+	// Singleton to prevent multiple clients
 	emailClientOnce.Do(func() {
 		smtpHost := os.Getenv("SMTP_HOST") // TODO: use lookupenv instead
 		smtpUser := os.Getenv("SMTP_USERNAME")
@@ -93,15 +95,17 @@ func EmailRoute(router *gin.Engine) {
 		return
 	}
 
-	// Rescrict with password
-	authMiddleware := func(c *gin.Context) {
-		secret := c.GetHeader("x-email-key")
-		expected, exist := os.LookupEnv("EMAIL_ROUTE_KEY")
-		if !exist || secret != expected {
-			c.AbortWithStatusJSON(http.StatusForbidden, schema.APIResponse[string]{Status: http.StatusForbidden, Message: "error", Data: "Forbidden"})
-			return
+	// Restrict with password
+	authMiddleware := func(key string, envKey string) gin.HandlerFunc {
+		return func(c *gin.Context) {
+			secret := c.GetHeader(key)
+			expected, exist := os.LookupEnv(envKey)
+			if !exist || secret != expected {
+				c.AbortWithStatusJSON(http.StatusForbidden, schema.APIResponse[string]{Status: http.StatusForbidden, Message: "error", Data: "Forbidden"})
+				return
+			}
+			c.Next()
 		}
-		c.Next()
 	}
 
 	// All routes related to email come here
@@ -117,10 +121,7 @@ func EmailRoute(router *gin.Engine) {
 		c.Next()
 	})
 
-	// Use auth
-	emailGroup.Use(authMiddleware)
-
 	emailGroup.OPTIONS("", controllers.Preflight)
-	emailGroup.POST("/send", controllers.SendEmail)
-	emailGroup.POST("/queue", controllers.QueueEmail)
+	emailGroup.POST("/send", authMiddleware("x-email-send-key", "EMAIL_SEND_ROUTE_KEY"), controllers.SendEmail)
+	emailGroup.POST("/queue", authMiddleware("x-email-queue-key", "EMAIL_QUEUE_ROUTE_KEY"), controllers.QueueEmail)
 }
