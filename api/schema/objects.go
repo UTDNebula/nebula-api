@@ -334,6 +334,15 @@ type Degree struct {
 	JointProgram   bool   `bson:"joint_program" json:"joint_program"`
 }
 
+// Email Request Body
+type EmailRequest struct {
+	From     string `json:"from" binding:"required"`
+	To       string `json:"to" binding:"required,email"`
+	Subject  string `json:"subject" binding:"required"`
+	Body     string `json:"body" binding:"required"`
+	TaskName string `json:"task_name,omitempty"` // Included if queued via Cloud Tasks
+}
+
 // Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`

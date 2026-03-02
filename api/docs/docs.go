@@ -891,7 +891,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/email": {
+        "/email/queue": {
             "post": {
                 "description": "\"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects.\"",
                 "consumes": [
@@ -908,7 +908,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.EmailRequest"
+                            "$ref": "#/definitions/schema.EmailRequest"
                         }
                     },
                     {
@@ -921,9 +921,59 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Email queued successfully",
+                        "description": "Email Request Body with Queued Task Name",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_EmailRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/email/send": {
+            "post": {
+                "description": "\"Send an email via SMTP. This route is restricted to only Nebula Labs internal Projects.\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "operationId": "sendEmail",
+                "parameters": [
+                    {
+                        "description": "Email Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.EmailRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal email send key",
+                        "name": "x-email-send-key",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email Request Body",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_EmailRequest"
                         }
                     },
                     "400": {
@@ -3070,29 +3120,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "controllers.EmailRequest": {
-            "type": "object",
-            "required": [
-                "body",
-                "from",
-                "subject",
-                "to"
-            ],
-            "properties": {
-                "body": {
-                    "type": "string"
-                },
-                "from": {
-                    "type": "string"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "to": {
-                    "type": "string"
-                }
-            }
-        },
         "schema.APIResponse-array_int": {
             "type": "object",
             "properties": {
@@ -3262,6 +3289,20 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/schema.Course"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_EmailRequest": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.EmailRequest"
                 },
                 "message": {
                     "type": "string"
@@ -3753,6 +3794,33 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.EmailRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "from",
+                "subject",
+                "to"
+            ],
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "task_name": {
+                    "description": "Included if queued via Cloud Tasks",
+                    "type": "string"
+                },
+                "to": {
                     "type": "string"
                 }
             }

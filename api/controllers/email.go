@@ -1,23 +1,16 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
 
-	_ "github.com/UTDNebula/nebula-api/api/schema"
+	"github.com/UTDNebula/nebula-api/api/schema"
 	"github.com/gin-gonic/gin"
 	"github.com/wneessen/go-mail"
 
 	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
 	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
 )
-
-// TODO: This should be in schema
-type EmailRequest struct {
-	From    string `json:"from" binding:"required"`
-	To      string `json:"to" binding:"required,email"`
-	Subject string `json:"subject" binding:"required"`
-	Body    string `json:"body" binding:"required"`
-}
 
 // Get email client from routes
 func getEmailClient(c *gin.Context) *mail.Client {
@@ -65,17 +58,17 @@ func getQueueUrl(c *gin.Context) string {
 }
 
 // @Id				sendEmail
-// @Router			/email [post]
+// @Router			/email/send [post]
 // @Description	"Send an email via SMTP. This route is restricted to only Nebula Labs internal Projects."
 // @Accept			json
 // @Produce		json
-// @Param			request				body		EmailRequest				true	"Email Request Body"
-// @Param			x-email-send-key	header		string						true	"The internal email send key"
-// @Success		200					{object}	schema.APIResponse[string]	"Email sent successfully"
-// @Failure		500					{object}	schema.APIResponse[string]	"A string describing the error"
-// @Failure		400					{object}	schema.APIResponse[string]	"A string describing the error"
+// @Param			request				body		schema.EmailRequest						true	"Email Request Body"
+// @Param			x-email-send-key	header		string									true	"The internal email send key"
+// @Success		200					{object}	schema.APIResponse[schema.EmailRequest]	"Email Request Body"
+// @Failure		500					{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400					{object}	schema.APIResponse[string]				"A string describing the error"
 func SendEmail(c *gin.Context) {
-	var req EmailRequest
+	var req schema.EmailRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		respond(c, http.StatusBadRequest, "invalid request payload", err.Error())
@@ -104,28 +97,32 @@ func SendEmail(c *gin.Context) {
 		return
 	}
 
-	respond(c, http.StatusOK, "success", "Email sent successfully")
+	respond(c, http.StatusOK, "success", req)
 }
 
 // @Id				QueueEmail
-// @Router			/email [post]
+// @Router			/email/queue [post]
 // @Description	"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects."
 // @Accept			json
 // @Produce		json
-// @Param			request				body		EmailRequest				true	"Email Request Body"
-// @Param			x-email-queue-key	header		string						true	"The internal email queue key"
-// @Success		200					{object}	schema.APIResponse[string]	"Email queued successfully"
-// @Failure		500					{object}	schema.APIResponse[string]	"A string describing the error"
-// @Failure		400					{object}	schema.APIResponse[string]	"A string describing the error"
+// @Param			request				body		schema.EmailRequest						true	"Email Request Body"
+// @Param			x-email-queue-key	header		string									true	"The internal email queue key"
+// @Success		200					{object}	schema.APIResponse[schema.EmailRequest]	"Email Request Body with Queued Task Name"
+// @Failure		500					{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400					{object}	schema.APIResponse[string]				"A string describing the error"
 func QueueEmail(c *gin.Context) {
 	// Request must be able to bind to email request
-	if err := c.ShouldBindJSON(&EmailRequest{}); err != nil {
+	var emailReq schema.EmailRequest
+	if err := c.ShouldBindJSON(&emailReq); err != nil {
 		respond(c, http.StatusBadRequest, "invalid request payload", err.Error())
 		return
 	}
 
-	var body []byte
-	c.Request.Body.Read(body)
+	body, err := json.Marshal(emailReq)
+	if err != nil {
+		respond(c, http.StatusInternalServerError, "failed to serialize email request", err.Error())
+		return
+	}
 
 	client := getTasksClient(c)
 	queuePath := getQueuePath(c)
@@ -148,11 +145,13 @@ func QueueEmail(c *gin.Context) {
 	// Add a payload message if one is present.
 	req.Task.GetHttpRequest().Body = []byte(body)
 
-	_, err := client.CreateTask(c.Request.Context(), req)
+	task, err := client.CreateTask(c.Request.Context(), req)
 	if err != nil {
 		respond(c, http.StatusInternalServerError, "failed to queue email", err.Error())
 		return
 	}
 
-	respond(c, http.StatusOK, "success", "Email queued successfully") // TODO: Change the response
+	emailReq.TaskName = task.GetName()
+
+	respond(c, http.StatusOK, "success", emailReq)
 }

@@ -1,20 +1,4 @@
 definitions:
-  controllers.EmailRequest:
-    properties:
-      body:
-        type: string
-      from:
-        type: string
-      subject:
-        type: string
-      to:
-        type: string
-    required:
-    - body
-    - from
-    - subject
-    - to
-    type: object
   schema.APIResponse-array_int:
     properties:
       data:
@@ -125,6 +109,15 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/schema.Course'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-schema_EmailRequest:
+    properties:
+      data:
+        $ref: '#/definitions/schema.EmailRequest'
       message:
         type: string
       status:
@@ -445,6 +438,25 @@ definitions:
         type: string
       title:
         type: string
+    type: object
+  schema.EmailRequest:
+    properties:
+      body:
+        type: string
+      from:
+        type: string
+      subject:
+        type: string
+      task_name:
+        description: Included if queued via Cloud Tasks
+        type: string
+      to:
+        type: string
+    required:
+    - body
+    - from
+    - subject
+    - to
     type: object
   schema.Event:
     properties:
@@ -1449,7 +1461,7 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Courses
-  /email:
+  /email/queue:
     post:
       consumes:
       - application/json
@@ -1462,7 +1474,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/controllers.EmailRequest'
+          $ref: '#/definitions/schema.EmailRequest'
       - description: The internal email queue key
         in: header
         name: x-email-queue-key
@@ -1472,9 +1484,43 @@ paths:
       - application/json
       responses:
         "200":
-          description: Email queued successfully
+          description: Email Request Body with Queued Task Name
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_EmailRequest'
+        "400":
+          description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+  /email/send:
+    post:
+      consumes:
+      - application/json
+      description: '"Send an email via SMTP. This route is restricted to only Nebula
+        Labs internal Projects."'
+      operationId: sendEmail
+      parameters:
+      - description: Email Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.EmailRequest'
+      - description: The internal email send key
+        in: header
+        name: x-email-send-key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email Request Body
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_EmailRequest'
         "400":
           description: A string describing the error
           schema:
