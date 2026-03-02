@@ -230,7 +230,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	}
 
 	if len(sectionIDs) == 0 {
-		respond(c, http.StatusNotFound, "error", "No sections found for the specified room")
+		respond(c, http.StatusNotFound, "error", "No sections found for the specified building and room")
 		return
 	}
 

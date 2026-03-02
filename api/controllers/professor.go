@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
@@ -17,6 +19,10 @@ import (
 )
 
 var professorCollection *mongo.Collection = configs.GetCollection("professors")
+var aggregateMap = map[string]string{
+	"Course":  "courses",
+	"Section": "sections",
+}
 
 // @Id				professorSearch
 // @Router			/professor [get]
@@ -179,11 +185,8 @@ func ProfessorAll(c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Professor]	"A list of courses"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorCourseSearch() gin.HandlerFunc {
-	// Wrapper of professorCourse() with flag of Search
-	return func(c *gin.Context) {
-		professorCourse("Search", c)
-	}
+func ProfessorCourseSearch(c *gin.Context) {
+	professorAggregate[schema.Course]("Search", c)
 }
 
 // @Id				professorCourseById
@@ -195,101 +198,8 @@ func ProfessorCourseSearch() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
-func ProfessorCourseById() gin.HandlerFunc {
-	// Essentially wrapper of professorCourse() with flag of ById
-	return func(c *gin.Context) {
-		professorCourse("ById", c)
-	}
-}
-
-// Get all of the courses of the professors depending on the type of flag
-func professorCourse(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var professorCourses []schema.Course // array of courses of the professors (or single professor with Id)
-	var professorQuery bson.M            // query filter the professor
-
-	// determine the professor's query
-	professorQuery, err := getQuery[schema.Professor](flag, c)
-	if err != nil {
-		return
-	}
-
-	// determine the offset and limit for pagination stage
-	// and delete "offset" field in professorQuery
-	paginate, err := configs.GetAggregateLimit(&professorQuery, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
-		return
-	}
-
-	// Pipeline to query the courses from the filtered professors (or a single professor)
-	professorCoursePipeline := mongo.Pipeline{
-		// filter the professors
-		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// paginate the professors before pulling the courses from those professor
-		paginate["former_offset"],
-		paginate["limit"],
-
-		// lookup the array of sections from sections collection
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "sections"},
-				{Key: "localField", Value: "sections"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections"},
-			}},
-		},
-
-		// project the courses referenced by each section in the array
-		bson.D{
-			{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}},
-		},
-
-		// lookup the array of courses from coures collection
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "courses"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "courses"},
-			}},
-		},
-
-		// unwind the courses
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$courses"},
-				{Key: "preserveNullAndEmptyArrays", Value: false},
-			}},
-		},
-
-		// replace the combination of ids and courses with the courses entirely
-		bson.D{{Key: "$replaceWith", Value: "$courses"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses
-		paginate["latter_offset"],
-		paginate["limit"],
-	}
-
-	// Perform aggreration on the pipeline
-	cursor, err := professorCollection.Aggregate(ctx, professorCoursePipeline)
-	if err != nil {
-		// return the error with there's something wrong with the aggregation
-		respondWithInternalError(c, err)
-		return
-	}
-	// Parse the array of courses from these professors
-	if err = cursor.All(ctx, &professorCourses); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-	respond(c, http.StatusOK, "success", professorCourses)
+func ProfessorCourseById(c *gin.Context) {
+	professorAggregate[schema.Course]("ById", c)
 }
 
 // @Id				professorSectionSearch
@@ -321,10 +231,8 @@ func professorCourse(flag string, c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorSectionSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		professorSection("Search", c)
-	}
+func ProfessorSectionSearch(c *gin.Context) {
+	professorAggregate[schema.Section]("Search", c)
 }
 
 // @Id				professorSectionById
@@ -336,88 +244,118 @@ func ProfessorSectionSearch() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorSectionById() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		professorSection("ById", c)
-	}
+func ProfessorSectionById(c *gin.Context) {
+	professorAggregate[schema.Section]("ById", c)
 }
 
-// Get all of the sections of the professors depending on the type of flag
-func professorSection(flag string, c *gin.Context) {
+// Get data for professor aggregate endpoints depending on flag
+func professorAggregate[T any](flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var professorSections []schema.Section // array of sections of the professors (or single professor with Id)
-	var professorQuery bson.M              // query filter the professor
+	var profAggregate []T
+	var profQuery bson.M
 
-	// determine the professor's query
-	professorQuery, err := getQuery[schema.Professor](flag, c)
+	// Determine the professor's query
+	profQuery, err := getQuery[schema.Professor](flag, c)
 	if err != nil {
 		return
 	}
 
-	// determine the offset and limit for pagination stage
-	paginate, err := configs.GetAggregateLimit(&professorQuery, c)
+	// Determine the offset and limit for pagination stage
+	paginate, err := configs.GetAggregateLimit(&profQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
 
-	// Pipeline to query the courses from the filtered professors (or a single professor)
-	professorSectionPipeline := mongo.Pipeline{
-		// filter the professors
-		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// paginate the professors before pulling the courses from those professor
-		paginate["former_offset"],
-		paginate["limit"],
-
-		// lookup the array of sections from sections collection
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "sections"},
-				{Key: "localField", Value: "sections"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections"},
-			}},
-		},
-
-		// project the sections
-		bson.D{
-			{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}},
-		},
-
-		// unwind the sections
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$sections"},
-				{Key: "preserveNullAndEmptyArrays", Value: false},
-			}},
-		},
-
-		// replace the combination of ids and sections with the sections
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the sections
-		paginate["latter_offset"],
-		paginate["limit"],
-	}
+	// Pipeline to query the courses or sections from the filtered professors (or a single professor)
+	endpointType := strings.Split(reflect.TypeOf(profAggregate).String(), ".")[1]
+	endpoint := aggregateMap[endpointType]
+	profPipeline := buildProfessorPipeline(endpoint, profQuery, paginate)
 
 	// Perform aggreration on the pipeline
-	cursor, err := professorCollection.Aggregate(ctx, professorSectionPipeline)
+	cursor, err := professorCollection.Aggregate(ctx, profPipeline)
 	if err != nil {
 		// return the error with there's something wrong with the aggregation
 		respondWithInternalError(c, err)
 		return
 	}
-	// Parse the array of sections from these professors
-	if err = cursor.All(ctx, &professorSections); err != nil {
+
+	// Parse the array of courses or sections from these professors
+	if err = cursor.All(ctx, &profAggregate); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	respond(c, http.StatusOK, "success", professorSections)
+	respond(c, http.StatusOK, "success", profAggregate)
+}
+
+// Pipeline builder for professor aggregate endpoints
+func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
+	// common stages
+	baseStages := mongo.Pipeline{
+		// filter the professors
+		bson.D{{Key: "$match", Value: professorQuery}},
+
+		// paginate the professors before pulling the courses/sections from those professor
+		paginate["former_offset"],
+		paginate["limit"],
+
+		// lookup the array of sections from sections collection
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "sections"},
+			{Key: "localField", Value: "sections"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections"},
+		}}},
+	}
+
+	var middleStages mongo.Pipeline
+
+	switch endpoint {
+	case "courses":
+		middleStages = mongo.Pipeline{
+			// project the courses referenced by each section in the array
+			bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
+
+			// lookup the array of courses from coures collection
+			bson.D{{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "courses"},
+				{Key: "localField", Value: "courses"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "courses"},
+			}}},
+		}
+
+	case "sections":
+		middleStages = mongo.Pipeline{
+			// project the sections
+			bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
+		}
+
+	default:
+		panic("invalid endpoint for professorPipeline: " + endpoint)
+	}
+
+	// common pagination stages
+	paginationStages := mongo.Pipeline{
+		// unwind the courses/sections
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$" + endpoint},
+			{Key: "preserveNullAndEmptyArrays", Value: false},
+		}}},
+
+		// replace the combination of ids and courses/sections with the courses/sections entirely
+		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
+
+		// keep order deterministic between calls
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+
+		// paginate the courses/sections
+		paginate["latter_offset"],
+		paginate["limit"],
+	}
+
+	return append(append(baseStages, middleStages...), paginationStages...)
 }
