@@ -127,7 +127,6 @@ type Professor struct {
 type ProfSectionKey struct {
 	Subject_prefix string `bson:"subject_prefix" json:"subject_prefix"`
 	Course_number  string `bson:"course_number" json:"course_number"`
-	Catalog_year   string `bson:"catalog_year" json:"catalog_year"`
 	Section_number string `bson:"section_number" json:"section_number"`
 	Term           string `bson:"term" json:"term"`
 }
