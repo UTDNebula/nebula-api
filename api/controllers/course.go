@@ -212,7 +212,7 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 	case schema.Professor:
 		endpoint = "professors"
 	default:
-		respondWithInternalError(c, fmt.Errorf("invalid schema type for courseAggregate."))
+		respondWithInternalError(c, fmt.Errorf("invalid schema type for courseAggregate"))
 		return
 	}
 
