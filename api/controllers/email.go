@@ -1,10 +1,7 @@
 package controllers
 
 import (
-	"context"
-	"fmt"
 	"net/http"
-	"os"
 
 	_ "github.com/UTDNebula/nebula-api/api/schema"
 	"github.com/gin-gonic/gin"
@@ -21,6 +18,51 @@ type EmailRequest struct {
 	Body    string `json:"body" binding:"required"`
 }
 
+// Get email client from routes
+func getEmailClient(c *gin.Context) *mail.Client {
+	val, exists := c.Get("emailClient")
+	if !exists {
+		panic("email client not set in context")
+	}
+	return val.(*mail.Client)
+}
+
+// Get email from address from routes
+func getEmailFrom(c *gin.Context) string {
+	val, exists := c.Get("emailFrom")
+	if !exists {
+		panic("email from address not set in context")
+	}
+	return val.(string)
+}
+
+// Get cloud tasks client from routes
+func getTasksClient(c *gin.Context) *cloudtasks.Client {
+	val, exists := c.Get("tasksClient")
+	if !exists {
+		panic("tasks client not set in context")
+	}
+	return val.(*cloudtasks.Client)
+}
+
+// Get queue path from routes
+func getQueuePath(c *gin.Context) string {
+	val, exists := c.Get("queuePath")
+	if !exists {
+		panic("queue path not set in context")
+	}
+	return val.(string)
+}
+
+// Get queue url from routes
+func getQueueUrl(c *gin.Context) string {
+	val, exists := c.Get("queueUrl")
+	if !exists {
+		panic("queue url not set in context")
+	}
+	return val.(string)
+}
+
 // @Id				sendEmail
 // @Router			/email [post]
 // @Description	"Send an email via SMTP"
@@ -31,7 +73,6 @@ type EmailRequest struct {
 // @Failure		500		{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400		{object}	schema.APIResponse[string]	"A string describing the error"
 func SendEmail(c *gin.Context) {
-
 	var req EmailRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -39,15 +80,8 @@ func SendEmail(c *gin.Context) {
 		return
 	}
 
-	smtpHost := os.Getenv("SMTP_HOST") // TODO: We should be using env.go for this
-	smtpUser := os.Getenv("SMTP_USERNAME")
-	smtpPass := os.Getenv("SMTP_PASSWORD")
-	smtpFrom := os.Getenv("SMTP_FROM")
-
-	if smtpHost == "" || smtpFrom == "" {
-		respond(c, http.StatusInternalServerError, "SMTP configuration is missing", "SMTP environment variables are not fully configured")
-		return
-	}
+	client := getEmailClient(c)
+	smtpFrom := getEmailFrom(c)
 
 	m := mail.NewMsg()
 	if err := m.FromFormat(req.From, smtpFrom); err != nil {
@@ -63,19 +97,6 @@ func SendEmail(c *gin.Context) {
 	m.Subject(req.Subject)
 	m.SetBodyString(mail.TypeTextPlain, req.Body)
 
-	client, err := mail.NewClient(
-		smtpHost,
-		mail.WithTLSPortPolicy(mail.TLSMandatory),
-		mail.WithSMTPAuth(mail.SMTPAuthAutoDiscover),
-		mail.WithUsername(smtpUser),
-		mail.WithPassword(smtpPass),
-	)
-
-	if err != nil {
-		respond(c, http.StatusInternalServerError, "failed to setup SMTP client", err.Error())
-		return
-	}
-
 	if err := client.DialAndSend(m); err != nil {
 		respond(c, http.StatusInternalServerError, "failed to send email", err.Error())
 		return
@@ -85,7 +106,6 @@ func SendEmail(c *gin.Context) {
 }
 
 func QueueEmail(c *gin.Context) {
-
 	// Request must be able to bind to email request
 	if err := c.ShouldBindJSON(&EmailRequest{}); err != nil {
 		respond(c, http.StatusBadRequest, "invalid request payload", err.Error())
@@ -95,42 +115,19 @@ func QueueEmail(c *gin.Context) {
 	var body []byte
 	c.Request.Body.Read(body)
 
-	queuePath := os.Getenv("QUEUE_PATH")
-	url := os.Getenv("EMAIL_URL") // TODO: Consider a different name
-
-	_, err := createHTTPTask(queuePath, url, body)
-
-	if err != nil {
-		respond(c, http.StatusInternalServerError, "failed to queue email", err.Error())
-		return
-	}
-
-	respond(c, http.StatusOK, "success", "Email queued successfully") // TODO: Change the response
-
-}
-
-// createHTTPTask creates a new task with a HTTP target then adds it to a Queue.
-func createHTTPTask(queuePath string, url string, body []byte) (*taskspb.Task, error) {
-
-	// Create a new Cloud Tasks client instance.
-	// See https://godoc.org/cloud.google.com/go/cloudtasks/apiv2
-	ctx := context.Background()
-	client, err := cloudtasks.NewClient(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("NewClient: %w", err)
-	}
-	defer client.Close()
+	client := getTasksClient(c)
+	queuePath := getQueuePath(c)
+	queueUrl := getQueueUrl(c)
 
 	// Build the Task payload.
-	// https://godoc.org/google.golang.org/genproto/googleapis/cloud/tasks/v2#CreateTaskRequest
+	// https://docs.cloud.google.com/tasks/docs/creating-http-target-tasks
 	req := &taskspb.CreateTaskRequest{
 		Parent: queuePath,
 		Task: &taskspb.Task{
-			// https://godoc.org/google.golang.org/genproto/googleapis/cloud/tasks/v2#HttpRequest
 			MessageType: &taskspb.Task_HttpRequest{
 				HttpRequest: &taskspb.HttpRequest{
 					HttpMethod: taskspb.HttpMethod_POST,
-					Url:        url,
+					Url:        queueUrl,
 				},
 			},
 		},
@@ -139,56 +136,12 @@ func createHTTPTask(queuePath string, url string, body []byte) (*taskspb.Task, e
 	// Add a payload message if one is present.
 	req.Task.GetHttpRequest().Body = []byte(body)
 
-	createdTask, err := client.CreateTask(ctx, req)
+	_, err := client.CreateTask(c.Request.Context(), req)
 	if err != nil {
-		return nil, fmt.Errorf("cloudtasks.CreateTask: %w", err)
+		respond(c, http.StatusInternalServerError, "failed to queue email", err.Error())
+		return
 	}
 
-	return createdTask, nil
-}
+	respond(c, http.StatusOK, "success", "Email queued successfully") // TODO: Change the response
 
-// createHTTPTaskWithToken constructs a task with a authorization token
-// and HTTP target then adds it to a Queue.
-func createHTTPTaskWithToken(projectID, locationID, queueID, url, email, message string) (*taskspb.Task, error) {
-	// Create a new Cloud Tasks client instance.
-	// See https://godoc.org/cloud.google.com/go/cloudtasks/apiv2
-	ctx := context.Background()
-	client, err := cloudtasks.NewClient(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("NewClient: %w", err)
-	}
-	defer client.Close()
-
-	// Build the Task queue path.
-	queuePath := fmt.Sprintf("projects/%s/locations/%s/queues/%s", projectID, locationID, queueID)
-
-	// Build the Task payload.
-	// https://godoc.org/google.golang.org/genproto/googleapis/cloud/tasks/v2#CreateTaskRequest
-	req := &taskspb.CreateTaskRequest{
-		Parent: queuePath,
-		Task: &taskspb.Task{
-			// https://godoc.org/google.golang.org/genproto/googleapis/cloud/tasks/v2#HttpRequest
-			MessageType: &taskspb.Task_HttpRequest{
-				HttpRequest: &taskspb.HttpRequest{
-					HttpMethod: taskspb.HttpMethod_POST,
-					Url:        url,
-					AuthorizationHeader: &taskspb.HttpRequest_OidcToken{
-						OidcToken: &taskspb.OidcToken{
-							ServiceAccountEmail: email,
-						},
-					},
-				},
-			},
-		},
-	}
-
-	// Add a payload message if one is present.
-	req.Task.GetHttpRequest().Body = []byte(message)
-
-	createdTask, err := client.CreateTask(ctx, req)
-	if err != nil {
-		return nil, fmt.Errorf("cloudtasks.CreateTask: %w", err)
-	}
-
-	return createdTask, nil
 }
