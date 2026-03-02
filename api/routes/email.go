@@ -11,5 +11,6 @@ func EmailRoute(router *gin.Engine) {
 	emailGroup := router.Group("/email")
 
 	emailGroup.OPTIONS("", controllers.Preflight)
-	emailGroup.POST("", controllers.SendEmail)
+	emailGroup.POST("/send", controllers.SendEmail)
+	emailGroup.POST("/queue", controllers.QueueEmail)
 }
