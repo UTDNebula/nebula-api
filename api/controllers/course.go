@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -165,7 +166,7 @@ func CourseAll(c *gin.Context) {
 // @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseSectionSearch(c *gin.Context) {
-	courseSection("Search", c)
+	courseAggregate[schema.Section]("Search", c)
 }
 
 // @Id				courseSectionById
@@ -178,47 +179,7 @@ func CourseSectionSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseSectionById(c *gin.Context) {
-	courseSection("ById", c)
-}
-
-// courseSection gets the sections of the courses, filters depending on the flag
-func courseSection(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var courseSections []schema.Section
-	var courseQuery bson.M
-
-	// Determine the course query
-	courseQuery, err := getQuery[schema.Course](flag, c)
-	if err != nil {
-		return
-	}
-
-	// Determine the offset and limit for pagination & delete offset fields
-	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
-		return
-	}
-
-	// Pipeline to query the sections from the filtered courses
-	courseSectionPipeline := buildCoursePipeline("sections", courseQuery, paginate)
-
-	// perform aggregation on the pipeline
-	cursor, err := courseCollection.Aggregate(ctx, courseSectionPipeline)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-	defer cursor.Close(ctx)
-
-	if err = cursor.All(ctx, &courseSections); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", courseSections)
+	courseAggregate[schema.Section]("ById", c)
 }
 
 // courseAggregate is a generic function that gets a specified field of the courses, filters depending on the flag
@@ -297,7 +258,7 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 // @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseProfessorSearch(c *gin.Context) {
-	courseProfessor("Search", c)
+	courseAggregate[schema.Professor]("Search", c)
 }
 
 // @Id				courseProfessorById
@@ -310,47 +271,7 @@ func CourseProfessorSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseProfessorById(c *gin.Context) {
-	courseProfessor("ById", c)
-}
-
-// courseProfessor gets the professors of the courses, filters depending on the flag
-func courseProfessor(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var courseProfessors []schema.Professor
-	var courseQuery bson.M
-
-	courseQuery, err := getQuery[schema.Course](flag, c)
-	if err != nil {
-		return
-	}
-
-	// Determine the offset and limit for pagination and delete offset field
-	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
-		return
-	}
-
-	// Pipeline to query the professors from the filtered courses
-	courseProfPipeline := buildCoursePipeline("professors", courseQuery, paginate)
-
-	// perform aggregation on the pipeline
-	cursor, err := courseCollection.Aggregate(ctx, courseProfPipeline)
-	if err != nil {
-		// return error for any aggregation problem
-		respondWithInternalError(c, err)
-		return
-	}
-	defer cursor.Close(ctx)
-
-	// parse the array of professors of the course
-	if err = cursor.All(ctx, &courseProfessors); err != nil {
-		panic(err)
-	}
-
-	respond(c, http.StatusOK, "success", courseProfessors)
+	courseAggregate[schema.Professor]("ById", c)
 }
 
 // buildCoursePipeline builds the pipeline to aggregate the list of specified objects from list of courses
