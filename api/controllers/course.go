@@ -221,6 +221,59 @@ func courseSection(flag string, c *gin.Context) {
 	respond(c, http.StatusOK, "success", courseSections)
 }
 
+// courseAggregate is a generic function that gets a specified field of the courses, filters depending on the flag
+func courseAggregate[T any](flag string, c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var queryResults []T
+	var courseQuery bson.M
+
+	// Determine the course query
+	courseQuery, err := getQuery[schema.Course](flag, c)
+	if err != nil {
+		return
+	}
+
+	// Determine the offset and limit for pagination & delete offset fields
+	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
+	if err != nil {
+		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
+		return
+	}
+
+	// Determine the endpoint based on the type of the desired query results
+	var zero T
+	var endpoint string
+	switch any(zero).(type) {
+	case schema.Section:
+		endpoint = "sections"
+	case schema.Professor:
+		endpoint = "professors"
+	default:
+		respondWithInternalError(c, fmt.Errorf("invalid schema type for courseAggregate."))
+		return
+	}
+
+	// Pipeline to query the field from the filtered courses
+	courseQueryPipeline := buildCoursePipeline(endpoint, courseQuery, paginate)
+
+	// perform aggregation on the pipeline
+	cursor, err := courseCollection.Aggregate(ctx, courseQueryPipeline)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	defer cursor.Close(ctx)
+
+	if err = cursor.All(ctx, &queryResults); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", queryResults)
+}
+
 // @Id				courseProfessorSearch
 // @Router			/course/professors [get]
 // @Tags			Courses
