@@ -6,6 +6,7 @@ directive @goTag(
 
 scalar Any
 scalar Float64
+scalar Time
 
 type CollectionRequirement {
   type: String!
@@ -71,9 +72,50 @@ type BuildingRooms {
   lon: Float64! @goTag(key: "bson", value: "lon")
 }
 
+type Event {
+  _id: ID! @goTag(key: "bson", value: "_id")
+  summary: String! @goTag(key: "bson", value: "summary")
+  location: String! @goTag(key: "bson", value: "location")
+  start_time: Time! @goTag(key: "bson", value: "start_time")
+  end_time: Time! @goTag(key: "bson", value: "end_time")
+  description: String! @goTag(key: "bson", value: "description")
+  event_type: [String!]! @goTag(key: "bson", value: "event_type")
+  target_audience: [String!]! @goTag(key: "bson", value: "target_audience") 
+  topic: [String!]! @goTag(key: "bson", value: "topic") 
+  event_tags: [String!]! @goTag(key: "bson", value: "event_tags") 
+  event_website: String! @goTag(key: "bson", value: "event_website")
+  department: [String!]! @goTag(key: "bson", value: "department") 
+  contact_name: String! @goTag(key: "bson", value: "contact_name")
+  contact_email: String! @goTag(key: "bson", value: "contact_email")
+  contact_phone_number: String! @goTag(key: "bson", value: "contact_phone_number")
+}
+
+type MultiBuildingEvents {
+  date: String! @goTag(key: "bson", value: "date")
+  buildings: [SingleBuildingEvents!]! @goTag(key: "bson", value: "buildings")
+}
+
+type SingleBuildingEvents {
+  building: String! @goTag(key: "bson", value: "building")
+  rooms: [RoomEvents!]! @goTag(key: "bson", value: "rooms")
+}
+
+type RoomEvents {
+  room: String! @goTag(key: "bson", value: "room")
+  events: [SectionWithTime!]! @goTag(key: "bson", value: "events")
+}
+
+type SectionWithTime {
+  section: ID! @goTag(key: "bson", value: "section")
+  start_time: String! @goTag(key: "bson", value: "start_time")
+  end_time: String! @goTag(key: "bson", value: "end_time")
+}
+
 type Query {
   courses(filter: CourseFilter, offset: Int = 0): [Course!]
   course(id: ID!): Course
 
   rooms: [BuildingRooms!]
+
+  events: MultiBuildingEvents
 }
