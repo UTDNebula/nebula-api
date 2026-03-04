@@ -34,3 +34,12 @@ func (r *queryResolver) Sections(
 	// yet to build mongo query filter
 
 }
+
+// pagination logic
+skip := int64(0)
+if offset != nil {
+	skip = int64(*offset)
+}
+paginate := options.Find().
+	SetSkip(skip).
+	SetLimit(configs.GetEnvLimit())
