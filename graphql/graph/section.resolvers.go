@@ -15,3 +15,22 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+// section is the resolver here
+func (r *queryResolver) Sections(
+	ctx context.Context,
+	filter *modelSectionFilter, 
+	offset *int32, 
+) ([]*model.Section, error) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	//graphql output
+	var sections []*model.Section
+
+	// mongo decoding target
+	var dbSections []*model.DBSection
+
+	// yet to build mongo query filter
+
+}
