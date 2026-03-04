@@ -31,7 +31,18 @@ func (r *queryResolver) Sections(
 	// mongo decoding target
 	var dbSections []*model.DBSection
 
-	// yet to build mongo query filter
+	
+	// building mongo query from filter (nil filter --> empty query --> return all)
+	sectionQuery := bson.M{}
+	if filter != nil {
+		bsonBytes, err := bson.Marshal(filter)
+		if err != nil {
+			return nil, err
+		}
+		if err := bson.Unmarshal(bsonBytes, &sectionQuery); err != nil {
+			return nil, err
+		}
+	}
 
 	}
 
@@ -64,7 +75,7 @@ defer cursor.Close(timeoutCtx)
 	}
 
 	return sections, nil
-}
+
 
 // section is the resolver for this field
 
