@@ -44,7 +44,6 @@ func (r *queryResolver) Sections(
 		}
 	}
 
-	}
 
 
 // pagination logic
