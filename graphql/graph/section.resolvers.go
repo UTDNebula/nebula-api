@@ -43,3 +43,10 @@ if offset != nil {
 paginate := options.Find().
 	SetSkip(skip).
 	SetLimit(configs.GetEnvLimit())
+
+// query database
+cursor, err := r.SectionCollection.Find(timeoutCtx, sectionQuery, paginate)
+if err := nil {
+	return nil, err
+}
+defer cursor.Close(timeoutCtx)
