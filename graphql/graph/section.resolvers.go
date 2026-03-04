@@ -19,7 +19,7 @@ import (
 // section is the resolver here
 func (r *queryResolver) Sections(
 	ctx context.Context,
-	filter *modelSectionFilter, 
+	filter *model.SectionFilter, 
 	offset *int32, 
 ) ([]*model.Section, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
