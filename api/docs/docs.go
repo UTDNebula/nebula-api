@@ -891,6 +891,76 @@ const docTemplate = `{
                 }
             }
         },
+        "/discountPrograms": {
+            "get": {
+                "description": "Returns paginated list of discount programs with optional filtering.\nSupported query params are category, business, address, and discount.\nThe q query param performs keyword search across all fields and must be used alone.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DiscountPrograms"
+                ],
+                "operationId": "discountProgramsSearch",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of discount programs",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "One of Accommodations, Auto Services, Clothes, Flowers and Gifts, Dining, or Entertainment (case-insensitive)",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Keyword search in business",
+                        "name": "business",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Keyword search in address",
+                        "name": "address",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Keyword search in discount",
+                        "name": "discount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Keyword search across all fields. Must be used alone",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of discount programs",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_DiscountProgram"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/events/{date}": {
             "get": {
                 "description": "\"Returns all sections with meetings on the specified date\"",
@@ -3088,6 +3158,23 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-array_schema_DiscountProgram": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.DiscountProgram"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-array_schema_GradeData": {
             "type": "object",
             "properties": {
@@ -3680,6 +3767,35 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.DiscountProgram": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "business": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "website": {
                     "type": "string"
                 }
             }
