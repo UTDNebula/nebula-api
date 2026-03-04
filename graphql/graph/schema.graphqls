@@ -6,12 +6,13 @@ directive @goTag(
 
 scalar Any
 scalar Float64
+scalar DateTime
 
 type CollectionRequirement {
-  type: String!
-  name: String!
-  required: Int!
-  options: Any
+	type: String!
+	name: String!
+	required: Int!
+	options: Any
 }
 
 # NOTES: Only objects that have ID REFERENCE needs separate of concerns
@@ -19,61 +20,142 @@ type CollectionRequirement {
 
 # Course needs seperate of concerns
 type Course {
-  _id: ID!
-  subject_prefix: String!
-  course_number: String!
-  title: String!
-  description: String!
-  enrollment_reqs: String!
-  school: String!
-  credit_hours: String!
-  class_level: String!
-  activity_type: String!
-  grading: String!
-  internal_course_number: String!
-  prerequisites: CollectionRequirement
-  corequisites: CollectionRequirement
-  co_or_pre_requisites: CollectionRequirement
-  sections: [ID!]!
-  lecture_contact_hours: String!
-  laboratory_contact_hours: String!
-  offering_frequency: String!
-  catalog_year: String!
-  attributes: Any
+	_id: ID!
+	subject_prefix: String!
+	course_number: String!
+	title: String!
+	description: String!
+	enrollment_reqs: String!
+	school: String!
+	credit_hours: String!
+	class_level: String!
+	activity_type: String!
+	grading: String!
+	internal_course_number: String!
+	prerequisites: CollectionRequirement
+	corequisites: CollectionRequirement
+	co_or_pre_requisites: CollectionRequirement
+	sections: [ID!]!
+	lecture_contact_hours: String!
+	laboratory_contact_hours: String!
+	offering_frequency: String!
+	catalog_year: String!
+	attributes: Any
 }
 
 # Filter the courses with queryable fields
 input CourseFilter {
-  subject_prefix: String @goTag(key: "bson", value: "subject_prefix,omitempty")
-  course_number: String @goTag(key: "bson", value: "course_number,omitempty")
-  school: String @goTag(key: "bson", value: "school,omitempty")
-  credit_hours: String @goTag(key: "bson", value: "credit_hours,omitempty")
-  class_level: String @goTag(key: "bson", value: "class_level,omitempty")
-  activity_type: String @goTag(key: "bson", value: "activity_type,omitempty")
-  grading: String @goTag(key: "bson", value: "grading,omitempty")
-  internal_course_number: String @goTag(key: "bson", value: "internal_course_number,omitempty")
-  lecture_contact_hours: String @goTag(key: "bson", value: "lecture_contact_hours,omitempty")
-  laboratory_contact_hours: String @goTag(key: "bson", value: "laboratory_contact_hours,omitempty")
-  offering_frequency: String @goTag(key: "bson", value: "offering_frequency,omitempty")
-  catalog_year: String @goTag(key: "bson", value: "catalog_year,omitempty")
+	subject_prefix: String
+		@goTag(key: "bson", value: "subject_prefix,omitempty")
+	course_number: String @goTag(key: "bson", value: "course_number,omitempty")
+	school: String @goTag(key: "bson", value: "school,omitempty")
+	credit_hours: String @goTag(key: "bson", value: "credit_hours,omitempty")
+	class_level: String @goTag(key: "bson", value: "class_level,omitempty")
+	activity_type: String @goTag(key: "bson", value: "activity_type,omitempty")
+	grading: String @goTag(key: "bson", value: "grading,omitempty")
+	internal_course_number: String
+		@goTag(key: "bson", value: "internal_course_number,omitempty")
+	lecture_contact_hours: String
+		@goTag(key: "bson", value: "lecture_contact_hours,omitempty")
+	laboratory_contact_hours: String
+		@goTag(key: "bson", value: "laboratory_contact_hours,omitempty")
+	offering_frequency: String
+		@goTag(key: "bson", value: "offering_frequency,omitempty")
+	catalog_year: String @goTag(key: "bson", value: "catalog_year,omitempty")
 }
 
 # Building rooms don't need seprate of concerns
 type Room {
-  room: String! @goTag(key: "bson", value: "room")
-  capacity: Int! @goTag(key: "bson", value: "capacity")
+	room: String! @goTag(key: "bson", value: "room")
+	capacity: Int! @goTag(key: "bson", value: "capacity")
 }
 
 type BuildingRooms {
-  building: String! @goTag(key: "bson", value: "building")
-  rooms: [Room!] @goTag(key: "bson", value: "rooms")
-  lat: Float64! @goTag(key: "bson", value: "lat")
-  lon: Float64! @goTag(key: "bson", value: "lon")
+	building: String! @goTag(key: "bson", value: "building")
+	rooms: [Room!] @goTag(key: "bson", value: "rooms")
+	lat: Float64! @goTag(key: "bson", value: "lat")
+	lon: Float64! @goTag(key: "bson", value: "lon")
 }
 
 type Query {
-  courses(filter: CourseFilter, offset: Int = 0): [Course!]
-  course(id: ID!): Course
+	courses(filter: CourseFilter, offset: Int = 0): [Course!]
+	course(id: ID!): Course
 
-  rooms: [BuildingRooms!]
+	rooms: [BuildingRooms!]
+
+	# comet calendar queries
+	CometCalendars(
+		filter: CometCalendarFilter
+		offset: Int = 0
+	): [CometCalendar!]
+	CometCalendar(id: ID!): CometCalendar
+}
+
+type Event {
+	_id: ID! @goTag(key: "bson", value: "_id")
+	summary: String! @goTag(key: "bson", value: "summary")
+	location: String! @goTag(key: "bson", value: "location")
+	start_time: DateTime! @goTag(key: "bson", value: "start_time")
+	end_time: DateTime! @goTag(key: "bson", value: "end_time")
+	description: String! @goTag(key: "bson", value: "description")
+	event_type: [String!]! @goTag(key: "bson", value: "event_type")
+	target_audience: [String!]! @goTag(key: "bson", value: "target_audience")
+	topic: [String!]! @goTag(key: "bson", value: "topic")
+	event_tags: [String!]! @goTag(key: "bson", value: "event_tags")
+	event_website: String! @goTag(key: "bson", value: "event_website")
+	department: [String!]! @goTag(key: "bson", value: "department")
+	contact_name: String! @goTag(key: "bson", value: "contact_name")
+	contact_email: String! @goTag(key: "bson", value: "contact_email")
+	contact_phone_number: String!
+		@goTag(key: "bson", value: "contact_phone_number")
+}
+
+type CometCalendarRoom {
+	room: String! @goTag(key: "bson", value: "room")
+	events: [Event!]! @goTag(key: "bson", value: "events")
+}
+
+type CometCalendarBuilding {
+	building: String! @goTag(key: "bson", value: "building")
+	rooms: [CometCalendarRoom!]! @goTag(key: "bson", value: "rooms")
+}
+
+type CometCalendar {
+	_id: ID! @goTag(key: "bson", value: "_id")
+	date: String! @goTag(key: "bson", value: "date")
+	buildings: [CometCalendarBuilding!]! @goTag(key: "bson", value: "buildings")
+}
+
+input CometCalendarFilter {
+	_id: String
+	date: String
+	buildings: [CometCalendarBuildingInput]
+}
+
+input CometCalendarBuildingInput {
+	building: String
+	rooms: [CometCalendarRoomInput]
+}
+
+input CometCalendarRoomInput {
+	room: String
+	events: [EventInput]
+}
+
+input EventInput {
+	_id: ID
+	summary: String
+	location: String
+	start_time: DateTime
+	end_time: DateTime
+	description: String
+	event_type: [String]
+	target_audience: [String]
+	topic: [String]
+	event_tags: [String]
+	event_website: String
+	department: [String]
+	contact_name: String
+	contact_email: String
+	contact_phone_number: String
 }

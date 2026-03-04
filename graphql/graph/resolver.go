@@ -7,8 +7,9 @@ import "go.mongodb.org/mongo-driver/mongo"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	CourseCollection   *mongo.Collection
-	SectionCollection  *mongo.Collection
-	ProfCollection     *mongo.Collection
-	BuildingCollection *mongo.Collection
+	CourseCollection        *mongo.Collection
+	SectionCollection       *mongo.Collection
+	ProfCollection          *mongo.Collection
+	BuildingCollection      *mongo.Collection
+	CometCalendarCollection *mongo.Collection
 }

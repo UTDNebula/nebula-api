@@ -155,6 +155,9 @@ models:
   Float64:
     model:
       - github.com/99designs/gqlgen/graphql.Float
+  DateTime:
+    model:
+      - github.com/99designs/gqlgen/graphql.Time
   Any:
     model:
       - github.com/99designs/gqlgen/graphql.Any
