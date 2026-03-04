@@ -33,7 +33,8 @@ func (r *queryResolver) Sections(
 
 	// yet to build mongo query filter
 
-}
+	}
+
 
 // pagination logic
 skip := int64(0)
@@ -50,3 +51,38 @@ if err := nil {
 	return nil, err
 }
 defer cursor.Close(timeoutCtx)
+
+// decode
+// Decode
+	if err := cursor.All(timeoutCtx, &dbSections); err != nil {
+		return nil, err
+	}
+
+	// Transform DB ----> GraphQL
+	for _, dbSection := range dbSections {
+		sections = append(sections, model.TransformSection(dbSection))
+	}
+
+	return sections, nil
+}
+
+// section is the resolver for this field
+
+func (r *queryResolver) Section(ctx context.Context, id string) (*model.Section, error) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// decoding to a real value and not a nullptr
+	var dbSection model.DBSection
+	if err := r.SectionCollection.FindOne(timeoutCtx, bson.M{"_id": objectId}).Decode(&dbSection); err != nil {
+		return nil, err
+	}
+
+	return model.TransformSection(&dbSection), nil
+}
+
