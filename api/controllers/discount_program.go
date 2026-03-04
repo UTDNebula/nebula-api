@@ -17,11 +17,21 @@ import (
 var discountProgramCollection *mongo.Collection = configs.GetCollection("discountPrograms")
 
 var discountProgramCategories = map[string]string{
-	"accommodations":             "Accommodations",
-	"auto services":              "Auto Services",
-	"clothes, flowers and gifts": "Clothes, Flowers and Gifts",
-	"dining":                     "Dining",
-	"entertainment":              "Entertainment",
+	"accommodations":            "Accommodations",
+	"auto services":             "Auto Services",
+	"clothes flowers and gifts": "Clothes, Flowers and Gifts",
+	"clothes flowers gifts":     "Clothes, Flowers and Gifts",
+	"dining":                    "Dining",
+	"entertainment":             "Entertainment",
+}
+
+var discountProgramAllowedQueryParams = map[string]struct{}{
+	"offset":   {},
+	"category": {},
+	"business": {},
+	"address":  {},
+	"discount": {},
+	"q":        {},
 }
 
 var discountProgramCategoryList = []string{
@@ -54,6 +64,11 @@ func DiscountProgramSearch(c *gin.Context) {
 
 	query := bson.M{}
 
+	if err := validateDiscountProgramQueryParams(c); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+
 	category := strings.TrimSpace(c.Query("category"))
 	business := strings.TrimSpace(c.Query("business"))
 	address := strings.TrimSpace(c.Query("address"))
@@ -82,7 +97,7 @@ func DiscountProgramSearch(c *gin.Context) {
 		}
 	} else {
 		if category != "" {
-			normalizedCategory := strings.ToLower(category)
+			normalizedCategory := normalizeDiscountProgramCategory(category)
 			canonicalCategory, validCategory := discountProgramCategories[normalizedCategory]
 			if !validCategory {
 				respond(
@@ -137,4 +152,30 @@ func regexFilter(term string) bson.M {
 		"$regex":   regexp.QuoteMeta(term),
 		"$options": "i",
 	}
+}
+
+func validateDiscountProgramQueryParams(c *gin.Context) error {
+	for key := range c.Request.URL.Query() {
+		if _, ok := discountProgramAllowedQueryParams[key]; !ok {
+			return &invalidDiscountProgramQueryParamError{param: key}
+		}
+	}
+	return nil
+}
+
+func normalizeDiscountProgramCategory(category string) string {
+	normalized := strings.ToLower(strings.TrimSpace(category))
+	normalized = strings.ReplaceAll(normalized, "/", " ")
+	normalized = strings.ReplaceAll(normalized, ",", " ")
+	normalized = strings.ReplaceAll(normalized, "&", " and ")
+	normalized = strings.Join(strings.Fields(normalized), " ")
+	return normalized
+}
+
+type invalidDiscountProgramQueryParamError struct {
+	param string
+}
+
+func (e *invalidDiscountProgramQueryParamError) Error() string {
+	return "unsupported query parameter: " + e.param + ". Allowed parameters: offset, category, business, address, discount, q"
 }
