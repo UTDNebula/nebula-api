@@ -44,26 +44,24 @@ func (r *queryResolver) Sections(
 		}
 	}
 
+	// pagination logic
+	skip := int64(0)
+	if offset != nil {
+		skip = int64(*offset)
+	}
+	paginate := options.Find().
+		SetSkip(skip).
+		SetLimit(configs.GetEnvLimit())
 
+	// query database
+	cursor, err := r.SectionCollection.Find(timeoutCtx, sectionQuery, paginate)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(timeoutCtx)
 
-// pagination logic
-skip := int64(0)
-if offset != nil {
-	skip = int64(*offset)
-}
-paginate := options.Find().
-	SetSkip(skip).
-	SetLimit(configs.GetEnvLimit())
-
-// query database
-cursor, err := r.SectionCollection.Find(timeoutCtx, sectionQuery, paginate)
-if err := nil {
-	return nil, err
-}
-defer cursor.Close(timeoutCtx)
-
-// decode
-// Decode
+	// decode
+	// Decode
 	if err := cursor.All(timeoutCtx, &dbSections); err != nil {
 		return nil, err
 	}
@@ -74,7 +72,7 @@ defer cursor.Close(timeoutCtx)
 	}
 
 	return sections, nil
-
+}
 
 // section is the resolver for this field
 
@@ -95,4 +93,3 @@ func (r *queryResolver) Section(ctx context.Context, id string) (*model.Section,
 
 	return model.TransformSection(&dbSection), nil
 }
-
