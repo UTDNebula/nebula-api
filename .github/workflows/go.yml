@@ -38,6 +38,8 @@ jobs:
       run: make build
 
     - name: Test
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
       run: make test
 
   build_windows:
