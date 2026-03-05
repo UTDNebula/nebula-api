@@ -182,6 +182,45 @@ func CourseSectionById(c *gin.Context) {
 	courseAggregate[schema.Section]("ById", c)
 }
 
+// @Id				courseProfessorSearch
+// @Router			/course/professors [get]
+// @Tags			Courses
+// @Description	"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
+// @Produce		json
+// @Param			former_offset			query		number									false	"The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
+// @Param			latter_offset			query		number									false	"The starting position of the current page of professors (e.g. For starting at the 4th professor, latter_offset=3)."
+// @Param			course_number			query		string									false	"The course's official number"
+// @Param			subject_prefix			query		string									false	"The course's subject prefix"
+// @Param			title					query		string									false	"The course's title"
+// @Param			description				query		string									false	"The course's description"
+// @Param			school					query		string									false	"The course's school"
+// @Param			credit_hours			query		string									false	"The number of credit hours awarded by successful completion of the course"
+// @Param			class_level				query		string									false	"The level of education that this course course corresponds to"
+// @Param			activity_type			query		string									false	"The type of class this course corresponds to"
+// @Param			grading					query		string									false	"The grading status of this course"
+// @Param			internal_course_number	query		string									false	"The internal (university) number used to reference this course"
+// @Param			lecture_contact_hours	query		string									false	"The weekly contact hours in lecture for a course"
+// @Param			offering_frequency		query		string									false	"The frequency of offering a course"
+// @Success		200						{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
+// @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
+func CourseProfessorSearch(c *gin.Context) {
+	courseAggregate[schema.Professor]("Search", c)
+}
+
+// @Id				courseProfessorById
+// @Router			/course/{id}/professors [get]
+// @Tags			Courses
+// @Description	"Returns the all of the professors of the course with given ID"
+// @Produce		json
+// @Param			id	path		string									true	"ID of the course to get"
+// @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+func CourseProfessorById(c *gin.Context) {
+	courseAggregate[schema.Professor]("ById", c)
+}
+
 // courseAggregate is a generic function that gets a specified field of the courses, filters depending on the flag
 func courseAggregate[T any](flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -233,45 +272,6 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", queryResults)
-}
-
-// @Id				courseProfessorSearch
-// @Router			/course/professors [get]
-// @Tags			Courses
-// @Description	"Returns paginated list of professors of all the courses matching the query's string-typed key-value pairs. See former_offset and latter_offset for pagination details."
-// @Produce		json
-// @Param			former_offset			query		number									false	"The starting position of the current page of courses (e.g. For starting at the 17th course, former_offset=16)."
-// @Param			latter_offset			query		number									false	"The starting position of the current page of professors (e.g. For starting at the 4th professor, latter_offset=3)."
-// @Param			course_number			query		string									false	"The course's official number"
-// @Param			subject_prefix			query		string									false	"The course's subject prefix"
-// @Param			title					query		string									false	"The course's title"
-// @Param			description				query		string									false	"The course's description"
-// @Param			school					query		string									false	"The course's school"
-// @Param			credit_hours			query		string									false	"The number of credit hours awarded by successful completion of the course"
-// @Param			class_level				query		string									false	"The level of education that this course course corresponds to"
-// @Param			activity_type			query		string									false	"The type of class this course corresponds to"
-// @Param			grading					query		string									false	"The grading status of this course"
-// @Param			internal_course_number	query		string									false	"The internal (university) number used to reference this course"
-// @Param			lecture_contact_hours	query		string									false	"The weekly contact hours in lecture for a course"
-// @Param			offering_frequency		query		string									false	"The frequency of offering a course"
-// @Success		200						{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
-// @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
-func CourseProfessorSearch(c *gin.Context) {
-	courseAggregate[schema.Professor]("Search", c)
-}
-
-// @Id				courseProfessorById
-// @Router			/course/{id}/professors [get]
-// @Tags			Courses
-// @Description	"Returns the all of the professors of the course with given ID"
-// @Produce		json
-// @Param			id	path		string									true	"ID of the course to get"
-// @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
-// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
-func CourseProfessorById(c *gin.Context) {
-	courseAggregate[schema.Professor]("ById", c)
 }
 
 // buildCoursePipeline builds the pipeline to aggregate the list of specified objects from list of courses
