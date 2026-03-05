@@ -40,3 +40,11 @@ echo Building...
 go build -o %EXEC_NAME% server.go
 if ERRORLEVEL 1 exit /b %ERRORLEVEL% :: fail if error occurred
 echo Build complete!
+
+:test
+echo Testing...
+go test ./...
+if ERRORLEVEL 1 exit /b %ERRORLEVEL% :: fail if error occurred
+echo Testing complete!
+if %skip%==1 exit
+echo[

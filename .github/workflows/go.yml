@@ -37,6 +37,9 @@ jobs:
     - name: Build
       run: make build
 
+    - name: Test
+      run: make test
+
   build_windows:
     runs-on: windows-latest
     defaults:
@@ -53,5 +56,5 @@ jobs:
         go-version: '1.24'
         cache-dependency-path: "**\\go.sum"
 
-    - name: Check & Build
+    - name: Check & Build & Test
       run: .\build.bat
