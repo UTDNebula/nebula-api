@@ -16,7 +16,7 @@ func TestObjectIDFromParam(t *testing.T) {
 	t.Run("ValidObjectID", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
-		
+
 		// Fabricate a valid 24-character hex string parameter
 		validHex := "65a3f1b2c3d4e5f6a7b8c9d0"
 		c.Params = []gin.Param{{Key: "id", Value: validHex}}
@@ -34,7 +34,7 @@ func TestObjectIDFromParam(t *testing.T) {
 	t.Run("InvalidObjectID", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
-		
+
 		// Fabricate an invalid parameter
 		c.Params = []gin.Param{{Key: "id", Value: "invalid-id-format"}}
 
@@ -60,7 +60,7 @@ func TestGetQuery(t *testing.T) {
 	t.Run("ById_Valid", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
-		
+
 		id := primitive.NewObjectID()
 		c.Params = []gin.Param{{Key: "id", Value: id.Hex()}}
 
@@ -70,7 +70,7 @@ func TestGetQuery(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 		// Verify the query map contains the correct ObjectID
-		if query["_id"] != id {
+		if *query["_id"].(*primitive.ObjectID) != id {
 			t.Errorf("Expected query _id to be %v, got %v", id, query["_id"])
 		}
 	})
@@ -104,5 +104,5 @@ func TestRespond(t *testing.T) {
 	if w.Code != http.StatusOK {
 		t.Errorf("Expected status 200, got %d", w.Code)
 	}
-	
+
 }
