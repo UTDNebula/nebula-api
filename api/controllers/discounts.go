@@ -40,15 +40,15 @@ var discountCategories = []string{
 // @Tags			Discounts
 // @Description	"Returns paginated list of discounts matching the query's string-typed key-value pairs. See offset for more details on pagination."
 // @Produce		json
-// @Param			offset					query		number								false	"The starting position of the current page of discounts (e.g. For starting at the 17th discount, offset=16)."
-// @Param			category				query		string								false	"The discount's category."
-// @Param			business				query		string								false	"The discount's business contains this keyword (case-insensitive)."
-// @Param			address					query		string								false	"The discount's address contains this keyword (case-insensitive)."
-// @Param			discount				query		string								false	"The discount's discount contains this keyword (case-insensitive)."
-// @Param			q						query		string								false	"Full text search of all discount's fields."
-// @Success		200						{object}	schema.APIResponse[[]DiscountProgram]	"A list of discounts"
-// @Failure		500						{object}	schema.APIResponse[string]			"A string describing the error"
-// @Failure		400						{object}	schema.APIResponse[string]			"A string describing the error"
+// @Param			offset		query		number											false	"The starting position of the current page of discounts (e.g. For starting at the 17th discount, offset=16)."
+// @Param			category	query		string											false	"The discount's category."
+// @Param			business	query		string											false	"The discount's business contains this keyword (case-insensitive)."
+// @Param			address		query		string											false	"The discount's address contains this keyword (case-insensitive)."
+// @Param			discount	query		string											false	"The discount's discount contains this keyword (case-insensitive)."
+// @Param			q			query		string											false	"Full text search of all discount's fields."
+// @Success		200			{object}	schema.APIResponse[[]schema.DiscountProgram]	"A list of discounts"
+// @Failure		500			{object}	schema.APIResponse[string]						"A string describing the error"
+// @Failure		400			{object}	schema.APIResponse[string]						"A string describing the error"
 func DiscountSearch(c *gin.Context) {
 	query, err := buildDiscountSearchQuery(c)
 	if err != nil {
