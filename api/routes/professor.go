@@ -16,12 +16,12 @@ func ProfessorRoute(router *gin.Engine) {
 	professorGroup.GET("all", controllers.ProfessorAll)
 
 	// Endpoints to get the courses of the professors
-	professorGroup.GET("courses", controllers.ProfessorCourseSearch())
-	professorGroup.GET(":id/courses", controllers.ProfessorCourseById())
+	professorGroup.GET("courses", controllers.ProfessorCourseSearch)
+	professorGroup.GET(":id/courses", controllers.ProfessorCourseById)
 
 	// Endpoints to get the sections of the professors
-	professorGroup.GET("sections", controllers.ProfessorSectionSearch())
-	professorGroup.GET(":id/sections", controllers.ProfessorSectionById())
+	professorGroup.GET("sections", controllers.ProfessorSectionSearch)
+	professorGroup.GET(":id/sections", controllers.ProfessorSectionById)
 	professorGroup.GET("sections/trends", controllers.TrendsProfessorSectionSearch)
 
 	// Endpoints to get the grades for a professor

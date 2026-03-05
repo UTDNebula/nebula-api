@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -165,7 +166,7 @@ func CourseAll(c *gin.Context) {
 // @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseSectionSearch(c *gin.Context) {
-	courseSection("Search", c)
+	courseAggregate[schema.Section]("Search", c)
 }
 
 // @Id				courseSectionById
@@ -178,47 +179,7 @@ func CourseSectionSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseSectionById(c *gin.Context) {
-	courseSection("ById", c)
-}
-
-// courseSection gets the sections of the courses, filters depending on the flag
-func courseSection(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	var courseSections []schema.Section
-	var courseQuery bson.M
-
-	// Determine the course query
-	courseQuery, err := getQuery[schema.Course](flag, c)
-	if err != nil {
-		return
-	}
-
-	// Determine the offset and limit for pagination & delete offset fields
-	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
-		return
-	}
-
-	// Pipeline to query the sections from the filtered courses
-	courseSectionPipeline := buildCoursePipeline("sections", courseQuery, paginate)
-
-	// perform aggregation on the pipeline
-	cursor, err := courseCollection.Aggregate(ctx, courseSectionPipeline)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-	defer cursor.Close(ctx)
-
-	if err = cursor.All(ctx, &courseSections); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", courseSections)
+	courseAggregate[schema.Section]("ById", c)
 }
 
 // @Id				courseProfessorSearch
@@ -244,7 +205,7 @@ func courseSection(flag string, c *gin.Context) {
 // @Failure		500						{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseProfessorSearch(c *gin.Context) {
-	courseProfessor("Search", c)
+	courseAggregate[schema.Professor]("Search", c)
 }
 
 // @Id				courseProfessorById
@@ -257,122 +218,127 @@ func CourseProfessorSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func CourseProfessorById(c *gin.Context) {
-	courseProfessor("ById", c)
+	courseAggregate[schema.Professor]("ById", c)
 }
 
-// courseProfessor gets the professors of the courses, filters depending on the flag
-func courseProfessor(flag string, c *gin.Context) {
+// courseAggregate is a generic function that gets a specified field of the courses, filters depending on the flag
+func courseAggregate[T any](flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var courseProfessors []schema.Professor
+	var queryResults []T
 	var courseQuery bson.M
 
+	// Determine the course query
 	courseQuery, err := getQuery[schema.Course](flag, c)
 	if err != nil {
 		return
 	}
 
-	// Determine the offset and limit for pagination and delete offset field
+	// Determine the offset and limit for pagination & delete offset fields
 	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	// Pipeline to query the professors from the filtered courses
-	courseProfPipeline := buildCoursePipeline("professors", courseQuery, paginate)
+	// Determine the endpoint based on the type of the desired query results
+	var zero T
+	var endpoint string
+	switch any(zero).(type) {
+	case schema.Section:
+		endpoint = "sections"
+	case schema.Professor:
+		endpoint = "professors"
+	default:
+		respondWithInternalError(c, fmt.Errorf("invalid schema type for courseAggregate"))
+		return
+	}
+
+	// Pipeline to query the field from the filtered courses
+	courseQueryPipeline := buildCoursePipeline(endpoint, courseQuery, paginate)
 
 	// perform aggregation on the pipeline
-	cursor, err := courseCollection.Aggregate(ctx, courseProfPipeline)
+	cursor, err := courseCollection.Aggregate(ctx, courseQueryPipeline)
 	if err != nil {
-		// return error for any aggregation problem
 		respondWithInternalError(c, err)
 		return
 	}
 	defer cursor.Close(ctx)
 
-	// parse the array of professors of the course
-	if err = cursor.All(ctx, &courseProfessors); err != nil {
-		panic(err)
+	if err = cursor.All(ctx, &queryResults); err != nil {
+		respondWithInternalError(c, err)
+		return
 	}
 
-	respond(c, http.StatusOK, "success", courseProfessors)
+	respond(c, http.StatusOK, "success", queryResults)
 }
 
 // buildCoursePipeline builds the pipeline to aggregate the list of specified objects from list of courses
-func buildCoursePipeline(target string, query bson.M, paginate map[string]bson.D) mongo.Pipeline {
-	coursePipeline := mongo.Pipeline{}
-
-	// Filter and paginate the list of courses
-	filterStages := mongo.Pipeline{
-		bson.D{{Key: "$match", Value: query}},
+func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
+	baseStages := mongo.Pipeline{
+		bson.D{{Key: "$match", Value: courseQuery}},
 
 		// Skip to the offset, then limit to the number of courses
 		paginate["former_offset"],
 		paginate["limit"],
-	}
-	coursePipeline = append(coursePipeline, filterStages...)
 
-	// Look up the list of target objects from list of courses
-	lookupStages := mongo.Pipeline{
 		// Lookup the list of sections from the courses
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "sections"},
-				{Key: "localField", Value: "sections"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections"},
-			}},
-		},
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: "sections"},
+			{Key: "localField", Value: "sections"},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: "sections"},
+		}}},
 	}
-	if target == "professors" {
+
+	var lookupStages, removeDupStages mongo.Pipeline
+
+	switch endpoint {
+	case "sections":
+		lookupStages, removeDupStages = mongo.Pipeline{}, mongo.Pipeline{}
+
+	case "professors":
 		// Lookup the list of professors from the list of sections
-		lookupStages = append(lookupStages,
-			bson.D{
-				{Key: "$lookup", Value: bson.D{
-					{Key: "from", Value: "professors"},
-					{Key: "localField", Value: "sections.professors"},
-					{Key: "foreignField", Value: "_id"},
-					{Key: "as", Value: "professors"},
-				}},
-			},
-		)
-	}
-	coursePipeline = append(coursePipeline, lookupStages...)
+		lookupStages = mongo.Pipeline{
+			bson.D{{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "professors"},
+				{Key: "localField", Value: "sections.professors"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "professors"},
+			}}},
+		}
 
-	replaceStages := mongo.Pipeline{
-		// Unwind the target object of the sections
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$" + target},
-				{Key: "preserveNullAndEmptyArrays", Value: false}, // Avoid documents that can't be replaced
-			}},
-		},
-
-		// Replace the courses with the target objects
-		bson.D{{Key: "$replaceWith", Value: "$" + target}},
-	}
-	coursePipeline = append(coursePipeline, replaceStages...)
-
-	if target == "professors" {
 		// Remove the duplicate professors
-		removeDuplicateStages := mongo.Pipeline{
-			bson.D{
-				{Key: "$group", Value: bson.D{
-					{Key: "_id", Value: "$_id"},
-					{Key: "professor", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}}, // Keep first duplicate in key: "professor"
-				}},
-			},
+		removeDupStages = mongo.Pipeline{
+			// Group all duplicate professors by ID, and keep first duplicate in key: "professor"
+			bson.D{{Key: "$group", Value: bson.D{
+				{Key: "_id", Value: "$_id"},
+				{Key: "professor", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
+			}}},
 
 			// Extract professor out of "professor" key
 			bson.D{{Key: "$replaceWith", Value: "$professor"}},
 		}
-		coursePipeline = append(coursePipeline, removeDuplicateStages...)
+
+	default:
+		panic("invalid endpoint for coursePipeline: " + endpoint)
 	}
 
-	// Sort and then paginate the list of target objs
-	sortStages := mongo.Pipeline{
+	replaceStages := mongo.Pipeline{
+		// Unwind the target object of the sections
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$" + endpoint},
+			{Key: "preserveNullAndEmptyArrays", Value: false},
+		}}},
+
+		// Replace the courses with the target objects
+		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
+	}
+
+	middleStages := append(append(lookupStages, replaceStages...), removeDupStages...)
+
+	paginationStages := mongo.Pipeline{
 		// Keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
@@ -380,7 +346,6 @@ func buildCoursePipeline(target string, query bson.M, paginate map[string]bson.D
 		paginate["latter_offset"],
 		paginate["limit"],
 	}
-	coursePipeline = append(coursePipeline, sortStages...)
 
-	return coursePipeline
+	return append(append(baseStages, middleStages...), paginationStages...)
 }
