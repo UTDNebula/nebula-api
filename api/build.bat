@@ -18,7 +18,7 @@ go install github.com/swaggo/swag/cmd/swag@latest
 if ERRORLEVEL 1 exit /b %ERRORLEVEL% :: fail if error occurred
 echo Setup done!
 echo[
-if "%1"="setup" exit
+if "%1"=="setup" exit
 
 :docs
 echo Generating docs...
@@ -51,5 +51,4 @@ echo Testing...
 go test ./...
 if ERRORLEVEL 1 exit /b %ERRORLEVEL% :: fail if error occurred
 echo Testing complete!
-if %skip%==1 exit
 echo[
