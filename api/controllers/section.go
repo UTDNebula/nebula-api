@@ -225,6 +225,13 @@ func sectionCourse(flag string, c *gin.Context) {
 		// replace the combinations of id and course with courses entirely
 		bson.D{{Key: "$replaceWith", Value: "$courses"}},
 
+		// remove duplicate courses
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$_id"},
+			{Key: "course", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
+		}}},
+		bson.D{{Key: "$replaceWith", Value: "$course"}},
+
 		// keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
@@ -356,6 +363,13 @@ func sectionProfessor(flag string, c *gin.Context) {
 
 		// replace the combinations of id and course with courses entirely
 		bson.D{{Key: "$replaceWith", Value: "$professors"}},
+
+		// remove duplicate professors
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$_id"},
+			{Key: "professor", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
+		}}},
+		bson.D{{Key: "$replaceWith", Value: "$professor"}},
 
 		// keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
