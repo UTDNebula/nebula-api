@@ -60,6 +60,7 @@ func getQueueUrl(c *gin.Context) string {
 
 // @Id				sendEmail
 // @Router			/email/send [post]
+// @Tags			Internal
 // @Description	"Send an email via SMTP. This route is restricted to only Nebula Labs internal Projects."
 // @Accept			json
 // @Produce		json
@@ -111,6 +112,7 @@ func SendEmail(c *gin.Context) {
 
 // @Id				QueueEmail
 // @Router			/email/queue [post]
+// @Tags			Internal
 // @Description	"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects."
 // @Accept			json
 // @Produce		json
