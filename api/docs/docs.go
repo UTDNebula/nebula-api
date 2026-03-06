@@ -3891,6 +3891,35 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.DiscountProgram": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "business": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.EmailAttachment": {
             "type": "object",
             "required": [
@@ -3939,35 +3968,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "to": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.DiscountProgram": {
-            "type": "object",
-            "properties": {
-                "_id": {
-                    "type": "string"
-                },
-                "address": {
-                    "type": "string"
-                },
-                "business": {
-                    "type": "string"
-                },
-                "category": {
-                    "type": "string"
-                },
-                "discount": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "website": {
                     "type": "string"
                 }
             }
