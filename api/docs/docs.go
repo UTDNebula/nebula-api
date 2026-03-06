@@ -900,6 +900,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Internal"
+                ],
                 "operationId": "QueueEmail",
                 "parameters": [
                     {
@@ -949,6 +952,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Internal"
                 ],
                 "operationId": "sendEmail",
                 "parameters": [

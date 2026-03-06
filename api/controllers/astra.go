@@ -4,8 +4,9 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings" // adding missing import
 	"time"
-	"strings" // adding missing import	
+
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -78,10 +79,10 @@ func AstraEventsByBuilding(c *gin.Context) {
 		}
 		respondWithInternalError(c, err)
 		return
-	}	
+	}
 
 	// case insensitive matching
-	for _, b:= range astra_events.Buildings {
+	for _, b := range astra_events.Buildings {
 		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
 			astra_eventsByBuilding = b
 			break
@@ -163,7 +164,7 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 		for i := 0; i < maxRooms; i++ {
 			available = append(available, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
 		}
-		
+
 		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
 		return
 	}

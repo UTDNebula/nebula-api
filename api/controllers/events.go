@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"time"
 	"strings" // adding missing import
+	"time"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
 
@@ -71,7 +71,6 @@ func EventsByBuilding(c *gin.Context) {
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 	var eventsByBuilding schema.SingleBuildingEvents[schema.SectionWithTime]
 
-
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
@@ -83,7 +82,7 @@ func EventsByBuilding(c *gin.Context) {
 			return
 		}
 	}
-	
+
 	// case insensitive filter after data is retrieved
 	for _, b := range events.Buildings {
 		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
@@ -91,7 +90,7 @@ func EventsByBuilding(c *gin.Context) {
 			break
 		}
 	}
-	
+
 	// if no building is found, return an err with suggestion
 	if eventsByBuilding.Building == "" {
 		maxBuildings := min(len(events.Buildings), 10)

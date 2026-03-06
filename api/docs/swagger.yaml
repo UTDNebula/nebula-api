@@ -1511,6 +1511,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
   /email/send:
     post:
       consumes:
@@ -1545,6 +1547,8 @@ paths:
           description: A string describing the error
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
   /events/{date}:
     get:
       description: '"Returns all sections with meetings on the specified date"'
