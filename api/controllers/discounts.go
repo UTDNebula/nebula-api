@@ -125,7 +125,7 @@ func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
 			}
 		}
 		if !found {
-			return nil, fmt.Errorf("Unknown category %s. Valid categories are %s", category, strings.Join(discountCategories, ", "))
+			return nil, fmt.Errorf("unknown category %s. Valid categories are %s", category, strings.Join(discountCategories, ", "))
 		}
 	}
 
