@@ -50,14 +50,14 @@ var discountCategories = []string{
 // @Failure		500			{object}	schema.APIResponse[string]						"A string describing the error"
 // @Failure		400			{object}	schema.APIResponse[string]						"A string describing the error"
 func DiscountSearch(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	query, err := buildDiscountSearchQuery(c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
 		return
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	optionLimit, err := configs.GetOptionLimit(&query, c)
 	if err != nil {
@@ -100,7 +100,7 @@ func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
 		return query, nil
 	}
 
-	// we use regexp.QuoteMeta and option i to essentially do string.toLower().contains(key) on fields
+	// We use regexp.QuoteMeta and option i to essentially do string.toLower().contains(key) on fields
 	if hasBusiness {
 		cleanedBusiness := strings.TrimSpace(regexp.QuoteMeta(business))
 		query["business"] = bson.D{{Key: "$regex", Value: cleanedBusiness}, {Key: "$options", Value: "i"}}
@@ -125,7 +125,7 @@ func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
 			}
 		}
 		if !found {
-			return nil, fmt.Errorf("unknown category %s: valid categories are [%s]", category, strings.Join(discountCategories, ", "))
+			return nil, fmt.Errorf("Unknown category %s. Valid categories are %s", category, strings.Join(discountCategories, ", "))
 		}
 	}
 

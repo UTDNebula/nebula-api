@@ -339,7 +339,7 @@ func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginate map
 	}
 
 	// common pagination stages
-	paginationStages := mongo.Pipeline{
+	paginateStages := mongo.Pipeline{
 		// unwind the courses/sections
 		bson.D{{Key: "$unwind", Value: bson.D{
 			{Key: "path", Value: "$" + endpoint},
@@ -357,5 +357,5 @@ func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginate map
 		paginate["limit"],
 	}
 
-	return append(append(baseStages, middleStages...), paginationStages...)
+	return append(append(baseStages, middleStages...), paginateStages...)
 }
