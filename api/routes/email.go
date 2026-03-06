@@ -51,7 +51,7 @@ func initTasksClient() (*cloudtasks.Client, string, string) {
 func initEmailClient() (*mail.Client, string) {
 	// Singleton to prevent multiple clients
 	emailClientOnce.Do(func() {
-		smtpHost := os.Getenv("SMTP_HOST") // TODO: use lookupenv instead
+		smtpHost := os.Getenv("SMTP_HOST")
 		smtpUser := os.Getenv("SMTP_USERNAME")
 		smtpPass := os.Getenv("SMTP_PASSWORD")
 		smtpFrom := os.Getenv("SMTP_FROM")
