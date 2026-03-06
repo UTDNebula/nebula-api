@@ -439,22 +439,38 @@ definitions:
       title:
         type: string
     type: object
+  schema.EmailAttachment:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      name:
+        type: string
+    required:
+    - data
+    - name
+    type: object
   schema.EmailRequest:
     properties:
+      attachments:
+        items:
+          $ref: '#/definitions/schema.EmailAttachment'
+        type: array
       body:
         type: string
+      embeds:
+        items:
+          $ref: '#/definitions/schema.EmailAttachment'
+        type: array
       from:
         type: string
       subject:
-        type: string
-      task_name:
-        description: Included if queued via Cloud Tasks
         type: string
       to:
         type: string
     required:
     - body
-    - from
     - subject
     - to
     type: object

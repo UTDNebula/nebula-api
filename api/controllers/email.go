@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 
@@ -90,7 +91,15 @@ func SendEmail(c *gin.Context) {
 	}
 
 	m.Subject(req.Subject)
-	m.SetBodyString(mail.TypeTextPlain, req.Body)
+	m.SetBodyString(mail.TypeTextHTML, req.Body)
+
+	for _, att := range req.Attachments {
+		m.AttachReader(att.Name, bytes.NewReader(att.Data))
+	}
+
+	for _, emb := range req.Embeds {
+		m.EmbedReader(emb.Name, bytes.NewReader(emb.Data), mail.WithFileContentID(emb.Name))
+	}
 
 	if err := client.DialAndSend(m); err != nil {
 		respond(c, http.StatusInternalServerError, "failed to send email", err.Error())
@@ -130,7 +139,7 @@ func QueueEmail(c *gin.Context) {
 
 	// Build the Task payload.
 	// https://docs.cloud.google.com/tasks/docs/creating-http-target-tasks
-	req := &taskspb.CreateTaskRequest{
+	taskReq := &taskspb.CreateTaskRequest{
 		Parent: queuePath,
 		Task: &taskspb.Task{
 			MessageType: &taskspb.Task_HttpRequest{
@@ -143,15 +152,13 @@ func QueueEmail(c *gin.Context) {
 	}
 
 	// Add a payload message if one is present.
-	req.Task.GetHttpRequest().Body = []byte(body)
+	taskReq.Task.GetHttpRequest().Body = []byte(body)
 
-	task, err := client.CreateTask(c.Request.Context(), req)
+	task, err := client.CreateTask(c.Request.Context(), taskReq)
 	if err != nil {
 		respond(c, http.StatusInternalServerError, "failed to queue email", err.Error())
 		return
 	}
 
-	emailReq.TaskName = task.GetName()
-
-	respond(c, http.StatusOK, "success", emailReq)
+	respond(c, http.StatusOK, "success", task.GetName())
 }

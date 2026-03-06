@@ -3798,26 +3798,51 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.EmailAttachment": {
+            "type": "object",
+            "required": [
+                "data",
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.EmailRequest": {
             "type": "object",
             "required": [
                 "body",
-                "from",
                 "subject",
                 "to"
             ],
             "properties": {
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.EmailAttachment"
+                    }
+                },
                 "body": {
                     "type": "string"
+                },
+                "embeds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.EmailAttachment"
+                    }
                 },
                 "from": {
                     "type": "string"
                 },
                 "subject": {
-                    "type": "string"
-                },
-                "task_name": {
-                    "description": "Included if queued via Cloud Tasks",
                     "type": "string"
                 },
                 "to": {
