@@ -46,6 +46,7 @@ func main() {
 
 	// Establish the connection to the database
 	configs.ConnectDB()
+	configs.ConnectClubsDB()
 
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{
@@ -85,6 +86,7 @@ func main() {
 	routes.AstraRoute(router)
 	routes.MazevoRoute(router)
 	routes.CalendarRoute(router)
+	routes.ClubRoute(router)
 	routes.DiscountRoutes(router)
 
 	// Retrieve the port string to serve traffic on
