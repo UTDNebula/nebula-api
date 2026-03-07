@@ -398,6 +398,8 @@ definitions:
         items:
           $ref: '#/definitions/schema.Contact'
         type: array
+      description:
+        type: string
       id:
         type: string
       name:
@@ -1125,10 +1127,10 @@ paths:
       - Events
   /club/{id}:
     get:
-      description: '"gets the directory info for given club."'
+      description: '"Returns the directory info for given club."'
       operationId: clubGet
       parameters:
-      - description: ID of course to get grades for
+      - description: ID of the club to get
         in: path
         name: id
         required: true
@@ -1137,7 +1139,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: class object
+          description: A club
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_Club'
         "400":
@@ -1152,19 +1154,19 @@ paths:
       - Clubs
   /club/search:
     get:
-      description: '"search for clubs"'
+      description: '"Returns list of clubs matching the search string"'
       operationId: clubSearch
       parameters:
-      - description: search string
+      - description: Search string
         in: query
-        name: s
+        name: q
         required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: list of matching clubs
+          description: List of matching clubs
           schema:
             $ref: '#/definitions/schema.APIResponse-array_schema_Club'
         "400":

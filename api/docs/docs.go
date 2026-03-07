@@ -319,7 +319,7 @@ const docTemplate = `{
         },
         "/club/search": {
             "get": {
-                "description": "\"search for clubs\"",
+                "description": "\"Returns list of clubs matching the search string\"",
                 "produces": [
                     "application/json"
                 ],
@@ -330,15 +330,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "search string",
-                        "name": "s",
+                        "description": "Search string",
+                        "name": "q",
                         "in": "query",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "list of matching clubs",
+                        "description": "List of matching clubs",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_schema_Club"
                         }
@@ -360,7 +360,7 @@ const docTemplate = `{
         },
         "/club/{id}": {
             "get": {
-                "description": "\"gets the directory info for given club.\"",
+                "description": "\"Returns the directory info for given club.\"",
                 "produces": [
                     "application/json"
                 ],
@@ -371,7 +371,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID of course to get grades for",
+                        "description": "ID of the club to get",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -379,7 +379,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "class object",
+                        "description": "A club",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-schema_Club"
                         }
@@ -3788,6 +3788,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/schema.Contact"
                     }
+                },
+                "description": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
