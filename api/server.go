@@ -87,6 +87,7 @@ func main() {
 	routes.MazevoRoute(router)
 	routes.CalendarRoute(router)
 	routes.ClubRoute(router)
+	routes.DiscountRoutes(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()

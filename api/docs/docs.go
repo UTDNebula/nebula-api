@@ -973,6 +973,76 @@ const docTemplate = `{
                 }
             }
         },
+        "/discountPrograms": {
+            "get": {
+                "description": "\"Returns paginated list of discounts matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Discounts"
+                ],
+                "operationId": "discountPrograms",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of discounts (e.g. For starting at the 17th discount, offset=16).",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The discount's category.",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The discount's business contains this keyword (case-insensitive).",
+                        "name": "business",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The discount's address contains this keyword (case-insensitive).",
+                        "name": "address",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The discount's discount contains this keyword (case-insensitive).",
+                        "name": "discount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Full text search of all discount's fields.",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of discounts",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_DiscountProgram"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/events/{date}": {
             "get": {
                 "description": "\"Returns all sections with meetings on the specified date\"",
@@ -3187,6 +3257,23 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-array_schema_DiscountProgram": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.DiscountProgram"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-array_schema_GradeData": {
             "type": "object",
             "properties": {
@@ -3845,6 +3932,35 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.DiscountProgram": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "business": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "website": {
                     "type": "string"
                 }
             }
