@@ -334,6 +334,23 @@ type Degree struct {
 	JointProgram   bool   `bson:"joint_program" json:"joint_program"`
 }
 
+type Contact struct {
+	Platform string `json:"platform"`
+	URL      string `json:"url"`
+}
+
+type Club struct {
+	Slug         string              `json:"slug"`
+	ID           string              `json:"id"`
+	Name         string              `json:"name"`
+	Description  string              `json:"description"`
+	Tags         []string            `json:"tags"`
+	ProfileImage string              `json:"profile_image"`
+	UpdatedAt    time.Time           `json:"updated_at"`
+	Officers     []map[string]string `json:"officers"`
+	Contacts     []Contact           `json:"contacts"`
+}
+
 // Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
