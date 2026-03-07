@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -53,26 +54,59 @@ func DiscountSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	query, err := buildDiscountSearchQuery(c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
-		return
+	var cursor *mongo.Cursor
+	var err error
+
+	_, hasQ := c.GetQuery("q")
+	_, hasBusiness := c.GetQuery("business")
+	_, hasAddress := c.GetQuery("address")
+	_, hasDiscount := c.GetQuery("discount")
+	_, hasCategory := c.GetQuery("category")
+	if hasQ {
+		if hasBusiness || hasAddress || hasDiscount || hasCategory {
+			// q may only be used alone
+			respond(c, http.StatusBadRequest, "Invalid query parameters", "Parameter q may not be used with other parameters")
+			return
+		}
+
+		pipeline, err := buildFuzzySearchPipeline(c)
+		if err != nil {
+			respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+			return
+		}
+		cursor, err = discountCollection.Aggregate(ctx, pipeline)
+		if err != nil {
+			respondWithInternalError(c, err)
+			return
+		}
+
+	} else {
+		if !hasBusiness && !hasAddress && !hasDiscount && !hasCategory {
+			respond(c, http.StatusBadRequest, "Invalid query parameters", "Unknown query")
+			return
+		}
+
+		query, err := buildDiscountSearchQuery(c)
+		if err != nil {
+			respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+			return
+		}
+
+		optionLimit, err := configs.GetOptionLimit(&query, c)
+		if err != nil {
+			respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
+			return
+		}
+		cursor, err = discountCollection.Find(ctx, query, optionLimit)
+		if err != nil {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
-	optionLimit, err := configs.GetOptionLimit(&query, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
-		return
-	}
-
-	cursor, err := discountCollection.Find(ctx, query, optionLimit)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
 	defer cursor.Close(ctx)
 
-	discounts := make([]schema.DiscountProgram, 0)
+	var discounts []schema.DiscountProgram
 	if err = cursor.All(ctx, &discounts); err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -82,23 +116,14 @@ func DiscountSearch(c *gin.Context) {
 
 }
 
+// Build the query for field-based search
 func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
 	business, hasBusiness := c.GetQuery("business")
 	address, hasAddress := c.GetQuery("address")
 	discount, hasDiscount := c.GetQuery("discount")
 	category, hasCategory := c.GetQuery("category")
-	q, hasQ := c.GetQuery("q")
 
 	query := bson.M{}
-
-	if hasQ {
-		// q may only be used alone
-		if hasBusiness || hasAddress || hasDiscount || hasCategory {
-			return nil, fmt.Errorf("parameter q may not be used with other parameters")
-		}
-		query["$text"] = bson.D{{Key: "$search", Value: q}}
-		return query, nil
-	}
 
 	// We use regexp.QuoteMeta and option i to essentially do string.toLower().contains(key) on fields
 	if hasBusiness {
@@ -125,9 +150,72 @@ func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
 			}
 		}
 		if !found {
-			return nil, fmt.Errorf("unknown category %s. Valid categories are %s", category, strings.Join(discountCategories, ", "))
+			return nil, fmt.Errorf("unknown category %s. Valid categories are %s", category, strings.Join(discountCategories, " | "))
 		}
 	}
 
 	return query, nil
+}
+
+// Build the pipeline to perform fuzzy search on q
+func buildFuzzySearchPipeline(c *gin.Context) (mongo.Pipeline, error) {
+	q, _ := c.GetQuery("q")
+	if strings.TrimSpace(q) == "" {
+		return mongo.Pipeline{}, fmt.Errorf("empty q")
+	}
+
+	var offset int64
+	var err error
+	if c.Query("offset") == "" {
+		offset = 0
+	} else {
+		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
+		if err != nil {
+			return mongo.Pipeline{}, err
+		}
+	}
+
+	var fuzzySearchArr bson.A
+	fields := [4]string{"category", "discount", "business", "address"}
+	maxEditsList := [4]int{2, 2, 2, 1}
+	boostScores := [4]int{5, 3, 2, 1}
+	for i, field := range fields {
+		fuzzySearchArr = append(fuzzySearchArr, bson.D{
+			{Key: "text", Value: bson.D{
+				{Key: "query", Value: q},
+				{Key: "path", Value: field},
+				{Key: "fuzzy", Value: bson.D{
+					{Key: "maxEdits", Value: maxEditsList[i]},
+				}},
+				{Key: "score", Value: bson.D{
+					{Key: "boost", Value: bson.D{
+						{Key: "value", Value: boostScores[i]},
+					}},
+				}},
+			}},
+		})
+	}
+
+	return mongo.Pipeline{
+		// Fuzzy searches
+		bson.D{
+			{Key: "$search", Value: bson.D{
+				{Key: "index", Value: "discount_searches"},
+				{Key: "compound", Value: bson.D{
+					{Key: "should", Value: fuzzySearchArr},
+				}},
+			}},
+		},
+
+		// Sort and paginate
+		bson.D{
+			{Key: "$sort", Value: bson.D{
+				{Key: "score", Value: bson.D{
+					{Key: "$meta", Value: "searchScore"},
+				}},
+			}},
+		},
+		bson.D{{Key: "$skip", Value: offset}},
+		bson.D{{Key: "$limit", Value: configs.GetEnvLimit()}},
+	}, nil
 }
