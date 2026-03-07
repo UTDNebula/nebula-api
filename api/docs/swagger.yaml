@@ -105,6 +105,15 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-schema_Club:
+    properties:
+      data:
+        $ref: '#/definitions/schema.Club'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-schema_Course:
     properties:
       data:
@@ -361,6 +370,33 @@ definitions:
           $ref: '#/definitions/schema.Room'
         type: array
     type: object
+  schema.Club:
+    properties:
+      contacts:
+        items:
+          $ref: '#/definitions/schema.Contact'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      officers:
+        items:
+          additionalProperties:
+            type: string
+          type: object
+        type: array
+      profile_image:
+        type: string
+      slug:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      updated_at:
+        type: string
+    type: object
   schema.CollectionRequirement:
     properties:
       name:
@@ -371,6 +407,13 @@ definitions:
       required:
         type: integer
       type:
+        type: string
+    type: object
+  schema.Contact:
+    properties:
+      platform:
+        type: string
+      url:
         type: string
     type: object
   schema.Course:
@@ -1039,6 +1082,33 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
+  /club/{id}:
+    get:
+      description: '"gets the directory info for given club."'
+      operationId: clubGet
+      parameters:
+      - description: ID of course to get grades for
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: class object
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
   /course:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
