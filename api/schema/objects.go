@@ -339,15 +339,11 @@ type Contact struct {
 	URL      string `json:"url"`
 }
 
-type Officer struct {
-	Name     string `json:"name"`
-	Position string `json:"position"`
-}
-
 type Club struct {
 	Slug         string              `json:"slug"`
 	ID           string              `json:"id"`
 	Name         string              `json:"name"`
+	Description  string              `json:"description"`
 	Tags         []string            `json:"tags"`
 	ProfileImage string              `json:"profile_image"`
 	UpdatedAt    time.Time           `json:"updated_at"`
