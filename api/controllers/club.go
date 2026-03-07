@@ -13,8 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var clubsDatabase *sql.DB = configs.ConnectClubsDB()
-
 // @Id				clubGet
 // @Router			/club/{id} [get]
 // @Tags			Clubs
@@ -28,6 +26,7 @@ func ClubDirectoryInfo(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
 	id := c.Param("id")
 
 	var raw []byte
@@ -92,6 +91,7 @@ func ClubSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
 	search := c.Query("q")
 
 	var raw []byte
