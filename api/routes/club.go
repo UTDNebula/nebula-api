@@ -11,4 +11,5 @@ func ClubRoute(router *gin.Engine) {
 
 	clubGroup.OPTIONS("", controllers.Preflight)
 	clubGroup.GET(":id", controllers.ClubDirectoryInfo)
+	clubGroup.GET("/search", controllers.ClubSearch)
 }

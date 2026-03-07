@@ -32,6 +32,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_Club:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.Club'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_Course:
     properties:
       data:
@@ -1099,6 +1110,33 @@ paths:
           description: class object
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /club/search:
+    get:
+      description: '"search for clubs"'
+      operationId: clubSearch
+      parameters:
+      - description: search string
+        in: query
+        name: s
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list of matching clubs
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Club'
         "400":
           description: A string describing the error
           schema:
