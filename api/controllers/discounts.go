@@ -116,7 +116,8 @@ func DiscountSearch(c *gin.Context) {
 
 }
 
-// Build the query for field-based search
+// buildDiscountSearchQuery constructs the Mongo query for FIELD-BASED SEARCH.
+// Users only search for 4 main fields of discount
 func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
 	business, hasBusiness := c.GetQuery("business")
 	address, hasAddress := c.GetQuery("address")
@@ -140,16 +141,16 @@ func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
 	}
 
 	if hasCategory {
-		found := false
+		categoryFound := false
 		for _, discountCategory := range discountCategories {
-			//case insensitive equal
+			// Case insensitive equal
 			if strings.EqualFold(discountCategory, category) {
 				query["category"] = discountCategory
-				found = true
+				categoryFound = true
 				break
 			}
 		}
-		if !found {
+		if !categoryFound {
 			return nil, fmt.Errorf("unknown category %s. Valid categories are %s", category, strings.Join(discountCategories, " | "))
 		}
 	}
@@ -157,13 +158,14 @@ func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
 	return query, nil
 }
 
-// Build the pipeline to perform fuzzy search on q
+// buildFuzzySearchPipeline constructs the pipeline to perform fuzzy search on keyword q.
 func buildFuzzySearchPipeline(c *gin.Context) (mongo.Pipeline, error) {
 	q, _ := c.GetQuery("q")
 	if strings.TrimSpace(q) == "" {
 		return mongo.Pipeline{}, fmt.Errorf("empty q")
 	}
 
+	// Literally copy from getOptionsLimit()
 	var offset int64
 	var err error
 	if c.Query("offset") == "" {
@@ -207,7 +209,7 @@ func buildFuzzySearchPipeline(c *gin.Context) (mongo.Pipeline, error) {
 			}},
 		},
 
-		// Sort and paginate
+		// Sort based on relevancy score for deterministism and paginate
 		bson.D{
 			{Key: "$sort", Value: bson.D{
 				{Key: "score", Value: bson.D{
