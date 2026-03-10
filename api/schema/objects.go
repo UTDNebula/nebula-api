@@ -136,6 +136,23 @@ type DiscountProgram struct {
 	Discount string             `bson:"discount" json:"discount"`
 }
 
+type DiscountQueryParams struct {
+	Offset   int64  `form:"offset" binding:"gte=0"`
+	Category string `form:"category"`
+	Business string `form:"business"`
+	Address  string `form:"address"`
+	Discount string `form:"discount"`
+	Q        string `form:"q"`
+}
+
+func (q *DiscountQueryParams) TrimSpace() {
+	q.Category = strings.TrimSpace(q.Category)
+	q.Business = strings.TrimSpace(q.Business)
+	q.Address = strings.TrimSpace(q.Address)
+	q.Discount = strings.TrimSpace(q.Discount)
+	q.Q = strings.TrimSpace(q.Q)
+}
+
 type Event struct {
 	Id                 primitive.ObjectID `bson:"_id" json:"_id"`
 	Summary            string             `bson:"summary" json:"summary"`
