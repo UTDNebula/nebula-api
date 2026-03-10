@@ -9,6 +9,7 @@ require (
 	github.com/getsentry/sentry-go v0.33.0
 	github.com/getsentry/sentry-go/gin v0.33.0
 	github.com/gin-gonic/gin v1.10.1
+	github.com/google/go-cmp v0.7.0
 	github.com/joho/godotenv v1.5.1
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
