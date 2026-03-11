@@ -975,7 +975,7 @@ const docTemplate = `{
         },
         "/discountPrograms": {
             "get": {
-                "description": "\"Returns paginated list of discounts matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
+                "description": "\"Returns paginated list of discounts filtered using field-specific keyword searches or global fuzzy search. See offset for more details on pagination.\"",
                 "produces": [
                     "application/json"
                 ],
@@ -992,7 +992,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "The discount's category.",
+                        "description": "The discount's category (exact match with suggestions).",
                         "name": "category",
                         "in": "query"
                     },
@@ -1016,7 +1016,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Full text search of all discount's fields.",
+                        "description": "Fuzzy search, must be used alone.",
                         "name": "q",
                         "in": "query"
                     }

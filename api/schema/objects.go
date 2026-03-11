@@ -382,8 +382,6 @@ type EmailRequest struct {
 	Embeds      []EmailAttachment `json:"embeds,omitempty"`
 }
 
-
-
 // Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
