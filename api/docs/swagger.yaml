@@ -145,6 +145,15 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-schema_EmailRequest:
+    properties:
+      data:
+        $ref: '#/definitions/schema.EmailRequest'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-schema_MultiBuildingEvents-schema_AstraEvent:
     properties:
       data:
@@ -515,6 +524,41 @@ definitions:
         type: string
       website:
         type: string
+    type: object
+  schema.EmailAttachment:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      name:
+        type: string
+    required:
+    - data
+    - name
+    type: object
+  schema.EmailRequest:
+    properties:
+      attachments:
+        items:
+          $ref: '#/definitions/schema.EmailAttachment'
+        type: array
+      body:
+        type: string
+      embeds:
+        items:
+          $ref: '#/definitions/schema.EmailAttachment'
+        type: array
+      from:
+        type: string
+      subject:
+        type: string
+      to:
+        type: string
+    required:
+    - body
+    - subject
+    - to
     type: object
   schema.Event:
     properties:
@@ -1575,8 +1619,8 @@ paths:
       - Courses
   /discountPrograms:
     get:
-      description: '"Returns paginated list of discounts matching the query''s string-typed
-        key-value pairs. See offset for more details on pagination."'
+      description: '"Returns paginated list of discounts filtered using field-specific
+        keyword searches or global fuzzy search. See offset for more details on pagination."'
       operationId: discountPrograms
       parameters:
       - description: The starting position of the current page of discounts (e.g.
@@ -1584,7 +1628,7 @@ paths:
         in: query
         name: offset
         type: number
-      - description: The discount's category.
+      - description: The discount's category (exact match with suggestions).
         in: query
         name: category
         type: string
@@ -1600,7 +1644,7 @@ paths:
         in: query
         name: discount
         type: string
-      - description: Full text search of all discount's fields.
+      - description: Fuzzy search, must be used alone.
         in: query
         name: q
         type: string
@@ -1621,6 +1665,78 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Discounts
+  /email/queue:
+    post:
+      consumes:
+      - application/json
+      description: '"Queue an email to be sent via SMTP. This route is restricted
+        to only Nebula Labs internal Projects."'
+      operationId: QueueEmail
+      parameters:
+      - description: Email Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.EmailRequest'
+      - description: The internal email queue key
+        in: header
+        name: x-email-queue-key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email Request Body with Queued Task Name
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_EmailRequest'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
+  /email/send:
+    post:
+      consumes:
+      - application/json
+      description: '"Send an email via SMTP. This route is restricted to only Nebula
+        Labs internal Projects."'
+      operationId: sendEmail
+      parameters:
+      - description: Email Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.EmailRequest'
+      - description: The internal email send key
+        in: header
+        name: x-email-send-key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email Request Body
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_EmailRequest'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
   /events/{date}:
     get:
       description: '"Returns all sections with meetings on the specified date"'

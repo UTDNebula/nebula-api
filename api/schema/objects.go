@@ -368,6 +368,20 @@ type Club struct {
 	Contacts     []Contact           `json:"contacts"`
 }
 
+type EmailAttachment struct {
+	Name string `json:"name" binding:"required"`
+	Data []byte `json:"data" binding:"required"`
+}
+
+type EmailRequest struct {
+	From        string            `json:"from,omitempty"`
+	To          string            `json:"to" binding:"required,email"`
+	Subject     string            `json:"subject" binding:"required"`
+	Body        string            `json:"body" binding:"required"`
+	Attachments []EmailAttachment `json:"attachments,omitempty"`
+	Embeds      []EmailAttachment `json:"embeds,omitempty"`
+}
+
 // Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
