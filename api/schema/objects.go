@@ -136,6 +136,23 @@ type DiscountProgram struct {
 	Discount string             `bson:"discount" json:"discount"`
 }
 
+type DiscountQueryParams struct {
+	Offset   int64  `form:"offset" binding:"gte=0"`
+	Category string `form:"category"`
+	Business string `form:"business"`
+	Address  string `form:"address"`
+	Discount string `form:"discount"`
+	Q        string `form:"q"`
+}
+
+func (q *DiscountQueryParams) TrimSpace() {
+	q.Category = strings.TrimSpace(q.Category)
+	q.Business = strings.TrimSpace(q.Business)
+	q.Address = strings.TrimSpace(q.Address)
+	q.Discount = strings.TrimSpace(q.Discount)
+	q.Q = strings.TrimSpace(q.Q)
+}
+
 type Event struct {
 	Id                 primitive.ObjectID `bson:"_id" json:"_id"`
 	Summary            string             `bson:"summary" json:"summary"`
@@ -334,6 +351,23 @@ type Degree struct {
 	JointProgram   bool   `bson:"joint_program" json:"joint_program"`
 }
 
+type Contact struct {
+	Platform string `json:"platform"`
+	URL      string `json:"url"`
+}
+
+type Club struct {
+	Slug         string              `json:"slug"`
+	ID           string              `json:"id"`
+	Name         string              `json:"name"`
+	Description  string              `json:"description"`
+	Tags         []string            `json:"tags"`
+	ProfileImage string              `json:"profile_image"`
+	UpdatedAt    time.Time           `json:"updated_at"`
+	Officers     []map[string]string `json:"officers"`
+	Contacts     []Contact           `json:"contacts"`
+}
+
 type EmailAttachment struct {
 	Name string `json:"name" binding:"required"`
 	Data []byte `json:"data" binding:"required"`
@@ -347,6 +381,8 @@ type EmailRequest struct {
 	Attachments []EmailAttachment `json:"attachments,omitempty"`
 	Embeds      []EmailAttachment `json:"embeds,omitempty"`
 }
+
+
 
 // Type for all API responses
 type APIResponse[T any] struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"strings" // adding missing import
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -92,10 +92,15 @@ func AstraEventsByBuilding(c *gin.Context) {
 	if astra_eventsByBuilding.Building == "" {
 		// provide suggestion if not found
 		maxBuildings := min(len(astra_events.Buildings), 10)
-		available := make([]string, 0, maxBuildings)
-		for i := 0; i < maxBuildings; i++ {
+		var available []string
+
+		for i := range maxBuildings {
 			available = append(available, strings.TrimSpace(astra_events.Buildings[i].Building))
 		}
+		if len(astra_events.Buildings) > maxBuildings {
+			available = append(available, "(and more)")
+		}
+
 		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
@@ -160,9 +165,13 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 
 	if roomEvents.Room == "" {
 		maxRooms := min(len(matchedBuilding.Rooms), 20)
-		available := make([]string, 0, maxRooms)
-		for i := 0; i < maxRooms; i++ {
+		var available []string
+
+		for i := range maxRooms {
 			available = append(available, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
+		}
+		if len(matchedBuilding.Rooms) > maxRooms {
+			available = append(available, "(and more)")
 		}
 
 		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))

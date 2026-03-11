@@ -94,10 +94,14 @@ func EventsByBuilding(c *gin.Context) {
 	// if no building is found, return an err with suggestion
 	if eventsByBuilding.Building == "" {
 		maxBuildings := min(len(events.Buildings), 10)
-		available := make([]string, 0, maxBuildings)
-		for i := 0; i < maxBuildings; i++ {
+		var available []string
+		for i := range maxBuildings {
 			available = append(available, strings.TrimSpace(events.Buildings[i].Building))
 		}
+		if len(events.Buildings) > maxBuildings {
+			available = append(available, "(and more)")
+		}
+
 		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
@@ -160,10 +164,14 @@ func EventsByRoom(c *gin.Context) {
 
 	if eventsByRoom.Room == "" {
 		maxRooms := min(len(matchedBuilding.Rooms), 20)
-		available := make([]string, 0, maxRooms)
-		for i := 0; i < maxRooms; i++ {
+		var available []string
+		for i := range maxRooms {
 			available = append(available, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
 		}
+		if len(matchedBuilding.Rooms) > maxRooms {
+			available = append(available, "(and more)")
+		}
+
 		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
 		return
 	}

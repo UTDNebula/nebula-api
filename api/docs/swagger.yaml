@@ -32,6 +32,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_Club:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.Club'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_Course:
     properties:
       data:
@@ -111,6 +122,15 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/schema.BucketInfo'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-schema_Club:
+    properties:
+      data:
+        $ref: '#/definitions/schema.Club'
       message:
         type: string
       status:
@@ -381,6 +401,35 @@ definitions:
           $ref: '#/definitions/schema.Room'
         type: array
     type: object
+  schema.Club:
+    properties:
+      contacts:
+        items:
+          $ref: '#/definitions/schema.Contact'
+        type: array
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      officers:
+        items:
+          additionalProperties:
+            type: string
+          type: object
+        type: array
+      profile_image:
+        type: string
+      slug:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      updated_at:
+        type: string
+    type: object
   schema.CollectionRequirement:
     properties:
       name:
@@ -391,6 +440,13 @@ definitions:
       required:
         type: integer
       type:
+        type: string
+    type: object
+  schema.Contact:
+    properties:
+      platform:
+        type: string
+      url:
         type: string
     type: object
   schema.Course:
@@ -1113,6 +1169,60 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
+  /club/{id}:
+    get:
+      description: '"Returns the directory info for given club."'
+      operationId: clubGet
+      parameters:
+      - description: ID of the club to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A club
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /club/search:
+    get:
+      description: '"Returns list of clubs matching the search string"'
+      operationId: clubSearch
+      parameters:
+      - description: Search string
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of matching clubs
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
   /course:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
