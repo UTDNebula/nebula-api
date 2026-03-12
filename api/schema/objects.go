@@ -137,7 +137,6 @@ type DiscountProgram struct {
 }
 
 type DiscountQueryParams struct {
-	Offset   int64  `form:"offset" binding:"gte=0"`
 	Category string `form:"category"`
 	Business string `form:"business"`
 	Address  string `form:"address"`
