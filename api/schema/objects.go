@@ -145,12 +145,24 @@ type DiscountQueryParams struct {
 	Q        string `form:"q"`
 }
 
-func (q *DiscountQueryParams) TrimSpace() {
-	q.Category = strings.TrimSpace(q.Category)
-	q.Business = strings.TrimSpace(q.Business)
-	q.Address = strings.TrimSpace(q.Address)
-	q.Discount = strings.TrimSpace(q.Discount)
-	q.Q = strings.TrimSpace(q.Q)
+// The configuration for fuzzy searches
+type FuzzySearchConfig struct {
+	Field      string
+	MaxEdits   int
+	BoostScore int
+}
+
+// TrimSpace sanitizes all of fields of the discount query params
+func (params *DiscountQueryParams) TrimSpace() {
+	params.Category = strings.TrimSpace(params.Category)
+	params.Business = strings.TrimSpace(params.Business)
+	params.Address = strings.TrimSpace(params.Address)
+	params.Discount = strings.TrimSpace(params.Discount)
+	params.Q = strings.TrimSpace(params.Q)
+}
+
+func (params *DiscountQueryParams) HasFields() bool {
+	return params.Category != "" || params.Business != "" || params.Address != "" || params.Discount != ""
 }
 
 type Event struct {

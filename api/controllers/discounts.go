@@ -3,9 +3,11 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
@@ -18,23 +20,8 @@ import (
 
 var discountCollection *mongo.Collection = configs.GetCollection("discounts")
 
-// discountCategories
-// potentially we may want to add an init function to create this list dynamically
-var discountCategories = []string{
-	"Accommodations",
-	"Auto Services",
-	"Child Care",
-	"Clothes, Flowers and Gifts",
-	"Dining",
-	"Entertainment",
-	"Health and Beauty",
-	"Home and Garden",
-	"Housing",
-	"Miscellaneous",
-	"Pet Care",
-	"Professional Services",
-	"Technology",
-}
+var discountCategories []string
+var discountCategoriesOnce sync.Once
 
 // @Id				discountPrograms
 // @Router			/discountPrograms [get]
@@ -51,6 +38,7 @@ var discountCategories = []string{
 // @Failure		500			{object}	schema.APIResponse[string]						"A string describing the error"
 // @Failure		400			{object}	schema.APIResponse[string]						"A string describing the error"
 func DiscountSearch(c *gin.Context) {
+	fetchDiscountCategories()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -65,28 +53,27 @@ func DiscountSearch(c *gin.Context) {
 	params.TrimSpace()
 
 	if params.Q != "" {
-		if params.Category != "" || params.Business != "" ||
-			params.Address != "" || params.Discount != "" {
+		if params.HasFields() {
 			respond(c, http.StatusBadRequest, "Invalid query parameters", "q must be used alone")
 			return
 		}
 
-		fuzzyPipeline := buildFuzzySearchPipeline(params.Q, params.Offset)
-		cursor, err = discountCollection.Aggregate(ctx, fuzzyPipeline)
+		pipeline := buildFuzzySearchPipeline(params.Q, params.Offset)
+		cursor, err = discountCollection.Aggregate(ctx, pipeline)
 		if err != nil {
 			respondWithInternalError(c, err)
 			return
 		}
 	} else {
-		// Either fields are specified or not
-		query, err := buildDiscountSearchQuery(params)
+		// If no fields are specified, it just returns paginated collection
+		discountQuery, err := buildDiscountSearchQuery(params)
 		if err != nil {
 			respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
 			return
 		}
 
 		optionLimit := options.Find().SetSkip(params.Offset).SetLimit(configs.GetEnvLimit())
-		cursor, err = discountCollection.Find(ctx, query, optionLimit)
+		cursor, err = discountCollection.Find(ctx, discountQuery, optionLimit)
 		if err != nil {
 			respondWithInternalError(c, err)
 			return
@@ -104,29 +91,55 @@ func DiscountSearch(c *gin.Context) {
 
 }
 
+// initDiscountCategories aggregates the list of discount categories from DB once
+func fetchDiscountCategories() {
+	discountCategoriesOnce.Do(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
+		defer cancel()
+
+		results, err := discountCollection.Distinct(ctx, "category", bson.M{})
+		if err != nil {
+			panic(err)
+		}
+		for _, result := range results {
+			category, ok := result.(string)
+			if !ok {
+				continue // Skip invalid category
+			}
+			discountCategories = append(discountCategories, category)
+		}
+		log.Printf("Available discount categories: %s.\n", discountCategories)
+	})
+}
+
 // buildDiscountSearchQuery constructs the Mongo query for FIELD-BASED SEARCH.
 // Users only search for 4 main fields of discount
-func buildDiscountSearchQuery(q schema.DiscountQueryParams) (bson.M, error) {
+func buildDiscountSearchQuery(p schema.DiscountQueryParams) (bson.M, error) {
 	query := bson.M{}
 
-	// We use regexp.QuoteMeta and option i to essentially do string.toLower().contains(key) on fields
-	if q.Business != "" {
-		business := regexp.QuoteMeta(q.Business)
-		query["business"] = bson.D{{Key: "$regex", Value: business}, {Key: "$options", Value: "i"}}
+	// Use regexp.QuoteMeta and option i for insensitive-matching
+	if p.Business != "" {
+		query["business"] = bson.D{
+			{Key: "$regex", Value: regexp.QuoteMeta(p.Business)},
+			{Key: "$options", Value: "i"},
+		}
 	}
-	if q.Address != "" {
-		address := regexp.QuoteMeta(q.Address)
-		query["address"] = bson.D{{Key: "$regex", Value: address}, {Key: "$options", Value: "i"}}
+	if p.Address != "" {
+		query["address"] = bson.D{
+			{Key: "$regex", Value: regexp.QuoteMeta(p.Address)},
+			{Key: "$options", Value: "i"},
+		}
 	}
-	if q.Discount != "" {
-		discount := regexp.QuoteMeta(q.Discount)
-		query["discount"] = bson.D{{Key: "$regex", Value: discount}, {Key: "$options", Value: "i"}}
+	if p.Discount != "" {
+		query["discount"] = bson.D{
+			{Key: "$regex", Value: regexp.QuoteMeta(p.Discount)},
+			{Key: "$options", Value: "i"},
+		}
 	}
-
-	if q.Category != "" {
+	if p.Category != "" {
 		categoryFound := false
 		for _, discountCategory := range discountCategories {
-			if discountCategory == q.Category {
+			if discountCategory == p.Category {
 				query["category"] = discountCategory
 				categoryFound = true
 				break
@@ -142,32 +155,26 @@ func buildDiscountSearchQuery(q schema.DiscountQueryParams) (bson.M, error) {
 
 // buildFuzzySearchPipeline constructs the pipeline to perform fuzzy search on keyword q.
 func buildFuzzySearchPipeline(q string, offset int64) mongo.Pipeline {
-	type FuzzyConfig struct {
-		Field      string
-		maxEdits   int
-		boostScore int
-	}
-	// Will need to tune the configuration to get better results
-	fuzzyConfigs := []FuzzyConfig{
-		{"category", 2, 5},
-		{"discount", 2, 3},
-		{"business", 2, 2},
-		{"address", 1, 1},
-	}
-
 	var fuzzySearches bson.A
+	// Tune the configuration to get better results
+	fuzzyConfigs := []schema.FuzzySearchConfig{
+		{Field: "category", MaxEdits: 2, BoostScore: 5},
+		{Field: "discount", MaxEdits: 2, BoostScore: 3},
+		{Field: "business", MaxEdits: 2, BoostScore: 2},
+		{Field: "address", MaxEdits: 1, BoostScore: 1},
+	}
 	for _, fuzzyConfig := range fuzzyConfigs {
 		fuzzySearches = append(fuzzySearches, bson.D{
 			{Key: "text", Value: bson.D{
 				{Key: "query", Value: q},
 				{Key: "path", Value: fuzzyConfig.Field},
 				{Key: "fuzzy", Value: bson.D{
-					{Key: "maxEdits", Value: fuzzyConfig.maxEdits},
-					{Key: "prefixLength", Value: 2}, // Should match first 2 characters
+					{Key: "maxEdits", Value: fuzzyConfig.MaxEdits},
+					{Key: "prefixLength", Value: 2}, // Should match first 2 chars
 				}},
 				{Key: "score", Value: bson.D{
 					{Key: "boost", Value: bson.D{
-						{Key: "value", Value: fuzzyConfig.boostScore},
+						{Key: "value", Value: fuzzyConfig.BoostScore},
 					}},
 				}},
 			}},
@@ -180,12 +187,14 @@ func buildFuzzySearchPipeline(q string, offset int64) mongo.Pipeline {
 				{Key: "index", Value: "discount_searches"},
 				{Key: "compound", Value: bson.D{
 					{Key: "should", Value: fuzzySearches},
-					{Key: "minimumShouldMatch", Value: 1}, // Prevent extremely unrelated docs
+
+					// Match at least 1 field to prevent super unrelated docs
+					{Key: "minimumShouldMatch", Value: 1},
 				}},
 			}},
 		},
 
-		// Sort based on relevancy score for determinism and paginate
+		// Sort based on relevancy for determinism and paginate
 		bson.D{
 			{Key: "$sort", Value: bson.D{
 				{Key: "score", Value: bson.D{
@@ -193,6 +202,8 @@ func buildFuzzySearchPipeline(q string, offset int64) mongo.Pipeline {
 				}},
 			}},
 		},
+
+		// Paginate the results
 		bson.D{{Key: "$skip", Value: offset}},
 		bson.D{{Key: "$limit", Value: configs.GetEnvLimit()}},
 	}
