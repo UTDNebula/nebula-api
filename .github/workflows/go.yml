@@ -34,13 +34,13 @@ jobs:
     - name: Check
       run: make check
 
-    - name: Build
-      run: make build
-
     - name: Test
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
       run: make test
+
+    - name: Build
+      run: make build
 
   build_windows:
     runs-on: windows-latest
@@ -67,10 +67,10 @@ jobs:
     - name: Check
       run: .\build.bat checks
 
-    - name: Build
-      run: .\build.bat build
-
     - name: Test
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
       run: .\build.bat test
+
+    - name: Build
+      run: .\build.bat build
