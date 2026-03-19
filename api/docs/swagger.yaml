@@ -1575,16 +1575,11 @@ paths:
       - Courses
   /discountPrograms:
     get:
-      description: '"Returns paginated list of discounts matching the query''s string-typed
-        key-value pairs. See offset for more details on pagination."'
+      description: '"Returns list of discounts filtered using field-specific keyword
+        searches or full-text search."'
       operationId: discountPrograms
       parameters:
-      - description: The starting position of the current page of discounts (e.g.
-          For starting at the 17th discount, offset=16).
-        in: query
-        name: offset
-        type: number
-      - description: The discount's category.
+      - description: The discount's category (exact match with suggestions).
         in: query
         name: category
         type: string
@@ -1600,7 +1595,7 @@ paths:
         in: query
         name: discount
         type: string
-      - description: Full text search of all discount's fields.
+      - description: Full-text search, must be used alone.
         in: query
         name: q
         type: string

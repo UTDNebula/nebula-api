@@ -24,13 +24,13 @@ var discountCategoriesOnce sync.Once
 // @Id				discountPrograms
 // @Router			/discountPrograms [get]
 // @Tags			Discounts
-// @Description	"Returns list of discounts filtered using field-specific keyword searches or global fuzzy search."
+// @Description	"Returns list of discounts filtered using field-specific keyword searches or full-text search."
 // @Produce		json
 // @Param			category	query		string											false	"The discount's category (exact match with suggestions)."
 // @Param			business	query		string											false	"The discount's business contains this keyword (case-insensitive)."
 // @Param			address		query		string											false	"The discount's address contains this keyword (case-insensitive)."
 // @Param			discount	query		string											false	"The discount's discount contains this keyword (case-insensitive)."
-// @Param			q			query		string											false	"Fuzzy search, must be used alone."
+// @Param			q			query		string											false	"Full-text search, must be used alone."
 // @Success		200			{object}	schema.APIResponse[[]schema.DiscountProgram]	"A list of discounts"
 // @Failure		500			{object}	schema.APIResponse[string]						"A string describing the error"
 // @Failure		400			{object}	schema.APIResponse[string]						"A string describing the error"
