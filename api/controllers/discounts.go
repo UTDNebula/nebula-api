@@ -145,7 +145,7 @@ func buildDiscountSearchQuery(p schema.DiscountQueryParams) (bson.M, error) {
 			}
 		}
 		if !categoryFound {
-			return nil, fmt.Errorf("unknown category, valid categories are %s.", discountCategories)
+			return nil, fmt.Errorf("unknown category, valid categories are %s", discountCategories)
 		}
 	}
 
