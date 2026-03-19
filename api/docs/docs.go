@@ -975,7 +975,7 @@ const docTemplate = `{
         },
         "/discountPrograms": {
             "get": {
-                "description": "\"Returns paginated list of discounts matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
+                "description": "\"Returns list of discounts filtered using field-specific keyword searches or full-text search.\"",
                 "produces": [
                     "application/json"
                 ],
@@ -985,14 +985,8 @@ const docTemplate = `{
                 "operationId": "discountPrograms",
                 "parameters": [
                     {
-                        "type": "number",
-                        "description": "The starting position of the current page of discounts (e.g. For starting at the 17th discount, offset=16).",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
                         "type": "string",
-                        "description": "The discount's category.",
+                        "description": "The discount's category (exact match with suggestions).",
                         "name": "category",
                         "in": "query"
                     },
@@ -1016,7 +1010,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Full text search of all discount's fields.",
+                        "description": "Full-text search, must be used alone.",
                         "name": "q",
                         "in": "query"
                     }
