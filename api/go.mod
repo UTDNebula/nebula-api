@@ -11,6 +11,7 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.16.6
+	github.com/wneessen/go-mail v0.7.2
 	go.mongodb.org/mongo-driver v1.17.4
 	google.golang.org/api v0.271.0
 )
@@ -71,6 +72,7 @@ require (
 )
 
 require (
+	cloud.google.com/go/cloudtasks v1.13.7
 	github.com/bytedance/gopkg v0.1.3 // indirect
 	github.com/bytedance/sonic v1.14.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.10 // indirect
