@@ -17,13 +17,13 @@ check:
 	gofmt -w ./..
 	goimports -w ./..
 
+test:
+	go test ./... -count=1
+
 build: server.go
 	swag fmt
 	swag init -g server.go --outputTypes yaml,go
 	go build -o $(EXEC_NAME) server.go
-
-test:
-	go test ./...
 
 clean: $(EXEC_NAME)
 	rm $(EXEC_NAME)

@@ -292,11 +292,10 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 		}}},
 	}
 
-	var lookupStages, removeDupStages mongo.Pipeline
-
+	var lookupStages, dedupStages mongo.Pipeline
 	switch endpoint {
 	case "sections":
-		lookupStages, removeDupStages = mongo.Pipeline{}, mongo.Pipeline{}
+		lookupStages, dedupStages = mongo.Pipeline{}, mongo.Pipeline{}
 
 	case "professors":
 		// Lookup the list of professors from the list of sections
@@ -310,15 +309,13 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 		}
 
 		// Remove the duplicate professors
-		removeDupStages = mongo.Pipeline{
-			// Group all duplicate professors by ID, and keep first duplicate in key: "professor"
+		dedupStages = mongo.Pipeline{
 			bson.D{{Key: "$group", Value: bson.D{
 				{Key: "_id", Value: "$_id"},
-				{Key: "professor", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
+				{Key: "professors", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
 			}}},
 
-			// Extract professor out of "professor" key
-			bson.D{{Key: "$replaceWith", Value: "$professor"}},
+			bson.D{{Key: "$replaceWith", Value: "$professors"}},
 		}
 
 	default:
@@ -336,16 +333,15 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
 	}
 
-	middleStages := append(append(lookupStages, replaceStages...), removeDupStages...)
+	middleStages := append(append(lookupStages, replaceStages...), dedupStages...)
 
-	paginationStages := mongo.Pipeline{
+	paginateStages := mongo.Pipeline{
 		// Keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
-		// Paginate the target objects
 		paginate["latter_offset"],
 		paginate["limit"],
 	}
 
-	return append(append(baseStages, middleStages...), paginationStages...)
+	return append(append(baseStages, middleStages...), paginateStages...)
 }

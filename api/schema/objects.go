@@ -136,6 +136,34 @@ type DiscountProgram struct {
 	Discount string             `bson:"discount" json:"discount"`
 }
 
+type DiscountQueryParams struct {
+	Category string `form:"category"`
+	Business string `form:"business"`
+	Address  string `form:"address"`
+	Discount string `form:"discount"`
+	Q        string `form:"q"`
+}
+
+// The configuration for fuzzy searches
+type FuzzySearchConfig struct {
+	Field      string
+	MaxEdits   int
+	BoostScore int
+}
+
+// TrimSpace sanitizes all of fields of the discount query params
+func (params *DiscountQueryParams) TrimSpace() {
+	params.Category = strings.TrimSpace(params.Category)
+	params.Business = strings.TrimSpace(params.Business)
+	params.Address = strings.TrimSpace(params.Address)
+	params.Discount = strings.TrimSpace(params.Discount)
+	params.Q = strings.TrimSpace(params.Q)
+}
+
+func (params *DiscountQueryParams) HasFields() bool {
+	return params.Category != "" || params.Business != "" || params.Address != "" || params.Discount != ""
+}
+
 type Event struct {
 	Id                 primitive.ObjectID `bson:"_id" json:"_id"`
 	Summary            string             `bson:"summary" json:"summary"`
@@ -332,6 +360,23 @@ type Degree struct {
 	CipCode        string `bson:"cip_code" json:"cip_code"`
 	StemDesignated bool   `bson:"stem_designated" json:"stem_designated"`
 	JointProgram   bool   `bson:"joint_program" json:"joint_program"`
+}
+
+type Contact struct {
+	Platform string `json:"platform"`
+	URL      string `json:"url"`
+}
+
+type Club struct {
+	Slug         string              `json:"slug"`
+	ID           string              `json:"id"`
+	Name         string              `json:"name"`
+	Description  string              `json:"description"`
+	Tags         []string            `json:"tags"`
+	ProfileImage string              `json:"profile_image"`
+	UpdatedAt    time.Time           `json:"updated_at"`
+	Officers     []map[string]string `json:"officers"`
+	Contacts     []Contact           `json:"contacts"`
 }
 
 // Type for all API responses
