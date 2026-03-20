@@ -38,7 +38,6 @@ func swagger_controller_placeholder() {}
 //	@in							header
 
 func main() {
-
 	// To avoid unused error on swagger_controller_placeholder
 	swagger_controller_placeholder()
 
@@ -47,10 +46,13 @@ func main() {
 
 	// Establish the connection to the database
 	configs.ConnectDB()
+	configs.ConnectClubsDB()
 
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
+		Dsn:              "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
+		TracesSampleRate: 1.0,
+		EnableTracing:    true,
 	}); err != nil {
 		log.Printf("Sentry initialization failed: %v\n", err)
 	}
@@ -83,6 +85,9 @@ func main() {
 	routes.EventsRoute(router)
 	routes.AstraRoute(router)
 	routes.MazevoRoute(router)
+	routes.CalendarRoute(router)
+	routes.ClubRoute(router)
+	routes.DiscountRoutes(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
@@ -94,7 +99,7 @@ func main() {
 func CORS(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, x-api-key")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, x-api-key, Origin, Content-type, Authorization, sentry-trace, baggage")
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET")
 
 	if c.Request.Method == "OPTIONS" {

@@ -153,10 +153,8 @@ func SectionById(c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
 // @Failure		500								{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]			"A string describing the error"
-func SectionCourseSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sectionCourse("Search", c)
-	}
+func SectionCourseSearch(c *gin.Context) {
+	sectionCourse("Search", c)
 }
 
 // @Id				sectionCourseById
@@ -168,10 +166,8 @@ func SectionCourseSearch() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[schema.Course]	"A course"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
-func SectionCourseById() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sectionCourse("ById", c)
-	}
+func SectionCourseById(c *gin.Context) {
+	sectionCourse("ById", c)
 }
 
 // Get an array of courses from sections, filtered based on the the flag
@@ -186,18 +182,13 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	rawPaginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
+	paginate, err := configs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	paginateMap := make(map[string]int)
-	for k, v := range rawPaginateMap {
-		paginateMap[k] = int(v)
-	}
-
-	pipeline := buildSectionPipeline(sectionQuery, paginateMap, "courses", flag == "ById")
+	pipeline := buildSectionPipeline(sectionQuery, paginate, "courses", flag == "ById")
 	cursor, err := sectionCollection.Aggregate(ctx, pipeline)
 
 	if err != nil {
@@ -211,7 +202,7 @@ func sectionCourse(flag string, c *gin.Context) {
 				respondWithInternalError(c, err)
 				return
 			}
-			respond[*schema.Course](c, http.StatusOK, "success", &course)
+			respond[schema.Course](c, http.StatusOK, "success", course)
 			return
 		}
 		respond[interface{}](c, http.StatusOK, "success", nil)
@@ -222,7 +213,6 @@ func sectionCourse(flag string, c *gin.Context) {
 		}
 		respond[[]schema.Course](c, http.StatusOK, "success", sectionCourses)
 	}
-
 }
 
 // @Id				sectionProfessorSearch
@@ -256,10 +246,8 @@ func sectionCourse(flag string, c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Professor]	"A list of professor"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func SectionProfessorSearch() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sectionProfessor("Search", c)
-	}
+func SectionProfessorSearch(c *gin.Context) {
+	sectionProfessor("Search", c)
 }
 
 // @Id				sectionProfessorById
@@ -271,11 +259,8 @@ func SectionProfessorSearch() gin.HandlerFunc {
 // @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
-
-func SectionProfessorById() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sectionProfessor("ById", c)
-	}
+func SectionProfessorById(c *gin.Context) {
+	sectionProfessor("ById", c)
 }
 
 // Get an array of professors sections,
@@ -285,41 +270,36 @@ func sectionProfessor(flag string, c *gin.Context) {
 
 	var sectionProfessors []schema.Professor
 	var sectionQuery bson.M
-	var err error
-	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
+	sectionQuery, err := getQuery[schema.Section](flag, c)
+	if err != nil {
 		return
 	}
 
-	rawPaginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
+	paginate, err := configs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	paginateMap := make(map[string]int)
-	for k, v := range rawPaginateMap {
-		paginateMap[k] = int(v)
-	}
-
-	pipeline := buildSectionPipeline(sectionQuery, paginateMap, "professors", flag == "ById")
+	pipeline := buildSectionPipeline(sectionQuery, paginate, "professors", flag == "ById")
 	cursor, err := sectionCollection.Aggregate(ctx, pipeline)
 
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
+	// Parse the array of professors
 	if err = cursor.All(ctx, &sectionProfessors); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
 	respond(c, http.StatusOK, "success", sectionProfessors)
-
 }
 
 func buildSectionPipeline(
 	sectionQuery bson.M,
-	paginateMap map[string]int,
+	paginate map[string]bson.D,
 	lookupType string,
 	single bool,
 ) mongo.Pipeline {
@@ -327,15 +307,15 @@ func buildSectionPipeline(
 	field := lookupType
 
 	if lookupType == "professors" {
-		localField = "professor_id"
+		localField = "professors"
 	}
 	pipeline := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: sectionQuery}},
 	}
 	if !single {
 		pipeline = append(pipeline,
-			bson.D{{Key: "$skip", Value: paginateMap["former_offset"]}},
-			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+			paginate["former_offset"],
+			paginate["limit"],
 		)
 	}
 
@@ -357,13 +337,22 @@ func buildSectionPipeline(
 		bson.D{{Key: "$replaceWith", Value: "$" + field}},
 	)
 
+	// remove duplicate courses
+	pipeline = append(pipeline,
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$_id"},
+			{Key: "doc", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
+		}}},
+		bson.D{{Key: "$replaceWith", Value: "$doc"}},
+	)
+
 	// For non-single (search) requests, apply sorting and latter_offset pagination
 	// after unwinding so we return a paginated list of the joined documents.
 	if !single {
 		pipeline = append(pipeline,
 			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-			bson.D{{Key: "$skip", Value: paginateMap["latter_offset"]}},
-			bson.D{{Key: "$limit", Value: paginateMap["limit"]}},
+			paginate["latter_offset"],
+			paginate["limit"],
 		)
 	}
 	return pipeline

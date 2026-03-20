@@ -136,6 +136,34 @@ type DiscountProgram struct {
 	Discount string             `bson:"discount" json:"discount"`
 }
 
+type DiscountQueryParams struct {
+	Category string `form:"category"`
+	Business string `form:"business"`
+	Address  string `form:"address"`
+	Discount string `form:"discount"`
+	Q        string `form:"q"`
+}
+
+// The configuration for fuzzy searches
+type FuzzySearchConfig struct {
+	Field      string
+	MaxEdits   int
+	BoostScore int
+}
+
+// TrimSpace sanitizes all of fields of the discount query params
+func (params *DiscountQueryParams) TrimSpace() {
+	params.Category = strings.TrimSpace(params.Category)
+	params.Business = strings.TrimSpace(params.Business)
+	params.Address = strings.TrimSpace(params.Address)
+	params.Discount = strings.TrimSpace(params.Discount)
+	params.Q = strings.TrimSpace(params.Q)
+}
+
+func (params *DiscountQueryParams) HasFields() bool {
+	return params.Category != "" || params.Business != "" || params.Address != "" || params.Discount != ""
+}
+
 type Event struct {
 	Id                 primitive.ObjectID `bson:"_id" json:"_id"`
 	Summary            string             `bson:"summary" json:"summary"`
@@ -260,9 +288,10 @@ type ObjectInfo struct {
 	MediaLink       string    `bson:"media_link" json:"media_link"`
 	Created         time.Time `bson:"created" json:"created"`
 	Updated         time.Time `bson:"updated" json:"updated"`
+	PublicUrl       string    `bson:"public_url" json:"public_url"`
 }
 
-func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
+func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs, url string) ObjectInfo {
 	// Don't show the bucket prefix externally
 	bucketName, _ := strings.CutPrefix(attrs.Bucket, BUCKET_PREFIX)
 	return ObjectInfo{
@@ -275,6 +304,7 @@ func ObjectInfoFromAttrs(attrs *storage.ObjectAttrs) ObjectInfo {
 		attrs.MediaLink,
 		attrs.Created,
 		attrs.Updated,
+		url,
 	}
 }
 
@@ -283,12 +313,6 @@ type ObjectSignedURLBody struct {
 	Method     string   `json:"method"`     // method to be used with signed URL. For example, PUT
 	Headers    []string `json:"headers"`    // headers for signed URL
 	Expiration string   `json:"expiration"` // timestamp for when the signed URL will expire
-}
-
-// Letters type
-type Letters struct {
-	Date    string `bson:"date" json:"date"`
-	Letters string `bson:"letters" json:"letters"`
 }
 
 // Academic Calendar type
@@ -321,6 +345,38 @@ type AcademicCalendarDropDeadlines struct {
 	WithoutW                  string `bson:"without_w" json:"without_w"`
 	UndergradApprovalRequired string `bson:"undergrad_approval_required" json:"undergrad_approval_required"`
 	GraduateWithdrawlEnds     string `bson:"graduate_withdrawl_ends" json:"graduate_withdrawl_ends"`
+}
+
+type AcademicProgram struct {
+	Title           string   `bson:"name" json:"name"`
+	School          string   `bson:"school" json:"school"`
+	DegreeOptions   []Degree `bson:"degree_options" json:"degree_options"`
+	AreasOfInterest []string `bson:"areas_of_interest" json:"areas_of_interest"`
+}
+
+type Degree struct {
+	Level          string `bson:"level" json:"level"`
+	PublicUrl      string `bson:"public_url" json:"public_url"`
+	CipCode        string `bson:"cip_code" json:"cip_code"`
+	StemDesignated bool   `bson:"stem_designated" json:"stem_designated"`
+	JointProgram   bool   `bson:"joint_program" json:"joint_program"`
+}
+
+type Contact struct {
+	Platform string `json:"platform"`
+	URL      string `json:"url"`
+}
+
+type Club struct {
+	Slug         string              `json:"slug"`
+	ID           string              `json:"id"`
+	Name         string              `json:"name"`
+	Description  string              `json:"description"`
+	Tags         []string            `json:"tags"`
+	ProfileImage string              `json:"profile_image"`
+	UpdatedAt    time.Time           `json:"updated_at"`
+	Officers     []map[string]string `json:"officers"`
+	Contacts     []Contact           `json:"contacts"`
 }
 
 // Type for all API responses

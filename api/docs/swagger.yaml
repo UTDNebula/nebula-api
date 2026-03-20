@@ -32,11 +32,33 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_Club:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.Club'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_Course:
     properties:
       data:
         items:
           $ref: '#/definitions/schema.Course'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-array_schema_DiscountProgram:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.DiscountProgram'
         type: array
       message:
         type: string
@@ -105,6 +127,15 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-schema_Club:
+    properties:
+      data:
+        $ref: '#/definitions/schema.Club'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-schema_Course:
     properties:
       data:
@@ -118,6 +149,15 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/schema.MultiBuildingEvents-schema_AstraEvent'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-schema_MultiBuildingEvents-schema_Event:
+    properties:
+      data:
+        $ref: '#/definitions/schema.MultiBuildingEvents-schema_Event'
       message:
         type: string
       status:
@@ -159,6 +199,15 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-schema_RoomEvents-schema_Event:
+    properties:
+      data:
+        $ref: '#/definitions/schema.RoomEvents-schema_Event'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-schema_RoomEvents-schema_Section:
     properties:
       data:
@@ -181,6 +230,24 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/schema.Section'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-schema_SingleBuildingEvents-schema_AstraEvent:
+    properties:
+      data:
+        $ref: '#/definitions/schema.SingleBuildingEvents-schema_AstraEvent'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-schema_SingleBuildingEvents-schema_Event:
+    properties:
+      data:
+        $ref: '#/definitions/schema.SingleBuildingEvents-schema_Event'
       message:
         type: string
       status:
@@ -325,6 +392,35 @@ definitions:
           $ref: '#/definitions/schema.Room'
         type: array
     type: object
+  schema.Club:
+    properties:
+      contacts:
+        items:
+          $ref: '#/definitions/schema.Contact'
+        type: array
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      officers:
+        items:
+          additionalProperties:
+            type: string
+          type: object
+        type: array
+      profile_image:
+        type: string
+      slug:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      updated_at:
+        type: string
+    type: object
   schema.CollectionRequirement:
     properties:
       name:
@@ -335,6 +431,13 @@ definitions:
       required:
         type: integer
       type:
+        type: string
+    type: object
+  schema.Contact:
+    properties:
+      platform:
+        type: string
+      url:
         type: string
     type: object
   schema.Course:
@@ -393,6 +496,68 @@ definitions:
         type: string
       title:
         type: string
+    type: object
+  schema.DiscountProgram:
+    properties:
+      _id:
+        type: string
+      address:
+        type: string
+      business:
+        type: string
+      category:
+        type: string
+      discount:
+        type: string
+      email:
+        type: string
+      phone:
+        type: string
+      website:
+        type: string
+    type: object
+  schema.Event:
+    properties:
+      _id:
+        type: string
+      contact_email:
+        type: string
+      contact_name:
+        type: string
+      contact_phone_number:
+        type: string
+      department:
+        items:
+          type: string
+        type: array
+      description:
+        type: string
+      end_time:
+        type: string
+      event_tags:
+        items:
+          type: string
+        type: array
+      event_type:
+        items:
+          type: string
+        type: array
+      event_website:
+        type: string
+      location:
+        type: string
+      start_time:
+        type: string
+      summary:
+        type: string
+      target_audience:
+        items:
+          type: string
+        type: array
+      topic:
+        items:
+          type: string
+        type: array
     type: object
   schema.GradeData:
     properties:
@@ -461,6 +626,15 @@ definitions:
       date:
         type: string
     type: object
+  schema.MultiBuildingEvents-schema_Event:
+    properties:
+      buildings:
+        items:
+          $ref: '#/definitions/schema.SingleBuildingEvents-schema_Event'
+        type: array
+      date:
+        type: string
+    type: object
   schema.MultiBuildingEvents-schema_MazevoEvent:
     properties:
       buildings:
@@ -496,6 +670,8 @@ definitions:
       media_link:
         type: string
       name:
+        type: string
+      public_url:
         type: string
       size:
         type: integer
@@ -559,6 +735,15 @@ definitions:
       events:
         items:
           $ref: '#/definitions/schema.AstraEvent'
+        type: array
+      room:
+        type: string
+    type: object
+  schema.RoomEvents-schema_Event:
+    properties:
+      events:
+        items:
+          $ref: '#/definitions/schema.Event'
         type: array
       room:
         type: string
@@ -648,6 +833,8 @@ definitions:
         type: array
       section_number:
         type: string
+      total_students:
+        type: integer
     type: object
   schema.SectionWithTime:
     properties:
@@ -677,6 +864,15 @@ definitions:
       rooms:
         items:
           $ref: '#/definitions/schema.RoomEvents-schema_AstraEvent'
+        type: array
+    type: object
+  schema.SingleBuildingEvents-schema_Event:
+    properties:
+      building:
+        type: string
+      rooms:
+        items:
+          $ref: '#/definitions/schema.RoomEvents-schema_Event'
         type: array
     type: object
   schema.SingleBuildingEvents-schema_MazevoEvent:
@@ -743,6 +939,78 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
+  /astra/{date}/{building}:
+    get:
+      description: '"Returns AstraEvent based on the input date and building name"'
+      operationId: AstraEventsByBuilding
+      parameters:
+      - description: date (ISO format) to retrieve astra events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of event locations
+        in: path
+        name: building
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All sections with meetings on the specified date in the specified
+            building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_SingleBuildingEvents-schema_AstraEvent'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /astra/{date}/{building}/{room}:
+    get:
+      description: '"Returns AstraEvent based on the input date building name and
+        room number"'
+      operationId: AstraEventsByBuildingandRoom
+      parameters:
+      - description: date (ISO format) to retrieve astra events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of event locations
+        in: path
+        name: building
+        required: true
+        type: string
+      - description: room number for event
+        in: path
+        name: room
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All sections with meetings on the specified date in the specified
+            building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_SingleBuildingEvents-schema_AstraEvent'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /autocomplete/dag:
     get:
       description: '"Returns an aggregation of courses for use in generating autocomplete
@@ -762,6 +1030,155 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Other
+  /calendar/{date}:
+    get:
+      description: '"Returns CometCalendarEvent based on the input date"'
+      operationId: CometCalendarEvents
+      parameters:
+      - description: date (ISO format) to retrieve comet calendar events
+        in: path
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All CometCalendarEvents with events on the inputted date
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_Event'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /calendar/{date}/{building}:
+    get:
+      description: '"Returns CometCalendarEvent based on the input date and building
+        name"'
+      operationId: CometCalendarEventsByBuilding
+      parameters:
+      - description: date (ISO format) to retrieve comet calendar events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of event locations
+        in: path
+        name: building
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All events on the specified date in the specified building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_SingleBuildingEvents-schema_Event'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /calendar/{date}/{building}/{room}:
+    get:
+      description: '"Returns CometCalendarEvent based on the input date building name
+        and room number"'
+      operationId: CometCalendarEventsByBuildingAndRoom
+      parameters:
+      - description: date (ISO format) to retrieve comet calendar events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of event locations
+        in: path
+        name: building
+        required: true
+        type: string
+      - description: room number for event
+        in: path
+        name: room
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All events on the specified date in the specified building
+            and room
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_RoomEvents-schema_Event'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /club/{id}:
+    get:
+      description: '"Returns the directory info for given club."'
+      operationId: clubGet
+      parameters:
+      - description: ID of the club to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A club
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /club/search:
+    get:
+      description: '"Returns list of clubs matching the search string"'
+      operationId: clubSearch
+      parameters:
+      - description: Search string
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of matching clubs
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
   /course:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
@@ -1156,6 +1573,49 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Courses
+  /discountPrograms:
+    get:
+      description: '"Returns list of discounts filtered using field-specific keyword
+        searches or full-text search."'
+      operationId: discountPrograms
+      parameters:
+      - description: The discount's category (exact match with suggestions).
+        in: query
+        name: category
+        type: string
+      - description: The discount's business contains this keyword (case-insensitive).
+        in: query
+        name: business
+        type: string
+      - description: The discount's address contains this keyword (case-insensitive).
+        in: query
+        name: address
+        type: string
+      - description: The discount's discount contains this keyword (case-insensitive).
+        in: query
+        name: discount
+        type: string
+      - description: Full-text search, must be used alone.
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of discounts
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_DiscountProgram'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Discounts
   /events/{date}:
     get:
       description: '"Returns all sections with meetings on the specified date"'
