@@ -1902,6 +1902,79 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
+  /mazevo/{date}/{building}:
+    get:
+      description: '"Returns all sections with MazevoEvent meetings on the specified
+        date in the specified building"'
+      operationId: mazevoEventsByBuilding
+      parameters:
+      - description: date (ISO format) to retrieve mazevo events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of the event location
+        in: path
+        name: building
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All MazevoEvents sections with meetings on the specified date
+            in the specified building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /mazevo/{date}/{building}/{room}:
+    get:
+      description: '"Returns all sections with MazevoEvent meetings on the specified
+        date in the specified building and room"'
+      operationId: mazevoEventsByRoom
+      parameters:
+      - description: date (ISO format) to retrieve mazevo events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of the event location
+        in: path
+        name: building
+        required: true
+        type: string
+      - description: room number
+        in: path
+        name: room
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All MazevoEvents sections with meetings on the specified date
+            in the specified building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
   /professor:
     get:
       description: '"Returns paginated list of professors matching the query''s string-typed
@@ -2637,13 +2710,13 @@ paths:
         for pagination details."'
       operationId: sectionCourseSearch
       parameters:
-      - description: The starting position of the current page of sections (e.g. For
-          starting at the 16th section, former_offset=16).
+      - description: The starting position of the current page of professors (e.g.
+          For starting at the 17th professor, former_offset=16).
         in: query
         name: former_offset
         type: number
-      - description: The starting position of the current page of courses (e.g. For
-          starting at the 16th course, latter_offset=16).
+      - description: The starting position of the current page of sections (e.g. For
+          starting at the 17th professor, offset=16).
         in: query
         name: latter_offset
         type: number
