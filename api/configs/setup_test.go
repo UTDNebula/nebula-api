@@ -23,11 +23,11 @@ func TestGetOptionLimit(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err) // Use Fatalf to stop if options is nil
 		}
-		
+
 		if _, exists := query["offset"]; exists {
 			t.Error("Expected 'offset' to be deleted from the query map")
 		}
-		
+
 		// Ensure we compare the same types (int64)
 		if options.Skip == nil || *options.Skip != int64(25) {
 			t.Errorf("Expected Skip to be 25, got %v", options.Skip)

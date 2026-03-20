@@ -3,9 +3,10 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
-	"strings"
+	"sync"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
@@ -17,58 +18,62 @@ import (
 
 var discountCollection *mongo.Collection = configs.GetCollection("discounts")
 
-// discountCategories
-// potentially we may want to add an init function to create this list dynamically
-var discountCategories = []string{
-	"Accommodations",
-	"Auto Services",
-	"Child Care",
-	"Clothes, Flowers and Gifts",
-	"Dining",
-	"Entertainment",
-	"Health and Beauty",
-	"Home and Garden",
-	"Housing",
-	"Miscellaneous",
-	"Pet Care",
-	"Professional Services",
-	"Technology",
-}
+var discountCategories []string
+var discountCategoriesOnce sync.Once
 
 // @Id				discountPrograms
 // @Router			/discountPrograms [get]
 // @Tags			Discounts
-// @Description	"Returns paginated list of discounts matching the query's string-typed key-value pairs. See offset for more details on pagination."
+// @Description	"Returns list of discounts filtered using field-specific keyword searches or full-text search."
 // @Produce		json
-// @Param			offset		query		number											false	"The starting position of the current page of discounts (e.g. For starting at the 17th discount, offset=16)."
-// @Param			category	query		string											false	"The discount's category."
+// @Param			category	query		string											false	"The discount's category (exact match with suggestions)."
 // @Param			business	query		string											false	"The discount's business contains this keyword (case-insensitive)."
 // @Param			address		query		string											false	"The discount's address contains this keyword (case-insensitive)."
 // @Param			discount	query		string											false	"The discount's discount contains this keyword (case-insensitive)."
-// @Param			q			query		string											false	"Full text search of all discount's fields."
+// @Param			q			query		string											false	"Full-text search, must be used alone."
 // @Success		200			{object}	schema.APIResponse[[]schema.DiscountProgram]	"A list of discounts"
 // @Failure		500			{object}	schema.APIResponse[string]						"A string describing the error"
 // @Failure		400			{object}	schema.APIResponse[string]						"A string describing the error"
 func DiscountSearch(c *gin.Context) {
-	query, err := buildDiscountSearchQuery(c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
-		return
-	}
-
+	fetchDiscountCategories()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	optionLimit, err := configs.GetOptionLimit(&query, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
+	var cursor *mongo.Cursor
+	var err error
+
+	var params schema.DiscountQueryParams
+	if err = c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
 		return
 	}
+	params.TrimSpace()
 
-	cursor, err := discountCollection.Find(ctx, query, optionLimit)
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
+	if params.Q != "" {
+		if params.HasFields() {
+			respond(c, http.StatusBadRequest, "Invalid query parameters", "q must be used alone")
+			return
+		}
+
+		pipeline := buildFuzzySearchPipeline(params.Q)
+		cursor, err = discountCollection.Aggregate(ctx, pipeline)
+		if err != nil {
+			respondWithInternalError(c, err)
+			return
+		}
+	} else {
+		// If no fields are specified, it just returns paginated collection
+		discountQuery, err := buildDiscountSearchQuery(params)
+		if err != nil {
+			respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+			return
+		}
+
+		cursor, err = discountCollection.Find(ctx, discountQuery)
+		if err != nil {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 	defer cursor.Close(ctx)
 
@@ -82,52 +87,119 @@ func DiscountSearch(c *gin.Context) {
 
 }
 
-func buildDiscountSearchQuery(c *gin.Context) (bson.M, error) {
-	business, hasBusiness := c.GetQuery("business")
-	address, hasAddress := c.GetQuery("address")
-	discount, hasDiscount := c.GetQuery("discount")
-	category, hasCategory := c.GetQuery("category")
-	q, hasQ := c.GetQuery("q")
+// fetchDiscountCategories aggregates the list of discount categories
+func fetchDiscountCategories() {
+	discountCategoriesOnce.Do(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
+		defer cancel()
 
+		results, err := discountCollection.Distinct(ctx, "category", bson.M{})
+		if err != nil {
+			panic(err)
+		}
+		for _, result := range results {
+			category, ok := result.(string)
+			if !ok {
+				continue // Skip invalid category
+			}
+			discountCategories = append(discountCategories, category)
+		}
+		log.Printf("Available categories: %s.\n", discountCategories)
+	})
+}
+
+// buildDiscountSearchQuery constructs the Mongo query for FIELD-BASED SEARCH.
+// Users only search for 4 main fields of discount
+func buildDiscountSearchQuery(p schema.DiscountQueryParams) (bson.M, error) {
 	query := bson.M{}
 
-	if hasQ {
-		// q may only be used alone
-		if hasBusiness || hasAddress || hasDiscount || hasCategory {
-			return nil, fmt.Errorf("parameter q may not be used with other parameters")
+	// Use regexp.QuoteMeta and option i for insensitive-matching
+	if p.Business != "" {
+		query["business"] = bson.D{
+			{Key: "$regex", Value: regexp.QuoteMeta(p.Business)},
+			{Key: "$options", Value: "i"},
 		}
-		query["$text"] = bson.D{{Key: "$search", Value: q}}
-		return query, nil
 	}
 
-	// we use regexp.QuoteMeta and option i to essentially do string.toLower().contains(key) on fields
-	if hasBusiness {
-		cleanedBusiness := strings.TrimSpace(regexp.QuoteMeta(business))
-		query["business"] = bson.D{{Key: "$regex", Value: cleanedBusiness}, {Key: "$options", Value: "i"}}
-	}
-	if hasAddress {
-		cleanedAddress := strings.TrimSpace(regexp.QuoteMeta(address))
-		query["address"] = bson.D{{Key: "$regex", Value: cleanedAddress}, {Key: "$options", Value: "i"}}
-	}
-	if hasDiscount {
-		cleanedDiscount := strings.TrimSpace(regexp.QuoteMeta(discount))
-		query["discount"] = bson.D{{Key: "$regex", Value: cleanedDiscount}, {Key: "$options", Value: "i"}}
+	if p.Address != "" {
+		query["address"] = bson.D{
+			{Key: "$regex", Value: regexp.QuoteMeta(p.Address)},
+			{Key: "$options", Value: "i"},
+		}
 	}
 
-	if hasCategory {
-		found := false
+	if p.Discount != "" {
+		query["discount"] = bson.D{
+			{Key: "$regex", Value: regexp.QuoteMeta(p.Discount)},
+			{Key: "$options", Value: "i"},
+		}
+	}
+
+	if p.Category != "" {
+		categoryFound := false
 		for _, discountCategory := range discountCategories {
-			//case insensitive equal
-			if strings.EqualFold(discountCategory, category) {
+			if discountCategory == p.Category {
 				query["category"] = discountCategory
-				found = true
+				categoryFound = true
 				break
 			}
 		}
-		if !found {
-			return nil, fmt.Errorf("unknown category %s: valid categories are [%s]", category, strings.Join(discountCategories, ", "))
+		if !categoryFound {
+			return nil, fmt.Errorf("unknown category, valid categories are %s", discountCategories)
 		}
 	}
 
 	return query, nil
+}
+
+// buildFuzzySearchPipeline constructs the pipeline to perform fuzzy search on keyword q.
+func buildFuzzySearchPipeline(q string) mongo.Pipeline {
+	var fuzzySearches bson.A
+	// TODO: Tune the configuration to get better results
+	fuzzyConfigs := []schema.FuzzySearchConfig{
+		{Field: "category", MaxEdits: 2, BoostScore: 5},
+		{Field: "discount", MaxEdits: 2, BoostScore: 3},
+		{Field: "business", MaxEdits: 2, BoostScore: 2},
+		{Field: "address", MaxEdits: 1, BoostScore: 1},
+	}
+
+	for _, config := range fuzzyConfigs {
+		fuzzySearches = append(fuzzySearches, bson.D{
+			{Key: "text", Value: bson.D{
+				{Key: "query", Value: q},
+				{Key: "path", Value: config.Field},
+				{Key: "fuzzy", Value: bson.D{
+					{Key: "maxEdits", Value: config.MaxEdits},
+
+					// Should match first 2 characters
+					{Key: "prefixLength", Value: 2},
+				}},
+				{Key: "score", Value: bson.D{
+					{Key: "boost", Value: bson.D{{Key: "value", Value: config.BoostScore}}},
+				}},
+			}},
+		})
+	}
+
+	return mongo.Pipeline{
+		bson.D{
+			{Key: "$search", Value: bson.D{
+				// Name of the index search of this collection
+				{Key: "index", Value: "discount_searches"},
+				{Key: "compound", Value: bson.D{
+					{Key: "should", Value: fuzzySearches},
+
+					// Should match at least 1 field to prevent super unrelated docs
+					{Key: "minimumShouldMatch", Value: 1},
+				}},
+			}},
+		},
+
+		// Sort the results based on relevancy for determinism
+		bson.D{
+			{Key: "$sort", Value: bson.D{
+				{Key: "score", Value: bson.D{{Key: "$meta", Value: "searchScore"}}},
+			}},
+		},
+	}
 }
