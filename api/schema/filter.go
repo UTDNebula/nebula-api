@@ -24,6 +24,7 @@ var (
 )
 
 // FilterQuery converts URL query parameters into a MongoDB BSON query filter.
+//
 // It validates that each query parameter corresponds to a field in type F that is
 // marked as queryable.
 //
@@ -62,12 +63,12 @@ func FilterQuery[F any](urlValues url.Values) (bson.M, error) {
 
 // loadQueryable returns a map indicating which fields of the given type are queryable.
 func loadQueryable(t reflect.Type) (map[string]bool, error) {
-	if cached, ok := queryableCache.Load(t.String()); ok {
+	if cached, ok := queryableCache.Load(t); ok {
 		//should literally never fail but its best practice to check casts
 		if queryMap, ok := cached.(map[string]bool); ok {
 			return queryMap, nil
 		}
-		queryableCache.Delete(t.String())
+		queryableCache.Delete(t)
 		return nil, fmt.Errorf("queryableCache was corrupted: %s was not of type map[string]bool", t.String())
 	}
 
@@ -76,15 +77,16 @@ func loadQueryable(t reflect.Type) (map[string]bool, error) {
 		return nil, err
 	}
 
-	actual, _ := queryableCache.LoadOrStore(t.String(), queryable)
+	actual, _ := queryableCache.LoadOrStore(t, queryable)
 	if queryMap, ok := actual.(map[string]bool); ok {
 		return queryMap, nil
 	}
-	queryableCache.Delete(t.String())
+	queryableCache.Delete(t)
 	return nil, fmt.Errorf("queryableCache was corrupted: %s was not of type map[string]bool", t.String())
 }
 
 // recBuild recursively traverses a struct type to build a map of queryable fields.
+//
 // It constructs dot-notation paths for nested fields and determines whether each field
 // can be used for filtering based on the "queryable" tag.
 func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visited []reflect.Type) error {
@@ -118,7 +120,7 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 		_, queryable := field.Tag.Lookup("queryable")
 		if fieldType.Kind() == reflect.Struct {
 			if queryable {
-				// do not recurse into time.Time
+				// don't recurse into time.Time
 				if _, ok := baseStruct[fieldType]; ok {
 					queryableMap[fullPath] = true
 				} else if err := recBuild(field.Type, fullPath, queryableMap, newVisited); err != nil {
@@ -136,6 +138,9 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 
 // willCreateLoop determines if adding `value` to the `visited` list would create
 // a loop.
+//
+// Pointer types are allowed to recur once, i.e., only considered a loop when
+// the same pointer type appears twice in a row.
 func willCreateLoop(visited []reflect.Type, value reflect.Type) bool {
 	if value.Kind() != reflect.Ptr {
 		return false

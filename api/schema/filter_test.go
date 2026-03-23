@@ -4,6 +4,7 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,6 +14,11 @@ type _normal struct {
 	Name   string `bson:"name" json:"name" queryable:""`
 	Number int    `bson:"number" json:"number" queryable:""`
 	Hidden bool   `bson:"hidden" json:"hidden"`
+}
+
+type _normalWithBaseStruct struct {
+	Name string    `bson:"name" json:"name" queryable:""`
+	Time time.Time `bson:"time" json:"time" queryable:""`
 }
 
 type _missingJson struct {
@@ -112,6 +118,17 @@ func TestFilterQuery(t *testing.T) {
 				"number": "0",
 			},
 		},
+		"Normal with Base Struct": {
+			Function: FilterQuery[_normalWithBaseStruct],
+			UrlQuery: map[string][]string{
+				"name": {"bob"},
+				"time": {"2020-01-01T00:00:00Z"},
+			},
+			Expected: bson.M{
+				"name": "bob",
+				"time": "2020-01-01T00:00:00Z",
+			},
+		},
 		"Nested": {
 			Function: FilterQuery[_nested],
 			UrlQuery: map[string][]string{
@@ -155,12 +172,10 @@ func TestFilterQuery(t *testing.T) {
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			result, err := tc.Function(tc.UrlQuery)
-
 			if tc.Fail {
 				if err == nil {
-					t.Fatal("expected error but got nil")
+					t.Errorf("expected error but got nil")
 				}
-
 			} else {
 				if err != nil {
 					t.Errorf("unexpected error %v ", err)
@@ -169,12 +184,6 @@ func TestFilterQuery(t *testing.T) {
 				if diff := cmp.Diff(tc.Expected, result); diff != "" {
 					t.Errorf("Failed (-expected +got)\n %s", diff)
 				}
-			}
-
-			if tc.Fail && err == nil {
-				t.Errorf("expected error, got nil")
-			} else if !tc.Fail && err != nil {
-				t.Errorf("unexpected error %v ", err)
 			}
 		})
 	}
@@ -329,17 +338,16 @@ func TestLoadQueryable(t *testing.T) {
 
 	t.Run("Cache Corruption", func(t *testing.T) {
 		rType := reflect.TypeFor[_normal]()
-		typeName := rType.String()
 
 		t.Run("Corrupted on Load", func(t *testing.T) {
-			queryableCache.Store(typeName, 14)
+			queryableCache.Store(rType, 14)
 
 			_, err := loadQueryable(rType)
 			if err == nil {
 				t.Fatal("expected error when cache contains wrong type")
 			}
 
-			if _, exists := queryableCache.Load(typeName); exists {
+			if _, exists := queryableCache.Load(rType); exists {
 				t.Error("corrupted cache entry should have been deleted")
 			}
 
@@ -349,13 +357,13 @@ func TestLoadQueryable(t *testing.T) {
 		})
 
 		t.Run("Recovery After Corruption", func(t *testing.T) {
-			queryableCache.Store(typeName, "wrong type")
+			queryableCache.Store(rType, "wrong type")
 
 			if _, err := loadQueryable(reflect.TypeFor[_normal]()); err == nil {
 				t.Fatal("expected corruption error")
 			}
 
-			// first will load, second will be cached
+			// the first will load, the second will be cached
 			for range 2 {
 				if _, err := loadQueryable(reflect.TypeFor[_normal]()); err != nil {
 					t.Fatalf("should recover after corruption: %v", err)
