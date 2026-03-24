@@ -62,7 +62,7 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 		}
 	case "Professor":
 		trendsCollection = configs.GetCollection("trends_prof_sections")
-		trendsQuery, err = schema.FilterQuery[schema.Professor](c)
+		trendsQuery, err = schema.FilterQuery[schema.Professor](c.Request.URL.Query())
 		if err != nil {
 			return
 		}
