@@ -23,7 +23,7 @@ import (
 // @Failure		500	{object}	schema.APIResponse[string]		"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]		"A string describing the error"
 func ClubDirectoryInfo(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
@@ -88,7 +88,7 @@ func ClubDirectoryInfo(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
 func ClubSearch(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()

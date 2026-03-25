@@ -165,7 +165,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 	var err error
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	//	@TODO:	Recommend forcing using first_name and last_name to ensure single professors per query.
