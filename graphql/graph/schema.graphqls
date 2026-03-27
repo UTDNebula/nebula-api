@@ -131,7 +131,31 @@ input CometCalendarFilter {
 	date: String
 	buildings: [CometCalendarBuildingInput]
 }
+
 input CometCalendarBuildingInput {
 	building: String
 	rooms: [CometCalendarRoomInput]
+}
+
+input CometCalendarRoomInput {
+	room: String
+	events: [EventInput]
+}
+
+input EventInput {
+	_id: ID
+	summary: String
+	location: String
+	start_time: DateTime
+	end_time: DateTime
+	description: String
+	event_type: [String]
+	target_audience: [String]
+	topic: [String]
+	event_tags: [String]
+	event_website: String
+	department: [String]
+	contact_name: String
+	contact_email: String
+	contact_phone_number: String
 }
