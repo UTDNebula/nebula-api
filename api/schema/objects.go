@@ -13,7 +13,7 @@ type Course struct {
 	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
 	Course_number            string                 `bson:"course_number" json:"course_number" queryable:""`
 	Title                    string                 `bson:"title" json:"title" queryable:""`
-	Description              string                 `bson:"description" json:"description"`
+	Description              string                 `bson:"description" json:"description" queryable:""`
 	Enrollment_reqs          string                 `bson:"enrollment_reqs" json:"enrollment_reqs"`
 	School                   string                 `bson:"school" json:"school" queryable:""`
 	Credit_hours             string                 `bson:"credit_hours" json:"credit_hours" queryable:""`
@@ -44,32 +44,32 @@ type BasicCourse struct {
 }
 
 type AcademicSession struct {
-	Name       string    `bson:"name" json:"name"`
-	Start_date time.Time `bson:"start_date" json:"start_date"`
-	End_date   time.Time `bson:"end_date" json:"end_date"`
+	Name       string    `bson:"name" json:"name" queryable:""`
+	Start_date time.Time `bson:"start_date" json:"start_date" queryable:""`
+	End_date   time.Time `bson:"end_date" json:"end_date" queryable:""`
 }
 
 type Assistant struct {
-	First_name string `bson:"first_name" json:"first_name"`
-	Last_name  string `bson:"last_name" json:"last_name"`
-	Role       string `bson:"role" json:"role"`
-	Email      string `bson:"email" json:"email"`
+	First_name string `bson:"first_name" json:"first_name" queryable:""`
+	Last_name  string `bson:"last_name" json:"last_name" queryable:""`
+	Role       string `bson:"role" json:"role" queryable:""`
+	Email      string `bson:"email" json:"email" queryable:""`
 }
 
 type Location struct {
-	Building string `bson:"building" json:"building"`
-	Room     string `bson:"room" json:"room"`
-	Map_uri  string `bson:"map_uri" json:"map_uri"`
+	Building string `bson:"building" json:"building" queryable:""`
+	Room     string `bson:"room" json:"room" queryable:""`
+	Map_uri  string `bson:"map_uri" json:"map_uri" queryable:""`
 }
 
 type Meeting struct {
-	Start_date   time.Time `bson:"start_date" json:"start_date"`
-	End_date     time.Time `bson:"end_date" json:"end_date"`
-	Meeting_days []string  `bson:"meeting_days" json:"meeting_days"`
-	Start_time   string    `bson:"start_time" json:"start_time"`
-	End_time     string    `bson:"end_time" json:"end_time"`
-	Modality     string    `bson:"modality" json:"modality"`
-	Location     Location  `bson:"location" json:"location"`
+	Start_date   time.Time `bson:"start_date" json:"start_date" queryable:""`
+	End_date     time.Time `bson:"end_date" json:"end_date" queryable:""`
+	Meeting_days []string  `bson:"meeting_days" json:"meeting_days" queryable:""`
+	Start_time   string    `bson:"start_time" json:"start_time" queryable:""`
+	End_time     string    `bson:"end_time" json:"end_time" queryable:""`
+	Modality     string    `bson:"modality" json:"modality" queryable:""`
+	Location     Location  `bson:"location" json:"location" queryable:""`
 }
 
 type Section struct {
@@ -77,14 +77,14 @@ type Section struct {
 	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
 	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" queryable:""`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
-	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
+	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session" queryable:""`
 	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
-	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants"`
+	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants" queryable:""`
 	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" queryable:""`
 	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" queryable:""`
-	Meetings              []Meeting              `bson:"meetings" json:"meetings"`
-	Core_flags            []string               `bson:"core_flags" json:"core_flags"`
-	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri"`
+	Meetings              []Meeting              `bson:"meetings" json:"meetings" queryable:""`
+	Core_flags            []string               `bson:"core_flags" json:"core_flags" queryable:""`
+	Syllabus_uri          string                 `bson:"syllabus_uri" json:"syllabus_uri" queryable:""`
 	Grade_distribution    []int                  `bson:"grade_distribution" json:"grade_distribution"`
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
 	Professor_details     *[]BasicProfessor      `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
@@ -98,10 +98,10 @@ type Professor struct {
 	Titles       []string             `bson:"titles" json:"titles" queryable:""`
 	Email        string               `bson:"email" json:"email" queryable:""`
 	Phone_number string               `bson:"phone_number" json:"phone_number" queryable:""`
-	Office       Location             `bson:"office" json:"office"`
-	Profile_uri  string               `bson:"profile_uri" json:"profile_uri"`
-	Image_uri    string               `bson:"image_uri" json:"image_uri"`
-	Office_hours []Meeting            `bson:"office_hours" json:"office_hours"`
+	Office       Location             `bson:"office" json:"office" queryable:""`
+	Profile_uri  string               `bson:"profile_uri" json:"profile_uri" queryable:""`
+	Image_uri    string               `bson:"image_uri" json:"image_uri" queryable:""`
+	Office_hours []Meeting            `bson:"office_hours" json:"office_hours" queryable:""`
 	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
 }
 
@@ -134,6 +134,34 @@ type DiscountProgram struct {
 	Email    string             `bson:"email" json:"email"`
 	Website  string             `bson:"website" json:"website"`
 	Discount string             `bson:"discount" json:"discount"`
+}
+
+type DiscountQueryParams struct {
+	Category string `form:"category"`
+	Business string `form:"business"`
+	Address  string `form:"address"`
+	Discount string `form:"discount"`
+	Q        string `form:"q"`
+}
+
+// The configuration for fuzzy searches
+type FuzzySearchConfig struct {
+	Field      string
+	MaxEdits   int
+	BoostScore int
+}
+
+// TrimSpace sanitizes all of fields of the discount query params
+func (params *DiscountQueryParams) TrimSpace() {
+	params.Category = strings.TrimSpace(params.Category)
+	params.Business = strings.TrimSpace(params.Business)
+	params.Address = strings.TrimSpace(params.Address)
+	params.Discount = strings.TrimSpace(params.Discount)
+	params.Q = strings.TrimSpace(params.Q)
+}
+
+func (params *DiscountQueryParams) HasFields() bool {
+	return params.Category != "" || params.Business != "" || params.Address != "" || params.Discount != ""
 }
 
 type Event struct {
@@ -319,10 +347,10 @@ type AcademicCalendarDropDeadlines struct {
 	GraduateWithdrawlEnds     string `bson:"graduate_withdrawl_ends" json:"graduate_withdrawl_ends"`
 }
 
-type Program struct {
+type AcademicProgram struct {
 	Title           string   `bson:"name" json:"name"`
 	School          string   `bson:"school" json:"school"`
-	DegreeOptions   []Degree `bson:"degree_levels" json:"degree_levels"`
+	DegreeOptions   []Degree `bson:"degree_options" json:"degree_options"`
 	AreasOfInterest []string `bson:"areas_of_interest" json:"areas_of_interest"`
 }
 
@@ -331,6 +359,24 @@ type Degree struct {
 	PublicUrl      string `bson:"public_url" json:"public_url"`
 	CipCode        string `bson:"cip_code" json:"cip_code"`
 	StemDesignated bool   `bson:"stem_designated" json:"stem_designated"`
+	JointProgram   bool   `bson:"joint_program" json:"joint_program"`
+}
+
+type Contact struct {
+	Platform string `json:"platform"`
+	URL      string `json:"url"`
+}
+
+type Club struct {
+	Slug         string              `json:"slug"`
+	ID           string              `json:"id"`
+	Name         string              `json:"name"`
+	Description  string              `json:"description"`
+	Tags         []string            `json:"tags"`
+	ProfileImage string              `json:"profile_image"`
+	UpdatedAt    time.Time           `json:"updated_at"`
+	Officers     []map[string]string `json:"officers"`
+	Contacts     []Contact           `json:"contacts"`
 }
 
 // Type for all API responses

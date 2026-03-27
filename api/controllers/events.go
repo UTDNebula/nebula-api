@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings" // adding missing import
 	"time"
 
 	"github.com/UTDNebula/nebula-api/api/configs"
@@ -62,14 +63,13 @@ func Events(c *gin.Context) {
 // @Failure		404			{object}	schema.APIResponse[string]												"A string describing the error"
 func EventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	date := c.Param("date")
 	building := c.Param("building")
 
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 	var eventsByBuilding schema.SingleBuildingEvents[schema.SectionWithTime]
-
-	defer cancel()
 
 	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
@@ -83,20 +83,28 @@ func EventsByBuilding(c *gin.Context) {
 		}
 	}
 
-	// filter for the specified building
+	// case insensitive filter after data is retrieved
 	for _, b := range events.Buildings {
-		if b.Building == building {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
 			eventsByBuilding = b
 			break
 		}
 	}
 
-	// If no building is found, return an error
+	// if no building is found, return an err with suggestion
 	if eventsByBuilding.Building == "" {
-		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
+		maxBuildings := min(len(events.Buildings), 10)
+		var available []string
+		for i := range maxBuildings {
+			available = append(available, strings.TrimSpace(events.Buildings[i].Building))
+		}
+		if len(events.Buildings) > maxBuildings {
+			available = append(available, "(and more)")
+		}
+
+		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
-
 	respond(c, http.StatusOK, "success", eventsByBuilding)
 }
 
@@ -116,39 +124,55 @@ func EventsByRoom(c *gin.Context) {
 	defer cancel()
 
 	date := c.Param("date")
-	building := c.Param("building")
-	room := c.Param("room")
+	building := strings.TrimSpace(c.Param("building"))
+	room := strings.TrimSpace(c.Param("room"))
 
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 	var eventsByRoom schema.RoomEvents[schema.SectionWithTime]
 
-	// find and parse matching date
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			events.Date = date
-			events.Buildings = []schema.SingleBuildingEvents[schema.SectionWithTime]{}
-		} else {
-			respondWithInternalError(c, err)
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
+		}
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// 3. Updated to use Case-Insensitive matching for Building
+	var matchedBuilding *schema.SingleBuildingEvents[schema.SectionWithTime]
+	for _, b := range events.Buildings {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
+			matchedBuilding = &b
+			break
 		}
 	}
 
-	// filter for the specified building and room
-	for _, b := range events.Buildings {
-		if b.Building == building {
-			for _, r := range b.Rooms {
-				if r.Room == room {
-					eventsByRoom = r
-					break
-				}
-			}
+	if matchedBuilding == nil {
+		respond(c, http.StatusNotFound, "error", "Building not found")
+		return
+	}
+
+	// 4. Updated to use Case-Insensitive matching for Room
+	for _, r := range matchedBuilding.Rooms {
+		if strings.EqualFold(strings.TrimSpace(r.Room), room) {
+			eventsByRoom = r
 			break
 		}
 	}
 
 	if eventsByRoom.Room == "" {
-		respond(c, http.StatusNotFound, "error", "No events found for the specified building and room")
+		maxRooms := min(len(matchedBuilding.Rooms), 20)
+		var available []string
+		for i := range maxRooms {
+			available = append(available, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
+		}
+		if len(matchedBuilding.Rooms) > maxRooms {
+			available = append(available, "(and more)")
+		}
+
+		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
 		return
 	}
 
@@ -171,8 +195,8 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	defer cancel()
 
 	date := c.Param("date")
-	building := c.Param("building")
-	room := c.Param("room")
+	building := strings.TrimSpace(c.Param("building"))
+	room := strings.TrimSpace(c.Param("room"))
 
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 	var sectionsByRoom schema.RoomEvents[schema.Section]
@@ -181,20 +205,21 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			events.Date = date
-			events.Buildings = []schema.SingleBuildingEvents[schema.SectionWithTime]{}
-		} else {
-			respondWithInternalError(c, err)
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
+		respondWithInternalError(c, err)
+		return
 	}
 
-	// Extract section IDs for the specified building and room
+	// Extract section IDs for the specified building and room using case-insensitive matching
 	var sectionIDs []primitive.ObjectID
+	buildingFound := false
 	for _, b := range events.Buildings {
-		if b.Building == building {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
+			buildingFound = true
 			for _, r := range b.Rooms {
-				if r.Room == room {
+				if strings.EqualFold(strings.TrimSpace(r.Room), room) {
 					sectionsByRoom.Room = r.Room
 					for _, event := range r.Events {
 						sectionIDs = append(sectionIDs, event.Section)
@@ -206,12 +231,17 @@ func SectionsByRoomDetailed(c *gin.Context) {
 		}
 	}
 
+	if !buildingFound {
+		respond(c, http.StatusNotFound, "error", "Building not found")
+		return
+	}
+
 	if len(sectionIDs) == 0 {
 		respond(c, http.StatusNotFound, "error", "No sections found for the specified building and room")
 		return
 	}
 
-	// Fetch full section objects from the sections collection
+	// Fetch full section objects from the sections collection using the extracted IDs
 	cursor, err := sectionCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
 	if err != nil {
 		respondWithInternalError(c, err)
