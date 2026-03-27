@@ -5,9 +5,9 @@ name: Go
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "graphql-v2" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "graphql-v2" ]
   workflow_dispatch:
 
 jobs:
