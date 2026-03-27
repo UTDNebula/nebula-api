@@ -1037,6 +1037,112 @@ const docTemplate = `{
                 }
             }
         },
+        "/email/queue": {
+            "post": {
+                "description": "\"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects.\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "QueueEmail",
+                "parameters": [
+                    {
+                        "description": "Email Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.EmailRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal email queue key",
+                        "name": "x-email-queue-key",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email Request Body with Queued Task Name",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_EmailRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/email/send": {
+            "post": {
+                "description": "\"Send an email via SMTP. This route is restricted to only Nebula Labs internal Projects.\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "sendEmail",
+                "parameters": [
+                    {
+                        "description": "Email Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.EmailRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal email send key",
+                        "name": "x-email-send-key",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email Request Body",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_EmailRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/events/{date}": {
             "get": {
                 "description": "\"Returns all sections with meetings on the specified date\"",
@@ -3392,6 +3498,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-schema_EmailRequest": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.EmailRequest"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-schema_MultiBuildingEvents-schema_AstraEvent": {
             "type": "object",
             "properties": {
@@ -3961,6 +4081,58 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "website": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.EmailAttachment": {
+            "type": "object",
+            "required": [
+                "data",
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.EmailRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "subject",
+                "to"
+            ],
+            "properties": {
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.EmailAttachment"
+                    }
+                },
+                "body": {
+                    "type": "string"
+                },
+                "embeds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.EmailAttachment"
+                    }
+                },
+                "from": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "to": {
                     "type": "string"
                 }
             }
