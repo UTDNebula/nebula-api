@@ -65,7 +65,7 @@ func SectionSearch(c *gin.Context) {
 
 	optionLimit, err := configs.GetOptionLimit(&query, c)
 	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
+		respond[string](c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
 
@@ -83,7 +83,7 @@ func SectionSearch(c *gin.Context) {
 	}
 
 	// return result
-	respond(c, http.StatusOK, "success", sections)
+	respond[[]schema.Section](c, http.StatusOK, "success", sections)
 }
 
 // @Id				sectionById
@@ -119,7 +119,7 @@ func SectionById(c *gin.Context) {
 	}
 
 	// return result
-	respond(c, http.StatusOK, "success", section)
+	respond[schema.Section](c, http.StatusOK, "success", section)
 }
 
 // @Id				sectionCourseSearch
@@ -188,77 +188,31 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	// pipeline of query an array of courses from filtered sections
-	sectionCoursePipeline := mongo.Pipeline{
-		// filter the sections
-		bson.D{{Key: "$match", Value: sectionQuery}},
+	pipeline := buildSectionPipeline(sectionQuery, paginate, "courses", flag == "ById")
+	cursor, err := sectionCollection.Aggregate(ctx, pipeline)
 
-		// paginate the sections before pulling courses from those sections
-		paginate["former_offset"],
-		paginate["limit"],
-
-		// lookup the course referenced by sections from the course collection
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "course_reference"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "course_reference"},
-			}},
-		},
-
-		// project to remove every other fields except for courses
-		bson.D{
-			{Key: "$project", Value: bson.D{
-				{Key: "courses", Value: "$course_reference"},
-			}},
-		},
-
-		// unwind the courses
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$courses"},
-				{Key: "preserveNullAndEmptyArrays", Value: false},
-			}},
-		},
-
-		// replace the combinations of id and course with courses entirely
-		bson.D{{Key: "$replaceWith", Value: "$courses"}},
-
-		// remove duplicate courses
-		bson.D{{Key: "$group", Value: bson.D{
-			{Key: "_id", Value: "$_id"},
-			{Key: "course", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
-		}}},
-		bson.D{{Key: "$replaceWith", Value: "$course"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses
-		paginate["latter_offset"],
-		paginate["limit"],
-	}
-
-	cursor, err := sectionCollection.Aggregate(ctx, sectionCoursePipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-	// Parse the array of courses
-	if err = cursor.All(ctx, &sectionCourses); err != nil {
-		respondWithInternalError(c, err)
-		return
+	if flag == "ById" {
+		var course schema.Course
+		if cursor.Next(ctx) {
+			if err := cursor.Decode(&course); err != nil {
+				respondWithInternalError(c, err)
+				return
+			}
+			respond[schema.Course](c, http.StatusOK, "success", course)
+			return
+		}
+		respond[interface{}](c, http.StatusOK, "success", nil)
+	} else {
+		if err := cursor.All(ctx, &sectionCourses); err != nil {
+			respondWithInternalError(c, err)
+			return
+		}
+		respond[[]schema.Course](c, http.StatusOK, "success", sectionCourses)
 	}
-
-	switch flag {
-	case "Search":
-		respond(c, http.StatusOK, "success", sectionCourses)
-	case "ById":
-		// Section is only referenced by only one course, so return a single course
-		respond(c, http.StatusOK, "success", sectionCourses[0])
-	}
-
 }
 
 // @Id				sectionProfessorSearch
@@ -309,7 +263,7 @@ func SectionProfessorById(c *gin.Context) {
 	sectionProfessor("ById", c)
 }
 
-// Get an array of professors from sections,
+// Get an array of professors sections,
 func sectionProfessor(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
@@ -327,69 +281,79 @@ func sectionProfessor(flag string, c *gin.Context) {
 		return
 	}
 
-	// pipeline to query an array of professors from filtered sections
-	sectionProfessorPipeline := mongo.Pipeline{
-		// filter the sections
-		bson.D{{Key: "$match", Value: sectionQuery}},
+	pipeline := buildSectionPipeline(sectionQuery, paginate, "professors", flag == "ById")
+	cursor, err := sectionCollection.Aggregate(ctx, pipeline)
 
-		// paginate the sections before pulling courses from those sections
-		paginate["former_offset"],
-		paginate["limit"],
-
-		// lookup the professors referenced by sections from the course collection
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "professors"},
-				{Key: "localField", Value: "professors"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "professors"},
-			}},
-		},
-
-		// project to remove every other fields except for professors
-		bson.D{
-			{Key: "$project", Value: bson.D{
-				{Key: "professors", Value: "$professors"},
-			}},
-		},
-
-		// unwind the professors
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$professors"},
-				{Key: "preserveNullAndEmptyArrays", Value: false},
-			}},
-		},
-
-		// replace the combinations of id and course with courses entirely
-		bson.D{{Key: "$replaceWith", Value: "$professors"}},
-
-		// remove duplicate professors
-		bson.D{{Key: "$group", Value: bson.D{
-			{Key: "_id", Value: "$_id"},
-			{Key: "professor", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
-		}}},
-		bson.D{{Key: "$replaceWith", Value: "$professor"}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses
-		paginate["latter_offset"],
-		paginate["limit"],
-	}
-
-	cursor, err := sectionCollection.Aggregate(ctx, sectionProfessorPipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-	// Parse the array of courses
+	// Parse the array of professors
 	if err = cursor.All(ctx, &sectionProfessors); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
 	respond(c, http.StatusOK, "success", sectionProfessors)
+}
 
+func buildSectionPipeline(
+	sectionQuery bson.M,
+	paginate map[string]bson.D,
+	lookupType string,
+	single bool,
+) mongo.Pipeline {
+	localField := "course_reference"
+	field := lookupType
+
+	if lookupType == "professors" {
+		localField = "professors"
+	}
+	pipeline := mongo.Pipeline{
+		bson.D{{Key: "$match", Value: sectionQuery}},
+	}
+	if !single {
+		pipeline = append(pipeline,
+			paginate["former_offset"],
+			paginate["limit"],
+		)
+	}
+
+	pipeline = append(pipeline,
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: lookupType},
+			{Key: "localField", Value: localField},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: field},
+		}}},
+		bson.D{{Key: "$project", Value: bson.D{{Key: field, Value: "$" + field}}}},
+	)
+	// unwind/replaceWith so the aggregation yields the joined document itself.
+	pipeline = append(pipeline,
+		bson.D{{Key: "$unwind", Value: bson.D{
+			{Key: "path", Value: "$" + field},
+			{Key: "preserveNullAndEmptyArrays", Value: false},
+		}}},
+		bson.D{{Key: "$replaceWith", Value: "$" + field}},
+	)
+
+	// remove duplicate courses
+	pipeline = append(pipeline,
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$_id"},
+			{Key: "doc", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
+		}}},
+		bson.D{{Key: "$replaceWith", Value: "$doc"}},
+	)
+
+	// For non-single (search) requests, apply sorting and latter_offset pagination
+	// after unwinding so we return a paginated list of the joined documents.
+	if !single {
+		pipeline = append(pipeline,
+			bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+			paginate["latter_offset"],
+			paginate["limit"],
+		)
+	}
+	return pipeline
 }
