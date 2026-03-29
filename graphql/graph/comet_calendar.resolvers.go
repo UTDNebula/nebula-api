@@ -25,8 +25,7 @@ func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometC
 	defer cancel()
 
 	// Build query from filter explicitly
-	query := bson.M{}
-	query = buildCometCalendarQuery(filter)
+	query := buildCometCalendarQuery(filter)
 
 	// Pagination
 	skip := int64(0)
