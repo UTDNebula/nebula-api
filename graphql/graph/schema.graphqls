@@ -64,22 +64,83 @@ input CourseFilter {
 	catalog_year: String @goTag(key: "bson", value: "catalog_year,omitempty")
 }
 
+# Section needs separate of concerns
+type AcademicSession {
+	name: String!
+	start_date: DateTime!
+	end_date: DateTime!
+}
+
+type Assistant {
+	first_name: String!
+	last_name: String!
+	role: String!
+	email: String!
+}
+
+type Location {
+	building: String!
+	room: String!
+	map_uri: String!
+}
+
+type Meeting {
+	start_date: DateTime!
+	end_date: DateTime!
+	meeting_days: [String!]!
+	start_time: String!
+	end_time: String!
+	modality: String!
+	location: Location!
+}
+
+type Section {
+	_id: ID!
+	section_number: String!
+	course_reference: ID!
+	section_corequisites: CollectionRequirement
+	academic_session: AcademicSession!
+	professors: [ID!]!
+	teaching_assistants: [Assistant!]!
+	internal_class_number: String!
+	instruction_mode: String!
+	meetings: [Meeting!]!
+	core_flags: [String!]!
+	syllabus_uri: String!
+	grade_distribution: [Int!]
+	attributes: Any
+}
+
+input SectionFilter {
+	section_number: String @goTag(key: "bson", value: "section_number,omitempty")
+	course_reference: ID @goTag(key: "bson", value: "course_reference,omitempty")
+	internal_class_number: String @goTag(key: "bson", value: "internal_class_number,omitempty")
+	instruction_mode: String @goTag(key: "bson", value: "instruction_mode,omitempty")
+	syllabus_uri: String @goTag(key: "bson", value: "syllabus_uri,omitempty")
+}
+
 # Building rooms don't need seprate of concerns
 type Room {
-	room: String! @goTag(key: "bson", value: "room")
+	room: String!
+	@goTag(key: "bson", value: "room")
 	capacity: Int! @goTag(key: "bson", value: "capacity")
 }
 
 type BuildingRooms {
-	building: String! @goTag(key: "bson", value: "building")
+	building: String!
+	@goTag(key: "bson", value: "building")
 	rooms: [Room!] @goTag(key: "bson", value: "rooms")
 	lat: Float64! @goTag(key: "bson", value: "lat")
-	lon: Float64! @goTag(key: "bson", value: "lon")
+	lon: Float64!
+	@goTag(key: "bson", value: "lon")
 }
 
 type Query {
 	courses(filter: CourseFilter, offset: Int = 0): [Course!]
 	course(id: ID!): Course
+
+	sections(filter: SectionFilter, offset: Int = 0): [Section!]
+	section(id: ID!): Section
 
 	rooms: [BuildingRooms!]
 
@@ -92,38 +153,45 @@ type Query {
 }
 
 type Event {
-	_id: ID! @goTag(key: "bson", value: "_id")
+	_id: ID!
+	@goTag(key: "bson", value: "_id")
 	summary: String! @goTag(key: "bson", value: "summary")
 	location: String! @goTag(key: "bson", value: "location")
 	start_time: DateTime! @goTag(key: "bson", value: "start_time")
-	end_time: DateTime! @goTag(key: "bson", value: "end_time")
+	end_time: DateTime!
+	@goTag(key: "bson", value: "end_time")
 	description: String! @goTag(key: "bson", value: "description")
 	event_type: [String!]! @goTag(key: "bson", value: "event_type")
 	target_audience: [String!]! @goTag(key: "bson", value: "target_audience")
-	topic: [String!]! @goTag(key: "bson", value: "topic")
+	topic: [String!]!
+	@goTag(key: "bson", value: "topic")
 	event_tags: [String!]! @goTag(key: "bson", value: "event_tags")
 	event_website: String! @goTag(key: "bson", value: "event_website")
 	department: [String!]! @goTag(key: "bson", value: "department")
-	contact_name: String! @goTag(key: "bson", value: "contact_name")
+	contact_name: String!
+	@goTag(key: "bson", value: "contact_name")
 	contact_email: String! @goTag(key: "bson", value: "contact_email")
 	contact_phone_number: String!
 		@goTag(key: "bson", value: "contact_phone_number")
 }
 
 type CometCalendarRoom {
-	room: String! @goTag(key: "bson", value: "room")
+	room: String!
+	@goTag(key: "bson", value: "room")
 	events: [Event!]! @goTag(key: "bson", value: "events")
 }
 
 type CometCalendarBuilding {
 	building: String! @goTag(key: "bson", value: "building")
-	rooms: [CometCalendarRoom!]! @goTag(key: "bson", value: "rooms")
+	rooms: [CometCalendarRoom!]!
+	@goTag(key: "bson", value: "rooms")
 }
 
 type CometCalendar {
 	_id: ID! @goTag(key: "bson", value: "_id")
 	date: String! @goTag(key: "bson", value: "date")
-	buildings: [CometCalendarBuilding!]! @goTag(key: "bson", value: "buildings")
+	buildings: [CometCalendarBuilding!]!
+	@goTag(key: "bson", value: "buildings")
 }
 
 input CometCalendarFilter {
