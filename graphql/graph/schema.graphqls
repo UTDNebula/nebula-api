@@ -159,3 +159,49 @@ input EventInput {
 	contact_email: String
 	contact_phone_number: String
 }
+
+type AcademicSession {
+	name: String!
+	start_date: DateTime!
+	end_date: DateTime!
+}
+
+type Assistant {
+	first_name: String!
+	last_name: String!
+	role: String!
+	email: String!
+}
+
+type Location {
+	building: String!
+	room: String!
+	map_uri: String!
+}
+
+type Meeting {
+	start_date: DateTime!
+	end_date: DateTime!
+	meeting_days: [String!]!
+	start_time: String!
+	end_time: String!
+	modality: String!
+	location: Location!
+}
+
+type Section {
+	_id: ID!
+	section_number: String!
+	course_reference: ID!
+	section_corequisites: CollectionRequirement
+	academic_session: AcademicSession!
+	professors: [ID!]!
+	teaching_assistants: [Assistant!]!
+	internal_class_number: String!
+	instruction_mode: String!
+	meetings: [Meeting!]!
+	core_flags: [String!]!
+	syllabus_uri: String!
+	grade_distribution: [Int!]
+	attributes: Any
+}
