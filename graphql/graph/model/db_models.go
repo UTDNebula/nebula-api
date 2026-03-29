@@ -1,7 +1,5 @@
 package model
 
-import "time"
-
 /*
 These are the models that interact with the MongoDB
 */
@@ -78,102 +76,5 @@ func TransformCourse(dbCourse *DBCourse) *Course {
 		dbCourse.OfferingFrequency,
 		dbCourse.CatalogYear,
 		dbCourse.Attributes,
-	}
-}
-
-// DBEvent represents the database model for an event.
-type DBEvent struct {
-	ID                 string    `bson:"_id"`
-	Summary            string    `bson:"summary"`
-	Location           string    `bson:"location"`
-	StartTime          time.Time `bson:"start_time"`
-	EndTime            time.Time `bson:"end_time"`
-	Description        string    `bson:"description"`
-	EventType          []string  `bson:"event_type"`
-	TargetAudience     []string  `bson:"target_audience"`
-	Topic              []string  `bson:"topic"`
-	EventTags          []string  `bson:"event_tags"`
-	EventWebsite       string    `bson:"event_website"`
-	Department         []string  `bson:"department"`
-	ContactName        string    `bson:"contact_name"`
-	ContactEmail       string    `bson:"contact_email"`
-	ContactPhoneNumber string    `bson:"contact_phone_number"`
-}
-
-// DBCometCalendarRoom represents the database model for a room with its events.
-type DBCometCalendarRoom struct {
-	Room   string    `bson:"room"`
-	Events []DBEvent `bson:"events"`
-}
-
-// DBCometCalendarBuilding represents the database model for a building with its rooms.
-type DBCometCalendarBuilding struct {
-	Building string                `bson:"building"`
-	Rooms    []DBCometCalendarRoom `bson:"rooms"`
-}
-
-// DBCometCalendar represents the database model for a calendar day.
-type DBCometCalendar struct {
-	ID        string                    `bson:"_id"`
-	Date      string                    `bson:"date"`
-	Buildings []DBCometCalendarBuilding `bson:"buildings"`
-}
-
-// TransformEvent converts a database event model into a GraphQL Event type.
-func TransformEvent(dbEvent *DBEvent) *Event {
-	return &Event{
-		ID:                 dbEvent.ID,
-		Summary:            dbEvent.Summary,
-		Location:           dbEvent.Location,
-		StartTime:          dbEvent.StartTime,
-		EndTime:            dbEvent.EndTime,
-		Description:        dbEvent.Description,
-		EventType:          dbEvent.EventType,
-		TargetAudience:     dbEvent.TargetAudience,
-		Topic:              dbEvent.Topic,
-		EventTags:          dbEvent.EventTags,
-		EventWebsite:       dbEvent.EventWebsite,
-		Department:         dbEvent.Department,
-		ContactName:        dbEvent.ContactName,
-		ContactEmail:       dbEvent.ContactEmail,
-		ContactPhoneNumber: dbEvent.ContactPhoneNumber,
-	}
-}
-
-// TransformRoom converts a database room model into a GraphQL CometCalendarRoom type.
-func TransformRoom(dbRoom *DBCometCalendarRoom) *CometCalendarRoom {
-	events := make([]*Event, len(dbRoom.Events))
-	for i, e := range dbRoom.Events {
-		// Note: e is a value, so we take its address for the slice
-		events[i] = TransformEvent(&e)
-	}
-	return &CometCalendarRoom{
-		Room:   dbRoom.Room,
-		Events: events,
-	}
-}
-
-// TransformBuilding converts a database building model into a GraphQL CometCalendarBuilding type.
-func TransformBuilding(dbBuilding *DBCometCalendarBuilding) *CometCalendarBuilding {
-	rooms := make([]*CometCalendarRoom, len(dbBuilding.Rooms))
-	for i, r := range dbBuilding.Rooms {
-		rooms[i] = TransformRoom(&r)
-	}
-	return &CometCalendarBuilding{
-		Building: dbBuilding.Building,
-		Rooms:    rooms,
-	}
-}
-
-// TransformCalendar converts a database calendar model into a GraphQL CometCalendar type.
-func TransformCalendar(dbCometCalendar *DBCometCalendar) *CometCalendar {
-	buildings := make([]*CometCalendarBuilding, len(dbCometCalendar.Buildings))
-	for i, b := range dbCometCalendar.Buildings {
-		buildings[i] = TransformBuilding(&b)
-	}
-	return &CometCalendar{
-		ID:        dbCometCalendar.ID,
-		Date:      dbCometCalendar.Date,
-		Buildings: buildings,
 	}
 }

@@ -2,6 +2,10 @@
 
 package model
 
+import (
+	"time"
+)
+
 type BuildingRooms struct {
 	Building string  `json:"building" bson:"building"`
 	Rooms    []*Room `json:"rooms,omitempty" bson:"rooms"`
@@ -14,6 +18,38 @@ type CollectionRequirement struct {
 	Name     string `json:"name"`
 	Required int32  `json:"required"`
 	Options  any    `json:"options,omitempty"`
+}
+
+type CometCalendar struct {
+	ID        string                   `json:"_id" bson:"_id"`
+	Date      string                   `json:"date" bson:"date"`
+	Buildings []*CometCalendarBuilding `json:"buildings" bson:"buildings"`
+}
+
+type CometCalendarBuilding struct {
+	Building string               `json:"building" bson:"building"`
+	Rooms    []*CometCalendarRoom `json:"rooms" bson:"rooms"`
+}
+
+type CometCalendarBuildingInput struct {
+	Building *string                   `json:"building,omitempty"`
+	Rooms    []*CometCalendarRoomInput `json:"rooms,omitempty"`
+}
+
+type CometCalendarFilter struct {
+	ID        *string                       `json:"_id,omitempty"`
+	Date      *string                       `json:"date,omitempty"`
+	Buildings []*CometCalendarBuildingInput `json:"buildings,omitempty"`
+}
+
+type CometCalendarRoom struct {
+	Room   string   `json:"room" bson:"room"`
+	Events []*Event `json:"events" bson:"events"`
+}
+
+type CometCalendarRoomInput struct {
+	Room   *string       `json:"room,omitempty"`
+	Events []*EventInput `json:"events,omitempty"`
 }
 
 type Course struct {
@@ -53,6 +89,42 @@ type CourseFilter struct {
 	LaboratoryContactHours *string `json:"laboratory_contact_hours,omitempty" bson:"laboratory_contact_hours,omitempty"`
 	OfferingFrequency      *string `json:"offering_frequency,omitempty" bson:"offering_frequency,omitempty"`
 	CatalogYear            *string `json:"catalog_year,omitempty" bson:"catalog_year,omitempty"`
+}
+
+type Event struct {
+	ID                 string    `json:"_id" bson:"_id"`
+	Summary            string    `json:"summary" bson:"summary"`
+	Location           string    `json:"location" bson:"location"`
+	StartTime          time.Time `json:"start_time" bson:"start_time"`
+	EndTime            time.Time `json:"end_time" bson:"end_time"`
+	Description        string    `json:"description" bson:"description"`
+	EventType          []string  `json:"event_type" bson:"event_type"`
+	TargetAudience     []string  `json:"target_audience" bson:"target_audience"`
+	Topic              []string  `json:"topic" bson:"topic"`
+	EventTags          []string  `json:"event_tags" bson:"event_tags"`
+	EventWebsite       string    `json:"event_website" bson:"event_website"`
+	Department         []string  `json:"department" bson:"department"`
+	ContactName        string    `json:"contact_name" bson:"contact_name"`
+	ContactEmail       string    `json:"contact_email" bson:"contact_email"`
+	ContactPhoneNumber string    `json:"contact_phone_number" bson:"contact_phone_number"`
+}
+
+type EventInput struct {
+	ID                 *string    `json:"_id,omitempty"`
+	Summary            *string    `json:"summary,omitempty"`
+	Location           *string    `json:"location,omitempty"`
+	StartTime          *time.Time `json:"start_time,omitempty"`
+	EndTime            *time.Time `json:"end_time,omitempty"`
+	Description        *string    `json:"description,omitempty"`
+	EventType          []*string  `json:"event_type,omitempty"`
+	TargetAudience     []*string  `json:"target_audience,omitempty"`
+	Topic              []*string  `json:"topic,omitempty"`
+	EventTags          []*string  `json:"event_tags,omitempty"`
+	EventWebsite       *string    `json:"event_website,omitempty"`
+	Department         []*string  `json:"department,omitempty"`
+	ContactName        *string    `json:"contact_name,omitempty"`
+	ContactEmail       *string    `json:"contact_email,omitempty"`
+	ContactPhoneNumber *string    `json:"contact_phone_number,omitempty"`
 }
 
 type Query struct {

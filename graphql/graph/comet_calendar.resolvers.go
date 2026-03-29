@@ -7,6 +7,7 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"graphql/configs"
 	"graphql/graph/model"
@@ -43,15 +44,9 @@ func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometC
 	}
 	defer cursor.Close(timeoutCtx)
 
-	var dbCalendars []*model.DBCometCalendar
-	if err = cursor.All(timeoutCtx, &dbCalendars); err != nil {
+	var calendars []*model.CometCalendar
+	if err = cursor.All(timeoutCtx, &calendars); err != nil {
 		return nil, err
-	}
-
-	// Transform to GraphQL type
-	calendars := make([]*model.CometCalendar, 0, len(dbCalendars))
-	for _, dbCal := range dbCalendars {
-		calendars = append(calendars, model.TransformCalendar(dbCal))
 	}
 
 	return calendars, nil
@@ -67,16 +62,16 @@ func (r *queryResolver) CometCalendar(ctx context.Context, id string) (*model.Co
 		return nil, err
 	}
 
-	var dbCalendar model.DBCometCalendar
-	err = r.CometCalendarCollection.FindOne(timeoutCtx, bson.M{"_id": objectId}).Decode(&dbCalendar)
+	var calendar model.CometCalendar
+	err = r.CometCalendarCollection.FindOne(timeoutCtx, bson.M{"_id": objectId}).Decode(&calendar)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, fmt.Errorf("calendar not found: cannot find collection")
 		}
 		return nil, err
 	}
 
-	return model.TransformCalendar(&dbCalendar), nil
+	return &calendar, nil
 }
 
 // buildCometCalendarQuery constructs a MongoDB query from the filter,
@@ -114,14 +109,10 @@ func buildCometCalendarQuery(filter *model.CometCalendarFilter) bson.M {
 
 			// Filter by room(s) if any
 			if len(roomNames) > 0 {
-				query["buildings.rooms.room"] = bson.M{
-					"$in": roomNames,
-				}
+				query["buildings.rooms.room"] = bson.M{"$in": roomNames}
 			}
 			if len(buildingNames) > 0 {
-				query["buildings.building"] = bson.M{
-					"$in": buildingNames,
-				}
+				query["buildings.building"] = bson.M{"$in": buildingNames}
 			}
 		}
 	}
