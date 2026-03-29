@@ -4060,7 +4060,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "address": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "business": {
                     "type": "string"

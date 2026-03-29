@@ -25,7 +25,7 @@ var buildingCollection *mongo.Collection = configs.GetCollection("rooms")
 // @Success		200	{object}	schema.APIResponse[[]schema.BuildingRooms]	"All schedulable rooms being used in the current and futures semesters from CourseBook, Astra, and Mazevo"
 // @Failure		500	{object}	schema.APIResponse[string]					"A string describing the error"
 func Rooms(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var buildingRooms []schema.BuildingRooms // buildings and rooms to be returned

@@ -41,10 +41,7 @@ var courseCollection *mongo.Collection = configs.GetCollection("courses")
 // @Failure		500						{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400						{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseSearch(c *gin.Context) {
-	//name := c.Query("name")            	// value of specific query parameter: string
-	//queryParams := c.Request.URL.Query() 	// map of all query params: map[string][]string
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var courses []schema.Course
@@ -122,7 +119,7 @@ func CourseById(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Course]	"All courses"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 func CourseAll(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
 	var courses []schema.Course
@@ -223,7 +220,7 @@ func CourseProfessorById(c *gin.Context) {
 
 // courseAggregate is a generic function that gets a specified field of the courses, filters depending on the flag
 func courseAggregate[T any](flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var queryResults []T
@@ -243,6 +240,7 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 	}
 
 	// Determine the endpoint based on the type of the desired query results
+
 	var zero T
 	var endpoint string
 	switch any(zero).(type) {
@@ -295,7 +293,7 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 	var lookupStages, dedupStages mongo.Pipeline
 	switch endpoint {
 	case "sections":
-		lookupStages, dedupStages = mongo.Pipeline{}, mongo.Pipeline{}
+		// No extra stages middle stages
 
 	case "professors":
 		// Lookup the list of professors from the list of sections
@@ -336,7 +334,6 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 	middleStages := append(append(lookupStages, replaceStages...), dedupStages...)
 
 	paginateStages := mongo.Pipeline{
-		// Keep order deterministic between calls
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
 		paginate["latter_offset"],
