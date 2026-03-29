@@ -64,102 +64,7 @@ input CourseFilter {
 	catalog_year: String @goTag(key: "bson", value: "catalog_year,omitempty")
 }
 
-# Building rooms don't need seprate of concerns
-type Room {
-	room: String! @goTag(key: "bson", value: "room")
-	capacity: Int! @goTag(key: "bson", value: "capacity")
-}
-
-type BuildingRooms {
-	building: String! @goTag(key: "bson", value: "building")
-	rooms: [Room!] @goTag(key: "bson", value: "rooms")
-	lat: Float64! @goTag(key: "bson", value: "lat")
-	lon: Float64! @goTag(key: "bson", value: "lon")
-}
-
-type Query {
-	courses(filter: CourseFilter, offset: Int = 0): [Course!]
-	course(id: ID!): Course
-
-	rooms: [BuildingRooms!]
-
-	# comet calendar queries
-	CometCalendars(
-		filter: CometCalendarFilter
-		offset: Int = 0
-	): [CometCalendar!]
-	CometCalendar(id: ID!): CometCalendar
-}
-
-type Event {
-	_id: ID! @goTag(key: "bson", value: "_id")
-	summary: String! @goTag(key: "bson", value: "summary")
-	location: String! @goTag(key: "bson", value: "location")
-	start_time: DateTime! @goTag(key: "bson", value: "start_time")
-	end_time: DateTime! @goTag(key: "bson", value: "end_time")
-	description: String! @goTag(key: "bson", value: "description")
-	event_type: [String!]! @goTag(key: "bson", value: "event_type")
-	target_audience: [String!]! @goTag(key: "bson", value: "target_audience")
-	topic: [String!]! @goTag(key: "bson", value: "topic")
-	event_tags: [String!]! @goTag(key: "bson", value: "event_tags")
-	event_website: String! @goTag(key: "bson", value: "event_website")
-	department: [String!]! @goTag(key: "bson", value: "department")
-	contact_name: String! @goTag(key: "bson", value: "contact_name")
-	contact_email: String! @goTag(key: "bson", value: "contact_email")
-	contact_phone_number: String!
-		@goTag(key: "bson", value: "contact_phone_number")
-}
-
-type CometCalendarRoom {
-	room: String! @goTag(key: "bson", value: "room")
-	events: [Event!]! @goTag(key: "bson", value: "events")
-}
-
-type CometCalendarBuilding {
-	building: String! @goTag(key: "bson", value: "building")
-	rooms: [CometCalendarRoom!]! @goTag(key: "bson", value: "rooms")
-}
-
-type CometCalendar {
-	_id: ID! @goTag(key: "bson", value: "_id")
-	date: String! @goTag(key: "bson", value: "date")
-	buildings: [CometCalendarBuilding!]! @goTag(key: "bson", value: "buildings")
-}
-
-input CometCalendarFilter {
-	_id: String
-	date: String
-	buildings: [CometCalendarBuildingInput]
-}
-
-input CometCalendarBuildingInput {
-	building: String
-	rooms: [CometCalendarRoomInput]
-}
-
-input CometCalendarRoomInput {
-	room: String
-	events: [EventInput]
-}
-
-input EventInput {
-	_id: ID
-	summary: String
-	location: String
-	start_time: DateTime
-	end_time: DateTime
-	description: String
-	event_type: [String]
-	target_audience: [String]
-	topic: [String]
-	event_tags: [String]
-	event_website: String
-	department: [String]
-	contact_name: String
-	contact_email: String
-	contact_phone_number: String
-}
-
+# Section needs separate of concerns
 type AcademicSession {
 	name: String!
 	start_date: DateTime!
@@ -204,4 +109,121 @@ type Section {
 	syllabus_uri: String!
 	grade_distribution: [Int!]
 	attributes: Any
+}
+
+input SectionFilter {
+	section_number: String @goTag(key: "bson", value: "section_number,omitempty")
+	course_reference: ID @goTag(key: "bson", value: "course_reference,omitempty")
+	internal_class_number: String @goTag(key: "bson", value: "internal_class_number,omitempty")
+	instruction_mode: String @goTag(key: "bson", value: "instruction_mode,omitempty")
+	syllabus_uri: String @goTag(key: "bson", value: "syllabus_uri,omitempty")
+}
+
+# Building rooms don't need seprate of concerns
+type Room {
+	room: String!
+	@goTag(key: "bson", value: "room")
+	capacity: Int! @goTag(key: "bson", value: "capacity")
+}
+
+type BuildingRooms {
+	building: String!
+	@goTag(key: "bson", value: "building")
+	rooms: [Room!] @goTag(key: "bson", value: "rooms")
+	lat: Float64! @goTag(key: "bson", value: "lat")
+	lon: Float64!
+	@goTag(key: "bson", value: "lon")
+}
+
+type Query {
+	courses(filter: CourseFilter, offset: Int = 0): [Course!]
+	course(id: ID!): Course
+
+	sections(filter: SectionFilter, offset: Int = 0): [Section!]
+	section(id: ID!): Section
+
+	rooms: [BuildingRooms!]
+
+	# comet calendar queries
+	CometCalendars(
+		filter: CometCalendarFilter
+		offset: Int = 0
+	): [CometCalendar!]
+	CometCalendar(id: ID!): CometCalendar
+}
+
+type Event {
+	_id: ID!
+	@goTag(key: "bson", value: "_id")
+	summary: String! @goTag(key: "bson", value: "summary")
+	location: String! @goTag(key: "bson", value: "location")
+	start_time: DateTime! @goTag(key: "bson", value: "start_time")
+	end_time: DateTime!
+	@goTag(key: "bson", value: "end_time")
+	description: String! @goTag(key: "bson", value: "description")
+	event_type: [String!]! @goTag(key: "bson", value: "event_type")
+	target_audience: [String!]! @goTag(key: "bson", value: "target_audience")
+	topic: [String!]!
+	@goTag(key: "bson", value: "topic")
+	event_tags: [String!]! @goTag(key: "bson", value: "event_tags")
+	event_website: String! @goTag(key: "bson", value: "event_website")
+	department: [String!]! @goTag(key: "bson", value: "department")
+	contact_name: String!
+	@goTag(key: "bson", value: "contact_name")
+	contact_email: String! @goTag(key: "bson", value: "contact_email")
+	contact_phone_number: String!
+		@goTag(key: "bson", value: "contact_phone_number")
+}
+
+type CometCalendarRoom {
+	room: String!
+	@goTag(key: "bson", value: "room")
+	events: [Event!]! @goTag(key: "bson", value: "events")
+}
+
+type CometCalendarBuilding {
+	building: String! @goTag(key: "bson", value: "building")
+	rooms: [CometCalendarRoom!]!
+	@goTag(key: "bson", value: "rooms")
+}
+
+type CometCalendar {
+	_id: ID! @goTag(key: "bson", value: "_id")
+	date: String! @goTag(key: "bson", value: "date")
+	buildings: [CometCalendarBuilding!]!
+	@goTag(key: "bson", value: "buildings")
+}
+
+input CometCalendarFilter {
+	_id: String
+	date: String
+	buildings: [CometCalendarBuildingInput]
+}
+
+input CometCalendarBuildingInput {
+	building: String
+	rooms: [CometCalendarRoomInput]
+}
+
+input CometCalendarRoomInput {
+	room: String
+	events: [EventInput]
+}
+
+input EventInput {
+	_id: ID
+	summary: String
+	location: String
+	start_time: DateTime
+	end_time: DateTime
+	description: String
+	event_type: [String]
+	target_audience: [String]
+	topic: [String]
+	event_tags: [String]
+	event_website: String
+	department: [String]
+	contact_name: String
+	contact_email: String
+	contact_phone_number: String
 }
