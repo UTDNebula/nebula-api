@@ -99,7 +99,7 @@ type DBAssistant struct {
 type DBLocation struct {
 	Building string `bson:"building"`
 	Room     string `bson:"room"`
-	MapUri   string `bson:"map_uri"`
+	MapURI   string `bson:"map_uri"`
 }
 
 type DBMeeting struct {
@@ -124,7 +124,7 @@ type DBSection struct {
 	InstructionMode     string                   `bson:"instruction_mode"`
 	Meetings            []DBMeeting              `bson:"meetings"`
 	CoreFlags           []string                 `bson:"core_flags"`
-	SyllabusUri         string                   `bson:"syllabus_uri"`
+	SyllabusURI         string                   `bson:"syllabus_uri"`
 	GradeDistribution   []int32                  `bson:"grade_distribution"`
 	Attributes          any                      `bson:"attributes"`
 }
@@ -159,7 +159,7 @@ func transformLocation(dbLocation *DBLocation) *Location {
 	return &Location{
 		Building: dbLocation.Building,
 		Room:     dbLocation.Room,
-		MapUri:   dbLocation.MapUri,
+		MapURI:   dbLocation.MapURI,
 	}
 }
 
@@ -206,7 +206,7 @@ func TransformSection(dbSection *DBSection) *Section {
 		InstructionMode:     dbSection.InstructionMode,
 		Meetings:            meetings,
 		CoreFlags:           dbSection.CoreFlags,
-		SyllabusUri:         dbSection.SyllabusUri,
+		SyllabusURI:         dbSection.SyllabusURI,
 		GradeDistribution:   dbSection.GradeDistribution,
 		Attributes:          dbSection.Attributes,
 	}

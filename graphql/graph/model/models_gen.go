@@ -6,6 +6,19 @@ import (
 	"time"
 )
 
+type AcademicSession struct {
+	Name      string    `json:"name"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
+}
+
+type Assistant struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Role      string `json:"role"`
+	Email     string `json:"email"`
+}
+
 type BuildingRooms struct {
 	Building string  `json:"building" bson:"building"`
 	Rooms    []*Room `json:"rooms,omitempty" bson:"rooms"`
@@ -127,10 +140,51 @@ type EventInput struct {
 	ContactPhoneNumber *string    `json:"contact_phone_number,omitempty"`
 }
 
+type Location struct {
+	Building string `json:"building"`
+	Room     string `json:"room"`
+	MapURI   string `json:"map_uri"`
+}
+
+type Meeting struct {
+	StartDate   time.Time `json:"start_date"`
+	EndDate     time.Time `json:"end_date"`
+	MeetingDays []string  `json:"meeting_days"`
+	StartTime   string    `json:"start_time"`
+	EndTime     string    `json:"end_time"`
+	Modality    string    `json:"modality"`
+	Location    *Location `json:"location"`
+}
+
 type Query struct {
 }
 
 type Room struct {
 	Room     string `json:"room" bson:"room"`
 	Capacity int32  `json:"capacity" bson:"capacity"`
+}
+
+type Section struct {
+	ID                  string                 `json:"_id"`
+	SectionNumber       string                 `json:"section_number"`
+	CourseReference     string                 `json:"course_reference"`
+	SectionCorequisites *CollectionRequirement `json:"section_corequisites,omitempty"`
+	AcademicSession     *AcademicSession       `json:"academic_session"`
+	Professors          []string               `json:"professors"`
+	TeachingAssistants  []*Assistant           `json:"teaching_assistants"`
+	InternalClassNumber string                 `json:"internal_class_number"`
+	InstructionMode     string                 `json:"instruction_mode"`
+	Meetings            []*Meeting             `json:"meetings"`
+	CoreFlags           []string               `json:"core_flags"`
+	SyllabusURI         string                 `json:"syllabus_uri"`
+	GradeDistribution   []int32                `json:"grade_distribution,omitempty"`
+	Attributes          any                    `json:"attributes,omitempty"`
+}
+
+type SectionFilter struct {
+	SectionNumber       *string `json:"section_number,omitempty" bson:"section_number,omitempty"`
+	CourseReference     *string `json:"course_reference,omitempty" bson:"course_reference,omitempty"`
+	InternalClassNumber *string `json:"internal_class_number,omitempty" bson:"internal_class_number,omitempty"`
+	InstructionMode     *string `json:"instruction_mode,omitempty" bson:"instruction_mode,omitempty"`
+	SyllabusURI         *string `json:"syllabus_uri,omitempty" bson:"syllabus_uri,omitempty"`
 }
