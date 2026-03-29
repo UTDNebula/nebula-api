@@ -13,6 +13,7 @@ Run
 ```
 cd graphql
 make generate
+# Or .\build.bat generate if you are using Windows??
 ```
 This starts the boilerplate auto-generation.
 
