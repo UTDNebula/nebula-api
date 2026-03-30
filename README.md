@@ -32,7 +32,7 @@ Submit proposed changes via a [Pull Request](https://docs.github.com/en/pull-req
 
 ## Building
 ### Requirements
-- [Golang 1.23 or Higher](https://go.dev/dl/)
+- [Golang 1.24 or Higher](https://go.dev/dl/)
 
 ### Building for Windows
 cd into `nebula-api\api`
@@ -55,6 +55,9 @@ Setup Go dependencies with
 
 Build with
 `make build`
+
+If you run into `make: swag: No such file or directory`, make sure your GO Path is on the PATH environment, run 
+`export PATH=$(go env GOPATH)/bin:$PATH`
 
 Run with
 `./go-api`

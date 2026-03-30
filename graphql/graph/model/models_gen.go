@@ -180,7 +180,7 @@ type Meeting struct {
 	StartTime   string    `json:"start_time"`
 	EndTime     string    `json:"end_time"`
 	Modality    string    `json:"modality"`
-	Location    *Location `json:"location,omitempty"`
+	Location    *Location `json:"location"`
 }
 
 type MultiBuildingEvents struct {
@@ -206,7 +206,7 @@ type Section struct {
 	SectionNumber       string                 `json:"section_number"`
 	CourseReference     string                 `json:"course_reference"`
 	SectionCorequisites *CollectionRequirement `json:"section_corequisites,omitempty"`
-	AcademicSession     *AcademicSession       `json:"academic_session,omitempty"`
+	AcademicSession     *AcademicSession       `json:"academic_session"`
 	Professors          []string               `json:"professors"`
 	TeachingAssistants  []*Assistant           `json:"teaching_assistants"`
 	InternalClassNumber string                 `json:"internal_class_number"`
@@ -214,10 +214,16 @@ type Section struct {
 	Meetings            []*Meeting             `json:"meetings"`
 	CoreFlags           []string               `json:"core_flags"`
 	SyllabusURI         string                 `json:"syllabus_uri"`
-	GradeDistribution   []int32                `json:"grade_distribution"`
+	GradeDistribution   []int32                `json:"grade_distribution,omitempty"`
 	Attributes          any                    `json:"attributes,omitempty"`
-	ProfessorDetails    []*BasicProfessor      `json:"professor_details,omitempty"`
-	CourseDetails       []*BasicCourse         `json:"course_details,omitempty"`
+}
+
+type SectionFilter struct {
+	SectionNumber       *string `json:"section_number,omitempty" bson:"section_number,omitempty"`
+	CourseReference     *string `json:"course_reference,omitempty" bson:"course_reference,omitempty"`
+	InternalClassNumber *string `json:"internal_class_number,omitempty" bson:"internal_class_number,omitempty"`
+	InstructionMode     *string `json:"instruction_mode,omitempty" bson:"instruction_mode,omitempty"`
+	SyllabusURI         *string `json:"syllabus_uri,omitempty" bson:"syllabus_uri,omitempty"`
 }
 
 type SectionWithTime struct {

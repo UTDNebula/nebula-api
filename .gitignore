@@ -33,3 +33,4 @@ go.work
 
 # API go executable
 api/go-api
+graphql/go-graph

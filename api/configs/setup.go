@@ -2,6 +2,7 @@ package configs
 
 import (
 	"context"
+	"database/sql"
 	"strconv"
 	"sync"
 	"time"
@@ -9,7 +10,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -107,4 +108,32 @@ func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]bson.D, error)
 	}
 
 	return paginateMap, err
+}
+
+var clubsDbInstance *sql.DB
+var clubOnce sync.Once
+
+func ConnectClubsDB() *sql.DB {
+	clubOnce.Do(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+		db, err := sql.Open("pgx", GetClubsDBUri())
+		if err != nil {
+			log.Panic("Unable to connect to clubs database.")
+		}
+
+		defer cancel()
+
+		// ping the database
+		err = db.PingContext(ctx)
+		if err != nil {
+			log.Panic("Unable to ping database")
+		}
+
+		log.Printf("Connected to Clubs DB")
+
+		clubsDbInstance = db
+	})
+
+	return clubsDbInstance
 }
