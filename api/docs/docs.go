@@ -3726,6 +3726,9 @@ const docTemplate = `{
                 "event_website": {
                     "type": "string"
                 },
+                "source_website": {
+                    "type": "string"
+                },
                 "location": {
                     "type": "string"
                 },

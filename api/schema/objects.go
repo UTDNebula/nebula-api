@@ -148,6 +148,7 @@ type Event struct {
 	Topic              []string           `bson:"topic" json:"topic"`
 	EventTags          []string           `bson:"event_tags" json:"event_tags"`
 	EventWebsite       string             `bson:"event_website" json:"event_website"`
+	SourceWebsite      string             `bson:"source_website" json:"source_website"`
 	Department         []string           `bson:"department" json:"department"`
 	ContactName        string             `bson:"contact_name" json:"contact_name"`
 	ContactEmail       string             `bson:"contact_email" json:"contact_email"`
