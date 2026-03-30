@@ -81,6 +81,54 @@ func TransformCourse(dbCourse *DBCourse) *Course {
 	}
 }
 
+type DBSection struct {
+	Id                    string                 `bson:"_id"`
+	Section_number        string                 `bson:"section_number"`
+	Course_reference      string                 `bson:"course_reference"`
+	Section_corequisites  *CollectionRequirement `bson:"section_corequisites"`
+	Academic_session      AcademicSession        `bson:"academic_session"`
+	Professors            []string               `bson:"professors"`
+	Teaching_assistants   []Assistant            `bson:"teaching_assistants"`
+	Internal_class_number string                 `bson:"internal_class_number"`
+	Instruction_mode      string                 `bson:"instruction_mode"`
+	Meetings              []Meeting              `bson:"meetings"`
+	Core_flags            []string               `bson:"core_flags"`
+	Syllabus_uri          string                 `bson:"syllabus_uri"`
+	Grade_distribution    []int                  `bson:"grade_distribution"`
+	Attributes            interface{}            `bson:"attributes"`
+	Professor_details     *[]BasicProfessor      `bson:"professor_details,omitempty"`
+	Course_details        *[]BasicCourse         `bson:"course_details,omitempty"`
+}
+
+type DBAcademicSession struct {
+	Name       string    `bson:"name" json:"name"`
+	Start_date time.Time `bson:"start_date" json:"start_date"`
+	End_date   time.Time `bson:"end_date" json:"end_date"`
+}
+
+type DBAssistant struct {
+	First_name string `bson:"first_name" json:"first_name"`
+	Last_name  string `bson:"last_name" json:"last_name"`
+	Role       string `bson:"role" json:"role"`
+	Email      string `bson:"email" json:"email"`
+}
+
+type DBLocation struct {
+	Building string `bson:"building" json:"building"`
+	Room     string `bson:"room" json:"room"`
+	Map_uri  string `bson:"map_uri" json:"map_uri"`
+}
+
+type DBMeeting struct {
+	Start_date   time.Time `bson:"start_date" json:"start_date"`
+	End_date     time.Time `bson:"end_date" json:"end_date"`
+	Meeting_days []string  `bson:"meeting_days" json:"meeting_days"`
+	Start_time   string    `bson:"start_time" json:"start_time"`
+	End_time     string    `bson:"end_time" json:"end_time"`
+	Modality     string    `bson:"modality" json:"modality"`
+	Location     Location  `bson:"location" json:"location"`
+}
+
 // DBEvent represents the database model for an event.
 type DBEvent struct {
 	ID                 string    `bson:"_id"`

@@ -36,6 +36,40 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	AcademicSession struct {
+		EndDate   func(childComplexity int) int
+		Name      func(childComplexity int) int
+		StartDate func(childComplexity int) int
+	}
+
+	Assistant struct {
+		Email     func(childComplexity int) int
+		FirstName func(childComplexity int) int
+		LastName  func(childComplexity int) int
+		Role      func(childComplexity int) int
+	}
+
+	BasicCourse struct {
+		ActivityType  func(childComplexity int) int
+		CatalogYear   func(childComplexity int) int
+		ClassLevel    func(childComplexity int) int
+		CourseNumber  func(childComplexity int) int
+		CreditHours   func(childComplexity int) int
+		ID            func(childComplexity int) int
+		SubjectPrefix func(childComplexity int) int
+		Title         func(childComplexity int) int
+	}
+
+	BasicProfessor struct {
+		Email       func(childComplexity int) int
+		FirstName   func(childComplexity int) int
+		ID          func(childComplexity int) int
+		LastName    func(childComplexity int) int
+		Office      func(childComplexity int) int
+		OfficeHours func(childComplexity int) int
+		PhoneNumber func(childComplexity int) int
+	}
+
 	BuildingRooms struct {
 		Building func(childComplexity int) int
 		Lat      func(childComplexity int) int
@@ -48,6 +82,22 @@ type ComplexityRoot struct {
 		Options  func(childComplexity int) int
 		Required func(childComplexity int) int
 		Type     func(childComplexity int) int
+	}
+
+	CometCalendar struct {
+		Buildings func(childComplexity int) int
+		Date      func(childComplexity int) int
+		ID        func(childComplexity int) int
+	}
+
+	CometCalendarBuilding struct {
+		Building func(childComplexity int) int
+		Rooms    func(childComplexity int) int
+	}
+
+	CometCalendarRoom struct {
+		Events func(childComplexity int) int
+		Room   func(childComplexity int) int
 	}
 
 	Course struct {
@@ -92,16 +142,34 @@ type ComplexityRoot struct {
 		Topic              func(childComplexity int) int
 	}
 
+	Location struct {
+		Building func(childComplexity int) int
+		MapURI   func(childComplexity int) int
+		Room     func(childComplexity int) int
+	}
+
+	Meeting struct {
+		EndDate     func(childComplexity int) int
+		EndTime     func(childComplexity int) int
+		Location    func(childComplexity int) int
+		MeetingDays func(childComplexity int) int
+		Modality    func(childComplexity int) int
+		StartDate   func(childComplexity int) int
+		StartTime   func(childComplexity int) int
+	}
+
 	MultiBuildingEvents struct {
 		Buildings func(childComplexity int) int
 		Date      func(childComplexity int) int
 	}
 
 	Query struct {
-		Course  func(childComplexity int, id string) int
-		Courses func(childComplexity int, filter *model.CourseFilter, offset *int32) int
-		Events  func(childComplexity int) int
-		Rooms   func(childComplexity int) int
+		CometCalendar  func(childComplexity int, id string) int
+		CometCalendars func(childComplexity int, filter *model.CometCalendarFilter, offset *int32) int
+		Course         func(childComplexity int, id string) int
+		Courses        func(childComplexity int, filter *model.CourseFilter, offset *int32) int
+		Events         func(childComplexity int, filter *model.EventFilter, offset *int32) int
+		Rooms          func(childComplexity int) int
 	}
 
 	Room struct {
@@ -112,6 +180,25 @@ type ComplexityRoot struct {
 	RoomEvents struct {
 		Events func(childComplexity int) int
 		Room   func(childComplexity int) int
+	}
+
+	Section struct {
+		AcademicSession     func(childComplexity int) int
+		Attributes          func(childComplexity int) int
+		CoreFlags           func(childComplexity int) int
+		CourseDetails       func(childComplexity int) int
+		CourseReference     func(childComplexity int) int
+		GradeDistribution   func(childComplexity int) int
+		ID                  func(childComplexity int) int
+		InstructionMode     func(childComplexity int) int
+		InternalClassNumber func(childComplexity int) int
+		Meetings            func(childComplexity int) int
+		ProfessorDetails    func(childComplexity int) int
+		Professors          func(childComplexity int) int
+		SectionCorequisites func(childComplexity int) int
+		SectionNumber       func(childComplexity int) int
+		SyllabusURI         func(childComplexity int) int
+		TeachingAssistants  func(childComplexity int) int
 	}
 
 	SectionWithTime struct {
@@ -130,7 +217,9 @@ type QueryResolver interface {
 	Courses(ctx context.Context, filter *model.CourseFilter, offset *int32) ([]*model.Course, error)
 	Course(ctx context.Context, id string) (*model.Course, error)
 	Rooms(ctx context.Context) ([]*model.BuildingRooms, error)
-	Events(ctx context.Context) (*model.MultiBuildingEvents, error)
+	CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset *int32) ([]*model.CometCalendar, error)
+	CometCalendar(ctx context.Context, id string) (*model.CometCalendar, error)
+	Events(ctx context.Context, filter *model.EventFilter, offset *int32) ([]*model.MultiBuildingEvents, error)
 }
 
 type executableSchema graphql.ExecutableSchemaState[ResolverRoot, DirectiveRoot, ComplexityRoot]
@@ -146,6 +235,142 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	ec := newExecutionContext(nil, e, nil)
 	_ = ec
 	switch typeName + "." + field {
+
+	case "AcademicSession.end_date":
+		if e.ComplexityRoot.AcademicSession.EndDate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AcademicSession.EndDate(childComplexity), true
+	case "AcademicSession.name":
+		if e.ComplexityRoot.AcademicSession.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AcademicSession.Name(childComplexity), true
+	case "AcademicSession.start_date":
+		if e.ComplexityRoot.AcademicSession.StartDate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AcademicSession.StartDate(childComplexity), true
+
+	case "Assistant.email":
+		if e.ComplexityRoot.Assistant.Email == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Assistant.Email(childComplexity), true
+	case "Assistant.first_name":
+		if e.ComplexityRoot.Assistant.FirstName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Assistant.FirstName(childComplexity), true
+	case "Assistant.last_name":
+		if e.ComplexityRoot.Assistant.LastName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Assistant.LastName(childComplexity), true
+	case "Assistant.role":
+		if e.ComplexityRoot.Assistant.Role == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Assistant.Role(childComplexity), true
+
+	case "BasicCourse.activity_type":
+		if e.ComplexityRoot.BasicCourse.ActivityType == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicCourse.ActivityType(childComplexity), true
+	case "BasicCourse.catalog_year":
+		if e.ComplexityRoot.BasicCourse.CatalogYear == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicCourse.CatalogYear(childComplexity), true
+	case "BasicCourse.class_level":
+		if e.ComplexityRoot.BasicCourse.ClassLevel == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicCourse.ClassLevel(childComplexity), true
+	case "BasicCourse.course_number":
+		if e.ComplexityRoot.BasicCourse.CourseNumber == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicCourse.CourseNumber(childComplexity), true
+	case "BasicCourse.credit_hours":
+		if e.ComplexityRoot.BasicCourse.CreditHours == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicCourse.CreditHours(childComplexity), true
+	case "BasicCourse._id":
+		if e.ComplexityRoot.BasicCourse.ID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicCourse.ID(childComplexity), true
+	case "BasicCourse.subject_prefix":
+		if e.ComplexityRoot.BasicCourse.SubjectPrefix == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicCourse.SubjectPrefix(childComplexity), true
+	case "BasicCourse.title":
+		if e.ComplexityRoot.BasicCourse.Title == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicCourse.Title(childComplexity), true
+
+	case "BasicProfessor.email":
+		if e.ComplexityRoot.BasicProfessor.Email == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicProfessor.Email(childComplexity), true
+	case "BasicProfessor.first_name":
+		if e.ComplexityRoot.BasicProfessor.FirstName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicProfessor.FirstName(childComplexity), true
+	case "BasicProfessor._id":
+		if e.ComplexityRoot.BasicProfessor.ID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicProfessor.ID(childComplexity), true
+	case "BasicProfessor.last_name":
+		if e.ComplexityRoot.BasicProfessor.LastName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicProfessor.LastName(childComplexity), true
+	case "BasicProfessor.office":
+		if e.ComplexityRoot.BasicProfessor.Office == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicProfessor.Office(childComplexity), true
+	case "BasicProfessor.office_hours":
+		if e.ComplexityRoot.BasicProfessor.OfficeHours == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicProfessor.OfficeHours(childComplexity), true
+	case "BasicProfessor.phone_number":
+		if e.ComplexityRoot.BasicProfessor.PhoneNumber == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BasicProfessor.PhoneNumber(childComplexity), true
 
 	case "BuildingRooms.building":
 		if e.ComplexityRoot.BuildingRooms.Building == nil {
@@ -196,6 +421,51 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.CollectionRequirement.Type(childComplexity), true
+
+	case "CometCalendar.buildings":
+		if e.ComplexityRoot.CometCalendar.Buildings == nil {
+			break
+		}
+
+		return e.ComplexityRoot.CometCalendar.Buildings(childComplexity), true
+	case "CometCalendar.date":
+		if e.ComplexityRoot.CometCalendar.Date == nil {
+			break
+		}
+
+		return e.ComplexityRoot.CometCalendar.Date(childComplexity), true
+	case "CometCalendar._id":
+		if e.ComplexityRoot.CometCalendar.ID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.CometCalendar.ID(childComplexity), true
+
+	case "CometCalendarBuilding.building":
+		if e.ComplexityRoot.CometCalendarBuilding.Building == nil {
+			break
+		}
+
+		return e.ComplexityRoot.CometCalendarBuilding.Building(childComplexity), true
+	case "CometCalendarBuilding.rooms":
+		if e.ComplexityRoot.CometCalendarBuilding.Rooms == nil {
+			break
+		}
+
+		return e.ComplexityRoot.CometCalendarBuilding.Rooms(childComplexity), true
+
+	case "CometCalendarRoom.events":
+		if e.ComplexityRoot.CometCalendarRoom.Events == nil {
+			break
+		}
+
+		return e.ComplexityRoot.CometCalendarRoom.Events(childComplexity), true
+	case "CometCalendarRoom.room":
+		if e.ComplexityRoot.CometCalendarRoom.Room == nil {
+			break
+		}
+
+		return e.ComplexityRoot.CometCalendarRoom.Room(childComplexity), true
 
 	case "Course.activity_type":
 		if e.ComplexityRoot.Course.ActivityType == nil {
@@ -415,6 +685,68 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Event.Topic(childComplexity), true
 
+	case "Location.building":
+		if e.ComplexityRoot.Location.Building == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Location.Building(childComplexity), true
+	case "Location.map_uri":
+		if e.ComplexityRoot.Location.MapURI == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Location.MapURI(childComplexity), true
+	case "Location.room":
+		if e.ComplexityRoot.Location.Room == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Location.Room(childComplexity), true
+
+	case "Meeting.end_date":
+		if e.ComplexityRoot.Meeting.EndDate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Meeting.EndDate(childComplexity), true
+	case "Meeting.end_time":
+		if e.ComplexityRoot.Meeting.EndTime == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Meeting.EndTime(childComplexity), true
+	case "Meeting.location":
+		if e.ComplexityRoot.Meeting.Location == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Meeting.Location(childComplexity), true
+	case "Meeting.meeting_days":
+		if e.ComplexityRoot.Meeting.MeetingDays == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Meeting.MeetingDays(childComplexity), true
+	case "Meeting.modality":
+		if e.ComplexityRoot.Meeting.Modality == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Meeting.Modality(childComplexity), true
+	case "Meeting.start_date":
+		if e.ComplexityRoot.Meeting.StartDate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Meeting.StartDate(childComplexity), true
+	case "Meeting.start_time":
+		if e.ComplexityRoot.Meeting.StartTime == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Meeting.StartTime(childComplexity), true
+
 	case "MultiBuildingEvents.buildings":
 		if e.ComplexityRoot.MultiBuildingEvents.Buildings == nil {
 			break
@@ -428,6 +760,28 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.MultiBuildingEvents.Date(childComplexity), true
 
+	case "Query.CometCalendar":
+		if e.ComplexityRoot.Query.CometCalendar == nil {
+			break
+		}
+
+		args, err := ec.field_Query_CometCalendar_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.CometCalendar(childComplexity, args["id"].(string)), true
+	case "Query.CometCalendars":
+		if e.ComplexityRoot.Query.CometCalendars == nil {
+			break
+		}
+
+		args, err := ec.field_Query_CometCalendars_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.CometCalendars(childComplexity, args["filter"].(*model.CometCalendarFilter), args["offset"].(*int32)), true
 	case "Query.course":
 		if e.ComplexityRoot.Query.Course == nil {
 			break
@@ -455,7 +809,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			break
 		}
 
-		return e.ComplexityRoot.Query.Events(childComplexity), true
+		args, err := ec.field_Query_events_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.Events(childComplexity, args["filter"].(*model.EventFilter), args["offset"].(*int32)), true
 
 	case "Query.rooms":
 		if e.ComplexityRoot.Query.Rooms == nil {
@@ -489,6 +848,103 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.RoomEvents.Room(childComplexity), true
+
+	case "Section.academic_session":
+		if e.ComplexityRoot.Section.AcademicSession == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.AcademicSession(childComplexity), true
+	case "Section.attributes":
+		if e.ComplexityRoot.Section.Attributes == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.Attributes(childComplexity), true
+	case "Section.core_flags":
+		if e.ComplexityRoot.Section.CoreFlags == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.CoreFlags(childComplexity), true
+	case "Section.course_details":
+		if e.ComplexityRoot.Section.CourseDetails == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.CourseDetails(childComplexity), true
+	case "Section.course_reference":
+		if e.ComplexityRoot.Section.CourseReference == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.CourseReference(childComplexity), true
+	case "Section.grade_distribution":
+		if e.ComplexityRoot.Section.GradeDistribution == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.GradeDistribution(childComplexity), true
+	case "Section._id":
+		if e.ComplexityRoot.Section.ID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.ID(childComplexity), true
+	case "Section.instruction_mode":
+		if e.ComplexityRoot.Section.InstructionMode == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.InstructionMode(childComplexity), true
+	case "Section.internal_class_number":
+		if e.ComplexityRoot.Section.InternalClassNumber == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.InternalClassNumber(childComplexity), true
+	case "Section.meetings":
+		if e.ComplexityRoot.Section.Meetings == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.Meetings(childComplexity), true
+	case "Section.professor_details":
+		if e.ComplexityRoot.Section.ProfessorDetails == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.ProfessorDetails(childComplexity), true
+	case "Section.professors":
+		if e.ComplexityRoot.Section.Professors == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.Professors(childComplexity), true
+	case "Section.section_corequisites":
+		if e.ComplexityRoot.Section.SectionCorequisites == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.SectionCorequisites(childComplexity), true
+	case "Section.section_number":
+		if e.ComplexityRoot.Section.SectionNumber == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.SectionNumber(childComplexity), true
+	case "Section.syllabus_uri":
+		if e.ComplexityRoot.Section.SyllabusURI == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.SyllabusURI(childComplexity), true
+	case "Section.teaching_assistants":
+		if e.ComplexityRoot.Section.TeachingAssistants == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.TeachingAssistants(childComplexity), true
 
 	case "SectionWithTime.end_time":
 		if e.ComplexityRoot.SectionWithTime.EndTime == nil {
@@ -530,7 +986,12 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := newExecutionContext(opCtx, e, make(chan graphql.DeferredResult))
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputCometCalendarBuildingInput,
+		ec.unmarshalInputCometCalendarFilter,
+		ec.unmarshalInputCometCalendarRoomInput,
 		ec.unmarshalInputCourseFilter,
+		ec.unmarshalInputEventFilter,
+		ec.unmarshalInputEventInput,
 	)
 	first := true
 
@@ -610,6 +1071,33 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
+func (ec *executionContext) field_Query_CometCalendar_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_CometCalendars_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOCometCalendarFilter2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -636,6 +1124,22 @@ func (ec *executionContext) field_Query_courses_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOCourseFilter2ᚖgraphqlᚋgraphᚋmodelᚐCourseFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_events_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOEventFilter2ᚖgraphqlᚋgraphᚋmodelᚐEventFilter)
 	if err != nil {
 		return nil, err
 	}
@@ -699,6 +1203,668 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _AcademicSession_name(ctx context.Context, field graphql.CollectedField, obj *model.AcademicSession) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AcademicSession_name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AcademicSession_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicSession",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicSession_start_date(ctx context.Context, field graphql.CollectedField, obj *model.AcademicSession) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AcademicSession_start_date,
+		func(ctx context.Context) (any, error) {
+			return obj.StartDate, nil
+		},
+		nil,
+		ec.marshalNDateTime2timeᚐTime,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AcademicSession_start_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicSession",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicSession_end_date(ctx context.Context, field graphql.CollectedField, obj *model.AcademicSession) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AcademicSession_end_date,
+		func(ctx context.Context) (any, error) {
+			return obj.EndDate, nil
+		},
+		nil,
+		ec.marshalNDateTime2timeᚐTime,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AcademicSession_end_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicSession",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Assistant_first_name(ctx context.Context, field graphql.CollectedField, obj *model.Assistant) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Assistant_first_name,
+		func(ctx context.Context) (any, error) {
+			return obj.FirstName, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Assistant_first_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Assistant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Assistant_last_name(ctx context.Context, field graphql.CollectedField, obj *model.Assistant) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Assistant_last_name,
+		func(ctx context.Context) (any, error) {
+			return obj.LastName, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Assistant_last_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Assistant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Assistant_role(ctx context.Context, field graphql.CollectedField, obj *model.Assistant) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Assistant_role,
+		func(ctx context.Context) (any, error) {
+			return obj.Role, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Assistant_role(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Assistant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Assistant_email(ctx context.Context, field graphql.CollectedField, obj *model.Assistant) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Assistant_email,
+		func(ctx context.Context) (any, error) {
+			return obj.Email, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Assistant_email(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Assistant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicCourse__id(ctx context.Context, field graphql.CollectedField, obj *model.BasicCourse) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicCourse__id,
+		func(ctx context.Context) (any, error) {
+			return obj.ID, nil
+		},
+		nil,
+		ec.marshalNID2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicCourse__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicCourse_subject_prefix(ctx context.Context, field graphql.CollectedField, obj *model.BasicCourse) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicCourse_subject_prefix,
+		func(ctx context.Context) (any, error) {
+			return obj.SubjectPrefix, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicCourse_subject_prefix(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicCourse_course_number(ctx context.Context, field graphql.CollectedField, obj *model.BasicCourse) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicCourse_course_number,
+		func(ctx context.Context) (any, error) {
+			return obj.CourseNumber, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicCourse_course_number(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicCourse_title(ctx context.Context, field graphql.CollectedField, obj *model.BasicCourse) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicCourse_title,
+		func(ctx context.Context) (any, error) {
+			return obj.Title, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicCourse_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicCourse_credit_hours(ctx context.Context, field graphql.CollectedField, obj *model.BasicCourse) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicCourse_credit_hours,
+		func(ctx context.Context) (any, error) {
+			return obj.CreditHours, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicCourse_credit_hours(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicCourse_class_level(ctx context.Context, field graphql.CollectedField, obj *model.BasicCourse) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicCourse_class_level,
+		func(ctx context.Context) (any, error) {
+			return obj.ClassLevel, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicCourse_class_level(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicCourse_activity_type(ctx context.Context, field graphql.CollectedField, obj *model.BasicCourse) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicCourse_activity_type,
+		func(ctx context.Context) (any, error) {
+			return obj.ActivityType, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicCourse_activity_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicCourse_catalog_year(ctx context.Context, field graphql.CollectedField, obj *model.BasicCourse) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicCourse_catalog_year,
+		func(ctx context.Context) (any, error) {
+			return obj.CatalogYear, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicCourse_catalog_year(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicProfessor__id(ctx context.Context, field graphql.CollectedField, obj *model.BasicProfessor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicProfessor__id,
+		func(ctx context.Context) (any, error) {
+			return obj.ID, nil
+		},
+		nil,
+		ec.marshalNID2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicProfessor__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicProfessor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicProfessor_first_name(ctx context.Context, field graphql.CollectedField, obj *model.BasicProfessor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicProfessor_first_name,
+		func(ctx context.Context) (any, error) {
+			return obj.FirstName, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicProfessor_first_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicProfessor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicProfessor_last_name(ctx context.Context, field graphql.CollectedField, obj *model.BasicProfessor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicProfessor_last_name,
+		func(ctx context.Context) (any, error) {
+			return obj.LastName, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicProfessor_last_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicProfessor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicProfessor_email(ctx context.Context, field graphql.CollectedField, obj *model.BasicProfessor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicProfessor_email,
+		func(ctx context.Context) (any, error) {
+			return obj.Email, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicProfessor_email(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicProfessor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicProfessor_phone_number(ctx context.Context, field graphql.CollectedField, obj *model.BasicProfessor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicProfessor_phone_number,
+		func(ctx context.Context) (any, error) {
+			return obj.PhoneNumber, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicProfessor_phone_number(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicProfessor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicProfessor_office(ctx context.Context, field graphql.CollectedField, obj *model.BasicProfessor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicProfessor_office,
+		func(ctx context.Context) (any, error) {
+			return obj.Office, nil
+		},
+		nil,
+		ec.marshalOLocation2ᚖgraphqlᚋgraphᚋmodelᚐLocation,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicProfessor_office(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicProfessor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "building":
+				return ec.fieldContext_Location_building(ctx, field)
+			case "room":
+				return ec.fieldContext_Location_room(ctx, field)
+			case "map_uri":
+				return ec.fieldContext_Location_map_uri(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Location", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BasicProfessor_office_hours(ctx context.Context, field graphql.CollectedField, obj *model.BasicProfessor) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_BasicProfessor_office_hours,
+		func(ctx context.Context) (any, error) {
+			return obj.OfficeHours, nil
+		},
+		nil,
+		ec.marshalOMeeting2ᚕᚖgraphqlᚋgraphᚋmodelᚐMeeting,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_BasicProfessor_office_hours(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicProfessor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "start_date":
+				return ec.fieldContext_Meeting_start_date(ctx, field)
+			case "end_date":
+				return ec.fieldContext_Meeting_end_date(ctx, field)
+			case "meeting_days":
+				return ec.fieldContext_Meeting_meeting_days(ctx, field)
+			case "start_time":
+				return ec.fieldContext_Meeting_start_time(ctx, field)
+			case "end_time":
+				return ec.fieldContext_Meeting_end_time(ctx, field)
+			case "modality":
+				return ec.fieldContext_Meeting_modality(ctx, field)
+			case "location":
+				return ec.fieldContext_Meeting_location(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Meeting", field.Name)
+		},
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _BuildingRooms_building(ctx context.Context, field graphql.CollectedField, obj *model.BuildingRooms) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
@@ -933,6 +2099,253 @@ func (ec *executionContext) fieldContext_CollectionRequirement_options(_ context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Any does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CometCalendar__id(ctx context.Context, field graphql.CollectedField, obj *model.CometCalendar) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_CometCalendar__id,
+		func(ctx context.Context) (any, error) {
+			return obj.ID, nil
+		},
+		nil,
+		ec.marshalNID2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_CometCalendar__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CometCalendar",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CometCalendar_date(ctx context.Context, field graphql.CollectedField, obj *model.CometCalendar) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_CometCalendar_date,
+		func(ctx context.Context) (any, error) {
+			return obj.Date, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_CometCalendar_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CometCalendar",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CometCalendar_buildings(ctx context.Context, field graphql.CollectedField, obj *model.CometCalendar) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_CometCalendar_buildings,
+		func(ctx context.Context) (any, error) {
+			return obj.Buildings, nil
+		},
+		nil,
+		ec.marshalNCometCalendarBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_CometCalendar_buildings(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CometCalendar",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "building":
+				return ec.fieldContext_CometCalendarBuilding_building(ctx, field)
+			case "rooms":
+				return ec.fieldContext_CometCalendarBuilding_rooms(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CometCalendarBuilding", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CometCalendarBuilding_building(ctx context.Context, field graphql.CollectedField, obj *model.CometCalendarBuilding) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_CometCalendarBuilding_building,
+		func(ctx context.Context) (any, error) {
+			return obj.Building, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_CometCalendarBuilding_building(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CometCalendarBuilding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CometCalendarBuilding_rooms(ctx context.Context, field graphql.CollectedField, obj *model.CometCalendarBuilding) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_CometCalendarBuilding_rooms,
+		func(ctx context.Context) (any, error) {
+			return obj.Rooms, nil
+		},
+		nil,
+		ec.marshalNCometCalendarRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_CometCalendarBuilding_rooms(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CometCalendarBuilding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "room":
+				return ec.fieldContext_CometCalendarRoom_room(ctx, field)
+			case "events":
+				return ec.fieldContext_CometCalendarRoom_events(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CometCalendarRoom", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CometCalendarRoom_room(ctx context.Context, field graphql.CollectedField, obj *model.CometCalendarRoom) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_CometCalendarRoom_room,
+		func(ctx context.Context) (any, error) {
+			return obj.Room, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_CometCalendarRoom_room(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CometCalendarRoom",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CometCalendarRoom_events(ctx context.Context, field graphql.CollectedField, obj *model.CometCalendarRoom) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_CometCalendarRoom_events,
+		func(ctx context.Context) (any, error) {
+			return obj.Events, nil
+		},
+		nil,
+		ec.marshalNEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_CometCalendarRoom_events(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CometCalendarRoom",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_Event__id(ctx, field)
+			case "summary":
+				return ec.fieldContext_Event_summary(ctx, field)
+			case "location":
+				return ec.fieldContext_Event_location(ctx, field)
+			case "start_time":
+				return ec.fieldContext_Event_start_time(ctx, field)
+			case "end_time":
+				return ec.fieldContext_Event_end_time(ctx, field)
+			case "description":
+				return ec.fieldContext_Event_description(ctx, field)
+			case "event_type":
+				return ec.fieldContext_Event_event_type(ctx, field)
+			case "target_audience":
+				return ec.fieldContext_Event_target_audience(ctx, field)
+			case "topic":
+				return ec.fieldContext_Event_topic(ctx, field)
+			case "event_tags":
+				return ec.fieldContext_Event_event_tags(ctx, field)
+			case "event_website":
+				return ec.fieldContext_Event_event_website(ctx, field)
+			case "department":
+				return ec.fieldContext_Event_department(ctx, field)
+			case "contact_name":
+				return ec.fieldContext_Event_contact_name(ctx, field)
+			case "contact_email":
+				return ec.fieldContext_Event_contact_email(ctx, field)
+			case "contact_phone_number":
+				return ec.fieldContext_Event_contact_phone_number(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Event", field.Name)
 		},
 	}
 	return fc, nil
@@ -1674,7 +3087,7 @@ func (ec *executionContext) _Event_start_time(ctx context.Context, field graphql
 			return obj.StartTime, nil
 		},
 		nil,
-		ec.marshalNTime2timeᚐTime,
+		ec.marshalNDateTime2timeᚐTime,
 		true,
 		true,
 	)
@@ -1687,7 +3100,7 @@ func (ec *executionContext) fieldContext_Event_start_time(_ context.Context, fie
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type DateTime does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1703,7 +3116,7 @@ func (ec *executionContext) _Event_end_time(ctx context.Context, field graphql.C
 			return obj.EndTime, nil
 		},
 		nil,
-		ec.marshalNTime2timeᚐTime,
+		ec.marshalNDateTime2timeᚐTime,
 		true,
 		true,
 	)
@@ -1716,7 +3129,7 @@ func (ec *executionContext) fieldContext_Event_end_time(_ context.Context, field
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type DateTime does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2012,6 +3425,304 @@ func (ec *executionContext) fieldContext_Event_contact_phone_number(_ context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _Location_building(ctx context.Context, field graphql.CollectedField, obj *model.Location) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Location_building,
+		func(ctx context.Context) (any, error) {
+			return obj.Building, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Location_building(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Location",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Location_room(ctx context.Context, field graphql.CollectedField, obj *model.Location) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Location_room,
+		func(ctx context.Context) (any, error) {
+			return obj.Room, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Location_room(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Location",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Location_map_uri(ctx context.Context, field graphql.CollectedField, obj *model.Location) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Location_map_uri,
+		func(ctx context.Context) (any, error) {
+			return obj.MapURI, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Location_map_uri(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Location",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Meeting_start_date(ctx context.Context, field graphql.CollectedField, obj *model.Meeting) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Meeting_start_date,
+		func(ctx context.Context) (any, error) {
+			return obj.StartDate, nil
+		},
+		nil,
+		ec.marshalNDateTime2timeᚐTime,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Meeting_start_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Meeting",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Meeting_end_date(ctx context.Context, field graphql.CollectedField, obj *model.Meeting) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Meeting_end_date,
+		func(ctx context.Context) (any, error) {
+			return obj.EndDate, nil
+		},
+		nil,
+		ec.marshalNDateTime2timeᚐTime,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Meeting_end_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Meeting",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Meeting_meeting_days(ctx context.Context, field graphql.CollectedField, obj *model.Meeting) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Meeting_meeting_days,
+		func(ctx context.Context) (any, error) {
+			return obj.MeetingDays, nil
+		},
+		nil,
+		ec.marshalNString2ᚕstringᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Meeting_meeting_days(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Meeting",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Meeting_start_time(ctx context.Context, field graphql.CollectedField, obj *model.Meeting) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Meeting_start_time,
+		func(ctx context.Context) (any, error) {
+			return obj.StartTime, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Meeting_start_time(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Meeting",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Meeting_end_time(ctx context.Context, field graphql.CollectedField, obj *model.Meeting) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Meeting_end_time,
+		func(ctx context.Context) (any, error) {
+			return obj.EndTime, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Meeting_end_time(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Meeting",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Meeting_modality(ctx context.Context, field graphql.CollectedField, obj *model.Meeting) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Meeting_modality,
+		func(ctx context.Context) (any, error) {
+			return obj.Modality, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Meeting_modality(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Meeting",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Meeting_location(ctx context.Context, field graphql.CollectedField, obj *model.Meeting) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Meeting_location,
+		func(ctx context.Context) (any, error) {
+			return obj.Location, nil
+		},
+		nil,
+		ec.marshalOLocation2ᚖgraphqlᚋgraphᚋmodelᚐLocation,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Meeting_location(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Meeting",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "building":
+				return ec.fieldContext_Location_building(ctx, field)
+			case "room":
+				return ec.fieldContext_Location_room(ctx, field)
+			case "map_uri":
+				return ec.fieldContext_Location_map_uri(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Location", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _MultiBuildingEvents_date(ctx context.Context, field graphql.CollectedField, obj *model.MultiBuildingEvents) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -2285,6 +3996,104 @@ func (ec *executionContext) fieldContext_Query_rooms(_ context.Context, field gr
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_CometCalendars(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_CometCalendars,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().CometCalendars(ctx, fc.Args["filter"].(*model.CometCalendarFilter), fc.Args["offset"].(*int32))
+		},
+		nil,
+		ec.marshalOCometCalendar2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarᚄ,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_CometCalendars(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_CometCalendar__id(ctx, field)
+			case "date":
+				return ec.fieldContext_CometCalendar_date(ctx, field)
+			case "buildings":
+				return ec.fieldContext_CometCalendar_buildings(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CometCalendar", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_CometCalendars_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_CometCalendar(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_CometCalendar,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().CometCalendar(ctx, fc.Args["id"].(string))
+		},
+		nil,
+		ec.marshalOCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendar,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_CometCalendar(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_CometCalendar__id(ctx, field)
+			case "date":
+				return ec.fieldContext_CometCalendar_date(ctx, field)
+			case "buildings":
+				return ec.fieldContext_CometCalendar_buildings(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CometCalendar", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_CometCalendar_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_events(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -2292,16 +4101,17 @@ func (ec *executionContext) _Query_events(ctx context.Context, field graphql.Col
 		field,
 		ec.fieldContext_Query_events,
 		func(ctx context.Context) (any, error) {
-			return ec.Resolvers.Query().Events(ctx)
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().Events(ctx, fc.Args["filter"].(*model.EventFilter), fc.Args["offset"].(*int32))
 		},
 		nil,
-		ec.marshalOMultiBuildingEvents2ᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEvents,
+		ec.marshalOMultiBuildingEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEventsᚄ,
 		true,
 		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_events(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_events(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -2316,6 +4126,17 @@ func (ec *executionContext) fieldContext_Query_events(_ context.Context, field g
 			}
 			return nil, fmt.Errorf("no field named %q was found under type MultiBuildingEvents", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_events_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -2547,6 +4368,548 @@ func (ec *executionContext) fieldContext_RoomEvents_events(_ context.Context, fi
 				return ec.fieldContext_SectionWithTime_end_time(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SectionWithTime", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section__id(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section__id,
+		func(ctx context.Context) (any, error) {
+			return obj.ID, nil
+		},
+		nil,
+		ec.marshalNID2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_section_number(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_section_number,
+		func(ctx context.Context) (any, error) {
+			return obj.SectionNumber, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_section_number(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_course_reference(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_course_reference,
+		func(ctx context.Context) (any, error) {
+			return obj.CourseReference, nil
+		},
+		nil,
+		ec.marshalNID2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_course_reference(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_section_corequisites(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_section_corequisites,
+		func(ctx context.Context) (any, error) {
+			return obj.SectionCorequisites, nil
+		},
+		nil,
+		ec.marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_section_corequisites(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "type":
+				return ec.fieldContext_CollectionRequirement_type(ctx, field)
+			case "name":
+				return ec.fieldContext_CollectionRequirement_name(ctx, field)
+			case "required":
+				return ec.fieldContext_CollectionRequirement_required(ctx, field)
+			case "options":
+				return ec.fieldContext_CollectionRequirement_options(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CollectionRequirement", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_academic_session(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_academic_session,
+		func(ctx context.Context) (any, error) {
+			return obj.AcademicSession, nil
+		},
+		nil,
+		ec.marshalOAcademicSession2ᚖgraphqlᚋgraphᚋmodelᚐAcademicSession,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_academic_session(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_AcademicSession_name(ctx, field)
+			case "start_date":
+				return ec.fieldContext_AcademicSession_start_date(ctx, field)
+			case "end_date":
+				return ec.fieldContext_AcademicSession_end_date(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AcademicSession", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_professors(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_professors,
+		func(ctx context.Context) (any, error) {
+			return obj.Professors, nil
+		},
+		nil,
+		ec.marshalNID2ᚕstringᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_professors(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_teaching_assistants(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_teaching_assistants,
+		func(ctx context.Context) (any, error) {
+			return obj.TeachingAssistants, nil
+		},
+		nil,
+		ec.marshalNAssistant2ᚕᚖgraphqlᚋgraphᚋmodelᚐAssistantᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_teaching_assistants(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "first_name":
+				return ec.fieldContext_Assistant_first_name(ctx, field)
+			case "last_name":
+				return ec.fieldContext_Assistant_last_name(ctx, field)
+			case "role":
+				return ec.fieldContext_Assistant_role(ctx, field)
+			case "email":
+				return ec.fieldContext_Assistant_email(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Assistant", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_internal_class_number(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_internal_class_number,
+		func(ctx context.Context) (any, error) {
+			return obj.InternalClassNumber, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_internal_class_number(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_instruction_mode(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_instruction_mode,
+		func(ctx context.Context) (any, error) {
+			return obj.InstructionMode, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_instruction_mode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_meetings(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_meetings,
+		func(ctx context.Context) (any, error) {
+			return obj.Meetings, nil
+		},
+		nil,
+		ec.marshalNMeeting2ᚕᚖgraphqlᚋgraphᚋmodelᚐMeetingᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_meetings(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "start_date":
+				return ec.fieldContext_Meeting_start_date(ctx, field)
+			case "end_date":
+				return ec.fieldContext_Meeting_end_date(ctx, field)
+			case "meeting_days":
+				return ec.fieldContext_Meeting_meeting_days(ctx, field)
+			case "start_time":
+				return ec.fieldContext_Meeting_start_time(ctx, field)
+			case "end_time":
+				return ec.fieldContext_Meeting_end_time(ctx, field)
+			case "modality":
+				return ec.fieldContext_Meeting_modality(ctx, field)
+			case "location":
+				return ec.fieldContext_Meeting_location(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Meeting", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_core_flags(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_core_flags,
+		func(ctx context.Context) (any, error) {
+			return obj.CoreFlags, nil
+		},
+		nil,
+		ec.marshalNString2ᚕstringᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_core_flags(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_syllabus_uri(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_syllabus_uri,
+		func(ctx context.Context) (any, error) {
+			return obj.SyllabusURI, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_syllabus_uri(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_grade_distribution(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_grade_distribution,
+		func(ctx context.Context) (any, error) {
+			return obj.GradeDistribution, nil
+		},
+		nil,
+		ec.marshalNInt2ᚕint32ᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_grade_distribution(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_attributes(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_attributes,
+		func(ctx context.Context) (any, error) {
+			return obj.Attributes, nil
+		},
+		nil,
+		ec.marshalOAny2interface,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_attributes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Any does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_professor_details(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_professor_details,
+		func(ctx context.Context) (any, error) {
+			return obj.ProfessorDetails, nil
+		},
+		nil,
+		ec.marshalOBasicProfessor2ᚕᚖgraphqlᚋgraphᚋmodelᚐBasicProfessor,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_professor_details(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_BasicProfessor__id(ctx, field)
+			case "first_name":
+				return ec.fieldContext_BasicProfessor_first_name(ctx, field)
+			case "last_name":
+				return ec.fieldContext_BasicProfessor_last_name(ctx, field)
+			case "email":
+				return ec.fieldContext_BasicProfessor_email(ctx, field)
+			case "phone_number":
+				return ec.fieldContext_BasicProfessor_phone_number(ctx, field)
+			case "office":
+				return ec.fieldContext_BasicProfessor_office(ctx, field)
+			case "office_hours":
+				return ec.fieldContext_BasicProfessor_office_hours(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BasicProfessor", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Section_course_details(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Section_course_details,
+		func(ctx context.Context) (any, error) {
+			return obj.CourseDetails, nil
+		},
+		nil,
+		ec.marshalOBasicCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐBasicCourse,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Section_course_details(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_BasicCourse__id(ctx, field)
+			case "subject_prefix":
+				return ec.fieldContext_BasicCourse_subject_prefix(ctx, field)
+			case "course_number":
+				return ec.fieldContext_BasicCourse_course_number(ctx, field)
+			case "title":
+				return ec.fieldContext_BasicCourse_title(ctx, field)
+			case "credit_hours":
+				return ec.fieldContext_BasicCourse_credit_hours(ctx, field)
+			case "class_level":
+				return ec.fieldContext_BasicCourse_class_level(ctx, field)
+			case "activity_type":
+				return ec.fieldContext_BasicCourse_activity_type(ctx, field)
+			case "catalog_year":
+				return ec.fieldContext_BasicCourse_catalog_year(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BasicCourse", field.Name)
 		},
 	}
 	return fc, nil
@@ -4149,8 +6512,130 @@ func (ec *executionContext) fieldContext___Type_isOneOf(_ context.Context, field
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputCometCalendarBuildingInput(ctx context.Context, obj any) (model.CometCalendarBuildingInput, error) {
+	var it model.CometCalendarBuildingInput
+	if obj == nil {
+		return it, nil
+	}
+
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"building", "rooms"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "building":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("building"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Building = data
+		case "rooms":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rooms"))
+			data, err := ec.unmarshalOCometCalendarRoomInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Rooms = data
+		}
+	}
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCometCalendarFilter(ctx context.Context, obj any) (model.CometCalendarFilter, error) {
+	var it model.CometCalendarFilter
+	if obj == nil {
+		return it, nil
+	}
+
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"_id", "date", "buildings"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "_id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "date":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Date = data
+		case "buildings":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildings"))
+			data, err := ec.unmarshalOCometCalendarBuildingInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Buildings = data
+		}
+	}
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCometCalendarRoomInput(ctx context.Context, obj any) (model.CometCalendarRoomInput, error) {
+	var it model.CometCalendarRoomInput
+	if obj == nil {
+		return it, nil
+	}
+
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"room", "events"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "room":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("room"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Room = data
+		case "events":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("events"))
+			data, err := ec.unmarshalOEventInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Events = data
+		}
+	}
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCourseFilter(ctx context.Context, obj any) (model.CourseFilter, error) {
 	var it model.CourseFilter
+	if obj == nil {
+		return it, nil
+	}
+
 	asMap := map[string]any{}
 	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
@@ -4252,6 +6737,178 @@ func (ec *executionContext) unmarshalInputCourseFilter(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputEventFilter(ctx context.Context, obj any) (model.EventFilter, error) {
+	var it model.EventFilter
+	if obj == nil {
+		return it, nil
+	}
+
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"date", "building", "room"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "date":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Date = data
+		case "building":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("building"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Building = data
+		case "room":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("room"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Room = data
+		}
+	}
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputEventInput(ctx context.Context, obj any) (model.EventInput, error) {
+	var it model.EventInput
+	if obj == nil {
+		return it, nil
+	}
+
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"_id", "summary", "location", "start_time", "end_time", "description", "event_type", "target_audience", "topic", "event_tags", "event_website", "department", "contact_name", "contact_email", "contact_phone_number"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "_id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "summary":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("summary"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Summary = data
+		case "location":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("location"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Location = data
+		case "start_time":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("start_time"))
+			data, err := ec.unmarshalODateTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StartTime = data
+		case "end_time":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("end_time"))
+			data, err := ec.unmarshalODateTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EndTime = data
+		case "description":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Description = data
+		case "event_type":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("event_type"))
+			data, err := ec.unmarshalOString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EventType = data
+		case "target_audience":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("target_audience"))
+			data, err := ec.unmarshalOString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TargetAudience = data
+		case "topic":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topic"))
+			data, err := ec.unmarshalOString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Topic = data
+		case "event_tags":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("event_tags"))
+			data, err := ec.unmarshalOString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EventTags = data
+		case "event_website":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("event_website"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EventWebsite = data
+		case "department":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("department"))
+			data, err := ec.unmarshalOString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Department = data
+		case "contact_name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contact_name"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ContactName = data
+		case "contact_email":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contact_email"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ContactEmail = data
+		case "contact_phone_number":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contact_phone_number"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ContactPhoneNumber = data
+		}
+	}
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -4259,6 +6916,246 @@ func (ec *executionContext) unmarshalInputCourseFilter(ctx context.Context, obj 
 // endregion ************************** interface.gotpl ***************************
 
 // region    **************************** object.gotpl ****************************
+
+var academicSessionImplementors = []string{"AcademicSession"}
+
+func (ec *executionContext) _AcademicSession(ctx context.Context, sel ast.SelectionSet, obj *model.AcademicSession) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, academicSessionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AcademicSession")
+		case "name":
+			out.Values[i] = ec._AcademicSession_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "start_date":
+			out.Values[i] = ec._AcademicSession_start_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "end_date":
+			out.Values[i] = ec._AcademicSession_end_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var assistantImplementors = []string{"Assistant"}
+
+func (ec *executionContext) _Assistant(ctx context.Context, sel ast.SelectionSet, obj *model.Assistant) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, assistantImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Assistant")
+		case "first_name":
+			out.Values[i] = ec._Assistant_first_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "last_name":
+			out.Values[i] = ec._Assistant_last_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "role":
+			out.Values[i] = ec._Assistant_role(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "email":
+			out.Values[i] = ec._Assistant_email(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var basicCourseImplementors = []string{"BasicCourse"}
+
+func (ec *executionContext) _BasicCourse(ctx context.Context, sel ast.SelectionSet, obj *model.BasicCourse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, basicCourseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BasicCourse")
+		case "_id":
+			out.Values[i] = ec._BasicCourse__id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "subject_prefix":
+			out.Values[i] = ec._BasicCourse_subject_prefix(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "course_number":
+			out.Values[i] = ec._BasicCourse_course_number(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "title":
+			out.Values[i] = ec._BasicCourse_title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "credit_hours":
+			out.Values[i] = ec._BasicCourse_credit_hours(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "class_level":
+			out.Values[i] = ec._BasicCourse_class_level(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "activity_type":
+			out.Values[i] = ec._BasicCourse_activity_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "catalog_year":
+			out.Values[i] = ec._BasicCourse_catalog_year(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var basicProfessorImplementors = []string{"BasicProfessor"}
+
+func (ec *executionContext) _BasicProfessor(ctx context.Context, sel ast.SelectionSet, obj *model.BasicProfessor) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, basicProfessorImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BasicProfessor")
+		case "_id":
+			out.Values[i] = ec._BasicProfessor__id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "first_name":
+			out.Values[i] = ec._BasicProfessor_first_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "last_name":
+			out.Values[i] = ec._BasicProfessor_last_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "email":
+			out.Values[i] = ec._BasicProfessor_email(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "phone_number":
+			out.Values[i] = ec._BasicProfessor_phone_number(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "office":
+			out.Values[i] = ec._BasicProfessor_office(ctx, field, obj)
+		case "office_hours":
+			out.Values[i] = ec._BasicProfessor_office_hours(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
 
 var buildingRoomsImplementors = []string{"BuildingRooms"}
 
@@ -4339,6 +7236,143 @@ func (ec *executionContext) _CollectionRequirement(ctx context.Context, sel ast.
 			}
 		case "options":
 			out.Values[i] = ec._CollectionRequirement_options(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var cometCalendarImplementors = []string{"CometCalendar"}
+
+func (ec *executionContext) _CometCalendar(ctx context.Context, sel ast.SelectionSet, obj *model.CometCalendar) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, cometCalendarImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CometCalendar")
+		case "_id":
+			out.Values[i] = ec._CometCalendar__id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "date":
+			out.Values[i] = ec._CometCalendar_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "buildings":
+			out.Values[i] = ec._CometCalendar_buildings(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var cometCalendarBuildingImplementors = []string{"CometCalendarBuilding"}
+
+func (ec *executionContext) _CometCalendarBuilding(ctx context.Context, sel ast.SelectionSet, obj *model.CometCalendarBuilding) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, cometCalendarBuildingImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CometCalendarBuilding")
+		case "building":
+			out.Values[i] = ec._CometCalendarBuilding_building(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "rooms":
+			out.Values[i] = ec._CometCalendarBuilding_rooms(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var cometCalendarRoomImplementors = []string{"CometCalendarRoom"}
+
+func (ec *executionContext) _CometCalendarRoom(ctx context.Context, sel ast.SelectionSet, obj *model.CometCalendarRoom) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, cometCalendarRoomImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CometCalendarRoom")
+		case "room":
+			out.Values[i] = ec._CometCalendarRoom_room(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "events":
+			out.Values[i] = ec._CometCalendarRoom_events(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4598,6 +7632,121 @@ func (ec *executionContext) _Event(ctx context.Context, sel ast.SelectionSet, ob
 	return out
 }
 
+var locationImplementors = []string{"Location"}
+
+func (ec *executionContext) _Location(ctx context.Context, sel ast.SelectionSet, obj *model.Location) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, locationImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Location")
+		case "building":
+			out.Values[i] = ec._Location_building(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "room":
+			out.Values[i] = ec._Location_room(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "map_uri":
+			out.Values[i] = ec._Location_map_uri(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var meetingImplementors = []string{"Meeting"}
+
+func (ec *executionContext) _Meeting(ctx context.Context, sel ast.SelectionSet, obj *model.Meeting) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, meetingImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Meeting")
+		case "start_date":
+			out.Values[i] = ec._Meeting_start_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "end_date":
+			out.Values[i] = ec._Meeting_end_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "meeting_days":
+			out.Values[i] = ec._Meeting_meeting_days(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "start_time":
+			out.Values[i] = ec._Meeting_start_time(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "end_time":
+			out.Values[i] = ec._Meeting_end_time(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "modality":
+			out.Values[i] = ec._Meeting_modality(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "location":
+			out.Values[i] = ec._Meeting_location(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var multiBuildingEventsImplementors = []string{"MultiBuildingEvents"}
 
 func (ec *executionContext) _MultiBuildingEvents(ctx context.Context, sel ast.SelectionSet, obj *model.MultiBuildingEvents) graphql.Marshaler {
@@ -4709,6 +7858,44 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_rooms(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "CometCalendars":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_CometCalendars(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "CometCalendar":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_CometCalendar(ctx, field)
 				return res
 			}
 
@@ -4833,6 +8020,105 @@ func (ec *executionContext) _RoomEvents(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var sectionImplementors = []string{"Section"}
+
+func (ec *executionContext) _Section(ctx context.Context, sel ast.SelectionSet, obj *model.Section) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, sectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Section")
+		case "_id":
+			out.Values[i] = ec._Section__id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "section_number":
+			out.Values[i] = ec._Section_section_number(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "course_reference":
+			out.Values[i] = ec._Section_course_reference(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "section_corequisites":
+			out.Values[i] = ec._Section_section_corequisites(ctx, field, obj)
+		case "academic_session":
+			out.Values[i] = ec._Section_academic_session(ctx, field, obj)
+		case "professors":
+			out.Values[i] = ec._Section_professors(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "teaching_assistants":
+			out.Values[i] = ec._Section_teaching_assistants(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "internal_class_number":
+			out.Values[i] = ec._Section_internal_class_number(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "instruction_mode":
+			out.Values[i] = ec._Section_instruction_mode(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "meetings":
+			out.Values[i] = ec._Section_meetings(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "core_flags":
+			out.Values[i] = ec._Section_core_flags(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "syllabus_uri":
+			out.Values[i] = ec._Section_syllabus_uri(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "grade_distribution":
+			out.Values[i] = ec._Section_grade_distribution(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "attributes":
+			out.Values[i] = ec._Section_attributes(ctx, field, obj)
+		case "professor_details":
+			out.Values[i] = ec._Section_professor_details(ctx, field, obj)
+		case "course_details":
+			out.Values[i] = ec._Section_course_details(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5284,6 +8570,32 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) marshalNAssistant2ᚕᚖgraphqlᚋgraphᚋmodelᚐAssistantᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Assistant) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNAssistant2ᚖgraphqlᚋgraphᚋmodelᚐAssistant(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNAssistant2ᚖgraphqlᚋgraphᚋmodelᚐAssistant(ctx context.Context, sel ast.SelectionSet, v *model.Assistant) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Assistant(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -5310,6 +8622,68 @@ func (ec *executionContext) marshalNBuildingRooms2ᚖgraphqlᚋgraphᚋmodelᚐB
 	return ec._BuildingRooms(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendar) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._CometCalendar(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNCometCalendarBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendarBuilding) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNCometCalendarBuilding2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuilding(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNCometCalendarBuilding2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuilding(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendarBuilding) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._CometCalendarBuilding(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNCometCalendarRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendarRoom) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNCometCalendarRoom2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoom(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNCometCalendarRoom2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoom(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendarRoom) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._CometCalendarRoom(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -5318,6 +8692,48 @@ func (ec *executionContext) marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(c
 		return graphql.Null
 	}
 	return ec._Course(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNDateTime2timeᚐTime(ctx context.Context, v any) (time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNDateTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalTime(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) marshalNEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Event) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNEvent2ᚖgraphqlᚋgraphᚋmodelᚐEvent(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNEvent2ᚖgraphqlᚋgraphᚋmodelᚐEvent(ctx context.Context, sel ast.SelectionSet, v *model.Event) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Event(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNFloat642float64(ctx context.Context, v any) (float64, error) {
@@ -5396,6 +8812,72 @@ func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNInt2ᚕint32ᚄ(ctx context.Context, v any) ([]int32, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]int32, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNInt2int32(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNInt2ᚕint32ᚄ(ctx context.Context, sel ast.SelectionSet, v []int32) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNInt2int32(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNMeeting2ᚕᚖgraphqlᚋgraphᚋmodelᚐMeetingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Meeting) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting(ctx context.Context, sel ast.SelectionSet, v *model.Meeting) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Meeting(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMultiBuildingEvents2ᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEvents(ctx context.Context, sel ast.SelectionSet, v *model.MultiBuildingEvents) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MultiBuildingEvents(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNRoom2ᚖgraphqlᚋgraphᚋmodelᚐRoom(ctx context.Context, sel ast.SelectionSet, v *model.Room) graphql.Marshaler {
@@ -5530,22 +9012,6 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	}
 
 	return ret
-}
-
-func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v any) (time.Time, error) {
-	res, err := graphql.UnmarshalTime(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
-	_ = sel
-	res := graphql.MarshalTime(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -5689,6 +9155,13 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
+func (ec *executionContext) marshalOAcademicSession2ᚖgraphqlᚋgraphᚋmodelᚐAcademicSession(ctx context.Context, sel ast.SelectionSet, v *model.AcademicSession) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AcademicSession(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOAny2interface(ctx context.Context, v any) (any, error) {
 	if v == nil {
 		return nil, nil
@@ -5705,6 +9178,46 @@ func (ec *executionContext) marshalOAny2interface(ctx context.Context, sel ast.S
 	_ = ctx
 	res := graphql.MarshalAny(v)
 	return res
+}
+
+func (ec *executionContext) marshalOBasicCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐBasicCourse(ctx context.Context, sel ast.SelectionSet, v []*model.BasicCourse) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalOBasicCourse2ᚖgraphqlᚋgraphᚋmodelᚐBasicCourse(ctx, sel, v[i])
+	})
+
+	return ret
+}
+
+func (ec *executionContext) marshalOBasicCourse2ᚖgraphqlᚋgraphᚋmodelᚐBasicCourse(ctx context.Context, sel ast.SelectionSet, v *model.BasicCourse) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._BasicCourse(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOBasicProfessor2ᚕᚖgraphqlᚋgraphᚋmodelᚐBasicProfessor(ctx context.Context, sel ast.SelectionSet, v []*model.BasicProfessor) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalOBasicProfessor2ᚖgraphqlᚋgraphᚋmodelᚐBasicProfessor(ctx, sel, v[i])
+	})
+
+	return ret
+}
+
+func (ec *executionContext) marshalOBasicProfessor2ᚖgraphqlᚋgraphᚋmodelᚐBasicProfessor(ctx context.Context, sel ast.SelectionSet, v *model.BasicProfessor) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._BasicProfessor(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v any) (bool, error) {
@@ -5763,6 +9276,92 @@ func (ec *executionContext) marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋm
 	return ec._CollectionRequirement(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOCometCalendar2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendar) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalOCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendar) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._CometCalendar(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx context.Context, v any) ([]*model.CometCalendarBuildingInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]*model.CometCalendarBuildingInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOCometCalendarBuildingInput2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx context.Context, v any) (*model.CometCalendarBuildingInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputCometCalendarBuildingInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOCometCalendarFilter2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarFilter(ctx context.Context, v any) (*model.CometCalendarFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputCometCalendarFilter(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx context.Context, v any) ([]*model.CometCalendarRoomInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]*model.CometCalendarRoomInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOCometCalendarRoomInput2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx context.Context, v any) (*model.CometCalendarRoomInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputCometCalendarRoomInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalOCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Course) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -5797,6 +9396,76 @@ func (ec *executionContext) unmarshalOCourseFilter2ᚖgraphqlᚋgraphᚋmodelᚐ
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalODateTime2ᚖtimeᚐTime(ctx context.Context, v any) (*time.Time, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalTime(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalODateTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalTime(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOEventFilter2ᚖgraphqlᚋgraphᚋmodelᚐEventFilter(ctx context.Context, v any) (*model.EventFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputEventFilter(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOEventInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx context.Context, v any) ([]*model.EventInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]*model.EventInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOEventInput2ᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOEventInput2ᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx context.Context, v any) (*model.EventInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputEventInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v any) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalID(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalID(*v)
+	return res
+}
+
 func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v any) (*int32, error) {
 	if v == nil {
 		return nil, nil
@@ -5815,11 +9484,50 @@ func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalOMultiBuildingEvents2ᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEvents(ctx context.Context, sel ast.SelectionSet, v *model.MultiBuildingEvents) graphql.Marshaler {
+func (ec *executionContext) marshalOLocation2ᚖgraphqlᚋgraphᚋmodelᚐLocation(ctx context.Context, sel ast.SelectionSet, v *model.Location) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._MultiBuildingEvents(ctx, sel, v)
+	return ec._Location(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMeeting2ᚕᚖgraphqlᚋgraphᚋmodelᚐMeeting(ctx context.Context, sel ast.SelectionSet, v []*model.Meeting) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalOMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting(ctx, sel, v[i])
+	})
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting(ctx context.Context, sel ast.SelectionSet, v *model.Meeting) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Meeting(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMultiBuildingEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEventsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MultiBuildingEvents) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNMultiBuildingEvents2ᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEvents(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalORoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Room) graphql.Marshaler {
@@ -5836,6 +9544,36 @@ func (ec *executionContext) marshalORoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomᚄ
 		if e == graphql.Null {
 			return graphql.Null
 		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v any) ([]*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]*string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOString2ᚖstring(ctx, sel, v[i])
 	}
 
 	return ret

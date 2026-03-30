@@ -2,12 +2,12 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"graphql/configs"
 	"graphql/graph/model"
+	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Events is the resolver for the events field.
-func (r *queryResolver) Events(ctx context.Context) (*model.MultiBuildingEvents, error) {
-	panic(fmt.Errorf("not implemented: Events - events"))
-}
