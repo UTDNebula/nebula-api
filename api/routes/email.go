@@ -17,6 +17,7 @@ import (
 
 var emailClient *mail.Client
 var smtpUsername string
+var emailSendKey string
 var emailClientOnce sync.Once
 
 var tasksClient *cloudtasks.Client
@@ -48,14 +49,15 @@ func initTasksClient() (*cloudtasks.Client, string, string) {
 	return tasksClient, queuePath, queueUrl
 }
 
-func initEmailClient() (*mail.Client, string) {
+func initEmailClient() (*mail.Client, string, string) {
 	// Singleton to prevent multiple clients
 	emailClientOnce.Do(func() {
 		smtpHost := os.Getenv("SMTP_HOST")
 		smtpUser := os.Getenv("SMTP_USERNAME")
 		smtpPass := os.Getenv("SMTP_PASSWORD")
+		sendKey := os.Getenv("EMAIL_SEND_ROUTE_KEY")
 
-		if smtpHost == "" || smtpUser == "" || smtpPass == "" {
+		if smtpHost == "" || smtpUser == "" || smtpPass == "" || sendKey == "" {
 			log.Println("SMTP environment variables are not fully configured; skipping email routes")
 			return
 		}
@@ -74,11 +76,11 @@ func initEmailClient() (*mail.Client, string) {
 		emailClient = c
 		smtpUsername = smtpUser
 	})
-	return emailClient, smtpUsername
+	return emailClient, smtpUsername, emailSendKey
 }
 
 func EmailRoute(router *gin.Engine) {
-	client, username := initEmailClient()
+	client, username, emailSendKey := initEmailClient()
 	tClient, qPath, qUrl := initTasksClient()
 
 	if client == nil {
@@ -114,6 +116,7 @@ func EmailRoute(router *gin.Engine) {
 	emailGroup.Use(func(c *gin.Context) {
 		c.Set("emailClient", client)
 		c.Set("emailUsername", username)
+		c.Set("emailSendKey", emailSendKey)
 		c.Set("tasksClient", tClient)
 		c.Set("queuePath", qPath)
 		c.Set("queueUrl", qUrl)

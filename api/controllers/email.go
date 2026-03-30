@@ -58,6 +58,15 @@ func getQueueUrl(c *gin.Context) string {
 	return val.(string)
 }
 
+// Get email send key from routes
+func getEmailSendKey(c *gin.Context) string {
+	val, exists := c.Get("emailSendKey")
+	if !exists {
+		panic("email send key not set in context")
+	}
+	return val.(string)
+}
+
 // @Id				sendEmail
 // @Router			/email/send [post]
 // @Tags			Internal
@@ -148,6 +157,10 @@ func QueueEmail(c *gin.Context) {
 				HttpRequest: &taskspb.HttpRequest{
 					HttpMethod: taskspb.HttpMethod_POST,
 					Url:        queueUrl,
+					Headers: map[string]string{
+						"x-email-send-key": getEmailSendKey(c),
+						"x-api-key":        c.GetHeader("x-api-key"),
+					},
 				},
 			},
 		},
