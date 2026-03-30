@@ -16,7 +16,7 @@ import (
 )
 
 var emailClient *mail.Client
-var smtpFromAddr string
+var smtpUsername string
 var emailClientOnce sync.Once
 
 var tasksClient *cloudtasks.Client
@@ -54,9 +54,8 @@ func initEmailClient() (*mail.Client, string) {
 		smtpHost := os.Getenv("SMTP_HOST")
 		smtpUser := os.Getenv("SMTP_USERNAME")
 		smtpPass := os.Getenv("SMTP_PASSWORD")
-		smtpFrom := os.Getenv("SMTP_FROM")
 
-		if smtpHost == "" || smtpUser == "" || smtpPass == "" || smtpFrom == "" {
+		if smtpHost == "" || smtpUser == "" || smtpPass == "" {
 			log.Println("SMTP environment variables are not fully configured; skipping email routes")
 			return
 		}
@@ -73,13 +72,13 @@ func initEmailClient() (*mail.Client, string) {
 			return
 		}
 		emailClient = c
-		smtpFromAddr = smtpFrom
+		smtpUsername = smtpUser
 	})
-	return emailClient, smtpFromAddr
+	return emailClient, smtpUsername
 }
 
 func EmailRoute(router *gin.Engine) {
-	client, fromAddr := initEmailClient()
+	client, username := initEmailClient()
 	tClient, qPath, qUrl := initTasksClient()
 
 	if client == nil {
@@ -114,7 +113,7 @@ func EmailRoute(router *gin.Engine) {
 	// Pass to next layer
 	emailGroup.Use(func(c *gin.Context) {
 		c.Set("emailClient", client)
-		c.Set("emailFrom", fromAddr)
+		c.Set("emailUsername", username)
 		c.Set("tasksClient", tClient)
 		c.Set("queuePath", qPath)
 		c.Set("queueUrl", qUrl)

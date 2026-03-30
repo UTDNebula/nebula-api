@@ -22,11 +22,11 @@ func getEmailClient(c *gin.Context) *mail.Client {
 	return val.(*mail.Client)
 }
 
-// Get email from address from routes
-func getEmailFrom(c *gin.Context) string {
-	val, exists := c.Get("emailFrom")
+// Get email username from routes
+func getEmailUsername(c *gin.Context) string {
+	val, exists := c.Get("emailUsername")
 	if !exists {
-		panic("email from address not set in context")
+		panic("email username not set in context")
 	}
 	return val.(string)
 }
@@ -78,10 +78,10 @@ func SendEmail(c *gin.Context) {
 	}
 
 	client := getEmailClient(c)
-	smtpFrom := getEmailFrom(c)
+	smtpUsername := getEmailUsername(c)
 
 	m := mail.NewMsg()
-	if err := m.FromFormat(req.From, smtpFrom); err != nil {
+	if err := m.FromFormat(req.From, smtpUsername); err != nil {
 		respond(c, http.StatusInternalServerError, "failed to set from address", err.Error())
 		return
 	}
