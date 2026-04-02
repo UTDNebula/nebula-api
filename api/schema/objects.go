@@ -24,18 +24,12 @@ type Course struct {
 	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites"`
 	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites"`
 	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites"`
-	Sections                 []CourseSectionKey     `bson:"sections" json:"sections"`
+	Sections                 []SectionKey           `bson:"sections" json:"sections"`
 	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours" queryable:""`
 	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours" queryable:""`
 	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency" queryable:""`
 	Catalog_year             string                 `bson:"catalog_year" json:"catalog_year" queryable:""`
 	Attributes               any                    `bson:"attributes" json:"attributes"`
-}
-
-// Compound key uniquely identifying section from the course
-type CourseSectionKey struct {
-	Section_number string `bson:"section_number" json:"section_number"`
-	Term           string `bson:"term" json:"term"`
 }
 
 type BasicCourse struct {
@@ -102,6 +96,15 @@ type CourseKey struct {
 	Subject_prefix string `bson:"subject_prefix" json:"subject_prefix" queryable:""`
 	Course_number  string `bson:"course_number" json:"course_number" queryable:""`
 	Catalog_year   string `bson:"catalog_year" json:"catalog_year" queryable:""`
+}
+
+// Compound key uniquely identifying section from the course
+type SectionKey struct {
+	Subject_prefix string `bson:"subject_prefix" json:"subject_prefix"`
+	Course_number  string `bson:"course_number" json:"course_number"`
+	Catalog_year   string `bson:"catalog_year" json:"catalog_year"`
+	Section_number string `bson:"section_number" json:"section_number"`
+	Term           string `bson:"term" json:"term"`
 }
 
 // Compound key for professors
