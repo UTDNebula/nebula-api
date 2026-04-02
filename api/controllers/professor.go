@@ -56,7 +56,7 @@ func ProfessorSearch(c *gin.Context) {
 	//name := c.Query("name")            // value of specific query parameter: string
 	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var professors []schema.Professor
@@ -100,7 +100,7 @@ func ProfessorSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorById(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var professor schema.Professor
@@ -134,7 +134,7 @@ func ProfessorById(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"All professors"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 func ProfessorAll(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
 	var professors []schema.Professor
@@ -250,7 +250,7 @@ func ProfessorSectionById(c *gin.Context) {
 
 // Get data for professor aggregate endpoints depending on flag
 func professorAggregate[T any](flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var profAggregate []T

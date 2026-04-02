@@ -29,7 +29,7 @@ var eventsCollection *mongo.Collection = configs.GetCollection("events")
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.SectionWithTime]]	"All sections with meetings on the specified date"
 // @Failure		500		{object}	schema.APIResponse[string]												"A string describing the error"
 func Events(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 
 	date := c.Param("date")
 
@@ -62,7 +62,7 @@ func Events(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]												"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]												"A string describing the error"
 func EventsByBuilding(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
@@ -120,7 +120,7 @@ func EventsByBuilding(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]										"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]										"A string describing the error"
 func EventsByRoom(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
@@ -191,7 +191,7 @@ func EventsByRoom(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]								"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]								"A string describing the error"
 func SectionsByRoomDetailed(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
