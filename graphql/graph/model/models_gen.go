@@ -197,8 +197,10 @@ type Room struct {
 }
 
 type RoomEvents struct {
-	Room   string             `json:"room"`
-	Events []*SectionWithTime `json:"events"`
+	Room          string             `json:"room"`
+	SectionEvents []*SectionWithTime `json:"section_events"`
+	building      string             `json:"-"`
+	date          string             `json:"-"`
 }
 
 type Section struct {
@@ -235,4 +237,5 @@ type SectionWithTime struct {
 type SingleBuildingEvents struct {
 	Building string        `json:"building"`
 	Rooms    []*RoomEvents `json:"rooms"`
+	date     string        `json:"-"`
 }

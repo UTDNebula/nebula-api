@@ -29,7 +29,10 @@ func NewExecutableSchema(cfg Config) graphql.ExecutableSchema {
 type Config = graphql.Config[ResolverRoot, DirectiveRoot, ComplexityRoot]
 
 type ResolverRoot interface {
+	MultiBuildingEvents() MultiBuildingEventsResolver
 	Query() QueryResolver
+	RoomEvents() RoomEventsResolver
+	SingleBuildingEvents() SingleBuildingEventsResolver
 }
 
 type DirectiveRoot struct {
@@ -168,6 +171,7 @@ type ComplexityRoot struct {
 		CometCalendars func(childComplexity int, filter *model.CometCalendarFilter, offset *int32) int
 		Course         func(childComplexity int, id string) int
 		Courses        func(childComplexity int, filter *model.CourseFilter, offset *int32) int
+		Events         func(childComplexity int, filter *model.EventFilter, offset *int32) int
 		Rooms          func(childComplexity int) int
 		Section        func(childComplexity int, id string) int
 		Sections       func(childComplexity int, filter *model.SectionFilter, offset *int32) int
@@ -179,8 +183,8 @@ type ComplexityRoot struct {
 	}
 
 	RoomEvents struct {
-		Events func(childComplexity int) int
-		Room   func(childComplexity int) int
+		Room          func(childComplexity int) int
+		SectionEvents func(childComplexity int) int
 	}
 
 	Section struct {
@@ -212,6 +216,9 @@ type ComplexityRoot struct {
 	}
 }
 
+type MultiBuildingEventsResolver interface {
+	Buildings(ctx context.Context, obj *model.MultiBuildingEvents) ([]*model.SingleBuildingEvents, error)
+}
 type QueryResolver interface {
 	Courses(ctx context.Context, filter *model.CourseFilter, offset *int32) ([]*model.Course, error)
 	Course(ctx context.Context, id string) (*model.Course, error)
@@ -220,6 +227,13 @@ type QueryResolver interface {
 	Rooms(ctx context.Context) ([]*model.BuildingRooms, error)
 	CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset *int32) ([]*model.CometCalendar, error)
 	CometCalendar(ctx context.Context, id string) (*model.CometCalendar, error)
+	Events(ctx context.Context, filter *model.EventFilter, offset *int32) ([]*model.MultiBuildingEvents, error)
+}
+type RoomEventsResolver interface {
+	SectionEvents(ctx context.Context, obj *model.RoomEvents) ([]*model.SectionWithTime, error)
+}
+type SingleBuildingEventsResolver interface {
+	Rooms(ctx context.Context, obj *model.SingleBuildingEvents) ([]*model.RoomEvents, error)
 }
 
 type executableSchema graphql.ExecutableSchemaState[ResolverRoot, DirectiveRoot, ComplexityRoot]
@@ -804,6 +818,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Query.Courses(childComplexity, args["filter"].(*model.CourseFilter), args["offset"].(*int32)), true
+	case "Query.events":
+		if e.ComplexityRoot.Query.Events == nil {
+			break
+		}
+
+		args, err := ec.field_Query_events_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.Events(childComplexity, args["filter"].(*model.EventFilter), args["offset"].(*int32)), true
 
 	case "Query.rooms":
 		if e.ComplexityRoot.Query.Rooms == nil {
@@ -847,18 +872,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Room.Room(childComplexity), true
 
-	case "RoomEvents.events":
-		if e.ComplexityRoot.RoomEvents.Events == nil {
-			break
-		}
-
-		return e.ComplexityRoot.RoomEvents.Events(childComplexity), true
 	case "RoomEvents.room":
 		if e.ComplexityRoot.RoomEvents.Room == nil {
 			break
 		}
 
 		return e.ComplexityRoot.RoomEvents.Room(childComplexity), true
+	case "RoomEvents.section_events":
+		if e.ComplexityRoot.RoomEvents.SectionEvents == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RoomEvents.SectionEvents(childComplexity), true
 
 	case "Section.academic_session":
 		if e.ComplexityRoot.Section.AcademicSession == nil {
@@ -1124,6 +1149,22 @@ func (ec *executionContext) field_Query_courses_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOCourseFilter2ᚖgraphqlᚋgraphᚋmodelᚐCourseFilter)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_events_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOEventFilter2ᚖgraphqlᚋgraphᚋmodelᚐEventFilter)
 	if err != nil {
 		return nil, err
 	}
@@ -3770,7 +3811,7 @@ func (ec *executionContext) _MultiBuildingEvents_buildings(ctx context.Context, 
 		field,
 		ec.fieldContext_MultiBuildingEvents_buildings,
 		func(ctx context.Context) (any, error) {
-			return obj.Buildings, nil
+			return ec.Resolvers.MultiBuildingEvents().Buildings(ctx, obj)
 		},
 		nil,
 		ec.marshalNSingleBuildingEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐSingleBuildingEventsᚄ,
@@ -3783,8 +3824,8 @@ func (ec *executionContext) fieldContext_MultiBuildingEvents_buildings(_ context
 	fc = &graphql.FieldContext{
 		Object:     "MultiBuildingEvents",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "building":
@@ -4247,6 +4288,53 @@ func (ec *executionContext) fieldContext_Query_CometCalendar(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_events(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_events,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().Events(ctx, fc.Args["filter"].(*model.EventFilter), fc.Args["offset"].(*int32))
+		},
+		nil,
+		ec.marshalOMultiBuildingEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEventsᚄ,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_events(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "date":
+				return ec.fieldContext_MultiBuildingEvents_date(ctx, field)
+			case "buildings":
+				return ec.fieldContext_MultiBuildingEvents_buildings(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MultiBuildingEvents", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_events_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -4442,14 +4530,14 @@ func (ec *executionContext) fieldContext_RoomEvents_room(_ context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _RoomEvents_events(ctx context.Context, field graphql.CollectedField, obj *model.RoomEvents) (ret graphql.Marshaler) {
+func (ec *executionContext) _RoomEvents_section_events(ctx context.Context, field graphql.CollectedField, obj *model.RoomEvents) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_RoomEvents_events,
+		ec.fieldContext_RoomEvents_section_events,
 		func(ctx context.Context) (any, error) {
-			return obj.Events, nil
+			return ec.Resolvers.RoomEvents().SectionEvents(ctx, obj)
 		},
 		nil,
 		ec.marshalNSectionWithTime2ᚕᚖgraphqlᚋgraphᚋmodelᚐSectionWithTimeᚄ,
@@ -4458,12 +4546,12 @@ func (ec *executionContext) _RoomEvents_events(ctx context.Context, field graphq
 	)
 }
 
-func (ec *executionContext) fieldContext_RoomEvents_events(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_RoomEvents_section_events(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "RoomEvents",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "section":
@@ -5052,7 +5140,7 @@ func (ec *executionContext) _SingleBuildingEvents_rooms(ctx context.Context, fie
 		field,
 		ec.fieldContext_SingleBuildingEvents_rooms,
 		func(ctx context.Context) (any, error) {
-			return obj.Rooms, nil
+			return ec.Resolvers.SingleBuildingEvents().Rooms(ctx, obj)
 		},
 		nil,
 		ec.marshalNRoomEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomEventsᚄ,
@@ -5065,14 +5153,14 @@ func (ec *executionContext) fieldContext_SingleBuildingEvents_rooms(_ context.Co
 	fc = &graphql.FieldContext{
 		Object:     "SingleBuildingEvents",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "room":
 				return ec.fieldContext_RoomEvents_room(ctx, field)
-			case "events":
-				return ec.fieldContext_RoomEvents_events(ctx, field)
+			case "section_events":
+				return ec.fieldContext_RoomEvents_section_events(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type RoomEvents", field.Name)
 		},
@@ -7836,13 +7924,44 @@ func (ec *executionContext) _MultiBuildingEvents(ctx context.Context, sel ast.Se
 		case "date":
 			out.Values[i] = ec._MultiBuildingEvents_date(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "buildings":
-			out.Values[i] = ec._MultiBuildingEvents_buildings(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MultiBuildingEvents_buildings(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8018,6 +8137,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "events":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_events(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -8107,13 +8245,44 @@ func (ec *executionContext) _RoomEvents(ctx context.Context, sel ast.SelectionSe
 		case "room":
 			out.Values[i] = ec._RoomEvents_room(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "events":
-			out.Values[i] = ec._RoomEvents_events(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+		case "section_events":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._RoomEvents_section_events(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8295,13 +8464,44 @@ func (ec *executionContext) _SingleBuildingEvents(ctx context.Context, sel ast.S
 		case "building":
 			out.Values[i] = ec._SingleBuildingEvents_building(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "rooms":
-			out.Values[i] = ec._SingleBuildingEvents_rooms(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SingleBuildingEvents_rooms(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8950,6 +9150,16 @@ func (ec *executionContext) marshalNMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting
 	return ec._Meeting(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNMultiBuildingEvents2ᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEvents(ctx context.Context, sel ast.SelectionSet, v *model.MultiBuildingEvents) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MultiBuildingEvents(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNRoom2ᚖgraphqlᚋgraphᚋmodelᚐRoom(ctx context.Context, sel ast.SelectionSet, v *model.Room) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -9447,6 +9657,14 @@ func (ec *executionContext) marshalODateTime2ᚖtimeᚐTime(ctx context.Context,
 	return res
 }
 
+func (ec *executionContext) unmarshalOEventFilter2ᚖgraphqlᚋgraphᚋmodelᚐEventFilter(ctx context.Context, v any) (*model.EventFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputEventFilter(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOEventInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx context.Context, v any) ([]*model.EventInput, error) {
 	if v == nil {
 		return nil, nil
@@ -9570,6 +9788,25 @@ func (ec *executionContext) marshalOMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting
 		return graphql.Null
 	}
 	return ec._Meeting(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMultiBuildingEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEventsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MultiBuildingEvents) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNMultiBuildingEvents2ᚖgraphqlᚋgraphᚋmodelᚐMultiBuildingEvents(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalORoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Room) graphql.Marshaler {

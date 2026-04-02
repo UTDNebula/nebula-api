@@ -4,6 +4,18 @@ directive @goTag(
 	value: String
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 
+# Forcing resolvers for nested objects
+directive @goField(
+	forceResolver: Boolean
+) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+directive @goExtraField(
+	name: String
+	type: String!
+	overrideTags: String
+	description: String
+) repeatable on OBJECT | INPUT_OBJECT
+
 scalar Any
 scalar Float64
 scalar DateTime
@@ -158,17 +170,22 @@ type BuildingRooms {
 
 type MultiBuildingEvents {
   date: String! 
-  buildings: [SingleBuildingEvents!]! 
+  buildings: [SingleBuildingEvents!]! @goField(forceResolver: true)
 }
 
-type SingleBuildingEvents {
+type SingleBuildingEvents 
+  @goExtraField(name: "date", type: "string")
+{
   building: String! 
-  rooms: [RoomEvents!]! 
+  rooms: [RoomEvents!]! @goField(forceResolver: true)
 }
 
-type RoomEvents {
+type RoomEvents 
+  @goExtraField(name: "date", type: "string")
+  @goExtraField(name: "building", type: "string")
+{
   room: String! 
-  events: [SectionWithTime!]! 
+  section_events: [SectionWithTime!]! @goField(forceResolver: true)
 }
 
 type SectionWithTime {
@@ -198,6 +215,8 @@ type Query {
 		offset: Int = 0
 	): [CometCalendar!]
 	CometCalendar(id: ID!): CometCalendar
+
+  events(filter: EventFilter, offset: Int = 0): [MultiBuildingEvents!]
 }
 
 type Event {
