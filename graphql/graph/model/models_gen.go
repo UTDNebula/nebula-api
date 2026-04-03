@@ -19,6 +19,32 @@ type Assistant struct {
 	Email     string `json:"email"`
 }
 
+type AstraBuilding struct {
+	Building string       `json:"building" bson:"building"`
+	Rooms    []*AstraRoom `json:"rooms" bson:"rooms"`
+}
+
+type AstraDayEvents struct {
+	Date      string           `json:"date" bson:"date"`
+	Buildings []*AstraBuilding `json:"buildings" bson:"buildings"`
+}
+
+type AstraEvent struct {
+	ActivityName        *string  `json:"activity_name,omitempty" bson:"activity_name,omitempty"`
+	MeetingType         *string  `json:"meeting_type,omitempty" bson:"meeting_type,omitempty"`
+	StartDate           *string  `json:"start_date,omitempty" bson:"start_date,omitempty"`
+	EndDate             *string  `json:"end_date,omitempty" bson:"end_date,omitempty"`
+	CurrentState        *string  `json:"current_state,omitempty" bson:"current_state,omitempty"`
+	NotAllowedUsageMask *float64 `json:"not_allowed_usage_mask,omitempty" bson:"not_allowed_usage_mask,omitempty"`
+	UsageColor          *string  `json:"usage_color,omitempty" bson:"usage_color,omitempty"`
+	Capacity            *float64 `json:"capacity,omitempty" bson:"capacity,omitempty"`
+}
+
+type AstraRoom struct {
+	Room   string        `json:"room" bson:"room"`
+	Events []*AstraEvent `json:"events" bson:"events"`
+}
+
 type BuildingRooms struct {
 	Building string  `json:"building" bson:"building"`
 	Rooms    []*Room `json:"rooms,omitempty" bson:"rooms"`
@@ -144,6 +170,33 @@ type Location struct {
 	Building string `json:"building"`
 	Room     string `json:"room"`
 	MapURI   string `json:"map_uri"`
+}
+
+type MazevoBuilding struct {
+	Building string        `json:"building" bson:"building"`
+	Rooms    []*MazevoRoom `json:"rooms" bson:"rooms"`
+}
+
+type MazevoDayEvents struct {
+	Date      string            `json:"date" bson:"date"`
+	Buildings []*MazevoBuilding `json:"buildings" bson:"buildings"`
+}
+
+type MazevoEvent struct {
+	EventName         *string  `json:"event_name,omitempty" bson:"eventName,omitempty"`
+	OrganizationName  *string  `json:"organization_name,omitempty" bson:"organizationName,omitempty"`
+	ContactName       *string  `json:"contact_name,omitempty" bson:"contactName,omitempty"`
+	SetupMinutes      *float64 `json:"setup_minutes,omitempty" bson:"setupMinutes,omitempty"`
+	DateTimeStart     *string  `json:"date_time_start,omitempty" bson:"dateTimeStart,omitempty"`
+	DateTimeEnd       *string  `json:"date_time_end,omitempty" bson:"dateTimeEnd,omitempty"`
+	TeardownMinutes   *float64 `json:"teardown_minutes,omitempty" bson:"teardownMinutes,omitempty"`
+	StatusDescription *string  `json:"status_description,omitempty" bson:"statusDescription,omitempty"`
+	StatusColor       *string  `json:"status_color,omitempty" bson:"statusColor,omitempty"`
+}
+
+type MazevoRoom struct {
+	Room   string         `json:"room" bson:"room"`
+	Events []*MazevoEvent `json:"events" bson:"events"`
 }
 
 type Meeting struct {

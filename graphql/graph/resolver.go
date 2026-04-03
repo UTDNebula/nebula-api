@@ -12,4 +12,6 @@ type Resolver struct {
 	ProfCollection          *mongo.Collection
 	BuildingCollection      *mongo.Collection
 	CometCalendarCollection *mongo.Collection
+	AstraCollection         *mongo.Collection
+	MazevoCollection        *mongo.Collection
 }

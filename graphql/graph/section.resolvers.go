@@ -14,8 +14,8 @@ import (
 // Sections is the resolver for the sections field.
 func (r *queryResolver) Sections(
 	ctx context.Context,
-	filter *model.SectionFilter, 
-	offset *int32, 
+	filter *model.SectionFilter,
+	offset *int32,
 ) ([]*model.Section, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
