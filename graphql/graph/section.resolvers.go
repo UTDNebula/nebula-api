@@ -1,0 +1,87 @@
+package graph
+
+import (
+	"context"
+	"graphql/configs"
+	"graphql/graph/model"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
+// Sections is the resolver for the sections field.
+func (r *queryResolver) Sections(
+	ctx context.Context,
+	filter *model.SectionFilter, 
+	offset *int32, 
+) ([]*model.Section, error) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	// graphql output
+	var sections []*model.Section
+
+	// mongo decoding target
+	var dbSections []*model.DBSection
+
+	// building mongo query from filter (nil filter --> empty query --> return all)
+	sectionQuery := bson.M{}
+	if filter != nil {
+		bsonBytes, err := bson.Marshal(filter)
+		if err != nil {
+			return nil, err
+		}
+		if err := bson.Unmarshal(bsonBytes, &sectionQuery); err != nil {
+			return nil, err
+		}
+	}
+
+	// pagination logic
+	skip := int64(0)
+	if offset != nil {
+		skip = int64(*offset)
+	}
+	paginate := options.Find().
+		SetSkip(skip).
+		SetLimit(configs.GetEnvLimit())
+
+	// query database
+	cursor, err := r.SectionCollection.Find(timeoutCtx, sectionQuery, paginate)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(timeoutCtx)
+
+	// Decode
+	if err := cursor.All(timeoutCtx, &dbSections); err != nil {
+		return nil, err
+	}
+
+	// Transform DB ----> GraphQL
+	for _, dbSection := range dbSections {
+		sections = append(sections, model.TransformSection(dbSection))
+	}
+
+	return sections, nil
+}
+
+// Section is the resolver for the section field by ID.
+func (r *queryResolver) Section(ctx context.Context, id string) (*model.Section, error) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// decoding to a real value and not a nullptr
+	var dbSection model.DBSection
+	if err := r.SectionCollection.FindOne(timeoutCtx, bson.M{"_id": objectId}).Decode(&dbSection); err != nil {
+		return nil, err
+	}
+
+	return model.TransformSection(&dbSection), nil
+}

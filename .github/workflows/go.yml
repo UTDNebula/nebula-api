@@ -5,9 +5,9 @@ name: Go
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "graphql-v2" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "graphql-v2" ]
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./api    
+        working-directory: ./graphql
     steps:
     
     - name: Checkout
@@ -35,8 +35,6 @@ jobs:
       run: make check
 
     - name: Test
-      env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
       run: make test
 
     - name: Build
@@ -46,30 +44,25 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: .\api
+        working-directory: .\graphql
     steps:
     
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v6
       with:
-        go-version: '1.24'
+        go-version: '1.25'
         cache-dependency-path: "**\\go.sum"
 
     - name: Setup
       run: .\build.bat setup
 
-    - name: Docs
-      run: .\build.bat docs
-
     - name: Check
       run: .\build.bat checks
 
     - name: Test
-      env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
       run: .\build.bat test
 
     - name: Build
