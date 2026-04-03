@@ -127,7 +127,6 @@ type CometCalendar {
 }
 
 input CometCalendarFilter {
-	_id: String
 	date: String
 	buildings: [CometCalendarBuildingInput]
 }
