@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+type EventResult interface {
+	IsEventResult()
+}
+
 type AcademicSession struct {
 	Name      string    `json:"name"`
 	StartDate time.Time `json:"start_date"`
@@ -188,6 +192,8 @@ type MultiBuildingEvents struct {
 	Buildings []*SingleBuildingEvents `json:"buildings"`
 }
 
+func (MultiBuildingEvents) IsEventResult() {}
+
 type Query struct {
 }
 
@@ -199,9 +205,9 @@ type Room struct {
 type RoomEvents struct {
 	Room          string             `json:"room"`
 	SectionEvents []*SectionWithTime `json:"section_events"`
-	building      string             `json:"-"`
-	date          string             `json:"-"`
 }
+
+func (RoomEvents) IsEventResult() {}
 
 type Section struct {
 	ID                  string                 `json:"_id"`
@@ -229,13 +235,16 @@ type SectionFilter struct {
 }
 
 type SectionWithTime struct {
-	Section   string `json:"section"`
-	StartTime string `json:"start_time"`
-	EndTime   string `json:"end_time"`
+	Section   *Section `json:"section"`
+	StartTime string   `json:"start_time"`
+	EndTime   string   `json:"end_time"`
 }
+
+func (SectionWithTime) IsEventResult() {}
 
 type SingleBuildingEvents struct {
 	Building string        `json:"building"`
 	Rooms    []*RoomEvents `json:"rooms"`
-	date     string        `json:"-"`
 }
+
+func (SingleBuildingEvents) IsEventResult() {}

@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 /*
 These are the models that interact with the MongoDB
@@ -213,82 +217,85 @@ func TransformSection(dbSection *DBSection) *Section {
 
 // Event DB Models since it references Section
 type DBMultiBuildingEvents struct {
-	Date      string                    `bson:"date" json:"date"`
-	Buildings []DBSingleBuildingEvents    `bson:"buildings" json:"buildings"`
+	Date      string                   `bson:"date" json:"date"`
+	Buildings []DBSingleBuildingEvents `bson:"buildings" json:"buildings"`
 }
 
 type DBSingleBuildingEvents struct {
-	Building string          `bson:"building" json:"building"`
-	Rooms    []DBRoomEvents    `bson:"rooms" json:"rooms"`
+	Building string         `bson:"building" json:"building"`
+	Rooms    []DBRoomEvents `bson:"rooms" json:"rooms"`
 }
 
 type DBRoomEvents struct {
-	Room   string                 `bson:"room" json:"room"`
-	Events []DBSectionWithTime    `bson:"events" json:"events"`
+	Room   string              `bson:"room" json:"room"`
+	Events []DBSectionWithTime `bson:"events" json:"events"`
 }
 
 type DBSectionWithTime struct {
-	Section   string             `bson:"section" json:"section"`
+	Section   primitive.ObjectID `bson:"section" json:"section"`
 	StartTime string             `bson:"start_time" json:"start_time"`
 	EndTime   string             `bson:"end_time" json:"end_time"`
 }
 
-func transformSectionWithTime(dbSectionWithTime *DBSectionWithTime) *SectionWithTime{
+func TransformSectionWithTime(dbSectionWithTime *DBSectionWithTime) *SectionWithTime {
 	if dbSectionWithTime == nil {
 		return nil
 	}
+	sectionWithID := Section{
+		ID: dbSectionWithTime.Section.Hex(),
+	}
 
 	return &SectionWithTime{
-		Section: dbSectionWithTime.Section,
+		Section:   &sectionWithID,
 		StartTime: dbSectionWithTime.StartTime,
-		EndTime: dbSectionWithTime.EndTime,
+		EndTime:   dbSectionWithTime.EndTime,
 	}
 }
 
-func transformRoomEvents(dbRoomEvents *DBRoomEvents) *RoomEvents{
+func TransformRoomEvents(dbRoomEvents *DBRoomEvents) *RoomEvents {
 	if dbRoomEvents == nil {
 		return nil
 	}
 
 	events := make([]*SectionWithTime, len(dbRoomEvents.Events))
 	for i := range dbRoomEvents.Events {
-		events[i] = transformSectionWithTime(&dbRoomEvents.Events[i])
+		events[i] = TransformSectionWithTime(&dbRoomEvents.Events[i])
 	}
 
 	return &RoomEvents{
-		Room: dbRoomEvents.Room,
+		Room:          dbRoomEvents.Room,
 		SectionEvents: events,
 	}
 }
 
-func transformSingleBuildingEvents(dbSingleBuildingEvents *DBSingleBuildingEvents) *SingleBuildingEvents{
+func TransformSingleBuildingEvents(dbSingleBuildingEvents *DBSingleBuildingEvents) *SingleBuildingEvents {
 	if dbSingleBuildingEvents == nil {
 		return nil
 	}
 
 	rooms := make([]*RoomEvents, len(dbSingleBuildingEvents.Rooms))
 	for i := range dbSingleBuildingEvents.Rooms {
-		rooms[i] = transformRoomEvents(&dbSingleBuildingEvents.Rooms[i])
+		rooms[i] = TransformRoomEvents(&dbSingleBuildingEvents.Rooms[i])
 	}
 
 	return &SingleBuildingEvents{
 		Building: dbSingleBuildingEvents.Building,
-		Rooms: rooms,
+		Rooms:    rooms,
 	}
 }
 
-func transformMultiBuildingEvents(dbMultiBuildingEvents *DBMultiBuildingEvents) *MultiBuildingEvents{
+func TransformMultiBuildingEvents(dbMultiBuildingEvents *DBMultiBuildingEvents) *MultiBuildingEvents {
 	if dbMultiBuildingEvents == nil {
 		return nil
 	}
 
 	buildings := make([]*SingleBuildingEvents, len(dbMultiBuildingEvents.Buildings))
 	for i := range dbMultiBuildingEvents.Buildings {
-		buildings[i] = transformSingleBuildingEvents(&dbMultiBuildingEvents.Buildings[i])
+		buildings[i] = TransformSingleBuildingEvents(&dbMultiBuildingEvents.Buildings[i])
 	}
 
 	return &MultiBuildingEvents{
-		Date: dbMultiBuildingEvents.Date,
+		Date:      dbMultiBuildingEvents.Date,
 		Buildings: buildings,
 	}
 }

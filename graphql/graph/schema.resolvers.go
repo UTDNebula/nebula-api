@@ -8,20 +8,8 @@ package graph
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
-// RoomEvents returns RoomEventsResolver implementation.
-func (r *Resolver) RoomEvents() RoomEventsResolver { return &roomEventsResolver{r} }
-
-// SingleBuildingEvents returns SingleBuildingEventsResolver implementation.
-func (r *Resolver) SingleBuildingEvents() SingleBuildingEventsResolver {
-	return &singleBuildingEventsResolver{r}
-}
-
-// MultiBuildingEvents returns MultiBuildingEventsResolver implementation.
-func (r *Resolver) MultiBuildingEvents() MultiBuildingEventsResolver {
-	return &multiBuildingEventsResolver{r}
-}
+// SectionWithTime returns SectionWithTimeResolver implementation.
+func (r *Resolver) SectionWithTime() SectionWithTimeResolver { return &sectionWithTimeResolver{r} }
 
 type queryResolver struct{ *Resolver }
-type roomEventsResolver struct{ *Resolver }
-type singleBuildingEventsResolver struct{ *Resolver }
-type multiBuildingEventsResolver struct{ *Resolver }
+type sectionWithTimeResolver struct{ *Resolver }

@@ -9,11 +9,10 @@ directive @goField(
 	forceResolver: Boolean
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 
+# Add extra fields to models 
 directive @goExtraField(
 	name: String
 	type: String!
-	overrideTags: String
-	description: String
 ) repeatable on OBJECT | INPUT_OBJECT
 
 scalar Any
@@ -170,29 +169,26 @@ type BuildingRooms {
 
 type MultiBuildingEvents {
   date: String! 
-  buildings: [SingleBuildingEvents!]! @goField(forceResolver: true)
+  buildings: [SingleBuildingEvents!]! 
 }
 
-type SingleBuildingEvents 
-  @goExtraField(name: "date", type: "string")
-{
+type SingleBuildingEvents {
   building: String! 
-  rooms: [RoomEvents!]! @goField(forceResolver: true)
+  rooms: [RoomEvents!]! 
 }
 
-type RoomEvents 
-  @goExtraField(name: "date", type: "string")
-  @goExtraField(name: "building", type: "string")
-{
+type RoomEvents {
   room: String! 
-  section_events: [SectionWithTime!]! @goField(forceResolver: true)
+  section_events: [SectionWithTime!]! 
 }
 
 type SectionWithTime {
-  section: ID! 
+  section: Section! @goField(forceResolver: true)
   start_time: String! 
   end_time: String! 
 }
+
+union EventResult = MultiBuildingEvents | SingleBuildingEvents | RoomEvents | SectionWithTime
 
 input EventFilter {
   date: String @goTag(key: "bson", value: "date,omitempty")
@@ -216,7 +212,7 @@ type Query {
 	): [CometCalendar!]
 	CometCalendar(id: ID!): CometCalendar
 
-  events(filter: EventFilter, offset: Int = 0): [MultiBuildingEvents!]
+  events(date: String!, building: String, room: String): EventResult!
 }
 
 type Event {

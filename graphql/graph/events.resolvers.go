@@ -4,24 +4,46 @@ import (
 	"context"
 	"fmt"
 	"graphql/graph/model"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
-// Buildings is the resolver for the buildings field.
-func (r *multiBuildingEventsResolver) Buildings(ctx context.Context, obj *model.MultiBuildingEvents) ([]*model.SingleBuildingEvents, error) {
-	panic(fmt.Errorf("not implemented: Buildings - buildings"))
+func (r *queryResolver) Events(ctx context.Context, date string, building *string, room *string) (model.EventResult, error) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	var dbEvents model.DBMultiBuildingEvents
+	var events *model.MultiBuildingEvents
+
+	err := r.EventCollection.FindOne(timeoutCtx, bson.M{"date": date}).Decode(&dbEvents)
+	if err != nil {
+		return nil, err
+	}
+
+	events = model.TransformMultiBuildingEvents(&dbEvents)
+	if building == nil {
+		return events, nil
+	}
+
+	for _, b := range events.Buildings {
+		if b.Building == *building {
+			if room == nil {
+				return b, nil
+			}
+
+			for _, r := range b.Rooms {
+				if r.Room == *room {
+					return r, nil
+				}
+			}
+		}
+	}
+
+	return nil, fmt.Errorf("date not found")
 }
 
-// Events implements [QueryResolver].
-func (r *queryResolver) Events(ctx context.Context, filter *model.EventFilter, offset *int32) ([]*model.MultiBuildingEvents, error) {
-	panic("unimplemented")
-}
-
-// SectionEvents is the resolver for the section_events field.
-func (r *roomEventsResolver) SectionEvents(ctx context.Context, obj *model.RoomEvents) ([]*model.SectionWithTime, error) {
-	panic(fmt.Errorf("not implemented: SectionEvents - section_events"))
-}
-
-// Rooms is the resolver for the rooms field.
-func (r *singleBuildingEventsResolver) Rooms(ctx context.Context, obj *model.SingleBuildingEvents) ([]*model.RoomEvents, error) {
-	panic(fmt.Errorf("not implemented: Rooms - rooms"))
+// Section implements [SectionWithTimeResolver].
+func (r *sectionWithTimeResolver) Section(ctx context.Context, obj *model.SectionWithTime) (*model.Section, error) {
+	return r.Query().Section(ctx, obj.Section.ID)
 }
