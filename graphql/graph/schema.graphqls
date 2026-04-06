@@ -237,7 +237,7 @@ type Query {
 	CometCalendar(id: ID!): CometCalendar
 
   events(date: String!, building: String, room: String): EventResult!
-  
+
 	AstraEvents(date: String!): AstraDayEvents!
 	AstraEventsByBuilding(date: String!, building: String!): AstraBuilding!
 	AstraEventsByRoom(date: String!, building: String!, room: String!): AstraRoom!
@@ -286,7 +286,6 @@ type CometCalendar {
 }
 
 input CometCalendarFilter {
-	_id: String
 	date: String
 	buildings: [CometCalendarBuildingInput]
 }
@@ -302,19 +301,12 @@ input CometCalendarRoomInput {
 }
 
 input EventInput {
-	_id: ID
-	summary: String
 	location: String
 	start_time: DateTime
 	end_time: DateTime
-	description: String
 	event_type: [String]
 	target_audience: [String]
 	topic: [String]
 	event_tags: [String]
-	event_website: String
 	department: [String]
-	contact_name: String
-	contact_email: String
-	contact_phone_number: String
 }
