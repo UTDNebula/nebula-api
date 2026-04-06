@@ -20,11 +20,12 @@ import (
 )
 
 // CometCalendars is the resolver for the CometCalendars field.
+// CometCalendars is the resolver for the CometCalendars field.
 func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset *int32) ([]*model.CometCalendar, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	// Build query from filter explicitly
+	// Build query from filter explicitly. JSON will not work due to nested type conflicts
 	query := buildCometCalendarQuery(filter)
 
 	// Pagination
@@ -46,6 +47,32 @@ func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometC
 	var calendars []*model.CometCalendar
 	if err = cursor.All(timeoutCtx, &calendars); err != nil {
 		return nil, err
+	}
+
+	/* Filter nested buildings array */
+	if filter != nil && len(filter.Buildings) > 0 {
+		// Collect requested building names
+		buildingNames := []string{}
+		for _, b := range filter.Buildings {
+			if b != nil && b.Building != nil {
+				buildingNames = append(buildingNames, *b.Building)
+			}
+		}
+		// If there are building with that requested building name, filter buildings in calendar accordingly
+		if len(buildingNames) > 0 {
+			for _, cal := range calendars {
+				filteredBuildings := []*model.CometCalendarBuilding{}
+				for _, bldg := range cal.Buildings {
+					for _, name := range buildingNames {
+						if bldg.Building == name {
+							filteredBuildings = append(filteredBuildings, bldg)
+							break
+						}
+					}
+				}
+				cal.Buildings = filteredBuildings
+			}
+		}
 	}
 
 	return calendars, nil
@@ -79,9 +106,6 @@ func buildCometCalendarQuery(filter *model.CometCalendarFilter) bson.M {
 	query := bson.M{}
 
 	if filter != nil {
-		if filter.ID != nil {
-			query["_id"] = *filter.ID
-		}
 		if filter.Date != nil {
 			query["date"] = *filter.Date
 		}
