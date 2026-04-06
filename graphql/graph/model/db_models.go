@@ -81,6 +81,57 @@ func TransformCourse(dbCourse *DBCourse) *Course {
 	}
 }
 
+type DBOffice struct {
+	Building string `bson:"building"`
+	MapURI   string `bson:"map_uri"`
+	Room     string `bson:"room"`
+}
+
+func TransformOffice(dbOffice *DBOffice) *Office {
+	if dbOffice == nil {
+		return nil
+	}
+	return &Office{
+		dbOffice.Building,
+		dbOffice.MapURI,
+		dbOffice.Room,
+	}
+}
+
+type DBProfessor struct {
+	ID          string    `bson:"_id"`
+	FirstName   string    `bson:"first_name"`
+	LastName    string    `bson:"last_name"`
+	Titles      []string  `bson:"titles"`
+	Email       string    `bson:"email"`
+	PhoneNumber string    `bson:"phone_number"`
+	Office      *DBOffice `bson:"office"`
+	ProfileURI  string    `bson:"profile_uri"`
+	ImageURI    string    `bson:"image_uri"`
+	OfficeHours any       `bson:"office_hours"`
+	Sections    []string  `bson:"sections"`
+}
+
+func TransformProfessor(dbProfessor *DBProfessor) *Professor {
+	if dbProfessor == nil {
+		return nil
+	}
+
+	return &Professor{
+		dbProfessor.ID,
+		dbProfessor.FirstName,
+		dbProfessor.LastName,
+		dbProfessor.Titles,
+		dbProfessor.Email,
+		dbProfessor.PhoneNumber,
+		TransformOffice(dbProfessor.Office),
+		dbProfessor.ProfileURI,
+		dbProfessor.ImageURI,
+		dbProfessor.OfficeHours,
+		dbProfessor.Sections,
+	}
+}
+
 // --- Section DB Models and Transformers ---
 
 type DBAcademicSession struct {
