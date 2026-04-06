@@ -50,6 +50,32 @@ type ComplexityRoot struct {
 		Role      func(childComplexity int) int
 	}
 
+	AstraBuilding struct {
+		Building func(childComplexity int) int
+		Rooms    func(childComplexity int) int
+	}
+
+	AstraDayEvents struct {
+		Buildings func(childComplexity int) int
+		Date      func(childComplexity int) int
+	}
+
+	AstraEvent struct {
+		ActivityName        func(childComplexity int) int
+		Capacity            func(childComplexity int) int
+		CurrentState        func(childComplexity int) int
+		EndDate             func(childComplexity int) int
+		MeetingType         func(childComplexity int) int
+		NotAllowedUsageMask func(childComplexity int) int
+		StartDate           func(childComplexity int) int
+		UsageColor          func(childComplexity int) int
+	}
+
+	AstraRoom struct {
+		Events func(childComplexity int) int
+		Room   func(childComplexity int) int
+	}
+
 	BasicCourse struct {
 		ActivityType  func(childComplexity int) int
 		CatalogYear   func(childComplexity int) int
@@ -149,6 +175,33 @@ type ComplexityRoot struct {
 		Room     func(childComplexity int) int
 	}
 
+	MazevoBuilding struct {
+		Building func(childComplexity int) int
+		Rooms    func(childComplexity int) int
+	}
+
+	MazevoDayEvents struct {
+		Buildings func(childComplexity int) int
+		Date      func(childComplexity int) int
+	}
+
+	MazevoEvent struct {
+		ContactName       func(childComplexity int) int
+		DateTimeEnd       func(childComplexity int) int
+		DateTimeStart     func(childComplexity int) int
+		EventName         func(childComplexity int) int
+		OrganizationName  func(childComplexity int) int
+		SetupMinutes      func(childComplexity int) int
+		StatusColor       func(childComplexity int) int
+		StatusDescription func(childComplexity int) int
+		TeardownMinutes   func(childComplexity int) int
+	}
+
+	MazevoRoom struct {
+		Events func(childComplexity int) int
+		Room   func(childComplexity int) int
+	}
+
 	Meeting struct {
 		EndDate     func(childComplexity int) int
 		EndTime     func(childComplexity int) int
@@ -165,14 +218,18 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		CometCalendar  func(childComplexity int, id string) int
-		CometCalendars func(childComplexity int, filter *model.CometCalendarFilter, offset *int32) int
-		Course         func(childComplexity int, id string) int
-		Courses        func(childComplexity int, filter *model.CourseFilter, offset *int32) int
-		Events         func(childComplexity int, date string, building *string, room *string) int
-		Rooms          func(childComplexity int) int
-		Section        func(childComplexity int, id string) int
-		Sections       func(childComplexity int, filter *model.SectionFilter, offset *int32) int
+		AstraEvents           func(childComplexity int, date string) int
+		AstraEventsByBuilding func(childComplexity int, date string, building string) int
+		AstraEventsByRoom     func(childComplexity int, date string, building string, room string) int
+		CometCalendar         func(childComplexity int, id string) int
+		CometCalendars        func(childComplexity int, filter *model.CometCalendarFilter, offset *int32) int
+		Course                func(childComplexity int, id string) int
+		Courses               func(childComplexity int, filter *model.CourseFilter, offset *int32) int
+		Events                func(childComplexity int, date string, building *string, room *string) int
+		MazevoEvents          func(childComplexity int, date string) int
+		Rooms                 func(childComplexity int) int
+		Section               func(childComplexity int, id string) int
+		Sections              func(childComplexity int, filter *model.SectionFilter, offset *int32) int
 	}
 
 	Room struct {
@@ -223,6 +280,10 @@ type QueryResolver interface {
 	CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset *int32) ([]*model.CometCalendar, error)
 	CometCalendar(ctx context.Context, id string) (*model.CometCalendar, error)
 	Events(ctx context.Context, date string, building *string, room *string) (model.EventResult, error)
+	AstraEvents(ctx context.Context, date string) (*model.AstraDayEvents, error)
+	AstraEventsByBuilding(ctx context.Context, date string, building string) (*model.AstraBuilding, error)
+	AstraEventsByRoom(ctx context.Context, date string, building string, room string) (*model.AstraRoom, error)
+	MazevoEvents(ctx context.Context, date string) (*model.MazevoDayEvents, error)
 }
 type SectionWithTimeResolver interface {
 	Section(ctx context.Context, obj *model.SectionWithTime) (*model.Section, error)
@@ -285,6 +346,94 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Assistant.Role(childComplexity), true
+
+	case "AstraBuilding.building":
+		if e.ComplexityRoot.AstraBuilding.Building == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraBuilding.Building(childComplexity), true
+	case "AstraBuilding.rooms":
+		if e.ComplexityRoot.AstraBuilding.Rooms == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraBuilding.Rooms(childComplexity), true
+
+	case "AstraDayEvents.buildings":
+		if e.ComplexityRoot.AstraDayEvents.Buildings == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraDayEvents.Buildings(childComplexity), true
+	case "AstraDayEvents.date":
+		if e.ComplexityRoot.AstraDayEvents.Date == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraDayEvents.Date(childComplexity), true
+
+	case "AstraEvent.activity_name":
+		if e.ComplexityRoot.AstraEvent.ActivityName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraEvent.ActivityName(childComplexity), true
+	case "AstraEvent.capacity":
+		if e.ComplexityRoot.AstraEvent.Capacity == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraEvent.Capacity(childComplexity), true
+	case "AstraEvent.current_state":
+		if e.ComplexityRoot.AstraEvent.CurrentState == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraEvent.CurrentState(childComplexity), true
+	case "AstraEvent.end_date":
+		if e.ComplexityRoot.AstraEvent.EndDate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraEvent.EndDate(childComplexity), true
+	case "AstraEvent.meeting_type":
+		if e.ComplexityRoot.AstraEvent.MeetingType == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraEvent.MeetingType(childComplexity), true
+	case "AstraEvent.not_allowed_usage_mask":
+		if e.ComplexityRoot.AstraEvent.NotAllowedUsageMask == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraEvent.NotAllowedUsageMask(childComplexity), true
+	case "AstraEvent.start_date":
+		if e.ComplexityRoot.AstraEvent.StartDate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraEvent.StartDate(childComplexity), true
+	case "AstraEvent.usage_color":
+		if e.ComplexityRoot.AstraEvent.UsageColor == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraEvent.UsageColor(childComplexity), true
+
+	case "AstraRoom.events":
+		if e.ComplexityRoot.AstraRoom.Events == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraRoom.Events(childComplexity), true
+	case "AstraRoom.room":
+		if e.ComplexityRoot.AstraRoom.Room == nil {
+			break
+		}
+
+		return e.ComplexityRoot.AstraRoom.Room(childComplexity), true
 
 	case "BasicCourse.activity_type":
 		if e.ComplexityRoot.BasicCourse.ActivityType == nil {
@@ -710,6 +859,100 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Location.Room(childComplexity), true
 
+	case "MazevoBuilding.building":
+		if e.ComplexityRoot.MazevoBuilding.Building == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoBuilding.Building(childComplexity), true
+	case "MazevoBuilding.rooms":
+		if e.ComplexityRoot.MazevoBuilding.Rooms == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoBuilding.Rooms(childComplexity), true
+
+	case "MazevoDayEvents.buildings":
+		if e.ComplexityRoot.MazevoDayEvents.Buildings == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoDayEvents.Buildings(childComplexity), true
+	case "MazevoDayEvents.date":
+		if e.ComplexityRoot.MazevoDayEvents.Date == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoDayEvents.Date(childComplexity), true
+
+	case "MazevoEvent.contact_name":
+		if e.ComplexityRoot.MazevoEvent.ContactName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.ContactName(childComplexity), true
+	case "MazevoEvent.date_time_end":
+		if e.ComplexityRoot.MazevoEvent.DateTimeEnd == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.DateTimeEnd(childComplexity), true
+	case "MazevoEvent.date_time_start":
+		if e.ComplexityRoot.MazevoEvent.DateTimeStart == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.DateTimeStart(childComplexity), true
+	case "MazevoEvent.event_name":
+		if e.ComplexityRoot.MazevoEvent.EventName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.EventName(childComplexity), true
+	case "MazevoEvent.organization_name":
+		if e.ComplexityRoot.MazevoEvent.OrganizationName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.OrganizationName(childComplexity), true
+	case "MazevoEvent.setup_minutes":
+		if e.ComplexityRoot.MazevoEvent.SetupMinutes == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.SetupMinutes(childComplexity), true
+	case "MazevoEvent.status_color":
+		if e.ComplexityRoot.MazevoEvent.StatusColor == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.StatusColor(childComplexity), true
+	case "MazevoEvent.status_description":
+		if e.ComplexityRoot.MazevoEvent.StatusDescription == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.StatusDescription(childComplexity), true
+	case "MazevoEvent.teardown_minutes":
+		if e.ComplexityRoot.MazevoEvent.TeardownMinutes == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoEvent.TeardownMinutes(childComplexity), true
+
+	case "MazevoRoom.events":
+		if e.ComplexityRoot.MazevoRoom.Events == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoRoom.Events(childComplexity), true
+	case "MazevoRoom.room":
+		if e.ComplexityRoot.MazevoRoom.Room == nil {
+			break
+		}
+
+		return e.ComplexityRoot.MazevoRoom.Room(childComplexity), true
+
 	case "Meeting.end_date":
 		if e.ComplexityRoot.Meeting.EndDate == nil {
 			break
@@ -766,6 +1009,39 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.MultiBuildingEvents.Date(childComplexity), true
 
+	case "Query.AstraEvents":
+		if e.ComplexityRoot.Query.AstraEvents == nil {
+			break
+		}
+
+		args, err := ec.field_Query_AstraEvents_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.AstraEvents(childComplexity, args["date"].(string)), true
+	case "Query.AstraEventsByBuilding":
+		if e.ComplexityRoot.Query.AstraEventsByBuilding == nil {
+			break
+		}
+
+		args, err := ec.field_Query_AstraEventsByBuilding_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.AstraEventsByBuilding(childComplexity, args["date"].(string), args["building"].(string)), true
+	case "Query.AstraEventsByRoom":
+		if e.ComplexityRoot.Query.AstraEventsByRoom == nil {
+			break
+		}
+
+		args, err := ec.field_Query_AstraEventsByRoom_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.AstraEventsByRoom(childComplexity, args["date"].(string), args["building"].(string), args["room"].(string)), true
 	case "Query.CometCalendar":
 		if e.ComplexityRoot.Query.CometCalendar == nil {
 			break
@@ -822,6 +1098,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Query.Events(childComplexity, args["date"].(string), args["building"].(*string), args["room"].(*string)), true
 
+	case "Query.MazevoEvents":
+		if e.ComplexityRoot.Query.MazevoEvents == nil {
+			break
+		}
+
+		args, err := ec.field_Query_MazevoEvents_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.MazevoEvents(childComplexity, args["date"].(string)), true
 	case "Query.rooms":
 		if e.ComplexityRoot.Query.Rooms == nil {
 			break
@@ -1006,7 +1293,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCometCalendarFilter,
 		ec.unmarshalInputCometCalendarRoomInput,
 		ec.unmarshalInputCourseFilter,
-		ec.unmarshalInputEventFilter,
 		ec.unmarshalInputEventInput,
 		ec.unmarshalInputSectionFilter,
 	)
@@ -1068,7 +1354,7 @@ func newExecutionContext(
 	}
 }
 
-//go:embed "schema.graphqls"
+//go:embed "mazevo.graphqls" "schema.graphqls"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -1080,6 +1366,7 @@ func sourceData(filename string) string {
 }
 
 var sources = []*ast.Source{
+	{Name: "mazevo.graphqls", Input: sourceData("mazevo.graphqls"), BuiltIn: false},
 	{Name: "schema.graphqls", Input: sourceData("schema.graphqls"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -1087,6 +1374,54 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Query_AstraEventsByBuilding_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["date"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "building", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["building"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_AstraEventsByRoom_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["date"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "building", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["building"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "room", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["room"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_AstraEvents_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["date"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Query_CometCalendar_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
@@ -1112,6 +1447,17 @@ func (ec *executionContext) field_Query_CometCalendars_args(ctx context.Context,
 		return nil, err
 	}
 	args["offset"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_MazevoEvents_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["date"] = arg0
 	return args, nil
 }
 
@@ -1451,6 +1797,442 @@ func (ec *executionContext) fieldContext_Assistant_email(_ context.Context, fiel
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraBuilding_building(ctx context.Context, field graphql.CollectedField, obj *model.AstraBuilding) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraBuilding_building,
+		func(ctx context.Context) (any, error) {
+			return obj.Building, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraBuilding_building(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraBuilding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraBuilding_rooms(ctx context.Context, field graphql.CollectedField, obj *model.AstraBuilding) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraBuilding_rooms,
+		func(ctx context.Context) (any, error) {
+			return obj.Rooms, nil
+		},
+		nil,
+		ec.marshalNAstraRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraRoomᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraBuilding_rooms(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraBuilding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "room":
+				return ec.fieldContext_AstraRoom_room(ctx, field)
+			case "events":
+				return ec.fieldContext_AstraRoom_events(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AstraRoom", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraDayEvents_date(ctx context.Context, field graphql.CollectedField, obj *model.AstraDayEvents) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraDayEvents_date,
+		func(ctx context.Context) (any, error) {
+			return obj.Date, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraDayEvents_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraDayEvents",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraDayEvents_buildings(ctx context.Context, field graphql.CollectedField, obj *model.AstraDayEvents) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraDayEvents_buildings,
+		func(ctx context.Context) (any, error) {
+			return obj.Buildings, nil
+		},
+		nil,
+		ec.marshalNAstraBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraBuildingᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraDayEvents_buildings(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraDayEvents",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "building":
+				return ec.fieldContext_AstraBuilding_building(ctx, field)
+			case "rooms":
+				return ec.fieldContext_AstraBuilding_rooms(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AstraBuilding", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraEvent_activity_name(ctx context.Context, field graphql.CollectedField, obj *model.AstraEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraEvent_activity_name,
+		func(ctx context.Context) (any, error) {
+			return obj.ActivityName, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraEvent_activity_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraEvent_meeting_type(ctx context.Context, field graphql.CollectedField, obj *model.AstraEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraEvent_meeting_type,
+		func(ctx context.Context) (any, error) {
+			return obj.MeetingType, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraEvent_meeting_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraEvent_start_date(ctx context.Context, field graphql.CollectedField, obj *model.AstraEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraEvent_start_date,
+		func(ctx context.Context) (any, error) {
+			return obj.StartDate, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraEvent_start_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraEvent_end_date(ctx context.Context, field graphql.CollectedField, obj *model.AstraEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraEvent_end_date,
+		func(ctx context.Context) (any, error) {
+			return obj.EndDate, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraEvent_end_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraEvent_current_state(ctx context.Context, field graphql.CollectedField, obj *model.AstraEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraEvent_current_state,
+		func(ctx context.Context) (any, error) {
+			return obj.CurrentState, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraEvent_current_state(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraEvent_not_allowed_usage_mask(ctx context.Context, field graphql.CollectedField, obj *model.AstraEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraEvent_not_allowed_usage_mask,
+		func(ctx context.Context) (any, error) {
+			return obj.NotAllowedUsageMask, nil
+		},
+		nil,
+		ec.marshalOFloat642ᚖfloat64,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraEvent_not_allowed_usage_mask(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraEvent_usage_color(ctx context.Context, field graphql.CollectedField, obj *model.AstraEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraEvent_usage_color,
+		func(ctx context.Context) (any, error) {
+			return obj.UsageColor, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraEvent_usage_color(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraEvent_capacity(ctx context.Context, field graphql.CollectedField, obj *model.AstraEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraEvent_capacity,
+		func(ctx context.Context) (any, error) {
+			return obj.Capacity, nil
+		},
+		nil,
+		ec.marshalOFloat642ᚖfloat64,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraEvent_capacity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraRoom_room(ctx context.Context, field graphql.CollectedField, obj *model.AstraRoom) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraRoom_room,
+		func(ctx context.Context) (any, error) {
+			return obj.Room, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraRoom_room(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraRoom",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AstraRoom_events(ctx context.Context, field graphql.CollectedField, obj *model.AstraRoom) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AstraRoom_events,
+		func(ctx context.Context) (any, error) {
+			return obj.Events, nil
+		},
+		nil,
+		ec.marshalNAstraEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraEventᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AstraRoom_events(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AstraRoom",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "activity_name":
+				return ec.fieldContext_AstraEvent_activity_name(ctx, field)
+			case "meeting_type":
+				return ec.fieldContext_AstraEvent_meeting_type(ctx, field)
+			case "start_date":
+				return ec.fieldContext_AstraEvent_start_date(ctx, field)
+			case "end_date":
+				return ec.fieldContext_AstraEvent_end_date(ctx, field)
+			case "current_state":
+				return ec.fieldContext_AstraEvent_current_state(ctx, field)
+			case "not_allowed_usage_mask":
+				return ec.fieldContext_AstraEvent_not_allowed_usage_mask(ctx, field)
+			case "usage_color":
+				return ec.fieldContext_AstraEvent_usage_color(ctx, field)
+			case "capacity":
+				return ec.fieldContext_AstraEvent_capacity(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AstraEvent", field.Name)
 		},
 	}
 	return fc, nil
@@ -3561,6 +4343,473 @@ func (ec *executionContext) fieldContext_Location_map_uri(_ context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _MazevoBuilding_building(ctx context.Context, field graphql.CollectedField, obj *model.MazevoBuilding) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoBuilding_building,
+		func(ctx context.Context) (any, error) {
+			return obj.Building, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoBuilding_building(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoBuilding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoBuilding_rooms(ctx context.Context, field graphql.CollectedField, obj *model.MazevoBuilding) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoBuilding_rooms,
+		func(ctx context.Context) (any, error) {
+			return obj.Rooms, nil
+		},
+		nil,
+		ec.marshalNMazevoRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoRoomᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoBuilding_rooms(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoBuilding",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "room":
+				return ec.fieldContext_MazevoRoom_room(ctx, field)
+			case "events":
+				return ec.fieldContext_MazevoRoom_events(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MazevoRoom", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoDayEvents_date(ctx context.Context, field graphql.CollectedField, obj *model.MazevoDayEvents) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoDayEvents_date,
+		func(ctx context.Context) (any, error) {
+			return obj.Date, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoDayEvents_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoDayEvents",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoDayEvents_buildings(ctx context.Context, field graphql.CollectedField, obj *model.MazevoDayEvents) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoDayEvents_buildings,
+		func(ctx context.Context) (any, error) {
+			return obj.Buildings, nil
+		},
+		nil,
+		ec.marshalNMazevoBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoBuildingᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoDayEvents_buildings(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoDayEvents",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "building":
+				return ec.fieldContext_MazevoBuilding_building(ctx, field)
+			case "rooms":
+				return ec.fieldContext_MazevoBuilding_rooms(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MazevoBuilding", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_event_name(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_event_name,
+		func(ctx context.Context) (any, error) {
+			return obj.EventName, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_event_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_organization_name(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_organization_name,
+		func(ctx context.Context) (any, error) {
+			return obj.OrganizationName, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_organization_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_contact_name(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_contact_name,
+		func(ctx context.Context) (any, error) {
+			return obj.ContactName, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_contact_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_setup_minutes(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_setup_minutes,
+		func(ctx context.Context) (any, error) {
+			return obj.SetupMinutes, nil
+		},
+		nil,
+		ec.marshalOFloat642ᚖfloat64,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_setup_minutes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_date_time_start(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_date_time_start,
+		func(ctx context.Context) (any, error) {
+			return obj.DateTimeStart, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_date_time_start(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_date_time_end(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_date_time_end,
+		func(ctx context.Context) (any, error) {
+			return obj.DateTimeEnd, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_date_time_end(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_teardown_minutes(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_teardown_minutes,
+		func(ctx context.Context) (any, error) {
+			return obj.TeardownMinutes, nil
+		},
+		nil,
+		ec.marshalOFloat642ᚖfloat64,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_teardown_minutes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_status_description(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_status_description,
+		func(ctx context.Context) (any, error) {
+			return obj.StatusDescription, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_status_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoEvent_status_color(ctx context.Context, field graphql.CollectedField, obj *model.MazevoEvent) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoEvent_status_color,
+		func(ctx context.Context) (any, error) {
+			return obj.StatusColor, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoEvent_status_color(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoRoom_room(ctx context.Context, field graphql.CollectedField, obj *model.MazevoRoom) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoRoom_room,
+		func(ctx context.Context) (any, error) {
+			return obj.Room, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoRoom_room(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoRoom",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MazevoRoom_events(ctx context.Context, field graphql.CollectedField, obj *model.MazevoRoom) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_MazevoRoom_events,
+		func(ctx context.Context) (any, error) {
+			return obj.Events, nil
+		},
+		nil,
+		ec.marshalNMazevoEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoEventᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_MazevoRoom_events(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MazevoRoom",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "event_name":
+				return ec.fieldContext_MazevoEvent_event_name(ctx, field)
+			case "organization_name":
+				return ec.fieldContext_MazevoEvent_organization_name(ctx, field)
+			case "contact_name":
+				return ec.fieldContext_MazevoEvent_contact_name(ctx, field)
+			case "setup_minutes":
+				return ec.fieldContext_MazevoEvent_setup_minutes(ctx, field)
+			case "date_time_start":
+				return ec.fieldContext_MazevoEvent_date_time_start(ctx, field)
+			case "date_time_end":
+				return ec.fieldContext_MazevoEvent_date_time_end(ctx, field)
+			case "teardown_minutes":
+				return ec.fieldContext_MazevoEvent_teardown_minutes(ctx, field)
+			case "status_description":
+				return ec.fieldContext_MazevoEvent_status_description(ctx, field)
+			case "status_color":
+				return ec.fieldContext_MazevoEvent_status_color(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MazevoEvent", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Meeting_start_date(ctx context.Context, field graphql.CollectedField, obj *model.Meeting) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -4320,6 +5569,194 @@ func (ec *executionContext) fieldContext_Query_events(ctx context.Context, field
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_events_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_AstraEvents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_AstraEvents,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().AstraEvents(ctx, fc.Args["date"].(string))
+		},
+		nil,
+		ec.marshalNAstraDayEvents2ᚖgraphqlᚋgraphᚋmodelᚐAstraDayEvents,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_AstraEvents(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "date":
+				return ec.fieldContext_AstraDayEvents_date(ctx, field)
+			case "buildings":
+				return ec.fieldContext_AstraDayEvents_buildings(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AstraDayEvents", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_AstraEvents_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_AstraEventsByBuilding(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_AstraEventsByBuilding,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().AstraEventsByBuilding(ctx, fc.Args["date"].(string), fc.Args["building"].(string))
+		},
+		nil,
+		ec.marshalNAstraBuilding2ᚖgraphqlᚋgraphᚋmodelᚐAstraBuilding,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_AstraEventsByBuilding(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "building":
+				return ec.fieldContext_AstraBuilding_building(ctx, field)
+			case "rooms":
+				return ec.fieldContext_AstraBuilding_rooms(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AstraBuilding", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_AstraEventsByBuilding_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_AstraEventsByRoom(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_AstraEventsByRoom,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().AstraEventsByRoom(ctx, fc.Args["date"].(string), fc.Args["building"].(string), fc.Args["room"].(string))
+		},
+		nil,
+		ec.marshalNAstraRoom2ᚖgraphqlᚋgraphᚋmodelᚐAstraRoom,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_AstraEventsByRoom(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "room":
+				return ec.fieldContext_AstraRoom_room(ctx, field)
+			case "events":
+				return ec.fieldContext_AstraRoom_events(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AstraRoom", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_AstraEventsByRoom_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_MazevoEvents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_MazevoEvents,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().MazevoEvents(ctx, fc.Args["date"].(string))
+		},
+		nil,
+		ec.marshalNMazevoDayEvents2ᚖgraphqlᚋgraphᚋmodelᚐMazevoDayEvents,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_MazevoEvents(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "date":
+				return ec.fieldContext_MazevoDayEvents_date(ctx, field)
+			case "buildings":
+				return ec.fieldContext_MazevoDayEvents_buildings(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MazevoDayEvents", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_MazevoEvents_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -6860,50 +8297,6 @@ func (ec *executionContext) unmarshalInputCourseFilter(ctx context.Context, obj 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputEventFilter(ctx context.Context, obj any) (model.EventFilter, error) {
-	var it model.EventFilter
-	if obj == nil {
-		return it, nil
-	}
-
-	asMap := map[string]any{}
-	for k, v := range obj.(map[string]any) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"date", "building", "room"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "date":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Date = data
-		case "building":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("building"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Building = data
-		case "room":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("room"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Room = data
-		}
-	}
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputEventInput(ctx context.Context, obj any) (model.EventInput, error) {
 	var it model.EventInput
 	if obj == nil {
@@ -7216,6 +8609,188 @@ func (ec *executionContext) _Assistant(ctx context.Context, sel ast.SelectionSet
 			}
 		case "email":
 			out.Values[i] = ec._Assistant_email(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var astraBuildingImplementors = []string{"AstraBuilding"}
+
+func (ec *executionContext) _AstraBuilding(ctx context.Context, sel ast.SelectionSet, obj *model.AstraBuilding) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, astraBuildingImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AstraBuilding")
+		case "building":
+			out.Values[i] = ec._AstraBuilding_building(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "rooms":
+			out.Values[i] = ec._AstraBuilding_rooms(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var astraDayEventsImplementors = []string{"AstraDayEvents"}
+
+func (ec *executionContext) _AstraDayEvents(ctx context.Context, sel ast.SelectionSet, obj *model.AstraDayEvents) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, astraDayEventsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AstraDayEvents")
+		case "date":
+			out.Values[i] = ec._AstraDayEvents_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "buildings":
+			out.Values[i] = ec._AstraDayEvents_buildings(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var astraEventImplementors = []string{"AstraEvent"}
+
+func (ec *executionContext) _AstraEvent(ctx context.Context, sel ast.SelectionSet, obj *model.AstraEvent) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, astraEventImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AstraEvent")
+		case "activity_name":
+			out.Values[i] = ec._AstraEvent_activity_name(ctx, field, obj)
+		case "meeting_type":
+			out.Values[i] = ec._AstraEvent_meeting_type(ctx, field, obj)
+		case "start_date":
+			out.Values[i] = ec._AstraEvent_start_date(ctx, field, obj)
+		case "end_date":
+			out.Values[i] = ec._AstraEvent_end_date(ctx, field, obj)
+		case "current_state":
+			out.Values[i] = ec._AstraEvent_current_state(ctx, field, obj)
+		case "not_allowed_usage_mask":
+			out.Values[i] = ec._AstraEvent_not_allowed_usage_mask(ctx, field, obj)
+		case "usage_color":
+			out.Values[i] = ec._AstraEvent_usage_color(ctx, field, obj)
+		case "capacity":
+			out.Values[i] = ec._AstraEvent_capacity(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var astraRoomImplementors = []string{"AstraRoom"}
+
+func (ec *executionContext) _AstraRoom(ctx context.Context, sel ast.SelectionSet, obj *model.AstraRoom) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, astraRoomImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AstraRoom")
+		case "room":
+			out.Values[i] = ec._AstraRoom_room(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "events":
+			out.Values[i] = ec._AstraRoom_events(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -7903,6 +9478,190 @@ func (ec *executionContext) _Location(ctx context.Context, sel ast.SelectionSet,
 	return out
 }
 
+var mazevoBuildingImplementors = []string{"MazevoBuilding"}
+
+func (ec *executionContext) _MazevoBuilding(ctx context.Context, sel ast.SelectionSet, obj *model.MazevoBuilding) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, mazevoBuildingImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MazevoBuilding")
+		case "building":
+			out.Values[i] = ec._MazevoBuilding_building(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "rooms":
+			out.Values[i] = ec._MazevoBuilding_rooms(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var mazevoDayEventsImplementors = []string{"MazevoDayEvents"}
+
+func (ec *executionContext) _MazevoDayEvents(ctx context.Context, sel ast.SelectionSet, obj *model.MazevoDayEvents) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, mazevoDayEventsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MazevoDayEvents")
+		case "date":
+			out.Values[i] = ec._MazevoDayEvents_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "buildings":
+			out.Values[i] = ec._MazevoDayEvents_buildings(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var mazevoEventImplementors = []string{"MazevoEvent"}
+
+func (ec *executionContext) _MazevoEvent(ctx context.Context, sel ast.SelectionSet, obj *model.MazevoEvent) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, mazevoEventImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MazevoEvent")
+		case "event_name":
+			out.Values[i] = ec._MazevoEvent_event_name(ctx, field, obj)
+		case "organization_name":
+			out.Values[i] = ec._MazevoEvent_organization_name(ctx, field, obj)
+		case "contact_name":
+			out.Values[i] = ec._MazevoEvent_contact_name(ctx, field, obj)
+		case "setup_minutes":
+			out.Values[i] = ec._MazevoEvent_setup_minutes(ctx, field, obj)
+		case "date_time_start":
+			out.Values[i] = ec._MazevoEvent_date_time_start(ctx, field, obj)
+		case "date_time_end":
+			out.Values[i] = ec._MazevoEvent_date_time_end(ctx, field, obj)
+		case "teardown_minutes":
+			out.Values[i] = ec._MazevoEvent_teardown_minutes(ctx, field, obj)
+		case "status_description":
+			out.Values[i] = ec._MazevoEvent_status_description(ctx, field, obj)
+		case "status_color":
+			out.Values[i] = ec._MazevoEvent_status_color(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var mazevoRoomImplementors = []string{"MazevoRoom"}
+
+func (ec *executionContext) _MazevoRoom(ctx context.Context, sel ast.SelectionSet, obj *model.MazevoRoom) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, mazevoRoomImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MazevoRoom")
+		case "room":
+			out.Values[i] = ec._MazevoRoom_room(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "events":
+			out.Values[i] = ec._MazevoRoom_events(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var meetingImplementors = []string{"Meeting"}
 
 func (ec *executionContext) _Meeting(ctx context.Context, sel ast.SelectionSet, obj *model.Meeting) graphql.Marshaler {
@@ -8178,6 +9937,94 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_events(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "AstraEvents":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_AstraEvents(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "AstraEventsByBuilding":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_AstraEventsByBuilding(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "AstraEventsByRoom":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_AstraEventsByRoom(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "MazevoEvents":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_MazevoEvents(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -8899,6 +10746,106 @@ func (ec *executionContext) marshalNAssistant2ᚖgraphqlᚋgraphᚋmodelᚐAssis
 	return ec._Assistant(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNAstraBuilding2graphqlᚋgraphᚋmodelᚐAstraBuilding(ctx context.Context, sel ast.SelectionSet, v model.AstraBuilding) graphql.Marshaler {
+	return ec._AstraBuilding(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAstraBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraBuilding) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNAstraBuilding2ᚖgraphqlᚋgraphᚋmodelᚐAstraBuilding(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNAstraBuilding2ᚖgraphqlᚋgraphᚋmodelᚐAstraBuilding(ctx context.Context, sel ast.SelectionSet, v *model.AstraBuilding) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AstraBuilding(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAstraDayEvents2graphqlᚋgraphᚋmodelᚐAstraDayEvents(ctx context.Context, sel ast.SelectionSet, v model.AstraDayEvents) graphql.Marshaler {
+	return ec._AstraDayEvents(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAstraDayEvents2ᚖgraphqlᚋgraphᚋmodelᚐAstraDayEvents(ctx context.Context, sel ast.SelectionSet, v *model.AstraDayEvents) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AstraDayEvents(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAstraEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraEvent) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNAstraEvent2ᚖgraphqlᚋgraphᚋmodelᚐAstraEvent(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNAstraEvent2ᚖgraphqlᚋgraphᚋmodelᚐAstraEvent(ctx context.Context, sel ast.SelectionSet, v *model.AstraEvent) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AstraEvent(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAstraRoom2graphqlᚋgraphᚋmodelᚐAstraRoom(ctx context.Context, sel ast.SelectionSet, v model.AstraRoom) graphql.Marshaler {
+	return ec._AstraRoom(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAstraRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraRoom) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNAstraRoom2ᚖgraphqlᚋgraphᚋmodelᚐAstraRoom(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNAstraRoom2ᚖgraphqlᚋgraphᚋmodelᚐAstraRoom(ctx context.Context, sel ast.SelectionSet, v *model.AstraRoom) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AstraRoom(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -9135,6 +11082,98 @@ func (ec *executionContext) marshalNLocation2ᚖgraphqlᚋgraphᚋmodelᚐLocati
 		return graphql.Null
 	}
 	return ec._Location(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMazevoBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoBuilding) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNMazevoBuilding2ᚖgraphqlᚋgraphᚋmodelᚐMazevoBuilding(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNMazevoBuilding2ᚖgraphqlᚋgraphᚋmodelᚐMazevoBuilding(ctx context.Context, sel ast.SelectionSet, v *model.MazevoBuilding) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MazevoBuilding(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMazevoDayEvents2graphqlᚋgraphᚋmodelᚐMazevoDayEvents(ctx context.Context, sel ast.SelectionSet, v model.MazevoDayEvents) graphql.Marshaler {
+	return ec._MazevoDayEvents(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMazevoDayEvents2ᚖgraphqlᚋgraphᚋmodelᚐMazevoDayEvents(ctx context.Context, sel ast.SelectionSet, v *model.MazevoDayEvents) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MazevoDayEvents(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMazevoEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoEvent) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNMazevoEvent2ᚖgraphqlᚋgraphᚋmodelᚐMazevoEvent(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNMazevoEvent2ᚖgraphqlᚋgraphᚋmodelᚐMazevoEvent(ctx context.Context, sel ast.SelectionSet, v *model.MazevoEvent) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MazevoEvent(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMazevoRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoRoom) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNMazevoRoom2ᚖgraphqlᚋgraphᚋmodelᚐMazevoRoom(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNMazevoRoom2ᚖgraphqlᚋgraphᚋmodelᚐMazevoRoom(ctx context.Context, sel ast.SelectionSet, v *model.MazevoRoom) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MazevoRoom(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNMeeting2ᚕᚖgraphqlᚋgraphᚋmodelᚐMeetingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Meeting) graphql.Marshaler {
@@ -9688,6 +11727,24 @@ func (ec *executionContext) unmarshalOEventInput2ᚖgraphqlᚋgraphᚋmodelᚐEv
 	}
 	res, err := ec.unmarshalInputEventInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOFloat642ᚖfloat64(ctx context.Context, v any) (*float64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalFloat(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFloat642ᚖfloat64(ctx context.Context, sel ast.SelectionSet, v *float64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalFloat(*v)
+	return res
 }
 
 func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v any) (*string, error) {

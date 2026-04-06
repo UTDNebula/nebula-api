@@ -190,10 +190,34 @@ type SectionWithTime {
 
 union EventResult = MultiBuildingEvents | SingleBuildingEvents | RoomEvents | SectionWithTime
 
-input EventFilter {
-  date: String @goTag(key: "bson", value: "date,omitempty")
-  building: String @goTag(key: "bson", value: "building,omitempty")
-  room: String @goTag(key: "bson", value: "room,omitempty")
+# Astra schedule (Mongo `astra`). Same shape as REST /astra/*; @goTag aligns with BSON.
+# Resolver implementations: astra.resolvers.go (schema stays here per project convention).
+type AstraEvent {
+	activity_name: String
+		@goTag(key: "bson", value: "activity_name,omitempty")
+	meeting_type: String @goTag(key: "bson", value: "meeting_type,omitempty")
+	start_date: String @goTag(key: "bson", value: "start_date,omitempty")
+	end_date: String @goTag(key: "bson", value: "end_date,omitempty")
+	current_state: String @goTag(key: "bson", value: "current_state,omitempty")
+	not_allowed_usage_mask: Float64
+		@goTag(key: "bson", value: "not_allowed_usage_mask,omitempty")
+	usage_color: String @goTag(key: "bson", value: "usage_color,omitempty")
+	capacity: Float64 @goTag(key: "bson", value: "capacity,omitempty")
+}
+
+type AstraRoom {
+	room: String! @goTag(key: "bson", value: "room")
+	events: [AstraEvent!]! @goTag(key: "bson", value: "events")
+}
+
+type AstraBuilding {
+	building: String! @goTag(key: "bson", value: "building")
+	rooms: [AstraRoom!]! @goTag(key: "bson", value: "rooms")
+}
+
+type AstraDayEvents {
+	date: String! @goTag(key: "bson", value: "date")
+	buildings: [AstraBuilding!]! @goTag(key: "bson", value: "buildings")
 }
 
 type Query {
@@ -213,6 +237,10 @@ type Query {
 	CometCalendar(id: ID!): CometCalendar
 
   events(date: String!, building: String, room: String): EventResult!
+  
+	AstraEvents(date: String!): AstraDayEvents!
+	AstraEventsByBuilding(date: String!, building: String!): AstraBuilding!
+	AstraEventsByRoom(date: String!, building: String!, room: String!): AstraRoom!
 }
 
 type Event {

@@ -1,0 +1,35 @@
+# Mazevo schedule data (Mongo `mazevo` collection). Same shape as REST /mazevo/:date — BSON keys match API schema camelCase fields.
+
+type MazevoEvent {
+	event_name: String @goTag(key: "bson", value: "eventName,omitempty")
+	organization_name: String
+		@goTag(key: "bson", value: "organizationName,omitempty")
+	contact_name: String @goTag(key: "bson", value: "contactName,omitempty")
+	setup_minutes: Float64 @goTag(key: "bson", value: "setupMinutes,omitempty")
+	date_time_start: String @goTag(key: "bson", value: "dateTimeStart,omitempty")
+	date_time_end: String @goTag(key: "bson", value: "dateTimeEnd,omitempty")
+	teardown_minutes: Float64
+		@goTag(key: "bson", value: "teardownMinutes,omitempty")
+	status_description: String
+		@goTag(key: "bson", value: "statusDescription,omitempty")
+	status_color: String @goTag(key: "bson", value: "statusColor,omitempty")
+}
+
+type MazevoRoom {
+	room: String! @goTag(key: "bson", value: "room")
+	events: [MazevoEvent!]! @goTag(key: "bson", value: "events")
+}
+
+type MazevoBuilding {
+	building: String! @goTag(key: "bson", value: "building")
+	rooms: [MazevoRoom!]! @goTag(key: "bson", value: "rooms")
+}
+
+type MazevoDayEvents {
+	date: String! @goTag(key: "bson", value: "date")
+	buildings: [MazevoBuilding!]! @goTag(key: "bson", value: "buildings")
+}
+
+extend type Query {
+	MazevoEvents(date: String!): MazevoDayEvents!
+}

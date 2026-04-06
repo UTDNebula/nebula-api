@@ -26,6 +26,8 @@ func main() {
 		BuildingCollection:      configs.GetCollection("rooms"),
 		CometCalendarCollection: configs.GetCollection("cometCalendar"),
 		EventCollection:         configs.GetCollection("events"),
+		AstraCollection:         configs.GetCollection("astra"),
+		MazevoCollection:        configs.GetCollection("mazevo"),
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

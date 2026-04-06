@@ -129,7 +129,7 @@ type DiscountProgram struct {
 	Id       primitive.ObjectID `bson:"_id" json:"_id"`
 	Category string             `bson:"category" json:"category"`
 	Business string             `bson:"business" json:"business"`
-	Address  string             `bson:"address" json:"address"`
+	Address  []string           `bson:"address" json:"address"`
 	Phone    string             `bson:"phone" json:"phone"`
 	Email    string             `bson:"email" json:"email"`
 	Website  string             `bson:"website" json:"website"`
