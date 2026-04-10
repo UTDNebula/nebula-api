@@ -101,7 +101,6 @@ type CometCalendarBuildingInput struct {
 }
 
 type CometCalendarFilter struct {
-	ID        *string                       `json:"_id,omitempty"`
 	Date      *string                       `json:"date,omitempty"`
 	Buildings []*CometCalendarBuildingInput `json:"buildings,omitempty"`
 }
@@ -174,21 +173,14 @@ type Event struct {
 }
 
 type EventInput struct {
-	ID                 *string    `json:"_id,omitempty"`
-	Summary            *string    `json:"summary,omitempty"`
-	Location           *string    `json:"location,omitempty"`
-	StartTime          *time.Time `json:"start_time,omitempty"`
-	EndTime            *time.Time `json:"end_time,omitempty"`
-	Description        *string    `json:"description,omitempty"`
-	EventType          []*string  `json:"event_type,omitempty"`
-	TargetAudience     []*string  `json:"target_audience,omitempty"`
-	Topic              []*string  `json:"topic,omitempty"`
-	EventTags          []*string  `json:"event_tags,omitempty"`
-	EventWebsite       *string    `json:"event_website,omitempty"`
-	Department         []*string  `json:"department,omitempty"`
-	ContactName        *string    `json:"contact_name,omitempty"`
-	ContactEmail       *string    `json:"contact_email,omitempty"`
-	ContactPhoneNumber *string    `json:"contact_phone_number,omitempty"`
+	Location       *string    `json:"location,omitempty"`
+	StartTime      *time.Time `json:"start_time,omitempty"`
+	EndTime        *time.Time `json:"end_time,omitempty"`
+	EventType      []*string  `json:"event_type,omitempty"`
+	TargetAudience []*string  `json:"target_audience,omitempty"`
+	Topic          []*string  `json:"topic,omitempty"`
+	EventTags      []*string  `json:"event_tags,omitempty"`
+	Department     []*string  `json:"department,omitempty"`
 }
 
 type Location struct {
@@ -240,6 +232,34 @@ type MultiBuildingEvents struct {
 }
 
 func (MultiBuildingEvents) IsEventResult() {}
+
+type Office struct {
+	Building string `json:"building"`
+	MapURI   string `json:"map_uri"`
+	Room     string `json:"room"`
+}
+
+type Professor struct {
+	ID          string   `json:"_id"`
+	FirstName   string   `json:"first_name"`
+	LastName    string   `json:"last_name"`
+	Titles      []string `json:"titles"`
+	Email       string   `json:"email"`
+	PhoneNumber string   `json:"phone_number"`
+	Office      *Office  `json:"office"`
+	ProfileURI  string   `json:"profile_uri"`
+	ImageURI    string   `json:"image_uri"`
+	OfficeHours any      `json:"office_hours,omitempty"`
+	Sections    []string `json:"sections"`
+}
+
+type ProfessorFilter struct {
+	Email          *string `json:"email,omitempty" bson:"email,omitempty"`
+	FirstName      *string `json:"first_name,omitempty" bson:"first_name,omitempty"`
+	LastName       *string `json:"last_name,omitempty" bson:"last_name,omitempty"`
+	Titles         *string `json:"titles,omitempty" bson:"titles,omitempty"`
+	OfficeBuilding *string `json:"office_building,omitempty" bson:"office.building,omitempty"`
+}
 
 type Query struct {
 }

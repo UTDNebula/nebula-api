@@ -96,6 +96,35 @@ input CourseFilter {
 	catalog_year: String @goTag(key: "bson", value: "catalog_year,omitempty")
 }
 
+# Professor needs separate of concerns
+type Office {
+	building: String!
+	map_uri: String!
+	room: String!
+}
+
+type Professor {
+	_id: ID!
+	first_name: String!
+	last_name: String!
+	titles: [String!]!
+	email: String!
+	phone_number: String!
+	office: Office!
+	profile_uri: String!
+	image_uri: String!
+	office_hours: Any
+	sections: [ID!]!
+}
+
+input ProfessorFilter {
+	email: String @goTag(key: "bson", value:"email,omitempty")
+	first_name: String @goTag(key: "bson", value: "first_name,omitempty")
+	last_name: String @goTag(key: "bson", value: "last_name,omitempty")
+	titles: String @goTag(key: "bson", value: "titles,omitempty")
+	office_building: String @goTag(key: "bson", value: "office.building,omitempty")
+}
+
 # Section needs separate of concerns
 type AcademicSession {
 	name: String!
@@ -223,6 +252,9 @@ type AstraDayEvents {
 type Query {
 	courses(filter: CourseFilter, offset: Int = 0): [Course!]
 	course(id: ID!): Course
+
+	professors(filter: ProfessorFilter, offset: Int = 0): [Professor!]
+	professor(id: ID!): Professor
 
 	sections(filter: SectionFilter, offset: Int = 0): [Section!]
 	section(id: ID!): Section
