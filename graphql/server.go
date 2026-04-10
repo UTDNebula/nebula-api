@@ -25,6 +25,7 @@ func main() {
 		ProfCollection:          configs.GetCollection("professors"),
 		BuildingCollection:      configs.GetCollection("rooms"),
 		CometCalendarCollection: configs.GetCollection("cometCalendar"),
+		EventCollection:         configs.GetCollection("events"),
 		AstraCollection:         configs.GetCollection("astra"),
 		MazevoCollection:        configs.GetCollection("mazevo"),
 	}

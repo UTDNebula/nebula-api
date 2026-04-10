@@ -62,7 +62,7 @@ func (r *queryResolver) Course(ctx context.Context, id string) (*model.Course, e
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	var dbCourse *model.DBCourse
+	var dbCourse model.DBCourse
 	var err error
 
 	objectId, err := primitive.ObjectIDFromHex(id)
@@ -71,10 +71,10 @@ func (r *queryResolver) Course(ctx context.Context, id string) (*model.Course, e
 	}
 
 	err = r.CourseCollection.FindOne(
-		timeoutCtx, bson.M{"_id": objectId}).Decode(dbCourse)
+		timeoutCtx, bson.M{"_id": objectId}).Decode(&dbCourse)
 	if err != nil {
 		return nil, err
 	}
 
-	return model.TransformCourse(dbCourse), err
+	return model.TransformCourse(&dbCourse), err
 }

@@ -8,4 +8,8 @@ package graph
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// SectionWithTime returns SectionWithTimeResolver implementation.
+func (r *Resolver) SectionWithTime() SectionWithTimeResolver { return &sectionWithTimeResolver{r} }
+
 type queryResolver struct{ *Resolver }
+type sectionWithTimeResolver struct{ *Resolver }

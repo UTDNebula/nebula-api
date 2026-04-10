@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+type EventResult interface {
+	IsEventResult()
+}
+
 type AcademicSession struct {
 	Name      string    `json:"name"`
 	StartDate time.Time `json:"start_date"`
@@ -43,6 +47,27 @@ type AstraEvent struct {
 type AstraRoom struct {
 	Room   string        `json:"room" bson:"room"`
 	Events []*AstraEvent `json:"events" bson:"events"`
+}
+
+type BasicCourse struct {
+	ID            string `json:"_id"`
+	SubjectPrefix string `json:"subject_prefix"`
+	CourseNumber  string `json:"course_number"`
+	Title         string `json:"title"`
+	CreditHours   string `json:"credit_hours"`
+	ClassLevel    string `json:"class_level"`
+	ActivityType  string `json:"activity_type"`
+	CatalogYear   string `json:"catalog_year"`
+}
+
+type BasicProfessor struct {
+	ID          string     `json:"_id"`
+	FirstName   string     `json:"first_name"`
+	LastName    string     `json:"last_name"`
+	Email       string     `json:"email"`
+	PhoneNumber string     `json:"phone_number"`
+	Office      *Location  `json:"office,omitempty"`
+	OfficeHours []*Meeting `json:"office_hours,omitempty"`
 }
 
 type BuildingRooms struct {
@@ -201,6 +226,13 @@ type Meeting struct {
 	Location    *Location `json:"location"`
 }
 
+type MultiBuildingEvents struct {
+	Date      string                  `json:"date"`
+	Buildings []*SingleBuildingEvents `json:"buildings"`
+}
+
+func (MultiBuildingEvents) IsEventResult() {}
+
 type Office struct {
 	Building string `json:"building"`
 	MapURI   string `json:"map_uri"`
@@ -237,6 +269,13 @@ type Room struct {
 	Capacity int32  `json:"capacity" bson:"capacity"`
 }
 
+type RoomEvents struct {
+	Room          string             `json:"room"`
+	SectionEvents []*SectionWithTime `json:"section_events"`
+}
+
+func (RoomEvents) IsEventResult() {}
+
 type Section struct {
 	ID                  string                 `json:"_id"`
 	SectionNumber       string                 `json:"section_number"`
@@ -261,3 +300,18 @@ type SectionFilter struct {
 	InstructionMode     *string `json:"instruction_mode,omitempty" bson:"instruction_mode,omitempty"`
 	SyllabusURI         *string `json:"syllabus_uri,omitempty" bson:"syllabus_uri,omitempty"`
 }
+
+type SectionWithTime struct {
+	Section   *Section `json:"section"`
+	StartTime string   `json:"start_time"`
+	EndTime   string   `json:"end_time"`
+}
+
+func (SectionWithTime) IsEventResult() {}
+
+type SingleBuildingEvents struct {
+	Building string        `json:"building"`
+	Rooms    []*RoomEvents `json:"rooms"`
+}
+
+func (SingleBuildingEvents) IsEventResult() {}

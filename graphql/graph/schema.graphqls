@@ -4,6 +4,17 @@ directive @goTag(
 	value: String
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 
+# Forcing resolvers for nested objects
+directive @goField(
+	forceResolver: Boolean
+) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+# Add extra fields to models 
+directive @goExtraField(
+	name: String
+	type: String!
+) repeatable on OBJECT | INPUT_OBJECT
+
 scalar Any
 scalar Float64
 scalar DateTime
@@ -41,6 +52,27 @@ type Course {
 	offering_frequency: String!
 	catalog_year: String!
 	attributes: Any
+}
+
+type BasicCourse {
+  _id: ID!
+  subject_prefix: String!
+  course_number: String!
+  title: String!
+  credit_hours: String!
+  class_level: String!
+  activity_type: String!
+  catalog_year: String!
+}
+
+type BasicProfessor {
+  _id: ID!
+  first_name: String!
+  last_name: String!
+  email: String!
+  phone_number: String!
+  office: Location
+  office_hours: [Meeting]
 }
 
 # Filter the courses with queryable fields
@@ -164,6 +196,29 @@ type BuildingRooms {
 	@goTag(key: "bson", value: "lon")
 }
 
+type MultiBuildingEvents {
+  date: String! 
+  buildings: [SingleBuildingEvents!]! 
+}
+
+type SingleBuildingEvents {
+  building: String! 
+  rooms: [RoomEvents!]! 
+}
+
+type RoomEvents {
+  room: String! 
+  section_events: [SectionWithTime!]! 
+}
+
+type SectionWithTime {
+  section: Section! @goField(forceResolver: true)
+  start_time: String! 
+  end_time: String! 
+}
+
+union EventResult = MultiBuildingEvents | SingleBuildingEvents | RoomEvents | SectionWithTime
+
 # Astra schedule (Mongo `astra`). Same shape as REST /astra/*; @goTag aligns with BSON.
 # Resolver implementations: astra.resolvers.go (schema stays here per project convention).
 type AstraEvent {
@@ -212,6 +267,8 @@ type Query {
 		offset: Int = 0
 	): [CometCalendar!]
 	CometCalendar(id: ID!): CometCalendar
+
+  events(date: String!, building: String, room: String): EventResult!
 
 	AstraEvents(date: String!): AstraDayEvents!
 	AstraEventsByBuilding(date: String!, building: String!): AstraBuilding!
