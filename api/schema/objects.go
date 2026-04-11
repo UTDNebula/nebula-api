@@ -329,69 +329,76 @@ type APIResponse[T any] struct {
 
 // Program Schema
 type Program struct {
-	Id               int               `json:"programId"`
-	Date_created      string            `json:"dateCreated"`
-	Date_modified     string            `json:"dateModified"`
-	BrochureSections []BrochureSection `json:"sections"`
+	SourceId   int              `json:"programId"`
+	Created    time.Time        `json:"dateCreated"`
+	Modified   time.Time        `json:"dateModified"`
+	Sections   []ProgramSection `json:"sections"`
+	CostCycles json.RawMessage  `json:"costSheets"`
+	NextCost   *Cost            `json:"nextAppCycleCostSheet"`
 }
 
-type BrochureSection struct {
-	Id           int      `json:"sectionId"`
-	Display_name string   `json:"sectionDisplayName"` // EX: (Program Overview, About , Academices and Courses, Costs, Practical Infrormation, Apply For exchagne, etc. )
-	Default      int      `json:"sectionIsDefault"`   // isDefault means this section is a section in every program
-	Widgets      []Widget `json:"sectionWidgets"`     // Widgets in section EX: (content (text), media, information sheet, etc.)
+type ProgramSection struct {
+	SourceId    int      `json:"sectionId"`
+	DisplayName string   `json:"sectionDisplayName"`
+	IsDefault   bool     `json:"sectionIsDefault"` // source data is 0/1 int, scraper must convert
+	Widgets     []ProgramWidget `json:"sectionWidgets"`
 }
 
-type Widget struct {
-	Id                  int             `json:"contentId"`   // There can exist widgets in different programs with the same Widget (so same contentid) - identifies duplicates.
-	Content_type        string          `json:"contentType"` // EX: content (text), media, information sheet, etc.
-	Content_HTML        string          `json:"contentHTML"`
-	Header_text         string          `json:"headerText"`
-	Content_information json.RawMessage `json:"contentInformationSheet"` // Fields: id, glossary, assignedValues, name, ordinal, type. Search Queries can be filtered with this information.
-	Content_media       json.RawMessage `json:"contentMedia"`            // Fields: type, imageId, locationId, embedCode, imageAltText, mapProperties {Zoom Level, center latitude, center longitude}. Images or Videos.
+type ProgramWidget struct {
+	SourceId    int               `json:"contentId"`
+	ContentType string            `json:"contentType"` // content, media, information sheet
+	ContentHTML string            `json:"contentHTML"`
+	Information *InformationSheet `json:"contentInformationSheet"`
+	Media       *Media            `json:"contentMedia"`
+}
+
+type InformationSheet struct {
+	HeaderText string      `json:"headerText"`
+	Parameters []Parameter `json:"parameters"`
+}
+
+type Parameter struct {
+	SourceId       int      `json:"parameterId"`
+	Name           string   `json:"parameterName"`
+	AssignedValues []string `json:"assignedValues"`
+	Glossary       string   `json:"parameterGlossary"`
+	Type           string   `json:"parameterType"` // SELCT, MULTI, MINIM
+}
+
+type Media struct {
+	Type         string `json:"type"` // Video, Image, Google map
+	ImageAltText string `json:"imageAltText"`
 }
 
 // Cost Structs
 type Cost struct {
-	Id                int             `json:"costSheetId"`
-	Term              string          `json:"term"`
-	Year              int             `json:"year"`
-	Program_id        int             `json:"programId"`
-	Public            bool            `json:"public"`
-	Cost_sheet_notes  string          `json:"costSheetNotes"` // Disclaimers at the bottom of the page. Probably legally important.
-	DtCreated         string          `json:"dtCreated"`
-	DtModified        string          `json:"dtModified"`
-	Billable_items    []CostItem      `json:"billableCostSheetItems"`    // Items students pay to UTD. EX: Tuition etc.
-	Nonbillable_items []CostItem      `json:"nonBillableCostSheetItems"` // Items students are responsible for paying for (not to UTD)	EX: airfare and housing
-	Credit_cost_items []CostItem      `json:"creditCostSheetItems"`      // Scholarships and other financial aid
-	Cycle_metadata    []CycleMetadata `json:"costSheets"`                // Metadata information about previous and upcoming cycles
+	SourceId    int        `json:"costSheetId"`
+	Term        string     `json:"term"`
+	Year        int        `json:"year"`
+	Public      bool       `json:"public"`
+	Notes       string     `json:"costSheetNotes"`
+	Created     time.Time  `json:"dtCreated"`
+	Modified    time.Time  `json:"dtModified"`
+	Billable    []CostItem `json:"billableCostSheetItems"`
+	NonBillable []CostItem `json:"nonBillableCostSheetItems"`
+	Credits     []CostItem `json:"creditCostSheetItems"`
 }
 
-// NextAppCycle helper struct
 type CostItem struct {
-	Id            int          `json:"costSheetItemId"`
-	Item_name     string       `json:"costSheetItemName"`
-	Item_category string       `json:"costSheetItemCategory"`
-	Item_type     string       `json:"costSheetItemType"`
-	Item_glossary string       `json:"costSheetItemGlossary"`
-	Item_hint     string       `json:"costSheetItemHint"`
-	Costs         []CostDetail `json:"costs"` // This is an array which has a lot of irrelevant fields, therefore its worth making a structure too retain only the important ones.
+	SourceId int          `json:"costSheetItemId"`
+	Name     string       `json:"costSheetItemName"`
+	Category string       `json:"costSheetItemCategory"` // Billable, Non-Billable, Cost Reduction
+	Type     string       `json:"costSheetItemType"`     // Fixed, Optional, Manual Entry, Selection List
+	Glossary string       `json:"costSheetItemGlossary"`
+	Hint     string       `json:"costSheetItemHint"`
+	Costs    []CostDetail `json:"costs"`
 }
 
 type CostDetail struct {
-	Id           int     `json:"costSheetItemCostsId"` // Unique ID for this specific price record
-	CostValue    float64 `json:"costValue"`
-	CostCurrency string  `json:"costCurrency"`
-}
-
-type CycleMetadata struct {
-	Id                  int    `json:"costSheetId"`
-	Term                string `json:"term"`
-	Year                int    `json:"year"`
-	Program_id          int    `json:"programId"`
-	Public              bool   `json:"public"`
-	DualYear            bool   `json:"dualYear"`
-	ApplicationDeadline string `json:"applicationDeadline"`
+	SourceId int     `json:"costSheetItemCostsId"`
+	Key      string  `json:"costKey"` // e.g. "In-State", "Out-of-State", empty for fixed
+	Value    float64 `json:"costValue"`
+	Currency string  `json:"costCurrency"`
 }
 
 /* Can uncomment these if we ever get evals
