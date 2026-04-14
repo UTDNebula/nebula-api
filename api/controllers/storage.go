@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -13,11 +14,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/iterator"
 
+	"github.com/UTDNebula/nebula-api/api/configs"
 	"github.com/UTDNebula/nebula-api/api/schema"
 )
 
 const (
-	PROJECT_ID = "nebula-api-368223"
+	PROJECT_ID = "woven-alpha-489519-k4"
 )
 
 // Get client from routes
@@ -32,14 +34,17 @@ func getClient(c *gin.Context) *storage.Client {
 // Get bucket or create it if it doesn't already exist
 func getOrCreateBucket(client *storage.Client, bucket string) (*storage.BucketHandle, error) {
 	ctx := context.Background()
-	// Get bucket, or create it if it does not exist
-	// NOTE: We automatically prefix bucket names with "utdnebula_" here since bucket names need to be GLOBALLY unique
 	bucketHandle := client.Bucket(schema.BUCKET_PREFIX + bucket)
 	_, err := bucketHandle.Attrs(ctx)
 	if err != nil {
-		err = bucketHandle.Create(ctx, PROJECT_ID, nil)
-		if err != nil {
-			return nil, errors.New("failed to create bucket: " + err.Error())
+
+		if errors.Is(err, storage.ErrBucketNotExist) {
+			err = bucketHandle.Create(ctx, PROJECT_ID, nil)
+			if err != nil {
+				return nil, errors.New("failed to create bucket: " + err.Error())
+			}
+		} else {
+			return nil, err
 		}
 	}
 	return bucketHandle, nil
@@ -203,6 +208,42 @@ func ObjectInfo(c *gin.Context) {
 func PostObject(c *gin.Context) {
 	bucket := c.Param("bucket")
 	objectID := c.Param("objectID")
+
+	maxUploadSize := configs.GetEnvMaxUploadSize()
+
+	// Force early 413 check via Content-Length if present
+	if c.Request.ContentLength > maxUploadSize {
+		respond(c, http.StatusRequestEntityTooLarge, "error", fmt.Sprintf("File too large. Maximum allowed size is %d bytes (%dMB)", maxUploadSize, maxUploadSize/(1024*1024)))
+		return
+	}
+
+	// Use MaxBytesReader to limit the body
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxUploadSize)
+
+	tmpBuf := make([]byte, int(maxUploadSize)+1)
+	n, readErr := c.Request.Body.Read(tmpBuf)
+
+	// Return 413 if file is too large
+	if readErr != nil {
+		var maxBytesErr *http.MaxBytesError
+		if errors.As(readErr, &maxBytesErr) {
+			respond(c, http.StatusRequestEntityTooLarge, "error", fmt.Sprintf("File too large. Maximum allowed size is %d bytes (%dMB)", maxUploadSize, maxUploadSize/(1024*1024)))
+			return
+		}
+		// If it's not EOF, it's a real error
+		if !errors.Is(readErr, io.EOF) {
+			respondWithInternalError(c, readErr)
+			return
+		}
+	}
+
+	var fileReader io.Reader
+	if n > 0 {
+		fileReader = io.MultiReader(bytes.NewReader(tmpBuf[:n]), c.Request.Body)
+	} else {
+		fileReader = c.Request.Body
+	}
+
 	client := getClient(c)
 	ctx := context.Background()
 
@@ -211,14 +252,6 @@ func PostObject(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-
-	// Read body as byte stream
-	fileReader := c.Request.Body
-	if fileReader == nil {
-		respond(c, http.StatusBadRequest, "error", "Empty body")
-		return
-	}
-	defer fileReader.Close()
 
 	objectHandle := bucketHandle.Object(objectID)
 	if objectHandle == nil {
@@ -233,6 +266,11 @@ func PostObject(c *gin.Context) {
 
 	// Upload
 	if _, err := io.Copy(wc, fileReader); err != nil {
+		var maxBytesErr *http.MaxBytesError
+		if errors.As(err, &maxBytesErr) {
+			respond(c, http.StatusRequestEntityTooLarge, "error", fmt.Sprintf("File too large. Maximum allowed size is %d bytes (%dMB)", maxUploadSize, maxUploadSize/(1024*1024)))
+			return
+		}
 		respondWithInternalError(c, err)
 		return
 	}
@@ -251,11 +289,7 @@ func PostObject(c *gin.Context) {
 
 	// Generate public URL
 	escapedObject := url.PathEscape(objectID)
-	url := fmt.Sprintf(
-		"https://storage.googleapis.com/%s/%s",
-		schema.BUCKET_PREFIX+bucket,
-		escapedObject,
-	)
+	url := fmt.Sprintf("https://storage.googleapis.com/%s/%s", schema.BUCKET_PREFIX+bucket, escapedObject)
 
 	objectInfo := schema.ObjectInfoFromAttrs(attrs, url)
 	respond(c, http.StatusOK, "success", objectInfo)
