@@ -30,7 +30,7 @@ var cometCalendarCollection *mongo.Collection = configs.GetCollection("cometCale
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.Event]]	"All CometCalendarEvents with events on the inputted date"
 // @Failure		500		{object}	schema.APIResponse[string]										"A string describing the error"
 func CometCalendarEvents(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
@@ -63,7 +63,7 @@ func CometCalendarEvents(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]										"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]										"A string describing the error"
 func CometCalendarEventsByBuilding(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
@@ -135,7 +135,7 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]							"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]							"A string describing the error"
 func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")

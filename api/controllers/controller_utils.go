@@ -31,7 +31,7 @@ func respond[T any](c *gin.Context, status int, message string, data T) {
 func getQuery[T any](flag string, c *gin.Context) (bson.M, error) {
 	switch flag {
 	case "Search":
-		query, err := schema.FilterQuery[T](c)
+		query, err := schema.FilterQuery[T](c.Request.URL.Query())
 		if err != nil {
 			respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
 			return nil, err

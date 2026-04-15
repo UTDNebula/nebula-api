@@ -25,7 +25,7 @@ var DAGCollection *mongo.Collection = configs.GetCollection("DAG")
 // @Success		200	{object}	schema.APIResponse[[]schema.Autocomplete]	"An aggregation of courses for use in generating autocomplete DAGs"
 // @Failure		500	{object}	schema.APIResponse[string]					"A string describing the error"
 func AutocompleteDAG(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
 	var autocompleteDAG []schema.Autocomplete

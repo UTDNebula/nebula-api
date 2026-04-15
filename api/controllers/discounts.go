@@ -36,7 +36,8 @@ var discountCategoriesOnce sync.Once
 // @Failure		400			{object}	schema.APIResponse[string]						"A string describing the error"
 func DiscountSearch(c *gin.Context) {
 	fetchDiscountCategories()
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var cursor *mongo.Cursor

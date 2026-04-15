@@ -502,7 +502,9 @@ definitions:
       _id:
         type: string
       address:
-        type: string
+        items:
+          type: string
+        type: array
       business:
         type: string
       category:
