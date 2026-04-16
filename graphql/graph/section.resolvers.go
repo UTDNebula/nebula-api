@@ -39,13 +39,7 @@ func (r *queryResolver) Sections(
 	}
 
 	// pagination logic
-	skip := int64(0)
-	if offset != nil {
-		skip = int64(*offset)
-	}
-	paginate := options.Find().
-		SetSkip(skip).
-		SetLimit(configs.GetEnvLimit())
+	paginate := options.Find().SetSkip(int64(*offset)).SetLimit(configs.GetEnvLimit())
 
 	// query database
 	cursor, err := r.SectionCollection.Find(timeoutCtx, sectionQuery, paginate)
@@ -79,7 +73,8 @@ func (r *queryResolver) Section(ctx context.Context, id string) (*model.Section,
 
 	// decoding to a real value and not a nullptr
 	var dbSection model.DBSection
-	if err := r.SectionCollection.FindOne(timeoutCtx, bson.M{"_id": objectId}).Decode(&dbSection); err != nil {
+	if err := r.SectionCollection.FindOne(
+		timeoutCtx, bson.M{"_id": objectId}).Decode(&dbSection); err != nil {
 		return nil, err
 	}
 
