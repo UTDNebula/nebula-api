@@ -49,27 +49,6 @@ type AstraRoom struct {
 	Events []*AstraEvent `json:"events" bson:"events"`
 }
 
-type BasicCourse struct {
-	ID            string `json:"_id"`
-	SubjectPrefix string `json:"subject_prefix"`
-	CourseNumber  string `json:"course_number"`
-	Title         string `json:"title"`
-	CreditHours   string `json:"credit_hours"`
-	ClassLevel    string `json:"class_level"`
-	ActivityType  string `json:"activity_type"`
-	CatalogYear   string `json:"catalog_year"`
-}
-
-type BasicProfessor struct {
-	ID          string     `json:"_id"`
-	FirstName   string     `json:"first_name"`
-	LastName    string     `json:"last_name"`
-	Email       string     `json:"email"`
-	PhoneNumber string     `json:"phone_number"`
-	Office      *Location  `json:"office,omitempty"`
-	OfficeHours []*Meeting `json:"office_hours,omitempty"`
-}
-
 type BuildingRooms struct {
 	Building string  `json:"building" bson:"building"`
 	Rooms    []*Room `json:"rooms,omitempty" bson:"rooms"`
