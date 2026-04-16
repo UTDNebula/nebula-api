@@ -161,3 +161,9 @@ models:
   Any:
     model:
       - github.com/99designs/gqlgen/graphql.Any
+  
+  # Forcing field resolvers
+  SectionWithTime:
+    fields:
+      section:
+        resolver: true
