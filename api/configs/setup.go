@@ -29,12 +29,12 @@ func ConnectDB() *mongo.Client {
 	once.Do(func() {
 		clientOptions := options.Client().
 			ApplyURI(GetEnvMongoURI()).
-			SetMinPoolSize(0).
-			SetMaxPoolSize(50).
-			SetMaxConnIdleTime(90 * time.Second).
-			SetRetryReads(true).
+			SetMinPoolSize(5).
+			SetMaxPoolSize(100).
+			SetMaxConnIdleTime(10 * time.Minute).
+			SetConnectTimeout(10 * time.Second).
 			SetReadPreference(readpref.SecondaryPreferred()).
-			SetReadConcern(readconcern.Majority())
+			SetReadConcern(readconcern.Local())
 
 		client, err := mongo.Connect(context.Background(), clientOptions)
 		if err != nil {
