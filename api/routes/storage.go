@@ -30,6 +30,7 @@ func initStorageClient() *storage.Client {
 		var err error
 		_, exist := os.LookupEnv("USE_CLOUD_CREDS")
 
+		// If USE_CLOUD_CREDS env var set, assume we're running on cloud and don't need to set creds
 		if exist {
 			c, err = storage.NewClient(ctx)
 		} else {

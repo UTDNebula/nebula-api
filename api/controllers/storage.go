@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -19,7 +20,7 @@ import (
 )
 
 const (
-	PROJECT_ID = "woven-alpha-489519-k4"
+	PROJECT_ID = "nebula-api-368223"
 )
 
 // Get client from routes
@@ -34,6 +35,8 @@ func getClient(c *gin.Context) *storage.Client {
 // Get bucket or create it if it doesn't already exist
 func getOrCreateBucket(client *storage.Client, bucket string) (*storage.BucketHandle, error) {
 	ctx := context.Background()
+	// Get bucket, or create it if it does not exist
+	// NOTE: We automatically prefix bucket names with "utdnebula_" here since bucket names need to be GLOBALLY unique
 	bucketHandle := client.Bucket(schema.BUCKET_PREFIX + bucket)
 	_, err := bucketHandle.Attrs(ctx)
 	if err != nil {
@@ -220,29 +223,20 @@ func PostObject(c *gin.Context) {
 	// Use MaxBytesReader to limit the body
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxUploadSize)
 
-	tmpBuf := make([]byte, int(maxUploadSize)+1)
-	n, readErr := c.Request.Body.Read(tmpBuf)
+	// Read and validate the entire (capped) request body before touching GCS.
 
-	// Return 413 if file is too large
+	fileBytes, readErr := io.ReadAll(c.Request.Body)
 	if readErr != nil {
 		var maxBytesErr *http.MaxBytesError
 		if errors.As(readErr, &maxBytesErr) {
 			respond(c, http.StatusRequestEntityTooLarge, "error", fmt.Sprintf("File too large. Maximum allowed size is %d bytes (%dMB)", maxUploadSize, maxUploadSize/(1024*1024)))
 			return
 		}
-		// If it's not EOF, it's a real error
-		if !errors.Is(readErr, io.EOF) {
-			respondWithInternalError(c, readErr)
-			return
-		}
+		respondWithInternalError(c, readErr)
+		return
 	}
 
-	var fileReader io.Reader
-	if n > 0 {
-		fileReader = io.MultiReader(bytes.NewReader(tmpBuf[:n]), c.Request.Body)
-	} else {
-		fileReader = c.Request.Body
-	}
+	fileReader := bytes.NewReader(fileBytes)
 
 	client := getClient(c)
 	ctx := context.Background()
@@ -266,11 +260,6 @@ func PostObject(c *gin.Context) {
 
 	// Upload
 	if _, err := io.Copy(wc, fileReader); err != nil {
-		var maxBytesErr *http.MaxBytesError
-		if errors.As(err, &maxBytesErr) {
-			respond(c, http.StatusRequestEntityTooLarge, "error", fmt.Sprintf("File too large. Maximum allowed size is %d bytes (%dMB)", maxUploadSize, maxUploadSize/(1024*1024)))
-			return
-		}
 		respondWithInternalError(c, err)
 		return
 	}
@@ -364,10 +353,28 @@ func ObjectSignedURL(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
+
+	headers := append([]string{}, body.Headers...)
+	// Upload size limits for signed URL uploads.
+	if strings.EqualFold(body.Method, http.MethodPut) || strings.EqualFold(body.Method, http.MethodPost) {
+		maxUploadSize := configs.GetEnvMaxUploadSize()
+		hasContentLengthRange := false
+		for _, header := range headers {
+			if strings.HasPrefix(strings.ToLower(header), "x-goog-content-length-range:") {
+				hasContentLengthRange = true
+				break
+			}
+		}
+
+		if !hasContentLengthRange {
+			headers = append(headers, fmt.Sprintf("x-goog-content-length-range:0,%d", maxUploadSize))
+		}
+	}
+
 	opts := &storage.SignedURLOptions{
 		Scheme:  storage.SigningSchemeV4,
 		Method:  body.Method,
-		Headers: body.Headers,
+		Headers: headers,
 		Expires: expirationTime,
 	}
 
