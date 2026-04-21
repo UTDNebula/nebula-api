@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/UTDNebula/nebula-api/api/schema"
 	"github.com/gin-gonic/gin"
@@ -12,60 +13,6 @@ import (
 	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
 	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
 )
-
-// Get email client from routes
-func getEmailClient(c *gin.Context) *mail.Client {
-	val, exists := c.Get("emailClient")
-	if !exists {
-		panic("email client not set in context")
-	}
-	return val.(*mail.Client)
-}
-
-// Get email username from routes
-func getEmailUsername(c *gin.Context) string {
-	val, exists := c.Get("emailUsername")
-	if !exists {
-		panic("email username not set in context")
-	}
-	return val.(string)
-}
-
-// Get cloud tasks client from routes
-func getTasksClient(c *gin.Context) *cloudtasks.Client {
-	val, exists := c.Get("tasksClient")
-	if !exists {
-		panic("tasks client not set in context")
-	}
-	return val.(*cloudtasks.Client)
-}
-
-// Get queue path from routes
-func getQueuePath(c *gin.Context) string {
-	val, exists := c.Get("queuePath")
-	if !exists {
-		panic("queue path not set in context")
-	}
-	return val.(string)
-}
-
-// Get queue url from routes
-func getQueueUrl(c *gin.Context) string {
-	val, exists := c.Get("queueUrl")
-	if !exists {
-		panic("queue url not set in context")
-	}
-	return val.(string)
-}
-
-// Get email send key from routes
-func getEmailSendKey(c *gin.Context) string {
-	val, exists := c.Get("emailSendKey")
-	if !exists {
-		panic("email send key not set in context")
-	}
-	return val.(string)
-}
 
 // @Id				sendEmail
 // @Router			/email/send [post]
@@ -86,8 +33,8 @@ func SendEmail(c *gin.Context) {
 		return
 	}
 
-	client := getEmailClient(c)
-	smtpUsername := getEmailUsername(c)
+	client := c.MustGet("emailClient").(*mail.Client)
+	smtpUsername := os.Getenv("SMTP_USERNAME")
 
 	m := mail.NewMsg()
 	if err := m.FromFormat(req.From, smtpUsername); err != nil {
@@ -144,9 +91,10 @@ func QueueEmail(c *gin.Context) {
 		return
 	}
 
-	client := getTasksClient(c)
-	queuePath := getQueuePath(c)
-	queueUrl := getQueueUrl(c)
+	client := c.MustGet("tasksClient").(*cloudtasks.Client)
+
+	queuePath := os.Getenv("GCLOUD_EMAIL_QUEUE_PATH")
+	queueUrl := os.Getenv("GCLOUD_EMAIL_QUEUE_URL")
 
 	// Build the Task payload.
 	// https://docs.cloud.google.com/tasks/docs/creating-http-target-tasks
@@ -158,7 +106,7 @@ func QueueEmail(c *gin.Context) {
 					HttpMethod: taskspb.HttpMethod_POST,
 					Url:        queueUrl,
 					Headers: map[string]string{
-						"x-email-send-key": getEmailSendKey(c),
+						"x-email-send-key": os.Getenv("EMAIL_SEND_ROUTE_KEY"), // Must get from env bc queue only has x-email-queue-key header
 						"x-api-key":        c.GetHeader("x-api-key"),
 					},
 				},

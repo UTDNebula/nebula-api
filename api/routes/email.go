@@ -16,18 +16,16 @@ import (
 )
 
 var emailClient *mail.Client
-var smtpUsername string
-var emailSendKey string
 var emailClientOnce sync.Once
 
 var tasksClient *cloudtasks.Client
-var queuePath string
-var queueUrl string
 var tasksClientOnce sync.Once
 
-func initTasksClient() (*cloudtasks.Client, string, string) {
+func initTasksClient() *cloudtasks.Client {
 	// Singleton to prevent multiple clients
 	tasksClientOnce.Do(func() {
+
+		// Checking if env variables are set to know whether or not to skip the route
 		qPath := os.Getenv("GCLOUD_EMAIL_QUEUE_PATH")
 		qUrl := os.Getenv("GCLOUD_EMAIL_QUEUE_URL")
 
@@ -43,15 +41,15 @@ func initTasksClient() (*cloudtasks.Client, string, string) {
 			return
 		}
 		tasksClient = c
-		queuePath = qPath
-		queueUrl = qUrl
 	})
-	return tasksClient, queuePath, queueUrl
+	return tasksClient
 }
 
-func initEmailClient() (*mail.Client, string, string) {
+func initEmailClient() *mail.Client {
 	// Singleton to prevent multiple clients
 	emailClientOnce.Do(func() {
+
+		// Checking if env variables are set to know whether or not to skip the route
 		smtpHost := os.Getenv("SMTP_HOST")
 		smtpUser := os.Getenv("SMTP_USERNAME")
 		smtpPass := os.Getenv("SMTP_PASSWORD")
@@ -74,16 +72,15 @@ func initEmailClient() (*mail.Client, string, string) {
 			return
 		}
 		emailClient = c
-		smtpUsername = smtpUser
 	})
-	return emailClient, smtpUsername, emailSendKey
+	return emailClient
 }
 
 func EmailRoute(router *gin.Engine) {
-	client, username, emailSendKey := initEmailClient()
-	tClient, qPath, qUrl := initTasksClient()
+	eClient := initEmailClient()
+	tClient := initTasksClient()
 
-	if client == nil {
+	if eClient == nil {
 		log.Println("SMTP client not initialized")
 	}
 
@@ -91,7 +88,7 @@ func EmailRoute(router *gin.Engine) {
 		log.Println("Cloud Tasks client not initialized")
 	}
 
-	if client == nil || tClient == nil {
+	if eClient == nil || tClient == nil {
 		log.Println("skipping email routes")
 		return
 	}
@@ -114,12 +111,8 @@ func EmailRoute(router *gin.Engine) {
 
 	// Pass to next layer
 	emailGroup.Use(func(c *gin.Context) {
-		c.Set("emailClient", client)
-		c.Set("emailUsername", username)
-		c.Set("emailSendKey", emailSendKey)
+		c.Set("emailClient", eClient)
 		c.Set("tasksClient", tClient)
-		c.Set("queuePath", qPath)
-		c.Set("queueUrl", qUrl)
 		c.Next()
 	})
 
