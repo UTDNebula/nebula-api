@@ -36,11 +36,12 @@ func initStorageClient() *storage.Client {
 		} else {
 			// We're not running on the cloud, get JSON service account key from .env
 			encodedCreds, exist := os.LookupEnv("GOOGLE_APPLICATION_CREDENTIALS")
+			jsonCredss := []byte(encodedCreds)
 			if !exist {
 				log.Println("Error loading 'GOOGLE_APPLICATION_CREDENTIALS' from the .env file, skipping cloud storage routes")
 				return
 			}
-			c, err = storage.NewClient(ctx, option.WithCredentialsJSON([]byte(encodedCreds)))
+			c, err = storage.NewClient(ctx, option.WithAuthCredentialsJSON(option.ServiceAccount, jsonCredss))
 		}
 		if err != nil {
 			log.Printf("Failed to create GCS client: %v", err)
