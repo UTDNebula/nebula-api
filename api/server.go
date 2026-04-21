@@ -88,6 +88,7 @@ func main() {
 	routes.CalendarRoute(router)
 	routes.ClubRoute(router)
 	routes.DiscountRoutes(router)
+	routes.EmailRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
