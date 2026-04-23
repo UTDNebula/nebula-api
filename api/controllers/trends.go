@@ -39,6 +39,21 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 	trendsSectionSearch("Professor", c)
 }
 
+// @Id				trendsCombinedSectionSearch
+// @Router			/combined/sections/trends [get]
+// @Tags			Combined
+// @Description	"Returns sections matching both course and professor criteria from the combined trends collection. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility."
+// @Produce		json
+// @Param			course_number	query		string									true	"The course's official number"
+// @Param			subject_prefix	query		string									true	"The course's subject prefix"
+// @Param			first_name		query		string									true	"The professor's first name"
+// @Param			last_name		query		string									true	"The professor's last name"
+// @Success		200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
+// @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
+func TrendsCombinedSectionSearch(c *gin.Context) {
+	trendsSectionSearch("Combined", c)
+}
+
 // trendsSectionSearch handles trends-based section routes for both course and professor query.
 // Reduce the repetitiveness of routes whose aggregation behaviors are identical.
 // This is subject to change as requests might be more complex.
@@ -65,6 +80,14 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 		trendsQuery, err = schema.FilterQuery[schema.Professor](c)
 		if err != nil {
 			return
+		}
+	case "Combined":
+		trendsCollection = configs.GetCollection("trends_combined_sections")
+		trendsQuery = bson.M{
+			"course_prefix": c.Query("subject_prefix"),
+			"course_number": c.Query("course_number"),
+			"prof_first":    c.Query("first_name"),
+			"prof_last":     c.Query("last_name"),
 		}
 	default:
 		// This should never happen, but act as a fallback
