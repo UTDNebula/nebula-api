@@ -82,12 +82,13 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 			return
 		}
 	case "Combined":
-		trendsCollection = configs.GetCollection("trends_combined_sections")
+		trendsCollection = configs.GetCollection("trends_course_and_prof_sections")
 		trendsQuery = bson.M{
-			"course_prefix": c.Query("subject_prefix"),
-			"course_number": c.Query("course_number"),
-			"prof_first":    c.Query("first_name"),
-			"prof_last":     c.Query("last_name"),
+			"_id": bson.M{
+				"course":     c.Query("subject_prefix") + c.Query("course_number"),
+				"prof_first": c.Query("first_name"),
+				"prof_last":  c.Query("last_name"),
+			},
 		}
 	default:
 		// This should never happen, but act as a fallback
