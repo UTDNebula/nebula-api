@@ -43,8 +43,8 @@ func SendEmail(c *gin.Context) {
 		return
 	}
 
-	if err := m.To(req.To[0]); err != nil {
-		respond(c, http.StatusBadRequest, "invalid to address", err.Error())
+	if err := m.To(req.To...); err != nil {
+		respond(c, http.StatusBadRequest, "invalid to address(es)", err.Error())
 		return
 	}
 
@@ -70,15 +70,15 @@ func SendEmail(c *gin.Context) {
 // @Id				QueueEmail
 // @Router			/email/queue [post]
 // @Tags			Internal
-// @Description	"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects."
+// @Description	"Queue an email to be sent via SMTP. Multi-recipient emails will be queued as separate emails to avoid bypassing queueing system. This route is restricted to only Nebula Labs internal Projects."
 // @Accept			json
-// @Produce		json
+// @Produce			json
 // @Param			request				body		schema.EmailRequest						true	"Email Request Body"
 // @Param			x-email-queue-key	header		string									true	"The internal email queue key"
-// @Success		200					{object}	schema.APIResponse[schema.EmailRequest]	"Email Request Body with Queued Task Name"
+// @Success		200					{object}	schema.APIResponse[[]string]				"The list of queued task names"
 // @Failure		500					{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400					{object}	schema.APIResponse[string]				"A string describing the error"
-func QueueEmail(c *gin.Context) { // TODO: Update Swaggo!
+func QueueEmail(c *gin.Context) {
 	// Request must be able to bind to email request
 	var emailReq schema.EmailRequest
 	if err := c.ShouldBindJSON(&emailReq); err != nil {
