@@ -328,6 +328,7 @@ type AcademicCalendar struct {
 	MidtermsDue              string                    `bson:"midterms_due" json:"midterms_due"`
 	UniversityClosings       [][]string                `bson:"university_closings" json:"university_closings"`
 	NoClasses                [][]string                `bson:"no_classes" json:"no_classes"`
+	URL 					 string 				   `bson:"url" json:"url"`
 }
 type AcademicCalendarSession struct {
 	Name               string                        `bson:"name" json:"name"`
@@ -377,6 +378,20 @@ type Club struct {
 	UpdatedAt    time.Time           `json:"updated_at"`
 	Officers     []map[string]string `json:"officers"`
 	Contacts     []Contact           `json:"contacts"`
+}
+
+type EmailAttachment struct {
+	Name string `json:"name" binding:"required"`
+	Data []byte `json:"data" binding:"required"`
+}
+
+type EmailRequest struct {
+	From        string            `json:"from,omitempty"`
+	To          string            `json:"to" binding:"required,email"`
+	Subject     string            `json:"subject" binding:"required"`
+	Body        string            `json:"body" binding:"required"`
+	Attachments []EmailAttachment `json:"attachments,omitempty"`
+	Embeds      []EmailAttachment `json:"embeds,omitempty"`
 }
 
 // Type for all API responses
