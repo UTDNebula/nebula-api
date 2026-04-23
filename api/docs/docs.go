@@ -1039,7 +1039,7 @@ const docTemplate = `{
         },
         "/email/queue": {
             "post": {
-                "description": "\"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects.\"",
+                "description": "\"Queue an email to be sent via SMTP. Multi-recipient emails will be queued as separate emails to avoid bypassing queueing system. This route is restricted to only Nebula Labs internal Projects.\"",
                 "consumes": [
                     "application/json"
                 ],
@@ -1070,9 +1070,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Email Request Body with Queued Task Name",
+                        "description": "The list of queued task names",
                         "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-schema_EmailRequest"
+                            "$ref": "#/definitions/schema.APIResponse-array_string"
                         }
                     },
                     "400": {
@@ -3442,6 +3442,23 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-array_string": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-int": {
             "type": "object",
             "properties": {
@@ -4133,7 +4150,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "to": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

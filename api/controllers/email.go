@@ -72,12 +72,12 @@ func SendEmail(c *gin.Context) {
 // @Tags			Internal
 // @Description	"Queue an email to be sent via SMTP. Multi-recipient emails will be queued as separate emails to avoid bypassing queueing system. This route is restricted to only Nebula Labs internal Projects."
 // @Accept			json
-// @Produce			json
-// @Param			request				body		schema.EmailRequest						true	"Email Request Body"
-// @Param			x-email-queue-key	header		string									true	"The internal email queue key"
-// @Success		200					{object}	schema.APIResponse[[]string]				"The list of queued task names"
-// @Failure		500					{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400					{object}	schema.APIResponse[string]				"A string describing the error"
+// @Produce		json
+// @Param			request				body		schema.EmailRequest				true	"Email Request Body"
+// @Param			x-email-queue-key	header		string							true	"The internal email queue key"
+// @Success		200					{object}	schema.APIResponse[[]string]	"The list of queued task names"
+// @Failure		500					{object}	schema.APIResponse[string]		"A string describing the error"
+// @Failure		400					{object}	schema.APIResponse[string]		"A string describing the error"
 func QueueEmail(c *gin.Context) {
 	// Request must be able to bind to email request
 	var emailReq schema.EmailRequest
@@ -131,7 +131,7 @@ func QueueEmail(c *gin.Context) {
 			respond(c, http.StatusInternalServerError, fmt.Sprintf("failed to queue email for recipient %s %d/%d", to, i, numOfRecipients), err.Error())
 			return
 		}
-		
+
 		queuedTasks = append(queuedTasks, task.GetName())
 	}
 

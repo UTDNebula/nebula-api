@@ -109,6 +109,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_string:
+    properties:
+      data:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-int:
     properties:
       data:
@@ -556,7 +567,9 @@ definitions:
       subject:
         type: string
       to:
-        type: string
+        items:
+          type: string
+        type: array
     required:
     - body
     - subject
@@ -1666,8 +1679,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: '"Queue an email to be sent via SMTP. This route is restricted
-        to only Nebula Labs internal Projects."'
+      description: '"Queue an email to be sent via SMTP. Multi-recipient emails will
+        be queued as separate emails to avoid bypassing queueing system. This route
+        is restricted to only Nebula Labs internal Projects."'
       operationId: QueueEmail
       parameters:
       - description: Email Request Body
@@ -1685,9 +1699,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: Email Request Body with Queued Task Name
+          description: The list of queued task names
           schema:
-            $ref: '#/definitions/schema.APIResponse-schema_EmailRequest'
+            $ref: '#/definitions/schema.APIResponse-array_string'
         "400":
           description: A string describing the error
           schema:
