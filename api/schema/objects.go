@@ -387,7 +387,7 @@ type EmailAttachment struct {
 
 type EmailRequest struct {
 	From        string            `json:"from,omitempty"`
-	To          string            `json:"to" binding:"required,email"`
+	To          []string          `json:"to" binding:"required,dive,email"`
 	Subject     string            `json:"subject" binding:"required"`
 	Body        string            `json:"body" binding:"required"`
 	Attachments []EmailAttachment `json:"attachments,omitempty"`
