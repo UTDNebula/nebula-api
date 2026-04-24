@@ -29,6 +29,9 @@ import (
 // @Failure		500					{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400					{object}	schema.APIResponse[string]				"A string describing the error"
 func SendEmail(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
 	var req schema.EmailRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -61,7 +64,7 @@ func SendEmail(c *gin.Context) {
 		m.EmbedReader(emb.Name, bytes.NewReader(emb.Data), mail.WithFileContentID(emb.Name))
 	}
 
-	if err := client.DialAndSend(m); err != nil {
+	if err := client.DialAndSendWithContext(ctx, m); err != nil {
 		respond(c, http.StatusInternalServerError, "failed to send email", err.Error())
 		return
 	}
