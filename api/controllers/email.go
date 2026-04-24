@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/UTDNebula/nebula-api/api/schema"
 	"github.com/gin-gonic/gin"
@@ -79,6 +81,9 @@ func SendEmail(c *gin.Context) {
 // @Failure		500					{object}	schema.APIResponse[string]		"A string describing the error"
 // @Failure		400					{object}	schema.APIResponse[string]		"A string describing the error"
 func QueueEmail(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
 	// Request must be able to bind to email request
 	var emailReq schema.EmailRequest
 	if err := c.ShouldBindJSON(&emailReq); err != nil {
@@ -126,7 +131,7 @@ func QueueEmail(c *gin.Context) {
 		// Add a payload message if one is present.
 		taskReq.Task.GetHttpRequest().Body = []byte(body)
 
-		task, err := client.CreateTask(c.Request.Context(), taskReq)
+		task, err := client.CreateTask(ctx, taskReq)
 		if err != nil {
 			respond(c, http.StatusInternalServerError, fmt.Sprintf("failed to queue email for recipient %s %d/%d", to, i, numOfRecipients), err.Error())
 			return
