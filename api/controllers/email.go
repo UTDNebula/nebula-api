@@ -2,9 +2,12 @@ package controllers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/UTDNebula/nebula-api/api/schema"
 	"github.com/gin-gonic/gin"
@@ -26,6 +29,9 @@ import (
 // @Failure		500					{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400					{object}	schema.APIResponse[string]				"A string describing the error"
 func SendEmail(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
 	var req schema.EmailRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -42,8 +48,8 @@ func SendEmail(c *gin.Context) {
 		return
 	}
 
-	if err := m.To(req.To); err != nil {
-		respond(c, http.StatusBadRequest, "invalid to address", err.Error())
+	if err := m.To(req.To...); err != nil {
+		respond(c, http.StatusBadRequest, "invalid to address(es)", err.Error())
 		return
 	}
 
@@ -58,7 +64,7 @@ func SendEmail(c *gin.Context) {
 		m.EmbedReader(emb.Name, bytes.NewReader(emb.Data), mail.WithFileContentID(emb.Name))
 	}
 
-	if err := client.DialAndSend(m); err != nil {
+	if err := client.DialAndSendWithContext(ctx, m); err != nil {
 		respond(c, http.StatusInternalServerError, "failed to send email", err.Error())
 		return
 	}
@@ -69,15 +75,18 @@ func SendEmail(c *gin.Context) {
 // @Id				QueueEmail
 // @Router			/email/queue [post]
 // @Tags			Internal
-// @Description	"Queue an email to be sent via SMTP. This route is restricted to only Nebula Labs internal Projects."
+// @Description	"Queue an email to be sent via SMTP. Multi-recipient emails will be queued as separate emails to avoid bypassing queueing system. This route is restricted to only Nebula Labs internal Projects."
 // @Accept			json
 // @Produce		json
-// @Param			request				body		schema.EmailRequest						true	"Email Request Body"
-// @Param			x-email-queue-key	header		string									true	"The internal email queue key"
-// @Success		200					{object}	schema.APIResponse[schema.EmailRequest]	"Email Request Body with Queued Task Name"
-// @Failure		500					{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400					{object}	schema.APIResponse[string]				"A string describing the error"
+// @Param			request				body		schema.EmailRequest				true	"Email Request Body"
+// @Param			x-email-queue-key	header		string							true	"The internal email queue key"
+// @Success		200					{object}	schema.APIResponse[[]string]	"The list of queued task names"
+// @Failure		500					{object}	schema.APIResponse[string]		"A string describing the error"
+// @Failure		400					{object}	schema.APIResponse[string]		"A string describing the error"
 func QueueEmail(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
 	// Request must be able to bind to email request
 	var emailReq schema.EmailRequest
 	if err := c.ShouldBindJSON(&emailReq); err != nil {
@@ -85,43 +94,54 @@ func QueueEmail(c *gin.Context) {
 		return
 	}
 
-	body, err := json.Marshal(emailReq)
-	if err != nil {
-		respond(c, http.StatusInternalServerError, "failed to serialize email request", err.Error())
-		return
-	}
-
 	client := c.MustGet("tasksClient").(*cloudtasks.Client)
-
 	queuePath := os.Getenv("GCLOUD_EMAIL_QUEUE_PATH")
 	queueUrl := os.Getenv("GCLOUD_EMAIL_QUEUE_URL")
 
-	// Build the Task payload.
-	// https://docs.cloud.google.com/tasks/docs/creating-http-target-tasks
-	taskReq := &taskspb.CreateTaskRequest{
-		Parent: queuePath,
-		Task: &taskspb.Task{
-			MessageType: &taskspb.Task_HttpRequest{
-				HttpRequest: &taskspb.HttpRequest{
-					HttpMethod: taskspb.HttpMethod_POST,
-					Url:        queueUrl,
-					Headers: map[string]string{
-						"x-email-send-key": os.Getenv("EMAIL_SEND_ROUTE_KEY"), // Must get from env bc queue only has x-email-queue-key header
-						"x-api-key":        c.GetHeader("x-api-key"),
+	baseEmailReq := emailReq
+	baseEmailReq.To = []string{}
+
+	queuedTasks := []string{}
+
+	numOfRecipients := len(emailReq.To)
+	for i, to := range emailReq.To {
+		baseEmailReq.To = []string{to}
+
+		body, err := json.Marshal(baseEmailReq)
+		if err != nil {
+			respond(c, http.StatusInternalServerError, fmt.Sprintf("failed to serialize email request for recipient %s %d/%d", to, i, numOfRecipients), err.Error())
+			return
+		}
+
+		// Build the Task payload.
+		// // https://docs.cloud.google.com/tasks/docs/creating-http-target-tasks
+		taskReq := &taskspb.CreateTaskRequest{
+			Parent: queuePath,
+			Task: &taskspb.Task{
+				MessageType: &taskspb.Task_HttpRequest{
+					HttpRequest: &taskspb.HttpRequest{
+						HttpMethod: taskspb.HttpMethod_POST,
+						Url:        queueUrl,
+						Headers: map[string]string{
+							"x-email-send-key": os.Getenv("EMAIL_SEND_ROUTE_KEY"), // Must get from env bc queue only has x-email-queue-key header
+							"x-api-key":        c.GetHeader("x-api-key"),
+						},
 					},
 				},
 			},
-		},
+		}
+
+		// Add a payload message if one is present.
+		taskReq.Task.GetHttpRequest().Body = []byte(body)
+
+		task, err := client.CreateTask(ctx, taskReq)
+		if err != nil {
+			respond(c, http.StatusInternalServerError, fmt.Sprintf("failed to queue email for recipient %s %d/%d", to, i, numOfRecipients), err.Error())
+			return
+		}
+
+		queuedTasks = append(queuedTasks, task.GetName())
 	}
 
-	// Add a payload message if one is present.
-	taskReq.Task.GetHttpRequest().Body = []byte(body)
-
-	task, err := client.CreateTask(c.Request.Context(), taskReq)
-	if err != nil {
-		respond(c, http.StatusInternalServerError, "failed to queue email", err.Error())
-		return
-	}
-
-	respond(c, http.StatusOK, "success", task.GetName())
+	respond(c, http.StatusOK, "success", queuedTasks)
 }
