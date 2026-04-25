@@ -164,6 +164,29 @@ type BuildingRooms {
 	@goTag(key: "bson", value: "lon")
 }
 
+type MultiBuildingEvents {
+	date: String! 
+	buildings: [SingleBuildingEvents!]! 
+}
+
+type SingleBuildingEvents {
+	building: String! 
+	rooms: [RoomEvents!]! 
+}
+
+type RoomEvents {
+	room: String! 
+	section_events: [SectionWithTime!]! 
+}
+
+type SectionWithTime {
+	section: Section! 
+	start_time: String! 
+	end_time: String! 
+}
+
+union EventResult = MultiBuildingEvents | SingleBuildingEvents | RoomEvents | SectionWithTime
+
 # Astra schedule (Mongo `astra`). Same shape as REST /astra/*; @goTag aligns with BSON.
 # Resolver implementations: astra.resolvers.go (schema stays here per project convention).
 type AstraEvent {
@@ -212,6 +235,8 @@ type Query {
 		offset: Int = 0
 	): [CometCalendar!]
 	CometCalendar(id: ID!): CometCalendar
+
+	events(date: String!, building: String, room: String): EventResult!
 
 	AstraEvents(date: String!): AstraDayEvents!
 	AstraEventsByBuilding(date: String!, building: String!): AstraBuilding!
