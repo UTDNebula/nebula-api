@@ -328,7 +328,7 @@ type AcademicCalendar struct {
 	MidtermsDue              string                    `bson:"midterms_due" json:"midterms_due"`
 	UniversityClosings       [][]string                `bson:"university_closings" json:"university_closings"`
 	NoClasses                [][]string                `bson:"no_classes" json:"no_classes"`
-	URL 					 string 				   `bson:"url" json:"url"`
+	URL                      string                    `bson:"url" json:"url"`
 }
 type AcademicCalendarSession struct {
 	Name               string                        `bson:"name" json:"name"`

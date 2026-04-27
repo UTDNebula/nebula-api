@@ -1563,6 +1563,109 @@ const docTemplate = `{
                 }
             }
         },
+        "/mazevo/{date}/{building}": {
+            "get": {
+                "description": "\"Returns all sections with MazevoEvent meetings on the specified date in the specified building\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "mazevoEventsByBuilding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of the event location",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents sections with meetings on the specified date in the specified building",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/mazevo/{date}/{building}/{room}": {
+            "get": {
+                "description": "\"Returns all sections with MazevoEvent meetings on the specified date in the specified building and room\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "mazevoEventsByRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of the event location",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "room number",
+                        "name": "room",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents sections with meetings on the specified date in the specified building",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/professor": {
             "get": {
                 "description": "\"Returns paginated list of professors matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
