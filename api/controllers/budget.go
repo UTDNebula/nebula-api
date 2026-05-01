@@ -1,0 +1,51 @@
+package controllers
+
+import (
+	"context"
+	"errors"
+	"net/http"
+	"time"
+
+	"github.com/gin-gonic/gin"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+
+	"github.com/UTDNebula/nebula-api/api/configs"
+
+	"github.com/UTDNebula/nebula-api/api/schema"
+)
+
+var budgetCollection *mongo.Collection = configs.GetCollection("budgets")
+
+// @Id				Budget
+// @Router			/budget/{year} [get]
+// @Tags			Other
+// @Description	"Returns discal year Budget based on the input year"
+// @Produce		json
+// @Param			year	path		string								true	"year to retrieve budget for"
+// @Success		200		{object}	schema.APIResponse[schema.Budget]	"Single budget from the given fiscal year"
+// @Failure		500		{object}	schema.APIResponse[string]			"A string describing the error"
+func Budget(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	year := c.Param("year")
+
+	var budget schema.Budget
+
+	// Find budget given date
+	err := budgetCollection.FindOne(ctx, bson.M{"_id": year}).Decode(&budget)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			budget.Id = year
+			budget.OperatingBudget = &schema.OperatingBudget{}
+			budget.AnnualFinancialReport = &schema.AnnualFinancialReport{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
+	}
+
+	respond(c, http.StatusOK, "success", budget)
+}
