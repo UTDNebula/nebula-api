@@ -316,6 +316,7 @@ type ObjectSignedURLBody struct {
 }
 
 // Academic Calendar type
+// Must also be updated in api-tools/parser/academicCalendars.go
 type AcademicCalendar struct {
 	Id                       string                    `bson:"_id" json:"_id"`
 	Timeline                 string                    `bson:"timeline" json:"timeline"`
