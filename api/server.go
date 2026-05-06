@@ -77,6 +77,7 @@ func main() {
 	routes.CourseRoute(router)
 	routes.SectionRoute(router)
 	routes.ProfessorRoute(router)
+	routes.CombinedRoute(router)
 	routes.GradesRoute(router)
 	routes.AutocompleteRoute(router)
 	routes.StorageRoute(router)

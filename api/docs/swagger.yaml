@@ -109,6 +109,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_string:
+    properties:
+      data:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-int:
     properties:
       data:
@@ -556,7 +567,9 @@ definitions:
       subject:
         type: string
       to:
-        type: string
+        items:
+          type: string
+        type: array
     required:
     - body
     - subject
@@ -1171,6 +1184,31 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
+  /combined/sections/trends:
+    get:
+      description: '"Returns sections matching both course and professor criteria
+        from the combined trends collection. Specialized high-speed convenience endpoint
+        for UTD Trends internal use; limited query flexibility."'
+      operationId: trendsCombinedSectionSearch
+      parameters:
+      - description: The course's official number
+        in: query
+        name: course_number
+        required: true
+        type: string
+      - description: The course's subject prefix
+        in: query
+        name: subject_prefix
+        required: true
+        type: string
+      - description: The professor's first name
+        in: query
+        name: first_name
+        required: true
+        type: string
+      - description: The professor's last name
+        in: query
+        name: last_name
   /club/{id}:
     get:
       description: '"Returns the directory info for given club."'
@@ -1212,6 +1250,9 @@ paths:
       - application/json
       responses:
         "200":
+          description: A list of Sections
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Section'
           description: List of matching clubs
           schema:
             $ref: '#/definitions/schema.APIResponse-array_schema_Club'
@@ -1224,6 +1265,7 @@ paths:
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
+      - Combined
       - Clubs
   /course:
     get:
@@ -1666,8 +1708,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: '"Queue an email to be sent via SMTP. This route is restricted
-        to only Nebula Labs internal Projects."'
+      description: '"Queue an email to be sent via SMTP. Multi-recipient emails will
+        be queued as separate emails to avoid bypassing queueing system. This route
+        is restricted to only Nebula Labs internal Projects."'
       operationId: QueueEmail
       parameters:
       - description: Email Request Body
@@ -1685,9 +1728,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: Email Request Body with Queued Task Name
+          description: The list of queued task names
           schema:
-            $ref: '#/definitions/schema.APIResponse-schema_EmailRequest'
+            $ref: '#/definitions/schema.APIResponse-array_string'
         "400":
           description: A string describing the error
           schema:
@@ -2014,6 +2057,79 @@ paths:
           description: All MazevoEvents with events on the inputted date
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /mazevo/{date}/{building}:
+    get:
+      description: '"Returns all sections with MazevoEvent meetings on the specified
+        date in the specified building"'
+      operationId: mazevoEventsByBuilding
+      parameters:
+      - description: date (ISO format) to retrieve mazevo events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of the event location
+        in: path
+        name: building
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All MazevoEvents sections with meetings on the specified date
+            in the specified building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /mazevo/{date}/{building}/{room}:
+    get:
+      description: '"Returns all sections with MazevoEvent meetings on the specified
+        date in the specified building and room"'
+      operationId: mazevoEventsByRoom
+      parameters:
+      - description: date (ISO format) to retrieve mazevo events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of the event location
+        in: path
+        name: building
+        required: true
+        type: string
+      - description: room number
+        in: path
+        name: room
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All MazevoEvents sections with meetings on the specified date
+            in the specified building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
         "500":
           description: A string describing the error
           schema:
