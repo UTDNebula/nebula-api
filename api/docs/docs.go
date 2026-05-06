@@ -317,9 +317,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/combined/sections/trends": {
-            "get": {
-                "description": "\"Returns sections matching both course and professor criteria from the combined trends collection. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
         "/club/search": {
             "get": {
                 "description": "\"Returns list of clubs matching the search string\"",
@@ -327,36 +324,6 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Combined"
-                ],
-                "operationId": "trendsCombinedSectionSearch",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "The course's official number",
-                        "name": "course_number",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "The course's subject prefix",
-                        "name": "subject_prefix",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "The professor's first name",
-                        "name": "first_name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "The professor's last name",
-                        "name": "last_name",
-                        "in": "query",
                     "Clubs"
                 ],
                 "operationId": "clubSearch",
@@ -412,9 +379,6 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "A list of Sections",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
                         "description": "A club",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-schema_Club"
@@ -424,6 +388,62 @@ const docTemplate = `{
                         "description": "A string describing the error",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/combined/sections/trends": {
+            "get": {
+                "description": "\"Returns sections matching both course and professor criteria from the combined trends collection. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Combined"
+                ],
+                "operationId": "trendsCombinedSectionSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "course_number",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "subject_prefix",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's first name",
+                        "name": "first_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's last name",
+                        "name": "last_name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of Sections",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
                         }
                     },
                     "500": {
@@ -4945,7 +4965,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.2.0",
+	Version:          "1.3.0",
 	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"https", "http"},
