@@ -74,3 +74,26 @@ func GetEnvLimit() int64 {
 
 	return limit
 }
+
+func GetEnvMaxUploadSize() int64 {
+	const (
+		defaultLimit int64 = 30 * 1024 * 1024
+		hardCapLimit int64 = 50 * 1024 * 1024
+	)
+
+	limitString, exist := os.LookupEnv("MAX_UPLOAD_SIZE")
+	if !exist {
+		return defaultLimit
+	}
+
+	limit, err := strconv.ParseInt(limitString, 10, 64)
+	if err != nil {
+		return defaultLimit
+	}
+
+	if limit > hardCapLimit {
+		return hardCapLimit
+	}
+
+	return limit
+}

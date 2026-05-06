@@ -78,6 +78,7 @@ func main() {
 	routes.CourseRoute(router)
 	routes.SectionRoute(router)
 	routes.ProfessorRoute(router)
+	routes.CombinedRoute(router)
 	routes.GradesRoute(router)
 	routes.AutocompleteRoute(router)
 	routes.StorageRoute(router)
@@ -88,6 +89,7 @@ func main() {
 	routes.CalendarRoute(router)
 	routes.ClubRoute(router)
 	routes.DiscountRoutes(router)
+	routes.EmailRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
