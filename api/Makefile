@@ -17,6 +17,9 @@ check:
 	gofmt -w ./..
 	goimports -w ./..
 
+test:
+	go test ./... -count=1
+
 build: server.go
 	swag fmt
 	swag init -g server.go --outputTypes yaml,go

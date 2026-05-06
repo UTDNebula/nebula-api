@@ -32,6 +32,15 @@ func GetEnvMongoURI() string {
 	return uri
 }
 
+func GetClubsDBUri() string {
+	uri, exist := os.LookupEnv("CLUBS_DB_URI")
+	if !exist {
+		log.Panic("Error loading 'CLUBS_DB_URI' from the .env file")
+	}
+
+	return uri
+}
+
 func GetEnvLogin() (netID string, password string) {
 
 	netID, exist := os.LookupEnv("LOGIN_NETID")
@@ -58,6 +67,29 @@ func GetEnvLimit() int64 {
 	limit, err := strconv.ParseInt(limitString, 10, 64)
 	if err != nil {
 		return defaultLimit
+	}
+
+	return limit
+}
+
+func GetEnvMaxUploadSize() int64 {
+	const (
+		defaultLimit int64 = 30 * 1024 * 1024
+		hardCapLimit int64 = 50 * 1024 * 1024
+	)
+
+	limitString, exist := os.LookupEnv("MAX_UPLOAD_SIZE")
+	if !exist {
+		return defaultLimit
+	}
+
+	limit, err := strconv.ParseInt(limitString, 10, 64)
+	if err != nil {
+		return defaultLimit
+	}
+
+	if limit > hardCapLimit {
+		return hardCapLimit
 	}
 
 	return limit

@@ -30,7 +30,7 @@ var cometCalendarCollection *mongo.Collection = configs.GetCollection("cometCale
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.Event]]	"All CometCalendarEvents with events on the inputted date"
 // @Failure		500		{object}	schema.APIResponse[string]										"A string describing the error"
 func CometCalendarEvents(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
@@ -63,7 +63,7 @@ func CometCalendarEvents(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]										"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]										"A string describing the error"
 func CometCalendarEventsByBuilding(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
@@ -106,7 +106,17 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 	}
 
 	if cometCalendarEventsByBuilding.Building == "" {
-		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
+		maxBuildings := min(len(cometCalendarEvents.Buildings), 10)
+		var available []string
+
+		for i := range maxBuildings {
+			available = append(available, strings.TrimSpace(cometCalendarEvents.Buildings[i].Building))
+		}
+		if len(cometCalendarEvents.Buildings) > maxBuildings {
+			available = append(available, "(and more)")
+		}
+
+		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
 
@@ -125,7 +135,7 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]							"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]							"A string describing the error"
 func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
@@ -180,19 +190,7 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	}
 
 	if !buildingFound {
-		// Collect available buildings only when needed (limit to first 10 for performance)
-		maxBuildings := min(len(cometCalendarEvents.Buildings), 10)
-
-		availableBuildings := make([]string, 0, maxBuildings)
-		for i := range maxBuildings {
-			availableBuildings = append(availableBuildings, strings.TrimSpace(cometCalendarEvents.Buildings[i].Building))
-		}
-		buildingList := strings.Join(availableBuildings, ", ")
-		if len(cometCalendarEvents.Buildings) > 10 {
-			buildingList += " (and more...)"
-		}
-		respond(c, http.StatusNotFound, "error",
-			"No events found for the specified building. Available buildings: "+buildingList)
+		respond(c, http.StatusNotFound, "error", "Building not found")
 		return
 	}
 
@@ -230,8 +228,7 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 		if len(matchedBuilding.Rooms) > 20 {
 			roomList += " (and more...)"
 		}
-		respond(c, http.StatusNotFound, "error",
-			"No events found for the specified room. Available rooms: "+roomList)
+		respond(c, http.StatusNotFound, "error", "No events found for the specified room. Available rooms: "+roomList)
 		return
 	}
 

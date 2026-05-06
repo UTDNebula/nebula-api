@@ -58,7 +58,7 @@ func TrendsCombinedSectionSearch(c *gin.Context) {
 // Reduce the repetitiveness of routes whose aggregation behaviors are identical.
 // This is subject to change as requests might be more complex.
 func trendsSectionSearch(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	var detailedSections []schema.Section
@@ -77,7 +77,7 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 		}
 	case "Professor":
 		trendsCollection = configs.GetCollection("trends_prof_sections")
-		trendsQuery, err = schema.FilterQuery[schema.Professor](c)
+		trendsQuery, err = schema.FilterQuery[schema.Professor](c.Request.URL.Query())
 		if err != nil {
 			return
 		}
