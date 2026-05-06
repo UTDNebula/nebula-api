@@ -1184,6 +1184,31 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
+  /combined/sections/trends:
+    get:
+      description: '"Returns sections matching both course and professor criteria
+        from the combined trends collection. Specialized high-speed convenience endpoint
+        for UTD Trends internal use; limited query flexibility."'
+      operationId: trendsCombinedSectionSearch
+      parameters:
+      - description: The course's official number
+        in: query
+        name: course_number
+        required: true
+        type: string
+      - description: The course's subject prefix
+        in: query
+        name: subject_prefix
+        required: true
+        type: string
+      - description: The professor's first name
+        in: query
+        name: first_name
+        required: true
+        type: string
+      - description: The professor's last name
+        in: query
+        name: last_name
   /club/{id}:
     get:
       description: '"Returns the directory info for given club."'
@@ -1225,6 +1250,9 @@ paths:
       - application/json
       responses:
         "200":
+          description: A list of Sections
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Section'
           description: List of matching clubs
           schema:
             $ref: '#/definitions/schema.APIResponse-array_schema_Club'
@@ -1237,6 +1265,7 @@ paths:
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
+      - Combined
       - Clubs
   /course:
     get:

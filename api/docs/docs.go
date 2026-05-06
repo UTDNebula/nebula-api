@@ -317,6 +317,9 @@ const docTemplate = `{
                 }
             }
         },
+        "/combined/sections/trends": {
+            "get": {
+                "description": "\"Returns sections matching both course and professor criteria from the combined trends collection. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
         "/club/search": {
             "get": {
                 "description": "\"Returns list of clubs matching the search string\"",
@@ -324,6 +327,36 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
+                    "Combined"
+                ],
+                "operationId": "trendsCombinedSectionSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "course_number",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "subject_prefix",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's first name",
+                        "name": "first_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's last name",
+                        "name": "last_name",
+                        "in": "query",
                     "Clubs"
                 ],
                 "operationId": "clubSearch",
@@ -379,6 +412,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
+                        "description": "A list of Sections",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
                         "description": "A club",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-schema_Club"
