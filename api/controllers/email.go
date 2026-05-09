@@ -84,9 +84,6 @@ func SendEmail(c *gin.Context) {
 // @Failure		500					{object}	schema.APIResponse[string]		"A string describing the error"
 // @Failure		400					{object}	schema.APIResponse[string]		"A string describing the error"
 func QueueEmail(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
-	defer cancel()
-
 	// Request must be able to bind to email request
 	var emailReq schema.EmailRequest
 	if err := c.ShouldBindJSON(&emailReq); err != nil {
@@ -105,6 +102,9 @@ func QueueEmail(c *gin.Context) {
 
 	numOfRecipients := len(emailReq.To)
 	for i, to := range emailReq.To {
+		ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+		defer cancel()
+
 		baseEmailReq.To = []string{to}
 
 		body, err := json.Marshal(baseEmailReq)
