@@ -399,6 +399,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/combined/sections/trends": {
+            "get": {
+                "description": "\"Returns sections matching both course and professor criteria from the combined trends collection. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Combined"
+                ],
+                "operationId": "trendsCombinedSectionSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "course_number",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "subject_prefix",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's first name",
+                        "name": "first_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's last name",
+                        "name": "last_name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of Sections",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/course": {
             "get": {
                 "description": "\"Returns paginated list of courses matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
@@ -975,7 +1031,7 @@ const docTemplate = `{
         },
         "/discountPrograms": {
             "get": {
-                "description": "\"Returns paginated list of discounts matching the query's string-typed key-value pairs. See offset for more details on pagination.\"",
+                "description": "\"Returns list of discounts filtered using field-specific keyword searches or full-text search.\"",
                 "produces": [
                     "application/json"
                 ],
@@ -985,14 +1041,8 @@ const docTemplate = `{
                 "operationId": "discountPrograms",
                 "parameters": [
                     {
-                        "type": "number",
-                        "description": "The starting position of the current page of discounts (e.g. For starting at the 17th discount, offset=16).",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
                         "type": "string",
-                        "description": "The discount's category.",
+                        "description": "The discount's category (exact match with suggestions).",
                         "name": "category",
                         "in": "query"
                     },
@@ -1016,7 +1066,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Full text search of all discount's fields.",
+                        "description": "Full-text search, must be used alone.",
                         "name": "q",
                         "in": "query"
                     }
@@ -1026,6 +1076,112 @@ const docTemplate = `{
                         "description": "A list of discounts",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_schema_DiscountProgram"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/email/queue": {
+            "post": {
+                "description": "\"Queue an email to be sent via SMTP. Multi-recipient emails will be queued as separate emails to avoid bypassing queueing system. This route is restricted to only Nebula Labs internal Projects.\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "QueueEmail",
+                "parameters": [
+                    {
+                        "description": "Email Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.EmailRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal email queue key",
+                        "name": "x-email-queue-key",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The list of queued task names",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_string"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/email/send": {
+            "post": {
+                "description": "\"Send an email via SMTP. This route is restricted to only Nebula Labs internal Projects.\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Internal"
+                ],
+                "operationId": "sendEmail",
+                "parameters": [
+                    {
+                        "description": "Email Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.EmailRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "The internal email send key",
+                        "name": "x-email-send-key",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email Request Body",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_EmailRequest"
                         }
                     },
                     "400": {
@@ -1452,6 +1608,109 @@ const docTemplate = `{
                         "description": "All MazevoEvents with events on the inputted date",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/mazevo/{date}/{building}": {
+            "get": {
+                "description": "\"Returns all sections with MazevoEvent meetings on the specified date in the specified building\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "mazevoEventsByBuilding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of the event location",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents sections with meetings on the specified date in the specified building",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/mazevo/{date}/{building}/{room}": {
+            "get": {
+                "description": "\"Returns all sections with MazevoEvent meetings on the specified date in the specified building and room\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "mazevoEventsByRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of the event location",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "room number",
+                        "name": "room",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents sections with meetings on the specified date in the specified building",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     },
                     "500": {
@@ -3342,6 +3601,23 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-array_string": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-int": {
             "type": "object",
             "properties": {
@@ -3389,6 +3665,20 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/schema.Course"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_EmailRequest": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.EmailRequest"
                 },
                 "message": {
                     "type": "string"
@@ -3946,7 +4236,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "address": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "business": {
                     "type": "string"
@@ -3965,6 +4258,61 @@ const docTemplate = `{
                 },
                 "website": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.EmailAttachment": {
+            "type": "object",
+            "required": [
+                "data",
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.EmailRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "subject",
+                "to"
+            ],
+            "properties": {
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.EmailAttachment"
+                    }
+                },
+                "body": {
+                    "type": "string"
+                },
+                "embeds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.EmailAttachment"
+                    }
+                },
+                "from": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -4617,7 +4965,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.2.0",
+	Version:          "1.3.0",
 	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"https", "http"},
