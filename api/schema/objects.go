@@ -395,6 +395,11 @@ type EmailRequest struct {
 	Embeds      []EmailAttachment `json:"embeds,omitempty"`
 }
 
+type CourseEmbedding struct {
+	Id        primitive.ObjectID `json:"_id" bson:"_id"`
+	Embedding []float64          `json:"embedding" bson:"embedding"`
+}
+
 // Type for all API responses
 type APIResponse[T any] struct {
 	Status  int    `json:"status"`
