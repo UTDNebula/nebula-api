@@ -1,9 +1,12 @@
 package controllers
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -14,10 +17,20 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var courseCollection *mongo.Collection = configs.GetCollection("courses")
+var courseEmbeddingCollection = configs.GetCollection("courseEmbeddings")
+
+type EmbeddingVector struct {
+	Embedding []float64 `json:"embedding"`
+}
+
+type EmbeddingResponse struct {
+	Data []EmbeddingVector `json:"data"`
+}
 
 // @Id				courseSearch
 // @Router			/course [get]
@@ -272,6 +285,77 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 	respond(c, http.StatusOK, "success", queryResults)
 }
 
+// @Id				courseSemanticSearch
+// @Router			/course/semantic [get]
+// @Tags			Courses
+// @Description	"Returns the list of courses that match the prompt"
+// @Produce		json
+// @Param			prompt	query		string								false	"Prompt that must be specified"
+// @Success		200		{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
+// @Failure		500		{object}	schema.APIResponse[string]			"A string describing the error"
+// @Failure		400		{object}	schema.APIResponse[string]			"A string describing the error"
+func CourseSemanticSearch(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	var courseEmbeddings []schema.CourseEmbedding
+	var courses []schema.Course
+
+	// Get the query prompt and then translate it to vector query
+	prompt := c.Query("prompt")
+	if prompt == "" {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", "q must be specified")
+		return
+	}
+
+	vector, err := getQueryVector(prompt)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	vectorSearchPipeline := mongo.Pipeline{bson.D{
+		{Key: "$vectorSearch", Value: bson.M{
+			"index":         "course_embedding_index", // The query of course index
+			"path":          "embedding",
+			"queryVector":   vector,
+			"numCandidates": 40,
+			"limit":         configs.GetEnvLimit(),
+		}},
+	}}
+
+	// Vector-searches to get list of course embeddings
+	cursor, err := courseEmbeddingCollection.Aggregate(ctx, vectorSearchPipeline)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	defer cursor.Close(ctx)
+	if err = cursor.All(ctx, &courseEmbeddings); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// Query list of courses from the obtained IDs
+	courseIDs := make([]primitive.ObjectID, len(courseEmbeddings))
+	for _, embedding := range courseEmbeddings {
+		courseIDs = append(courseIDs, embedding.Id)
+	}
+
+	cursor, err = courseCollection.Find(ctx, bson.D{{Key: "_id", Value: bson.D{{Key: "$in", Value: courseIDs}}}})
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	defer cursor.Close(ctx)
+	if err = cursor.All(ctx, &courses); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusAccepted, "success", courses)
+}
+
 // buildCoursePipeline builds the pipeline to aggregate the list of specified objects from list of courses
 func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
 	baseStages := mongo.Pipeline{
@@ -294,7 +378,6 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 	switch endpoint {
 	case "sections":
 		// No extra stages middle stages
-
 	case "professors":
 		// Lookup the list of professors from the list of sections
 		lookupStages = mongo.Pipeline{
@@ -315,7 +398,6 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 
 			bson.D{{Key: "$replaceWith", Value: "$professors"}},
 		}
-
 	default:
 		panic("invalid endpoint for coursePipeline: " + endpoint)
 	}
@@ -341,4 +423,38 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 	}
 
 	return append(append(baseStages, middleStages...), paginateStages...)
+}
+
+// getQueryVector converts the query prompt into the vector for vector search.
+// TODO: Each call of API costs like 0.001 cents, so we have to figure out the way to cache prompt
+func getQueryVector(prompt string) ([]float64, error) {
+	const embeddingURL = "https://ai.mongodb.com/v1/embeddings"
+	embeddingKey := configs.GetEmbeddingKey()
+	body, _ := json.Marshal(map[string]any{
+		"input": []string{prompt},
+		"model": "voyage-4-large",
+	})
+
+	request, _ := http.NewRequest("POST", embeddingURL, bytes.NewBuffer(body))
+	request.Header.Set("Authorization", "Bearer "+embeddingKey)
+	request.Header.Set("Content-Type", "application/json")
+
+	cli := &http.Client{}
+	response, err := cli.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	bytes, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var parsedRes EmbeddingResponse
+	if err := json.Unmarshal(bytes, &parsedRes); err != nil {
+
+	}
+
+	return parsedRes.Data[0].Embedding, nil
 }

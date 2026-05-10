@@ -94,3 +94,12 @@ func GetEnvMaxUploadSize() int64 {
 
 	return limit
 }
+
+func GetEmbeddingKey() string {
+	uri, exist := os.LookupEnv("EMBEDDING_KEY")
+	if !exist {
+		log.Fatalf("Error loading 'EMBEDDING_KEY' from the .env file")
+	}
+
+	return uri
+}

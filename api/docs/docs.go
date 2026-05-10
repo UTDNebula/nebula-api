@@ -871,6 +871,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/course/semantic": {
+            "get": {
+                "description": "\"Returns the list of courses that match the prompt\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Courses"
+                ],
+                "operationId": "courseSemanticSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Prompt that must be specified",
+                        "name": "prompt",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of courses",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Course"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/course/{id}": {
             "get": {
                 "description": "\"Returns the course with given ID\"",

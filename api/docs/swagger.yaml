@@ -1672,6 +1672,32 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Courses
+  /course/semantic:
+    get:
+      description: '"Returns the list of courses that match the prompt"'
+      operationId: courseSemanticSearch
+      parameters:
+      - description: Prompt that must be specified
+        in: query
+        name: prompt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of courses
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Course'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Courses
   /discountPrograms:
     get:
       description: '"Returns list of discounts filtered using field-specific keyword
