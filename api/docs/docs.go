@@ -352,6 +352,9 @@ const docTemplate = `{
                 }
             }
         },
+        "/combined/sections/trends": {
+            "get": {
+                "description": "\"Returns sections matching both course and professor criteria from the combined trends collection. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
         "/club/search": {
             "get": {
                 "description": "\"Returns list of clubs matching the search string\"",
@@ -359,6 +362,36 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
+                    "Combined"
+                ],
+                "operationId": "trendsCombinedSectionSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "course_number",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "subject_prefix",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's first name",
+                        "name": "first_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's last name",
+                        "name": "last_name",
+                        "in": "query",
                     "Clubs"
                 ],
                 "operationId": "clubSearch",
@@ -414,6 +447,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
+                        "description": "A list of Sections",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
                         "description": "A club",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-schema_Club"
@@ -1587,6 +1623,109 @@ const docTemplate = `{
                         "description": "All MazevoEvents with events on the inputted date",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/mazevo/{date}/{building}": {
+            "get": {
+                "description": "\"Returns all sections with MazevoEvent meetings on the specified date in the specified building\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "mazevoEventsByBuilding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of the event location",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents sections with meetings on the specified date in the specified building",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/mazevo/{date}/{building}/{room}": {
+            "get": {
+                "description": "\"Returns all sections with MazevoEvent meetings on the specified date in the specified building and room\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "operationId": "mazevoEventsByRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date (ISO format) to retrieve mazevo events",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "building abbreviation of the event location",
+                        "name": "building",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "room number",
+                        "name": "room",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All MazevoEvents sections with meetings on the specified date in the specified building",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     },
                     "500": {
