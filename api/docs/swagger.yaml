@@ -32,11 +32,33 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_Club:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.Club'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_Course:
     properties:
       data:
         items:
           $ref: '#/definitions/schema.Course'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-array_schema_DiscountProgram:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.DiscountProgram'
         type: array
       message:
         type: string
@@ -87,6 +109,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_string:
+    properties:
+      data:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-int:
     properties:
       data:
@@ -105,10 +138,28 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-schema_Club:
+    properties:
+      data:
+        $ref: '#/definitions/schema.Club'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-schema_Course:
     properties:
       data:
         $ref: '#/definitions/schema.Course'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-schema_EmailRequest:
+    properties:
+      data:
+        $ref: '#/definitions/schema.EmailRequest'
       message:
         type: string
       status:
@@ -361,6 +412,35 @@ definitions:
           $ref: '#/definitions/schema.Room'
         type: array
     type: object
+  schema.Club:
+    properties:
+      contacts:
+        items:
+          $ref: '#/definitions/schema.Contact'
+        type: array
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      officers:
+        items:
+          additionalProperties:
+            type: string
+          type: object
+        type: array
+      profile_image:
+        type: string
+      slug:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      updated_at:
+        type: string
+    type: object
   schema.CollectionRequirement:
     properties:
       name:
@@ -371,6 +451,13 @@ definitions:
       required:
         type: integer
       type:
+        type: string
+    type: object
+  schema.Contact:
+    properties:
+      platform:
+        type: string
+      url:
         type: string
     type: object
   schema.Course:
@@ -429,6 +516,64 @@ definitions:
         type: string
       title:
         type: string
+    type: object
+  schema.DiscountProgram:
+    properties:
+      _id:
+        type: string
+      address:
+        items:
+          type: string
+        type: array
+      business:
+        type: string
+      category:
+        type: string
+      discount:
+        type: string
+      email:
+        type: string
+      phone:
+        type: string
+      website:
+        type: string
+    type: object
+  schema.EmailAttachment:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      name:
+        type: string
+    required:
+    - data
+    - name
+    type: object
+  schema.EmailRequest:
+    properties:
+      attachments:
+        items:
+          $ref: '#/definitions/schema.EmailAttachment'
+        type: array
+      body:
+        type: string
+      embeds:
+        items:
+          $ref: '#/definitions/schema.EmailAttachment'
+        type: array
+      from:
+        type: string
+      subject:
+        type: string
+      to:
+        items:
+          type: string
+        type: array
+    required:
+    - body
+    - subject
+    - to
     type: object
   schema.Event:
     properties:
@@ -747,6 +892,8 @@ definitions:
         type: array
       section_number:
         type: string
+      total_students:
+        type: integer
     type: object
   schema.SectionWithTime:
     properties:
@@ -1037,6 +1184,89 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
+  /combined/sections/trends:
+    get:
+      description: '"Returns sections matching both course and professor criteria
+        from the combined trends collection. Specialized high-speed convenience endpoint
+        for UTD Trends internal use; limited query flexibility."'
+      operationId: trendsCombinedSectionSearch
+      parameters:
+      - description: The course's official number
+        in: query
+        name: course_number
+        required: true
+        type: string
+      - description: The course's subject prefix
+        in: query
+        name: subject_prefix
+        required: true
+        type: string
+      - description: The professor's first name
+        in: query
+        name: first_name
+        required: true
+        type: string
+      - description: The professor's last name
+        in: query
+        name: last_name
+  /club/{id}:
+    get:
+      description: '"Returns the directory info for given club."'
+      operationId: clubGet
+      parameters:
+      - description: ID of the club to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A club
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /club/search:
+    get:
+      description: '"Returns list of clubs matching the search string"'
+      operationId: clubSearch
+      parameters:
+      - description: Search string
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of Sections
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Section'
+          description: List of matching clubs
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Combined
+      - Clubs
   /course:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
@@ -1431,6 +1661,122 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Courses
+  /discountPrograms:
+    get:
+      description: '"Returns list of discounts filtered using field-specific keyword
+        searches or full-text search."'
+      operationId: discountPrograms
+      parameters:
+      - description: The discount's category (exact match with suggestions).
+        in: query
+        name: category
+        type: string
+      - description: The discount's business contains this keyword (case-insensitive).
+        in: query
+        name: business
+        type: string
+      - description: The discount's address contains this keyword (case-insensitive).
+        in: query
+        name: address
+        type: string
+      - description: The discount's discount contains this keyword (case-insensitive).
+        in: query
+        name: discount
+        type: string
+      - description: Full-text search, must be used alone.
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of discounts
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_DiscountProgram'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Discounts
+  /email/queue:
+    post:
+      consumes:
+      - application/json
+      description: '"Queue an email to be sent via SMTP. Multi-recipient emails will
+        be queued as separate emails to avoid bypassing queueing system. This route
+        is restricted to only Nebula Labs internal Projects."'
+      operationId: QueueEmail
+      parameters:
+      - description: Email Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.EmailRequest'
+      - description: The internal email queue key
+        in: header
+        name: x-email-queue-key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The list of queued task names
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_string'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
+  /email/send:
+    post:
+      consumes:
+      - application/json
+      description: '"Send an email via SMTP. This route is restricted to only Nebula
+        Labs internal Projects."'
+      operationId: sendEmail
+      parameters:
+      - description: Email Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.EmailRequest'
+      - description: The internal email send key
+        in: header
+        name: x-email-send-key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email Request Body
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_EmailRequest'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Internal
   /events/{date}:
     get:
       description: '"Returns all sections with meetings on the specified date"'
@@ -1711,6 +2057,79 @@ paths:
           description: All MazevoEvents with events on the inputted date
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /mazevo/{date}/{building}:
+    get:
+      description: '"Returns all sections with MazevoEvent meetings on the specified
+        date in the specified building"'
+      operationId: mazevoEventsByBuilding
+      parameters:
+      - description: date (ISO format) to retrieve mazevo events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of the event location
+        in: path
+        name: building
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All MazevoEvents sections with meetings on the specified date
+            in the specified building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Events
+  /mazevo/{date}/{building}/{room}:
+    get:
+      description: '"Returns all sections with MazevoEvent meetings on the specified
+        date in the specified building and room"'
+      operationId: mazevoEventsByRoom
+      parameters:
+      - description: date (ISO format) to retrieve mazevo events
+        in: path
+        name: date
+        required: true
+        type: string
+      - description: building abbreviation of the event location
+        in: path
+        name: building
+        required: true
+        type: string
+      - description: room number
+        in: path
+        name: room
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All MazevoEvents sections with meetings on the specified date
+            in the specified building
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_MultiBuildingEvents-schema_MazevoEvent'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
         "500":
           description: A string describing the error
           schema:

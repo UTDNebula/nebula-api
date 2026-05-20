@@ -16,7 +16,7 @@ func GradesRoute(router *gin.Engine) {
 	// ---- gradesGroup.OPTIONS("semester", controllers.Preflight)
 	// ---- gradesGroup.OPTIONS("overall", controllers.Preflight)
 
-	gradesGroup.GET("semester", controllers.GradeAggregationSemester())
-	gradesGroup.GET("semester/sectionType", controllers.GradesAggregationSectionType())
-	gradesGroup.GET("overall", controllers.GradesAggregationOverall())
+	gradesGroup.GET("semester", controllers.GradeAggregationSemester)
+	gradesGroup.GET("semester/sectionType", controllers.GradesAggregationSectionType)
+	gradesGroup.GET("overall", controllers.GradesAggregationOverall)
 }

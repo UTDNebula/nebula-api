@@ -19,6 +19,7 @@ type AcademicSessionSections struct {
 type SectionNumberProfessors struct {
 	Professors     []SimpleProfessor `bson:"professors" json:"professors" schema:"professors"`
 	Section_number string            `bson:"section_number" json:"section_number" schema:"section_number"`
+	Total_students int               `bson:"total_students" json:"total_students" schema:"total_students"`
 }
 
 type SimpleAcademicSession struct {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,7 @@ var astraCollection *mongo.Collection = configs.GetCollection("astra")
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.AstraEvent]]	"All AstraEvents with events on the inputted date"
 // @Failure		500		{object}	schema.APIResponse[string]											"A string describing the error"
 func AstraEvents(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
@@ -37,8 +38,13 @@ func AstraEvents(c *gin.Context) {
 	// Find astra event given date
 	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
-		respondWithInternalError(c, err)
-		return
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			astra_events.Date = date
+			astra_events.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
+		} else {
+			respondWithInternalError(c, err)
+			return
+		}
 	}
 
 	respond(c, http.StatusOK, "success", astra_events)
@@ -55,11 +61,11 @@ func AstraEvents(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]											"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]											"A string describing the error"
 func AstraEventsByBuilding(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
-	building := c.Param("building")
+	building := strings.TrimSpace(c.Param("building")) // trimming the input
 
 	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
 	var astra_eventsByBuilding schema.SingleBuildingEvents[schema.AstraEvent]
@@ -68,24 +74,34 @@ func AstraEventsByBuilding(c *gin.Context) {
 	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			astra_events.Date = date
-			astra_events.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
-		} else {
-			respondWithInternalError(c, err)
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
+		respondWithInternalError(c, err)
+		return
 	}
 
-	//parse response for requested building
+	// case insensitive matching
 	for _, b := range astra_events.Buildings {
-		if b.Building == building {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
 			astra_eventsByBuilding = b
 			break
 		}
 	}
 
 	if astra_eventsByBuilding.Building == "" {
-		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
+		// provide suggestion if not found
+		maxBuildings := min(len(astra_events.Buildings), 10)
+		var available []string
+
+		for i := range maxBuildings {
+			available = append(available, strings.TrimSpace(astra_events.Buildings[i].Building))
+		}
+		if len(astra_events.Buildings) > maxBuildings {
+			available = append(available, "(and more)")
+		}
+
+		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
 
@@ -104,12 +120,12 @@ func AstraEventsByBuilding(c *gin.Context) {
 // @Failure		500			{object}	schema.APIResponse[string]											"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]											"A string describing the error"
 func AstraEventsByBuildingAndRoom(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
-	building := c.Param("building")
-	room := c.Param("room")
+	building := strings.TrimSpace(c.Param("building"))
+	room := strings.TrimSpace(c.Param("room"))
 
 	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
 	var roomEvents schema.RoomEvents[schema.AstraEvent]
@@ -118,29 +134,47 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			astra_events.Date = date
-			astra_events.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
-		} else {
-			respondWithInternalError(c, err)
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
+		}
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// matching buildings case-insensitively
+	var matchedBuilding *schema.SingleBuildingEvents[schema.AstraEvent]
+	for _, b := range astra_events.Buildings {
+		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
+			matchedBuilding = &b
+			break
 		}
 	}
 
-	//parse response for requested building and room
-	for _, b := range astra_events.Buildings {
-		if b.Building == building {
-			for _, r := range b.Rooms {
-				if r.Room == room {
-					roomEvents = r
-					break
-				}
-			}
+	if matchedBuilding == nil {
+		respond(c, http.StatusNotFound, "error", "Building not found")
+		return
+	}
+
+	// match room case-insesitively
+	for _, r := range matchedBuilding.Rooms {
+		if strings.EqualFold(strings.TrimSpace(r.Room), room) {
+			roomEvents = r
 			break
 		}
 	}
 
 	if roomEvents.Room == "" {
-		respond(c, http.StatusNotFound, "error", "No rooms found for the specified building or event")
+		maxRooms := min(len(matchedBuilding.Rooms), 20)
+		var available []string
+
+		for i := range maxRooms {
+			available = append(available, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
+		}
+		if len(matchedBuilding.Rooms) > maxRooms {
+			available = append(available, "(and more)")
+		}
+
+		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
 		return
 	}
 
