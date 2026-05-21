@@ -405,45 +405,33 @@ type APIResponse[T any] struct {
 
 // Program Schema
 type Program struct {
-	SourceId   int              `json:"programId"`
-	Created    time.Time        `json:"dateCreated"`
-	Modified   time.Time        `json:"dateModified"`
-	Sections   []ProgramSection `json:"sections"`
-	CostCycles json.RawMessage  `json:"costSheets"`
-	NextCost   *Cost            `json:"nextAppCycleCostSheet"`
+	SourceId int            `json:"programId"`
+	Current  ProgramCurrent `json:"current"`
+	NextCost *Cost          `json:"nextAppCycleCostSheet"`
+}
+
+type ProgramCurrent struct {
+	Sections []ProgramSection `json:"sections"`
 }
 
 type ProgramSection struct {
-	SourceId    int      `json:"sectionId"`
-	DisplayName string   `json:"sectionDisplayName"`
-	IsDefault   bool     `json:"sectionIsDefault"` // source data is 0/1 int, scraper must convert
+	DisplayName string          `json:"sectionDisplayName"`
 	Widgets     []ProgramWidget `json:"sectionWidgets"`
 }
 
 type ProgramWidget struct {
-	SourceId    int               `json:"contentId"`
-	ContentType string            `json:"contentType"` // content, media, information sheet
-	ContentHTML string            `json:"contentHTML"`
-	Information *InformationSheet `json:"contentInformationSheet"`
-	Media       *Media            `json:"contentMedia"`
+	ContentType string          `json:"contentType"` // content, media, information sheet, cost sheet, action buttons, dates / deadlines
+	Information json.RawMessage `json:"contentInformationSheet"`
 }
 
 type InformationSheet struct {
-	HeaderText string      `json:"headerText"`
 	Parameters []Parameter `json:"parameters"`
 }
 
 type Parameter struct {
-	SourceId       int      `json:"parameterId"`
 	Name           string   `json:"parameterName"`
 	AssignedValues []string `json:"assignedValues"`
-	Glossary       string   `json:"parameterGlossary"`
 	Type           string   `json:"parameterType"` // SELCT, MULTI, MINIM
-}
-
-type Media struct {
-	Type         string `json:"type"` // Video, Image, Google map
-	ImageAltText string `json:"imageAltText"`
 }
 
 // Cost Structs
@@ -451,27 +439,19 @@ type Cost struct {
 	SourceId    int        `json:"costSheetId"`
 	Term        string     `json:"term"`
 	Year        int        `json:"year"`
-	Public      bool       `json:"public"`
-	Notes       string     `json:"costSheetNotes"`
-	Created     time.Time  `json:"dtCreated"`
-	Modified    time.Time  `json:"dtModified"`
 	Billable    []CostItem `json:"billableCostSheetItems"`
 	NonBillable []CostItem `json:"nonBillableCostSheetItems"`
 	Credits     []CostItem `json:"creditCostSheetItems"`
 }
 
 type CostItem struct {
-	SourceId int          `json:"costSheetItemId"`
 	Name     string       `json:"costSheetItemName"`
 	Category string       `json:"costSheetItemCategory"` // Billable, Non-Billable, Cost Reduction
 	Type     string       `json:"costSheetItemType"`     // Fixed, Optional, Manual Entry, Selection List
-	Glossary string       `json:"costSheetItemGlossary"`
-	Hint     string       `json:"costSheetItemHint"`
 	Costs    []CostDetail `json:"costs"`
 }
 
 type CostDetail struct {
-	SourceId int     `json:"costSheetItemCostsId"`
 	Key      string  `json:"costKey"` // e.g. "In-State", "Out-of-State", empty for fixed
 	Value    float64 `json:"costValue"`
 	Currency string  `json:"costCurrency"`
