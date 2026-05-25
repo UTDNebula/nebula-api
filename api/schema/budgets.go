@@ -23,7 +23,6 @@ type Budget struct {
 	Id                    string                 `bson:"_id" json:"_id"`
 	OperatingBudget       *OperatingBudget       `bson:"operating_budget" json:"operating_budget"`
 	AnnualFinancialReport *AnnualFinancialReport `bson:"annual_financial_report" json:"annual_financial_report"`
-	Notes                 string                 `bson:"notes" json:"notes"`
 }
 
 // Operating Budget Structs
