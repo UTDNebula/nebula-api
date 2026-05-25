@@ -31,11 +31,11 @@ type OperatingBudget struct {
 	OperatingExpenses                Table[float64]                                `bson:"operating_expenses" json:"operating_expenses"`
 	BudgetedNonoperatingRevenues     Table[float64]                                `bson:"budgeted_nonoperating_revenues" json:"budgeted_nonoperating_revenues"`
 	SalariesDoeAndInstructionalAdmin Table[SalariesDoeAndInstructionalAdminValues] `bson:"salaries_doe_and_instructional_admin" json:"salaries_doe_and_instructional_admin"`
-	ServiceDepartmentsFunds          Table2[FundsValues]                           `bson:"service_departments_funds" json:"service_departments_funds"`
-	DesignatedFunds                  Table2[FundsValues]                           `bson:"designated_funds" json:"designated_funds"`
+	ServiceDepartmentsFunds          *Table2[FundsValues]                          `bson:"service_departments_funds" json:"service_departments_funds"`
+	DesignatedFunds                  *Table2[FundsValues]                          `bson:"designated_funds" json:"designated_funds"`
 	BudgetedTuitionAndStudentFees    Table2[float64]                               `bson:"budgeted_tuition_and_student_fees" json:"budgeted_tuition_and_student_fees"`
-	AuxiliaryExpenses                Table2[AuxiliaryExpensesValues]               `bson:"auxiliary_expenses" json:"auxiliary_expenses"`
-	RestrictedFunds                  Table2[FundsValues]                           `bson:"restricted_funds" json:"restricted_funds"`
+	AuxiliaryExpenses                *Table2[AuxiliaryExpensesValues]              `bson:"auxiliary_expenses" json:"auxiliary_expenses"`
+	RestrictedFunds                  *Table2[FundsValues]                          `bson:"restricted_funds" json:"restricted_funds"`
 }
 type SalariesDoeAndInstructionalAdminValues struct {
 	Total                         float64 `bson:"total" json:"total"`
