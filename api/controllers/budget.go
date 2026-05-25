@@ -26,6 +26,7 @@ var budgetCollection *mongo.Collection = configs.GetCollection("budgets")
 // @Param			year	path		string								true	"year to retrieve budget for"
 // @Success		200		{object}	schema.APIResponse[schema.Budget]	"Single budget from the given fiscal year"
 // @Failure		500		{object}	schema.APIResponse[string]			"A string describing the error"
+// @Failure		404		{object}	schema.APIResponse[string]			"A string describing the error"
 func Budget(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
@@ -38,9 +39,8 @@ func Budget(c *gin.Context) {
 	err := budgetCollection.FindOne(ctx, bson.M{"_id": year}).Decode(&budget)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			budget.Id = year
-			budget.OperatingBudget = &schema.OperatingBudget{}
-			budget.AnnualFinancialReport = &schema.AnnualFinancialReport{}
+			respond(c, http.StatusNotFound, "error", "No budgets found for the specified fiscal year")
+			return
 		} else {
 			respondWithInternalError(c, err)
 			return
