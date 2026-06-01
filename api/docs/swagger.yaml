@@ -1392,46 +1392,6 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Clubs
-  /combined/sections/trends:
-    get:
-      description: '"Returns sections matching both course and professor criteria
-        from the combined trends collection. Specialized high-speed convenience endpoint
-        for UTD Trends internal use; limited query flexibility."'
-      operationId: trendsCombinedSectionSearch
-      parameters:
-      - description: The course's official number
-        in: query
-        name: course_number
-        required: true
-        type: string
-      - description: The course's subject prefix
-        in: query
-        name: subject_prefix
-        required: true
-        type: string
-      - description: The professor's first name
-        in: query
-        name: first_name
-        required: true
-        type: string
-      - description: The professor's last name
-        in: query
-        name: last_name
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: A list of Sections
-          schema:
-            $ref: '#/definitions/schema.APIResponse-array_schema_Section'
-        "500":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-      tags:
-      - Combined
   /course:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
