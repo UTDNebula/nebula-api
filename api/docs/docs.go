@@ -179,6 +179,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/budget/{year}": {
+            "get": {
+                "description": "\"Returns discal year Budget based on the input year\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Other"
+                ],
+                "operationId": "Budget",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "year to retrieve budget for",
+                        "name": "year",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Single budget from the given fiscal year",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_Budget"
+                        }
+                    },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/calendar/{date}": {
             "get": {
                 "description": "\"Returns CometCalendarEvent based on the input date\"",
@@ -388,6 +429,62 @@ const docTemplate = `{
                         "description": "A string describing the error",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/combined/sections/trends": {
+            "get": {
+                "description": "\"Returns sections matching both course and professor criteria from the combined trends collection. Specialized high-speed convenience endpoint for UTD Trends internal use; limited query flexibility.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Combined"
+                ],
+                "operationId": "trendsCombinedSectionSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The course's official number",
+                        "name": "course_number",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The course's subject prefix",
+                        "name": "subject_prefix",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's first name",
+                        "name": "first_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The professor's last name",
+                        "name": "last_name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of Sections",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Section"
                         }
                     },
                     "500": {
@@ -3370,6 +3467,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-schema_Budget": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.Budget"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-schema_Club": {
             "type": "object",
             "properties": {
@@ -3622,6 +3733,26 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.AnnualFinancialReport": {
+            "type": "object",
+            "properties": {
+                "beginning_net_position": {
+                    "type": "number"
+                },
+                "ending_net_position": {
+                    "type": "number"
+                },
+                "nonoperating_revenues": {
+                    "$ref": "#/definitions/schema.Table-float64"
+                },
+                "operating_expenses": {
+                    "$ref": "#/definitions/schema.Table-float64"
+                },
+                "operating_revenues": {
+                    "$ref": "#/definitions/schema.Table-float64"
+                }
+            }
+        },
         "schema.Assistant": {
             "type": "object",
             "properties": {
@@ -3679,6 +3810,23 @@ const docTemplate = `{
                 },
                 "subject_prefix": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.AuxiliaryExpensesValues": {
+            "type": "object",
+            "properties": {
+                "budgeted_expenses": {
+                    "type": "number"
+                },
+                "debt_service": {
+                    "type": "number"
+                },
+                "estimated_income": {
+                    "type": "number"
+                },
+                "other": {
+                    "type": "number"
                 }
             }
         },
@@ -3757,6 +3905,20 @@ const docTemplate = `{
                 },
                 "updated": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.Budget": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "annual_financial_report": {
+                    "$ref": "#/definitions/schema.AnnualFinancialReport"
+                },
+                "operating_budget": {
+                    "$ref": "#/definitions/schema.OperatingBudget"
                 }
             }
         },
@@ -4033,6 +4195,17 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.FundsValues": {
+            "type": "object",
+            "properties": {
+                "budgeted_expenses": {
+                    "type": "number"
+                },
+                "estimated_income": {
+                    "type": "number"
+                }
+            }
+        },
         "schema.GradeData": {
             "type": "object",
             "properties": {
@@ -4236,6 +4409,38 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.OperatingBudget": {
+            "type": "object",
+            "properties": {
+                "auxiliary_expenses": {
+                    "$ref": "#/definitions/schema.Table2-schema_AuxiliaryExpensesValues"
+                },
+                "budgeted_nonoperating_revenues": {
+                    "$ref": "#/definitions/schema.Table-float64"
+                },
+                "budgeted_tuition_and_student_fees": {
+                    "$ref": "#/definitions/schema.Table2-float64"
+                },
+                "designated_funds": {
+                    "$ref": "#/definitions/schema.Table2-schema_FundsValues"
+                },
+                "operating_expenses": {
+                    "$ref": "#/definitions/schema.Table-float64"
+                },
+                "operating_revenues": {
+                    "$ref": "#/definitions/schema.Table-float64"
+                },
+                "restricted_funds": {
+                    "$ref": "#/definitions/schema.Table2-schema_FundsValues"
+                },
+                "salaries_doe_and_instructional_admin": {
+                    "$ref": "#/definitions/schema.Table-schema_SalariesDoeAndInstructionalAdminValues"
+                },
+                "service_departments_funds": {
+                    "$ref": "#/definitions/schema.Table2-schema_FundsValues"
+                }
+            }
+        },
         "schema.Professor": {
             "type": "object",
             "properties": {
@@ -4361,6 +4566,67 @@ const docTemplate = `{
                 },
                 "room": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.Row-float64": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.Row-schema_AuxiliaryExpensesValues": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
+                    "$ref": "#/definitions/schema.AuxiliaryExpensesValues"
+                }
+            }
+        },
+        "schema.Row-schema_FundsValues": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
+                    "$ref": "#/definitions/schema.FundsValues"
+                }
+            }
+        },
+        "schema.Row-schema_SalariesDoeAndInstructionalAdminValues": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
+                    "$ref": "#/definitions/schema.SalariesDoeAndInstructionalAdminValues"
+                }
+            }
+        },
+        "schema.SalariesDoeAndInstructionalAdminValues": {
+            "type": "object",
+            "properties": {
+                "departmental_operating_expenses": {
+                    "type": "number"
+                },
+                "faculty_salaries": {
+                    "type": "number"
+                },
+                "instructional_administration": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "number"
                 }
             }
         },
@@ -4541,6 +4807,125 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/schema.RoomEvents-schema_SectionWithTime"
                     }
+                }
+            }
+        },
+        "schema.Table-float64": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Row-float64"
+                    }
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.Table-schema_AuxiliaryExpensesValues": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Row-schema_AuxiliaryExpensesValues"
+                    }
+                },
+                "total": {
+                    "$ref": "#/definitions/schema.AuxiliaryExpensesValues"
+                }
+            }
+        },
+        "schema.Table-schema_FundsValues": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Row-schema_FundsValues"
+                    }
+                },
+                "total": {
+                    "$ref": "#/definitions/schema.FundsValues"
+                }
+            }
+        },
+        "schema.Table-schema_SalariesDoeAndInstructionalAdminValues": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Row-schema_SalariesDoeAndInstructionalAdminValues"
+                    }
+                },
+                "total": {
+                    "$ref": "#/definitions/schema.SalariesDoeAndInstructionalAdminValues"
+                }
+            }
+        },
+        "schema.Table2-float64": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Table-float64"
+                    }
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.Table2-schema_AuxiliaryExpensesValues": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Table-schema_AuxiliaryExpensesValues"
+                    }
+                },
+                "total": {
+                    "$ref": "#/definitions/schema.AuxiliaryExpensesValues"
+                }
+            }
+        },
+        "schema.Table2-schema_FundsValues": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Table-schema_FundsValues"
+                    }
+                },
+                "total": {
+                    "$ref": "#/definitions/schema.FundsValues"
                 }
             }
         },
