@@ -428,15 +428,16 @@ type InformationSheet struct {
 	Parameters []Parameter `json:"parameters"`
 }
 
-type Parameter struct {
-	Name           string   `json:"parameterName"`
-	AssignedValues []string `json:"assignedValues"`
+type Parameter struct { 
+	Name           string   `json:"parameterName"` // name of row in information sheet (EX: Area of Study)
+	AssignedValues []string `json:"assignedValues"` // values associated with parameter (Business, Computer Science, Engineering,)
 }
 
 // Cost Structs
 type Cost struct {
 	Term        string     `json:"term"`
 	Year        int        `json:"year"`
+	// The different cost sheet items are separated into billable, non-billable, and credits to make it easier to display on the frontend
 	Billable    []CostItem `json:"billableCostSheetItems"`
 	NonBillable []CostItem `json:"nonBillableCostSheetItems"`
 	Credits     []CostItem `json:"creditCostSheetItems"`
@@ -444,7 +445,7 @@ type Cost struct {
 
 type CostItem struct {
 	Name  string       `json:"costSheetItemName"`
-	Type  string       `json:"costSheetItemType"` // Fixed, Optional, Manual Entry, Selection List
+	Type  string       `json:"costSheetItemType"` // Tells how item cost is interpreted, for example "fixed" means its just the cost value, while "perCreditHour" cost value x credit hours
 	Costs []CostDetail `json:"costs"`
 }
 
