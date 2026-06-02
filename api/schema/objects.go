@@ -405,23 +405,23 @@ type APIResponse[T any] struct {
 
 // Program Schema
 type Program struct {
-	SourceId int            `json:"programId"`
-	Current  ProgramCurrent `json:"current"`
+	Current  ProgramBrochure `json:"current"`
 	NextCost *Cost          `json:"nextAppCycleCostSheet"`
 }
 
-type ProgramCurrent struct {
-	Sections []ProgramSection `json:"sections"`
+type ProgramBrochure struct {
+	Sections []ProgramSection `json:"sections"`  			     // About, Program Overview, Academics and Courses, Costs, Practical Information, etc.
 }
 
 type ProgramSection struct {
-	DisplayName string          `json:"sectionDisplayName"`
-	Widgets     []ProgramWidget `json:"sectionWidgets"`
+	DisplayName string          `json:"sectionDisplayName"` 
+	Widgets     []ProgramWidget `json:"sectionWidgets"`          // content, information sheet, media, EMPTY: action buttons, dates / deadlines, costSheet
 }
 
 type ProgramWidget struct {
-	ContentType string          `json:"contentType"` // content, media, information sheet, cost sheet, action buttons, dates / deadlines
-	Information json.RawMessage `json:"contentInformationSheet"`
+	ContentType string          `json:"contentType"` 
+	ContentHTML string          `json:"contentHTML"`		
+	Information json.RawMessage `json:"contentInformationSheet"` // This should be parsed into an InformationSheet, however somtimes its empty, so store raw message first and then later put into the information sheet struct
 }
 
 type InformationSheet struct {
@@ -431,12 +431,10 @@ type InformationSheet struct {
 type Parameter struct {
 	Name           string   `json:"parameterName"`
 	AssignedValues []string `json:"assignedValues"`
-	Type           string   `json:"parameterType"` // SELCT, MULTI, MINIM
 }
 
 // Cost Structs
 type Cost struct {
-	SourceId    int        `json:"costSheetId"`
 	Term        string     `json:"term"`
 	Year        int        `json:"year"`
 	Billable    []CostItem `json:"billableCostSheetItems"`
@@ -445,16 +443,14 @@ type Cost struct {
 }
 
 type CostItem struct {
-	Name     string       `json:"costSheetItemName"`
-	Category string       `json:"costSheetItemCategory"` // Billable, Non-Billable, Cost Reduction
-	Type     string       `json:"costSheetItemType"`     // Fixed, Optional, Manual Entry, Selection List
-	Costs    []CostDetail `json:"costs"`
+	Name  string       `json:"costSheetItemName"`
+	Type  string       `json:"costSheetItemType"` // Fixed, Optional, Manual Entry, Selection List
+	Costs []CostDetail `json:"costs"`
 }
 
 type CostDetail struct {
-	Key      string  `json:"costKey"` // e.g. "In-State", "Out-of-State", empty for fixed
-	Value    float64 `json:"costValue"`
-	Currency string  `json:"costCurrency"`
+	Key   string  `json:"costKey"` // e.g. "In-State", "Out-of-State", empty for fixed
+	Value float64 `json:"costValue"`
 }
 
 /* Can uncomment these if we ever get evals
