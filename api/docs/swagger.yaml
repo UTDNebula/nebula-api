@@ -138,6 +138,15 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-schema_Budget:
+    properties:
+      data:
+        $ref: '#/definitions/schema.Budget'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-schema_Club:
     properties:
       data:
@@ -309,6 +318,19 @@ definitions:
           $ref: '#/definitions/schema.SectionNumberProfessors'
         type: array
     type: object
+  schema.AnnualFinancialReport:
+    properties:
+      beginning_net_position:
+        type: number
+      ending_net_position:
+        type: number
+      nonoperating_revenues:
+        $ref: '#/definitions/schema.Table-float64'
+      operating_expenses:
+        $ref: '#/definitions/schema.Table-float64'
+      operating_revenues:
+        $ref: '#/definitions/schema.Table-float64'
+    type: object
   schema.Assistant:
     properties:
       email:
@@ -347,6 +369,17 @@ definitions:
         type: array
       subject_prefix:
         type: string
+    type: object
+  schema.AuxiliaryExpensesValues:
+    properties:
+      budgeted_expenses:
+        type: number
+      debt_service:
+        type: number
+      estimated_income:
+        type: number
+      other:
+        type: number
     type: object
   schema.BasicCourse:
     properties:
@@ -398,6 +431,15 @@ definitions:
         type: string
       updated:
         type: string
+    type: object
+  schema.Budget:
+    properties:
+      _id:
+        type: string
+      annual_financial_report:
+        $ref: '#/definitions/schema.AnnualFinancialReport'
+      operating_budget:
+        $ref: '#/definitions/schema.OperatingBudget'
     type: object
   schema.BuildingRooms:
     properties:
@@ -618,6 +660,13 @@ definitions:
           type: string
         type: array
     type: object
+  schema.FundsValues:
+    properties:
+      budgeted_expenses:
+        type: number
+      estimated_income:
+        type: number
+    type: object
   schema.GradeData:
     properties:
       _id:
@@ -751,6 +800,27 @@ definitions:
         description: method to be used with signed URL. For example, PUT
         type: string
     type: object
+  schema.OperatingBudget:
+    properties:
+      auxiliary_expenses:
+        $ref: '#/definitions/schema.Table2-schema_AuxiliaryExpensesValues'
+      budgeted_nonoperating_revenues:
+        $ref: '#/definitions/schema.Table-float64'
+      budgeted_tuition_and_student_fees:
+        $ref: '#/definitions/schema.Table2-float64'
+      designated_funds:
+        $ref: '#/definitions/schema.Table2-schema_FundsValues'
+      operating_expenses:
+        $ref: '#/definitions/schema.Table-float64'
+      operating_revenues:
+        $ref: '#/definitions/schema.Table-float64'
+      restricted_funds:
+        $ref: '#/definitions/schema.Table2-schema_FundsValues'
+      salaries_doe_and_instructional_admin:
+        $ref: '#/definitions/schema.Table-schema_SalariesDoeAndInstructionalAdminValues'
+      service_departments_funds:
+        $ref: '#/definitions/schema.Table2-schema_FundsValues'
+    type: object
   schema.Professor:
     properties:
       _id:
@@ -833,6 +903,45 @@ definitions:
         type: array
       room:
         type: string
+    type: object
+  schema.Row-float64:
+    properties:
+      label:
+        type: string
+      value:
+        type: number
+    type: object
+  schema.Row-schema_AuxiliaryExpensesValues:
+    properties:
+      label:
+        type: string
+      value:
+        $ref: '#/definitions/schema.AuxiliaryExpensesValues'
+    type: object
+  schema.Row-schema_FundsValues:
+    properties:
+      label:
+        type: string
+      value:
+        $ref: '#/definitions/schema.FundsValues'
+    type: object
+  schema.Row-schema_SalariesDoeAndInstructionalAdminValues:
+    properties:
+      label:
+        type: string
+      value:
+        $ref: '#/definitions/schema.SalariesDoeAndInstructionalAdminValues'
+    type: object
+  schema.SalariesDoeAndInstructionalAdminValues:
+    properties:
+      departmental_operating_expenses:
+        type: number
+      faculty_salaries:
+        type: number
+      instructional_administration:
+        type: number
+      total:
+        type: number
     type: object
   schema.Section:
     properties:
@@ -951,6 +1060,83 @@ definitions:
         items:
           $ref: '#/definitions/schema.RoomEvents-schema_SectionWithTime'
         type: array
+    type: object
+  schema.Table-float64:
+    properties:
+      name:
+        type: string
+      rows:
+        items:
+          $ref: '#/definitions/schema.Row-float64'
+        type: array
+      total:
+        type: number
+    type: object
+  schema.Table-schema_AuxiliaryExpensesValues:
+    properties:
+      name:
+        type: string
+      rows:
+        items:
+          $ref: '#/definitions/schema.Row-schema_AuxiliaryExpensesValues'
+        type: array
+      total:
+        $ref: '#/definitions/schema.AuxiliaryExpensesValues'
+    type: object
+  schema.Table-schema_FundsValues:
+    properties:
+      name:
+        type: string
+      rows:
+        items:
+          $ref: '#/definitions/schema.Row-schema_FundsValues'
+        type: array
+      total:
+        $ref: '#/definitions/schema.FundsValues'
+    type: object
+  schema.Table-schema_SalariesDoeAndInstructionalAdminValues:
+    properties:
+      name:
+        type: string
+      rows:
+        items:
+          $ref: '#/definitions/schema.Row-schema_SalariesDoeAndInstructionalAdminValues'
+        type: array
+      total:
+        $ref: '#/definitions/schema.SalariesDoeAndInstructionalAdminValues'
+    type: object
+  schema.Table2-float64:
+    properties:
+      name:
+        type: string
+      rows:
+        items:
+          $ref: '#/definitions/schema.Table-float64'
+        type: array
+      total:
+        type: number
+    type: object
+  schema.Table2-schema_AuxiliaryExpensesValues:
+    properties:
+      name:
+        type: string
+      rows:
+        items:
+          $ref: '#/definitions/schema.Table-schema_AuxiliaryExpensesValues'
+        type: array
+      total:
+        $ref: '#/definitions/schema.AuxiliaryExpensesValues'
+    type: object
+  schema.Table2-schema_FundsValues:
+    properties:
+      name:
+        type: string
+      rows:
+        items:
+          $ref: '#/definitions/schema.Table-schema_FundsValues'
+        type: array
+      total:
+        $ref: '#/definitions/schema.FundsValues'
     type: object
   schema.TypedGradeData:
     properties:
@@ -1089,6 +1275,33 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Other
+  /budget/{year}:
+    get:
+      description: '"Returns discal year Budget based on the input year"'
+      operationId: Budget
+      parameters:
+      - description: year to retrieve budget for
+        in: path
+        name: year
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single budget from the given fiscal year
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_Budget'
+        "404":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Other
   /calendar/{date}:
     get:
       description: '"Returns CometCalendarEvent based on the input date"'
@@ -1184,31 +1397,6 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
-  /combined/sections/trends:
-    get:
-      description: '"Returns sections matching both course and professor criteria
-        from the combined trends collection. Specialized high-speed convenience endpoint
-        for UTD Trends internal use; limited query flexibility."'
-      operationId: trendsCombinedSectionSearch
-      parameters:
-      - description: The course's official number
-        in: query
-        name: course_number
-        required: true
-        type: string
-      - description: The course's subject prefix
-        in: query
-        name: subject_prefix
-        required: true
-        type: string
-      - description: The professor's first name
-        in: query
-        name: first_name
-        required: true
-        type: string
-      - description: The professor's last name
-        in: query
-        name: last_name
   /club/{id}:
     get:
       description: '"Returns the directory info for given club."'
@@ -1250,9 +1438,6 @@ paths:
       - application/json
       responses:
         "200":
-          description: A list of Sections
-          schema:
-            $ref: '#/definitions/schema.APIResponse-array_schema_Section'
           description: List of matching clubs
           schema:
             $ref: '#/definitions/schema.APIResponse-array_schema_Club'
@@ -1265,8 +1450,47 @@ paths:
           schema:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
-      - Combined
       - Clubs
+  /combined/sections/trends:
+    get:
+      description: '"Returns sections matching both course and professor criteria
+        from the combined trends collection. Specialized high-speed convenience endpoint
+        for UTD Trends internal use; limited query flexibility."'
+      operationId: trendsCombinedSectionSearch
+      parameters:
+      - description: The course's official number
+        in: query
+        name: course_number
+        required: true
+        type: string
+      - description: The course's subject prefix
+        in: query
+        name: subject_prefix
+        required: true
+        type: string
+      - description: The professor's first name
+        in: query
+        name: first_name
+        required: true
+        type: string
+      - description: The professor's last name
+        in: query
+        name: last_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of Sections
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Section'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Combined
   /course:
     get:
       description: '"Returns paginated list of courses matching the query''s string-typed
