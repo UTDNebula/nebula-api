@@ -14,6 +14,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readconcern"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type DBSingleton struct {
@@ -25,18 +27,24 @@ var once sync.Once
 
 func ConnectDB() *mongo.Client {
 	once.Do(func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		clientOptions := options.Client().
+			ApplyURI(GetEnvMongoURI()).
+			SetMinPoolSize(5).
+			SetMaxPoolSize(100).
+			SetMaxConnIdleTime(10 * time.Minute).
+			SetConnectTimeout(10 * time.Second).
+			SetReadPreference(readpref.SecondaryPreferred()).
+			SetReadConcern(readconcern.Local())
 
-		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
+		client, err := mongo.Connect(context.Background(), clientOptions)
 		if err != nil {
 			log.Fatalf("Unable to create MongoDB client")
 		}
 
-		defer cancel()
-
 		// ping the database
-		err = client.Ping(ctx, nil)
-		if err != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		if err = client.Ping(ctx, nil); err != nil {
 			log.Fatalf("Unable to ping database")
 		}
 
@@ -115,18 +123,17 @@ var clubOnce sync.Once
 
 func ConnectClubsDB() *sql.DB {
 	clubOnce.Do(func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 		db, err := sql.Open("pgx", GetClubsDBUri())
 		if err != nil {
 			log.Panic("Unable to connect to clubs database.")
 		}
 
+		// ping the database
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		// ping the database
-		err = db.PingContext(ctx)
-		if err != nil {
+		if err = db.PingContext(ctx); err != nil {
 			log.Panic("Unable to ping database")
 		}
 

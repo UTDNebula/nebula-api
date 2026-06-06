@@ -53,6 +53,10 @@ func main() {
 		Dsn:              "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
 		TracesSampleRate: 1.0,
 		EnableTracing:    true,
+		IgnoreErrors: []string{
+			"tls: internal error",
+			"socket was unexpectedly closed",
+		},
 	}); err != nil {
 		log.Printf("Sentry initialization failed: %v\n", err)
 	}
