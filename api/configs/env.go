@@ -35,7 +35,10 @@ func GetEnvMongoURI() string {
 func GetClubsDBUri() string {
 	uri, exist := os.LookupEnv("CLUBS_DB_URI")
 	if !exist {
-		log.Panic("Error loading 'CLUBS_DB_URI' from the .env file")
+		log.Fatal("Error loading 'CLUBS_DB_URI' from the .env file")
+	}
+	if uri == "" {
+		log.Fatal("'CLUBS_DB_URI' is set but empty")
 	}
 
 	return uri
