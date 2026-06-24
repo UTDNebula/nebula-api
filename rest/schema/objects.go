@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"encoding/json"
 	"strings"
 	"time"
 
@@ -400,6 +401,57 @@ type APIResponse[T any] struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 	Data    T      `json:"data"`
+}
+
+// Program Schema
+type Program struct {
+	Current  ProgramBrochure `json:"current"`
+	NextCost *Cost           `json:"nextAppCycleCostSheet"`
+}
+
+type ProgramBrochure struct {
+	Sections []ProgramSection `json:"sections"` // About, Program Overview, Academics and Courses, Costs, Practical Information, etc.
+}
+
+type ProgramSection struct {
+	DisplayName string          `json:"sectionDisplayName"`
+	Widgets     []ProgramWidget `json:"sectionWidgets"` // content, information sheet, media, EMPTY: action buttons, dates / deadlines, costSheet
+}
+
+type ProgramWidget struct {
+	ContentType string          `json:"contentType"`
+	ContentHTML string          `json:"contentHTML"`
+	Information json.RawMessage `json:"contentInformationSheet"` // This should be parsed into an InformationSheet, however somtimes its empty, so store raw message first and then later put into the information sheet struct
+}
+
+type InformationSheet struct {
+	Parameters []Parameter `json:"parameters"`
+}
+
+type Parameter struct {
+	Name           string   `json:"parameterName"`  // name of row in information sheet (EX: Area of Study)
+	AssignedValues []string `json:"assignedValues"` // values associated with parameter (Business, Computer Science, Engineering,)
+}
+
+// Cost Structs
+type Cost struct {
+	Term string `json:"term"`
+	Year int    `json:"year"`
+	// The different cost sheet items are separated into billable, non-billable, and credits to make it easier to display on the frontend
+	Billable    []CostItem `json:"billableCostSheetItems"`
+	NonBillable []CostItem `json:"nonBillableCostSheetItems"`
+	Credits     []CostItem `json:"creditCostSheetItems"`
+}
+
+type CostItem struct {
+	Name  string       `json:"costSheetItemName"`
+	Type  string       `json:"costSheetItemType"` // Tells how item cost is interpreted, for example "fixed" means its just the cost value, while "perCreditHour" cost value x credit hours
+	Costs []CostDetail `json:"costs"`
+}
+
+type CostDetail struct {
+	Key   string  `json:"costKey"` // e.g. "In-State", "Out-of-State", empty for fixed
+	Value float64 `json:"costValue"`
 }
 
 /* Can uncomment these if we ever get evals
