@@ -24,8 +24,6 @@ exit /b 1
 :all
 call :setup
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
-call :docs
-if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 call :checks
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 call :test
@@ -81,10 +79,7 @@ echo.
 exit /b 0
 
 :build
-echo Generating docs...
-swag fmt -d rest
-if ERRORLEVEL 1 exit /b %ERRORLEVEL%
-swag init -d rest -g server.go -o rest\docs --outputTypes yaml,go
+call :docs
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 echo Building...
 go build -o %EXEC_NAME% .\rest

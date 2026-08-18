@@ -32,15 +32,15 @@ echo Migrating to temp config.
 :: migrate to temp config
 call gcloud api-gateway gateways update %GATEWAY_NAME% --location=us-central1 --api %API_NAME% --api-config %CONFIG_NAME%-temp --quiet
 
-echo Deleting old prod config.
+echo Deleting old config.
 :: delete original config that is no longer in use
 call gcloud api-gateway api-configs delete %CONFIG_NAME% --api=%API_NAME% --quiet
 
-echo Creating new prod config.
+echo Creating new config.
 :: create new config with original name -- same as temp config
 call gcloud api-gateway api-configs create %CONFIG_NAME% --api=%API_NAME% --openapi-spec=%SPEC_PATH% --display-name=%CONFIG_NAME% --quiet
 
-echo Migrating to new prod config.
+echo Migrating to new config.
 :: migrate to new config
 call gcloud api-gateway gateways update %GATEWAY_NAME% --location=us-central1 --api %API_NAME% --api-config %CONFIG_NAME% --quiet
 
