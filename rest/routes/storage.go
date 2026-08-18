@@ -10,8 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"cloud.google.com/go/storage"
-	"github.com/UTDNebula/nebula-api/api/controllers"
-	"github.com/UTDNebula/nebula-api/api/schema"
+	"github.com/UTDNebula/nebula-api/rest/controllers"
+	"github.com/UTDNebula/nebula-api/rest/schema"
 
 	"google.golang.org/api/option"
 )

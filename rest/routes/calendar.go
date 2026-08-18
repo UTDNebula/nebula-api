@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/UTDNebula/nebula-api/api/controllers"
+	"github.com/UTDNebula/nebula-api/rest/controllers"
 	"github.com/gin-gonic/gin"
 )
 

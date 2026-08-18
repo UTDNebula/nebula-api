@@ -11,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/wneessen/go-mail"
 
-	"github.com/UTDNebula/nebula-api/api/controllers"
-	"github.com/UTDNebula/nebula-api/api/schema"
+	"github.com/UTDNebula/nebula-api/rest/controllers"
+	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
 var emailClient *mail.Client

@@ -1,6 +1,6 @@
 package responses
 
-import "github.com/UTDNebula/nebula-api/api/schema"
+import "github.com/UTDNebula/nebula-api/rest/schema"
 
 type BucketResponse struct {
 	Status  int               `json:"status"`

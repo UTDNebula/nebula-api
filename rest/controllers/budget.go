@@ -11,9 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/UTDNebula/nebula-api/api/configs"
+	"github.com/UTDNebula/nebula-api/rest/configs"
 
-	"github.com/UTDNebula/nebula-api/api/schema"
+	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
 var budgetCollection *mongo.Collection = configs.GetCollection("budgets")

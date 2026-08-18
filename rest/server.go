@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/UTDNebula/nebula-api/api/configs"
-	_ "github.com/UTDNebula/nebula-api/api/docs"
-	"github.com/UTDNebula/nebula-api/api/routes"
+	"github.com/UTDNebula/nebula-api/rest/configs"
+	_ "github.com/UTDNebula/nebula-api/rest/docs"
+	"github.com/UTDNebula/nebula-api/rest/routes"
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"

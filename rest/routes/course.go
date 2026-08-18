@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/UTDNebula/nebula-api/api/controllers"
+	"github.com/UTDNebula/nebula-api/rest/controllers"
 )
 
 func CourseRoute(router *gin.Engine) {
