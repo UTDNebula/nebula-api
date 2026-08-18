@@ -3,10 +3,15 @@
 # Exit if any command fails
 set -e
 
-# Check if swagger.yaml exists
-if [ ! -f "./docs/swagger.yaml" ]; then
-  echo "ERROR! Could not find config file at path './docs/swagger.yaml'!"
-  exit 1
+# Locate swagger.yaml spec
+SPEC_PATH="./rest/docs/swagger.yaml"
+if [ ! -f "$SPEC_PATH" ]; then
+  if [ -f "./docs/swagger.yaml" ]; then
+    SPEC_PATH="./docs/swagger.yaml"
+  else
+    echo "ERROR! Could not find config file at path './rest/docs/swagger.yaml' or './docs/swagger.yaml'!"
+    exit 1
+  fi
 fi
 
 # Determine the current git branch
@@ -27,7 +32,7 @@ fi
 echo "Creating temp config."
 gcloud api-gateway api-configs create "${CONFIG_NAME}-temp" \
   --api="${API_NAME}" \
-  --openapi-spec=./docs/swagger.yaml \
+  --openapi-spec="${SPEC_PATH}" \
   --display-name="${CONFIG_NAME}-temp" \
   --quiet
 
@@ -49,7 +54,7 @@ gcloud api-gateway api-configs delete "${CONFIG_NAME}" \
 echo "Creating new config."
 gcloud api-gateway api-configs create "${CONFIG_NAME}" \
   --api="${API_NAME}" \
-  --openapi-spec=./docs/swagger.yaml \
+  --openapi-spec="${SPEC_PATH}" \
   --display-name="${CONFIG_NAME}" \
   --quiet
 

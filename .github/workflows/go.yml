@@ -14,9 +14,6 @@ jobs:
 
   build_ubuntu:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./rest    
     steps:
     
     - name: Checkout
@@ -44,9 +41,6 @@ jobs:
 
   build_windows:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: .\rest
     steps:
     
     - name: Checkout

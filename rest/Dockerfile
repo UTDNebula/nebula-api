@@ -3,16 +3,15 @@
 FROM docker.io/golang:1.25 AS builder
 WORKDIR /build
 
-COPY ./configs ./configs
-COPY ./controllers ./controllers
-COPY ./docs ./docs
-COPY ./routes ./routes
-COPY ./schema ./schema
-COPY go.mod go.sum server.go ./
+COPY go.mod go.sum ./
+RUN go mod download
 
-RUN CGO_ENABLED=0 go build -v -o go-api
+COPY ./rest ./rest
+
+RUN CGO_ENABLED=0 go build -v -o /build/go-api ./rest
 
 FROM gcr.io/distroless/static-debian11
 WORKDIR /app
 COPY --from=builder /build/go-api /app/go-api
 ENTRYPOINT [ "/app/go-api" ]
+

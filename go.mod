@@ -1,4 +1,4 @@
-module github.com/UTDNebula/nebula-api/rest
+module github.com/UTDNebula/nebula-api
 
 go 1.25.0
 

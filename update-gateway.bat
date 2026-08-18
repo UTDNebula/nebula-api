@@ -2,9 +2,14 @@
 :: GCP sadly doesn't allow us to update the yaml config of an existing gateway config or do direct replacement of an existing config
 :: instead, we make a temp config with the new yaml, deploy it, delete the original config, make a new one with the new yaml, migrate to that, and then delete the temp configs
 
-IF NOT EXIST .\docs\swagger.yaml (
-	echo ERROR! Could not find config file at path ".\docs\swagger.yaml"!
-	exit /B 1
+set SPEC_PATH=.\rest\docs\swagger.yaml
+IF NOT EXIST %SPEC_PATH% (
+	IF EXIST .\docs\swagger.yaml (
+		set SPEC_PATH=.\docs\swagger.yaml
+	) ELSE (
+		echo ERROR! Could not find config file at path ".\rest\docs\swagger.yaml" or ".\docs\swagger.yaml"!
+		exit /B 1
+	)
 )
 
 :: update prod or dev config depending on branch
@@ -21,7 +26,7 @@ IF "%BRANCH%"=="master" (
 
 :: create temp gateway config
 echo Creating temp config.
-call gcloud api-gateway api-configs create %CONFIG_NAME%-temp --api=%API_NAME% --openapi-spec=./docs/swagger.yaml --display-name=%CONFIG_NAME%-temp --quiet
+call gcloud api-gateway api-configs create %CONFIG_NAME%-temp --api=%API_NAME% --openapi-spec=%SPEC_PATH% --display-name=%CONFIG_NAME%-temp --quiet
 
 echo Migrating to temp config.
 :: migrate to temp config
@@ -33,7 +38,7 @@ call gcloud api-gateway api-configs delete %CONFIG_NAME% --api=%API_NAME% --quie
 
 echo Creating new prod config.
 :: create new config with original name -- same as temp config
-call gcloud api-gateway api-configs create %CONFIG_NAME% --api=%API_NAME% --openapi-spec=./docs/swagger.yaml --display-name=%CONFIG_NAME% --quiet
+call gcloud api-gateway api-configs create %CONFIG_NAME% --api=%API_NAME% --openapi-spec=%SPEC_PATH% --display-name=%CONFIG_NAME% --quiet
 
 echo Migrating to new prod config.
 :: migrate to new config
