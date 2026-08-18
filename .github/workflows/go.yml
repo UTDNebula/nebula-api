@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./api    
+        working-directory: ./rest    
     steps:
     
     - name: Checkout
@@ -46,7 +46,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: .\api
+        working-directory: .\rest
     steps:
     
     - name: Checkout

@@ -32,4 +32,4 @@ deploy_log.sh
 go.work
 
 # API go executable
-api/go-api
+rest/go-api

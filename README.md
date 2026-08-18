@@ -36,7 +36,7 @@ Submit proposed changes via a [Pull Request](https://docs.github.com/en/pull-req
 - [Golang 1.24 or Higher](https://go.dev/dl/)
 
 ### Building for Windows
-cd into `nebula-api\api`
+cd into `nebula-api\rest`
 
 Setup Go Dependencies with 
 `.\build.bat setup`
@@ -44,14 +44,14 @@ Setup Go Dependencies with
 Build with
 `.\build.bat build`
 
-This will create an executable named `go-api.exe` in the `api` directory
+This will create an executable named `go-api.exe` in the `rest` directory
 
 Run with
 `.\go-api.exe`
 > Note: some have experienced issues with Windows Defender or other antivirus blocking `go-api.exe` from reading files, editing files, or causing slowed performance. Consider adding a exception to your `nebula-api` folder.
 
 ### Building for macOs, Linux, and WSL
-cd into `nebula-api/api`
+cd into `nebula-api/rest`
 
 Setup Go dependencies with 
 `make setup`
@@ -59,7 +59,7 @@ Setup Go dependencies with
 Build with
 `make build`
 
-This will create an executable named `go-api` in the `api` directory
+This will create an executable named `go-api` in the `rest` directory
 
 > Note: If Make fails with "swag: No such file or directory" or similar, you may need to add GOPATH/bin to your path to your path, On Mac, use ``echo 'export PATH=${PATH}:`go env GOPATH`/bin' >> ~/.zshrc && source ~/.zshrc`` to add it permanently to your .zshrc 
 
