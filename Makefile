@@ -1,9 +1,9 @@
 
-EXEC_NAME?=go-api
+EXEC_NAME?=rest-api
 DOCKER_RUNNER?=docker
 REGISTRY?=localhost:5000
-RELEASE_TAG=$(shell git rev-parse --short HEAD)
-BASE_TAG=$(REGISTRY)/utdnebula/rest/go-api
+RELEASE_TAG=$(shell git rev-parse --short HEAD 2>/dev/null || echo "latest")
+BASE_TAG=$(REGISTRY)/utdnebula/rest/rest-api
 
 .PHONY: all setup check test docs docs-rest build build-rest clean docker docker-rest
 
@@ -36,7 +36,7 @@ build-rest: docs-rest
 build: build-rest
 
 clean:
-	rm -f $(EXEC_NAME) rest/$(EXEC_NAME) $(EXEC_NAME) rest/$(EXEC_NAME)
+	rm -f $(EXEC_NAME) rest/$(EXEC_NAME) $(EXEC_NAME).exe rest/$(EXEC_NAME).exe
 
 docker-rest:
 	$(DOCKER_RUNNER) build -f rest/Dockerfile -t $(BASE_TAG):$(RELEASE_TAG) .

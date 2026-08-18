@@ -2,13 +2,34 @@ package configs
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 
-	"log"
-
-	_ "github.com/joho/godotenv/autoload"
+	"github.com/joho/godotenv"
 )
+
+// Initialize this file to load environment variables from .env file
+func init() {
+	dir, err := os.Getwd()
+	if err != nil {
+		return
+	}
+
+	for {
+		envPath := filepath.Join(dir, ".env")
+		if _, err := os.Stat(envPath); err == nil {
+			_ = godotenv.Load(envPath)
+			break
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+}
 
 func GetPortString() string {
 

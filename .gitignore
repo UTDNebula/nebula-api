@@ -21,6 +21,7 @@ deploy_log.sh
 *.dll
 *.so
 *.dylib
+bin/
 
 # test binary, built with `go test -c`
 *.test
@@ -32,5 +33,5 @@ deploy_log.sh
 go.work
 go.work.sum
 
-# API go executable
-rest/go-api
+# API executables
+rest-api

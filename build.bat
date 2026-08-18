@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 ::vars
-set EXEC_NAME=go-api.exe
+set EXEC_NAME=rest-api.exe
 
 ::param jump
 if "%1"=="" goto all

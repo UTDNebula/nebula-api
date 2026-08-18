@@ -8,10 +8,11 @@ RUN go mod download
 
 COPY ./rest ./rest
 
-RUN CGO_ENABLED=0 go build -v -o /build/go-api ./rest
+RUN CGO_ENABLED=0 go build -v -o /build/rest-api ./rest
 
 FROM gcr.io/distroless/static-debian11
 WORKDIR /app
-COPY --from=builder /build/go-api /app/go-api
-ENTRYPOINT [ "/app/go-api" ]
+COPY --from=builder /build/rest-api /app/rest-api
+ENTRYPOINT [ "/app/rest-api" ]
+
 
