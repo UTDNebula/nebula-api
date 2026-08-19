@@ -1,0 +1,38 @@
+name: 🔧  Internal Change
+description: Suggest an Internal Change, e.g., documentation, dependencies, a code refactor
+labels: ["Task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this internal change 
+        suggestion! By submitting this issue, you agree to follow our 
+        [Code of Conduct](https://about.utdnebula.com/docs/code-of-conduct/)
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: |
+        What's the problem this change would solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution
+      description: |
+        Describe your preferred solution to this problem. Include any 
+        alternative solutions or features you've considered if applicable. 
+        Include screenshots or designs if they would help
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Describe the change in more detail. You can include related issues, 
+        helpful background knowledge, related documentation, or anything else 
+        that will help
+    validations:
+      required: false
