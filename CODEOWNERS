@@ -2,10 +2,10 @@
 * @UTDNebula/api-platform-lead @UTDNebula/head-of-engineering
 
 # Additional request from Porfolio Lead for any Portfolio-related endpoints
-api/controllers/trends.go @UTDNebula/portfolio-lead
-api/controllers/grades.go @UTDNebula/portfolio-lead
-api/controllers/events.go @UTDNebula/portfolio-lead
-api/controllers/astra.go @UTDNebula/portfolio-lead
-api/controllers/mazevo.go @UTDNebula/portfolio-lead
-api/controllers/rooms.go @UTDNebula/portfolio-lead
-api/controllers/calendar.go @UTDNebula/portfolio-lead
+rest/controllers/trends.go @UTDNebula/portfolio-lead
+rest/controllers/grades.go @UTDNebula/portfolio-lead
+rest/controllers/events.go @UTDNebula/portfolio-lead
+rest/controllers/astra.go @UTDNebula/portfolio-lead
+rest/controllers/mazevo.go @UTDNebula/portfolio-lead
+rest/controllers/rooms.go @UTDNebula/portfolio-lead
+rest/controllers/calendar.go @UTDNebula/portfolio-lead

@@ -21,6 +21,7 @@ deploy_log.sh
 *.dll
 *.so
 *.dylib
+bin/
 
 # test binary, built with `go test -c`
 *.test
@@ -28,8 +29,9 @@ deploy_log.sh
 # output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# go workspace file
+# go workspace files
 go.work
+go.work.sum
 
-# API go executable
-api/go-api
+# API executables
+rest-api
