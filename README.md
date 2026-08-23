@@ -39,7 +39,7 @@ Submit proposed changes via a [Pull Request](https://docs.github.com/en/pull-req
 
 ## Building
 ### Requirements
-- [Golang 1.25 or Higher](https://go.dev/dl/)
+- [Golang 1.26 or Higher](https://go.dev/dl/)
 
 ### Building for Windows
 
@@ -100,3 +100,22 @@ Check command output to see the route serving traffic. It's likely port 8080.
 Visit `http://localhost:8080` to access nebula-api locally.
 
 > Storage and email routes require additional environment variables. If you're working on these routes, ask for help in the [Discord](https://discord.utdnebula.com)
+
+## Running with Docker
+Install [Docker desktop](https://docs.docker.com/desktop/)
+
+Copy `.env.template` to `.env` with:
+```bash
+cp .env.template .env
+```
+
+Enter Nebula MongoDB URI in `.env` (ask for help in the [Discord](https://discord.utdnebula.com))
+
+To build the image and run a container from it:
+```bash
+docker build -f rest/Dockerfile -t nebula-api:go1.26 .
+
+docker run --rm --name nebula-api -p 8080:8080 --env-file .env nebula-api:go1.26
+```
+
+You can also run `make docker-rest` if you want build the image with tags based on Git commit.
