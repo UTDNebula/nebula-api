@@ -14,9 +14,6 @@ jobs:
 
   build_ubuntu:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api    
     steps:
     
     - name: Checkout
@@ -44,9 +41,6 @@ jobs:
 
   build_windows:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: .\api
     steps:
     
     - name: Checkout
@@ -55,7 +49,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.24'
+        go-version: '1.25'
         cache-dependency-path: "**\\go.sum"
 
     - name: Setup
