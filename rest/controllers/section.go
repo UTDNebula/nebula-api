@@ -200,6 +200,10 @@ func sectionCourse(flag string, c *gin.Context) {
 	case "Search":
 		respond(c, http.StatusOK, "success", sectionCourses)
 	case "ById":
+		if len(sectionCourses) == 0 {
+			respond(c, http.StatusNotFound, "error", "No course found for the given section ID")
+			return
+		}
 		respond(c, http.StatusOK, "success", sectionCourses[0])
 	}
 }
