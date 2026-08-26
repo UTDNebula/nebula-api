@@ -247,16 +247,17 @@ type MapBuilding struct {
 	Lng     *float64 `bson:"lng" json:"lng"`
 }
 
+// The grades distribution: "A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "W", "P", "CR", "NC", "I"
 type GradeData struct {
 	Id                string  `bson:"_id" json:"_id"`
-	GradeDistribution [14]int `bson:"grade_distribution" json:"grade_distribution"`
+	GradeDistribution [18]int `bson:"grade_distribution" json:"grade_distribution"`
 }
 
 type TypedGradeData struct {
 	Id   string `bson:"_id" json:"_id"`
 	Data []struct {
 		Type              string  `bson:"type" json:"type"`
-		GradeDistribution [14]int `bson:"grade_distribution" json:"grade_distribution"`
+		GradeDistribution [18]int `bson:"grade_distribution" json:"grade_distribution"`
 	} `bson:"data" json:"data"`
 }
 
