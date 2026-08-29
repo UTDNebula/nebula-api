@@ -14,6 +14,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var sectionCollection *mongo.Collection = configs.GetCollection("sections")
@@ -61,14 +62,15 @@ func SectionSearch(c *gin.Context) {
 		return
 	}
 
-	optionLimit, err := configs.GetOptionLimit(&query, c)
+	offset, limit, err := configs.GetLimit(&query, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
+	opts := options.Find().SetSkip(offset).SetLimit(limit)
 
 	// get cursor for query results
-	cursor, err := sectionCollection.Find(ctx, query, optionLimit)
+	cursor, err := sectionCollection.Find(ctx, query, opts)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
