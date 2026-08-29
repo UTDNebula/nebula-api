@@ -8,8 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// TestGetOptionLimit checks if the function correctly parses offset from query params
-func TestGetOptionLimit(t *testing.T) {
+// TestGetLimit checks if the function correctly parses offset from query params
+func TestGetLimit(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	t.Run("ValidOffset", func(t *testing.T) {
@@ -18,8 +18,7 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/?offset=25", nil)
 
 		query := bson.M{"offset": "should-be-deleted"}
-		options, err := GetOptionLimit(&query, c)
-
+		offset, _, err := GetLimit(&query, c)
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err) // Use Fatalf to stop if options is nil
 		}
@@ -29,8 +28,8 @@ func TestGetOptionLimit(t *testing.T) {
 		}
 
 		// Ensure we compare the same types (int64)
-		if options.Skip == nil || *options.Skip != int64(25) {
-			t.Errorf("Expected Skip to be 25, got %v", options.Skip)
+		if offset != int64(25) {
+			t.Errorf("Expected offset to be 25, got %v", offset)
 		}
 	})
 
@@ -39,10 +38,13 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/", nil)
 
 		query := bson.M{}
-		options, _ := GetOptionLimit(&query, c)
+		offset, _, err := GetLimit(&query, c)
+		if err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
 
-		if options.Skip == nil || *options.Skip != int64(0) {
-			t.Errorf("Expected default Skip to be 0, got %v", options.Skip)
+		if offset != int64(0) {
+			t.Errorf("Expected default offset to be 0, got %v", offset)
 		}
 	})
 
@@ -51,8 +53,7 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/?offset=not-a-number", nil)
 
 		query := bson.M{}
-		_, err := GetOptionLimit(&query, c)
-
+		_, _, err := GetLimit(&query, c)
 		if err == nil {
 			t.Error("Expected an error when parsing a non-integer offset")
 		}

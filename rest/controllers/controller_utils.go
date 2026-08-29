@@ -15,6 +15,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// Map from schema type to the aggregated field
+var typeToField = map[string]string{
+	"Course":    "courses",
+	"Section":   "sections",
+	"Professor": "professors",
+}
+
 // Sets the API's response to a request, producing valid JSON given a status code and data.
 func respond[T any](c *gin.Context, status int, message string, data T) {
 	c.JSON(

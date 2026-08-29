@@ -3,8 +3,9 @@ package controllers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
@@ -15,6 +16,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var courseCollection *mongo.Collection = configs.GetCollection("courses")
@@ -52,14 +54,21 @@ func CourseSearch(c *gin.Context) {
 		return
 	}
 
-	optionLimit, err := configs.GetOptionLimit(&query, c)
+	offset, limit, err := configs.GetLimit(&query, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
+	opts := options.Find().
+		SetSort(bson.D{
+			{Key: "subject_prefix", Value: 1},
+			{Key: "course_number", Value: 1},
+			{Key: "catalog_year", Value: 1},
+		}).
+		SetSkip(offset).SetLimit(limit)
 
 	// Get cursor for query results
-	cursor, err := courseCollection.Find(ctx, query, optionLimit)
+	cursor, err := courseCollection.Find(ctx, query, opts)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -218,7 +227,7 @@ func CourseProfessorById(c *gin.Context) {
 	courseAggregate[schema.Professor]("ById", c)
 }
 
-// courseAggregate is a generic function that gets a specified field of the courses, filters depending on the flag
+// courseAggregate returns the list of aggregated objects from list of filtered courses
 func courseAggregate[T any](flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
@@ -233,28 +242,15 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 	}
 
 	// Determine the offset and limit for pagination & delete offset fields
-	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
+	paginateMap, err := configs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	// Determine the endpoint based on the type of the desired query results
-
-	var zero T
-	var endpoint string
-	switch any(zero).(type) {
-	case schema.Section:
-		endpoint = "sections"
-	case schema.Professor:
-		endpoint = "professors"
-	default:
-		respondWithInternalError(c, fmt.Errorf("invalid schema type for courseAggregate"))
-		return
-	}
-
 	// Pipeline to query the field from the filtered courses
-	courseQueryPipeline := buildCoursePipeline(endpoint, courseQuery, paginate)
+	schemaType := strings.Split(reflect.TypeFor[[]T]().String(), ".")[1]
+	courseQueryPipeline := buildCoursePipeline(schemaType, courseQuery, paginateMap)
 
 	// perform aggregation on the pipeline
 	cursor, err := courseCollection.Aggregate(ctx, courseQueryPipeline)
@@ -272,14 +268,13 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 	respond(c, http.StatusOK, "success", queryResults)
 }
 
-// buildCoursePipeline builds the pipeline to aggregate the list of specified objects from list of courses
-func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
-	baseStages := mongo.Pipeline{
+// buildCoursePipeline builds the pipeline to aggregate the list of object from list of courses
+func buildCoursePipeline(schemaType string, courseQuery bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
+	lookupSection := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: courseQuery}},
 
-		// Skip to the offset, then limit to the number of courses
-		paginate["former_offset"],
-		paginate["limit"],
+		paginateMap["former_offset"],
+		paginateMap["limit"],
 
 		// Lookup the list of sections from the courses
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -290,14 +285,14 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 		}}},
 	}
 
-	var lookupStages, dedupStages mongo.Pipeline
-	switch endpoint {
-	case "sections":
-		// No extra stages middle stages
+	var lookupProf, dedup mongo.Pipeline
+	switch schemaType {
+	case "Section":
+		// No extra middle stages
 
-	case "professors":
+	case "Professor":
 		// Lookup the list of professors from the list of sections
-		lookupStages = mongo.Pipeline{
+		lookupProf = mongo.Pipeline{
 			bson.D{{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "professors"},
 				{Key: "localField", Value: "sections.professors"},
@@ -307,7 +302,7 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 		}
 
 		// Remove the duplicate professors
-		dedupStages = mongo.Pipeline{
+		dedup = mongo.Pipeline{
 			bson.D{{Key: "$group", Value: bson.D{
 				{Key: "_id", Value: "$_id"},
 				{Key: "professors", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
@@ -317,28 +312,31 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 		}
 
 	default:
-		panic("invalid endpoint for coursePipeline: " + endpoint)
+		panic("invalid schema for coursePipeline: " + schemaType)
 	}
 
-	replaceStages := mongo.Pipeline{
-		// Unwind the target object of the sections
+	extract := mongo.Pipeline{
+		// Unwind the target object
 		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$" + endpoint},
+			{Key: "path", Value: "$" + typeToField[schemaType]},
 			{Key: "preserveNullAndEmptyArrays", Value: false},
 		}}},
 
 		// Replace the courses with the target objects
-		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
+		bson.D{{Key: "$replaceWith", Value: "$" + typeToField[schemaType]}},
 	}
 
-	middleStages := append(append(lookupStages, replaceStages...), dedupStages...)
-
-	paginateStages := mongo.Pipeline{
+	paginate := mongo.Pipeline{
 		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 
-		paginate["latter_offset"],
-		paginate["limit"],
+		paginateMap["latter_offset"],
+		paginateMap["limit"],
 	}
 
-	return append(append(baseStages, middleStages...), paginateStages...)
+	pipeline := lookupSection
+	pipeline = append(pipeline, lookupProf...)
+	pipeline = append(pipeline, extract...)
+	pipeline = append(pipeline, dedup...)
+	pipeline = append(pipeline, paginate...)
+	return pipeline
 }
