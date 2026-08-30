@@ -19,7 +19,9 @@ var (
 		reflect.TypeFor[primitive.ObjectID](): true,
 	}
 	ignoredParameters = map[string]bool{
-		"offset": true,
+		"former_offset": true,
+		"latter_offset": true,
+		"offset":        true,
 	}
 )
 
