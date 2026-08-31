@@ -14,6 +14,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
+
+	sentryotlp "github.com/getsentry/sentry-go/otel/otlp"
 )
 
 type DBSingleton struct {
@@ -26,18 +34,21 @@ var once sync.Once
 func ConnectDB() *mongo.Client {
 	once.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
-		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
+		opts := options.Client().
+			ApplyURI(GetEnvMongoURI()).
+			SetMonitor(otelmongo.NewMonitor()) // To trace Mongo operation on Sentry
+
+		client, err := mongo.Connect(ctx, opts)
 		if err != nil {
 			log.Fatalf("Unable to create MongoDB client")
 		}
 
-		defer cancel()
-
 		// ping the database
 		err = client.Ping(ctx, nil)
 		if err != nil {
-			log.Fatalf("Unable to ping database")
+			log.Fatalf("Unable to ping Mongo database")
 		}
 
 		log.Printf("Connected to MongoDB")
@@ -90,14 +101,10 @@ func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]bson.D, error)
 	}
 	var err error
 
-	// Loop through offset types (keys indicating offset values)
 	for field := range paginateMap {
-		// Only change values of the map if specified
 		if field != "limit" && c.Query(field) != "" {
-			// Remove offset field (if present) in the query
 			delete(*query, field)
 
-			// Build the stage from the parsed field
 			offset, err := strconv.ParseInt(c.Query(field), 10, 64)
 			if err != nil {
 				// Return default value of offset
@@ -116,18 +123,17 @@ var clubOnce sync.Once
 func ConnectClubsDB() *sql.DB {
 	clubOnce.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
 		db, err := sql.Open("pgx", GetClubsDBUri())
 		if err != nil {
 			log.Panic("Unable to connect to clubs database.")
 		}
 
-		defer cancel()
-
 		// ping the database
 		err = db.PingContext(ctx)
 		if err != nil {
-			log.Panic("Unable to ping database")
+			log.Panic("Unable to ping Clubs database")
 		}
 
 		log.Printf("Connected to Clubs DB")
@@ -136,4 +142,65 @@ func ConnectClubsDB() *sql.DB {
 	})
 
 	return clubsDbInstance
+}
+
+// InitOtelTracer initializes the opentelementry tracer that is exported to Sentry
+func InitOtelTracer(ctx context.Context, sentryDsn string, sentryEnv string) *sdktrace.TracerProvider {
+	traceExporter, err := sentryotlp.NewTraceExporter(ctx, sentryDsn)
+	if err != nil {
+		log.Fatalf("Unable to create Sentry trace exporter %v\n", err)
+	}
+
+	resource, err := resource.New(
+		ctx,
+		resource.WithAttributes(
+			semconv.ServiceName("nebula-api"),
+			semconv.DeploymentEnvironmentName(sentryEnv),
+		),
+	)
+	if err != nil {
+		log.Fatalf("Unable to create Otel resource %v\n", err)
+	}
+
+	var sampler sdktrace.Sampler
+	switch sentryEnv {
+	case "development":
+		sampler = sdktrace.AlwaysSample()
+	case "production":
+		sampler = sdktrace.TraceIDRatioBased(0.10)
+	default:
+		sampler = sdktrace.TraceIDRatioBased(0.10)
+	}
+
+	tracerProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithSampler(sdktrace.ParentBased(sampler)),
+		sdktrace.WithBatcher(traceExporter),
+		sdktrace.WithResource(resource),
+	)
+	otel.SetTracerProvider(tracerProvider)
+
+	otel.SetTextMapPropagator(
+		propagation.NewCompositeTextMapPropagator(
+			propagation.TraceContext{},
+			propagation.Baggage{},
+		),
+	)
+
+	otel.SetErrorHandler(otel.ErrorHandlerFunc(func(err error) {
+		log.Printf("OTEL ERROR: %s", err.Error())
+	}))
+
+	log.Printf("Initialized Otel tracer")
+
+	return tracerProvider
+}
+
+// ShutdownOtelTracer shuts down the otel tracer
+func ShutdownOtelTracer(ctx context.Context, provider *sdktrace.TracerProvider) {
+	shutdownCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	if err := provider.Shutdown(shutdownCtx); err != nil {
+		log.Printf("failed to shutdown tracer: %v", err)
+	}
 }

@@ -1,16 +1,18 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
 	_ "github.com/UTDNebula/nebula-api/rest/docs"
 	"github.com/UTDNebula/nebula-api/rest/routes"
 	"github.com/getsentry/sentry-go"
-	sentrygin "github.com/getsentry/sentry-go/gin"
+	sentryotel "github.com/getsentry/sentry-go/otel"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 // Unauthenticated placeholder endpoint for the built-in ginSwagger swagger documentation endpoint
@@ -44,18 +46,33 @@ func main() {
 	// Set up logging flags
 	log.Default().SetFlags(log.Ltime | log.Llongfile)
 
-	// Establish the connection to the database
-	configs.ConnectDB()
-	configs.ConnectClubsDB()
-
 	// Set up Sentry
+	sentryDsn, sentryEnv := configs.GetSentryEnv()
+	sentryDebug := false
+	if sentryEnv == "development" {
+		sentryDebug = true
+	}
 	if err := sentry.Init(sentry.ClientOptions{
-		Dsn:              "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
-		TracesSampleRate: 1.0,
+		Dsn:              sentryDsn,
+		Environment:      sentryEnv,
+		Debug:            sentryDebug,
 		EnableTracing:    true,
+		TracesSampleRate: 1.0,
+		Integrations: func(integrations []sentry.Integration) []sentry.Integration {
+			return append(integrations, sentryotel.NewOtelIntegration())
+		},
 	}); err != nil {
 		log.Printf("Sentry initialization failed: %v\n", err)
 	}
+
+	// Initialize the otel tracer with shutdown setup
+	ctx := context.Background()
+	provider := configs.InitOtelTracer(ctx, sentryDsn, sentryEnv)
+	defer configs.ShutdownOtelTracer(ctx, provider)
+
+	// Establish the connection to the database
+	configs.ConnectDB()
+	configs.ConnectClubsDB()
 
 	// Configure Gin Router
 	router := gin.New()
@@ -69,7 +86,8 @@ func main() {
 	router.Use(LogRequest)
 
 	// Attach Sentry
-	router.Use(sentrygin.New(sentrygin.Options{}))
+	// router.Use(sentrygin.New(sentrygin.Options{}))
+	router.Use(otelgin.Middleware("nebula-api", otelgin.WithTracerProvider(provider)))
 
 	// Setup swagger-ui hosted
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

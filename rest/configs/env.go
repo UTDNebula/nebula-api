@@ -115,3 +115,17 @@ func GetEnvMaxUploadSize() int64 {
 
 	return limit
 }
+
+func GetSentryEnv() (string, string) {
+	dsn, exist := os.LookupEnv("SENTRY_DSN")
+	if !exist {
+		log.Fatalf("Error loading 'SENTRY_DSN' from the .env file")
+	}
+
+	env, exist := os.LookupEnv("SENTRY_ENVIRONMENT")
+	if !exist {
+		log.Fatalf("Error loading 'SENTRY_ENVIRONMENT' from the .env file")
+	}
+
+	return dsn, env
+}

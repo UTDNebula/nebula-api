@@ -5,9 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
+	"go.opentelemetry.io/otel"
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 
@@ -41,6 +44,9 @@ import (
 func CourseSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
+
+	ctx, span := otel.Tracer("course-controller").Start(ctx, "CourseSearch")
+	defer span.End()
 
 	var courses []schema.Course
 
@@ -86,6 +92,9 @@ func CourseById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	ctx, span := otel.Tracer("course-controller").Start(ctx, "CourseById")
+	defer span.End()
+
 	var course schema.Course
 
 	// parse object id from id parameter
@@ -119,6 +128,9 @@ func CourseById(c *gin.Context) {
 func CourseAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
+
+	ctx, span := otel.Tracer("course-controller").Start(ctx, "CourseAll")
+	defer span.End()
 
 	var courses []schema.Course
 
@@ -220,6 +232,10 @@ func CourseProfessorById(c *gin.Context) {
 func courseAggregate[T any](flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
+
+	schemaType := strings.Split(reflect.TypeFor[[]T]().String(), ".")[1]
+	ctx, span := otel.Tracer("course-controller").Start(ctx, "Course"+schemaType+flag)
+	defer span.End()
 
 	var queryResults []T
 	var courseQuery bson.M
