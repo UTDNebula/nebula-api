@@ -17,8 +17,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var courseCollection *mongo.Collection = configs.GetCollection("courses")
-
 // @Id				courseSearch
 // @Router			/course [get]
 // @Tags			Courses
@@ -59,7 +57,7 @@ func CourseSearch(c *gin.Context) {
 	}
 
 	// Get cursor for query results
-	cursor, err := courseCollection.Find(ctx, query, optionLimit)
+	cursor, err := configs.GetCollection("courses").Find(ctx, query, optionLimit)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -97,7 +95,7 @@ func CourseById(c *gin.Context) {
 	}
 
 	// find and parse matching course
-	err = courseCollection.FindOne(ctx, query).Decode(&course)
+	err = configs.GetCollection("courses").FindOne(ctx, query).Decode(&course)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No courses with given ID")
@@ -124,7 +122,7 @@ func CourseAll(c *gin.Context) {
 
 	var courses []schema.Course
 
-	cursor, err := courseCollection.Find(ctx, bson.M{})
+	cursor, err := configs.GetCollection("courses").Find(ctx, bson.M{})
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -253,11 +251,8 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 		return
 	}
 
-	// Pipeline to query the field from the filtered courses
-	courseQueryPipeline := buildCoursePipeline(endpoint, courseQuery, paginate)
-
-	// perform aggregation on the pipeline
-	cursor, err := courseCollection.Aggregate(ctx, courseQueryPipeline)
+	pipeline := buildCoursePipeline(endpoint, courseQuery, paginate)
+	cursor, err := configs.GetCollection("courses").Aggregate(ctx, pipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return

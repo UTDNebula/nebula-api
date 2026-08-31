@@ -18,7 +18,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var professorCollection *mongo.Collection = configs.GetCollection("professors")
 var aggregateMap = map[string]string{
 	"Course":  "courses",
 	"Section": "sections",
@@ -74,7 +73,7 @@ func ProfessorSearch(c *gin.Context) {
 	}
 
 	// get cursor for query results
-	cursor, err := professorCollection.Find(ctx, query, optionLimit)
+	cursor, err := configs.GetCollection("professors").Find(ctx, query, optionLimit)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -112,7 +111,7 @@ func ProfessorById(c *gin.Context) {
 	}
 
 	// find and parse matching professor
-	err = professorCollection.FindOne(ctx, query).Decode(&professor)
+	err = configs.GetCollection("professors").FindOne(ctx, query).Decode(&professor)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No professors with given ID")
@@ -139,7 +138,7 @@ func ProfessorAll(c *gin.Context) {
 
 	var professors []schema.Professor
 
-	cursor, err := professorCollection.Find(ctx, bson.M{})
+	cursor, err := configs.GetCollection("professors").Find(ctx, bson.M{})
 
 	if err != nil {
 		respondWithInternalError(c, err)
@@ -275,7 +274,7 @@ func professorAggregate[T any](flag string, c *gin.Context) {
 	profPipeline := buildProfessorPipeline(endpoint, profQuery, paginate)
 
 	// Perform aggreration on the pipeline
-	cursor, err := professorCollection.Aggregate(ctx, profPipeline)
+	cursor, err := configs.GetCollection("professors").Aggregate(ctx, profPipeline)
 	if err != nil {
 		// return the error with there's something wrong with the aggregation
 		respondWithInternalError(c, err)
@@ -292,15 +291,13 @@ func professorAggregate[T any](flag string, c *gin.Context) {
 }
 
 // Pipeline builder for professor aggregate endpoints
-func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
-	// common stages
-	baseStages := mongo.Pipeline{
+func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
+	lookupSection := mongo.Pipeline{
 		// filter the professors
 		bson.D{{Key: "$match", Value: professorQuery}},
 
-		// paginate the professors before pulling the courses/sections from those professor
-		paginate["former_offset"],
-		paginate["limit"],
+		paginateMap["former_offset"],
+		paginateMap["limit"],
 
 		// lookup the array of sections from sections collection
 		bson.D{{Key: "$lookup", Value: bson.D{
@@ -311,15 +308,16 @@ func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginate map
 		}}},
 	}
 
-	var middleStages mongo.Pipeline
-
+	var lookupCourse mongo.Pipeline
 	switch endpoint {
 	case "courses":
-		middleStages = mongo.Pipeline{
+		lookupCourse = mongo.Pipeline{
 			// project the courses referenced by each section in the array
-			bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
+			bson.D{{Key: "$project", Value: bson.D{
+				{Key: "courses", Value: "$sections.course_reference"},
+			}}},
 
-			// lookup the array of courses from coures collection
+			// lookup the array of courses from courses collection
 			bson.D{{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "courses"},
 				{Key: "localField", Value: "courses"},
@@ -329,33 +327,33 @@ func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginate map
 		}
 
 	case "sections":
-		middleStages = mongo.Pipeline{
-			// project the sections
-			bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
-		}
+		// No extra stages needed
 
 	default:
 		panic("invalid endpoint for professorPipeline: " + endpoint)
 	}
 
-	// common pagination stages
-	paginateStages := mongo.Pipeline{
-		// unwind the courses/sections
+	extract := mongo.Pipeline{
+		// unwind the objects
 		bson.D{{Key: "$unwind", Value: bson.D{
 			{Key: "path", Value: "$" + endpoint},
 			{Key: "preserveNullAndEmptyArrays", Value: false},
 		}}},
 
-		// replace the combination of ids and courses/sections with the courses/sections entirely
+		// replace the combination of ids and objects with the objects entirely
 		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses/sections
-		paginate["latter_offset"],
-		paginate["limit"],
 	}
 
-	return append(append(baseStages, middleStages...), paginateStages...)
+	paginate := mongo.Pipeline{
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+
+		paginateMap["latter_offset"],
+		paginateMap["limit"],
+	}
+
+	pipeline := lookupSection
+	pipeline = append(pipeline, lookupCourse...)
+	pipeline = append(pipeline, extract...)
+	pipeline = append(pipeline, paginate...)
+	return pipeline
 }

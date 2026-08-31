@@ -12,10 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
-
-var DAGCollection *mongo.Collection = configs.GetCollection("DAG")
 
 // @Id				autocompleteDAG
 // @Router			/autocomplete/dag [get]
@@ -30,7 +27,7 @@ func AutocompleteDAG(c *gin.Context) {
 
 	var autocompleteDAG []schema.Autocomplete
 
-	cursor, err := DAGCollection.Find(ctx, bson.M{})
+	cursor, err := configs.GetCollection("DAG").Find(ctx, bson.M{})
 
 	if err != nil {
 		respondWithInternalError(c, err)

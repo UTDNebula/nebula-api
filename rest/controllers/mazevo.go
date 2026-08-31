@@ -15,8 +15,6 @@ import (
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var mazevoCollection *mongo.Collection = configs.GetCollection("mazevo")
-
 // @Id				MazevoEvents
 // @Router			/mazevo/{date} [get]
 // @Tags			Events
@@ -34,7 +32,9 @@ func MazevoEvents(c *gin.Context) {
 	var mazevoEvents schema.MultiBuildingEvents[schema.MazevoEvent]
 
 	// Find mazevo event for input date
-	err := mazevoCollection.FindOne(ctx, bson.M{"date": date}).Decode(&mazevoEvents)
+	err := configs.GetCollection("mazevo").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&mazevoEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			mazevoEvents.Date = date
@@ -69,7 +69,9 @@ func MazevoEventsByBuilding(c *gin.Context) {
 	var mazevoEventsByBuilding schema.SingleBuildingEvents[schema.MazevoEvent]
 
 	// find and parse matching date
-	err := mazevoCollection.FindOne(ctx, bson.M{"date": date}).Decode(&mazevoEvents)
+	err := configs.GetCollection("mazevo").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&mazevoEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			mazevoEvents.Date = date
@@ -120,7 +122,9 @@ func MazevoEventsByRoom(c *gin.Context) {
 	var mazevoEventsByRoom schema.RoomEvents[schema.MazevoEvent]
 
 	// find and parse matching date
-	err := mazevoCollection.FindOne(ctx, bson.M{"date": date}).Decode(&mazevoEvents)
+	err := configs.GetCollection("mazevo").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&mazevoEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			mazevoEvents.Date = date

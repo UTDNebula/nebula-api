@@ -19,8 +19,6 @@ import (
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var cometCalendarCollection *mongo.Collection = configs.GetCollection("cometCalendar")
-
 // @Id				CometCalendarEvents
 // @Router			/calendar/{date} [get]
 // @Tags			Events
@@ -38,7 +36,9 @@ func CometCalendarEvents(c *gin.Context) {
 	var cometCalendarEvents schema.MultiBuildingEvents[schema.Event]
 
 	// Find comet calendar event given date
-	err := cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
+	err := configs.GetCollection("cometCalendar").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&cometCalendarEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			cometCalendarEvents.Date = date
@@ -80,7 +80,9 @@ func CometCalendarEventsByBuilding(c *gin.Context) {
 	var cometCalendarEventsByBuilding schema.SingleBuildingEvents[schema.Event]
 
 	// Find comet calendar event given date
-	err = cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
+	err = configs.GetCollection("cometCalendar").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&cometCalendarEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
@@ -158,7 +160,9 @@ func CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	var roomEvents schema.RoomEvents[schema.Event]
 
 	// Find comet calendar event given date
-	err = cometCalendarCollection.FindOne(ctx, bson.M{"date": date}).Decode(&cometCalendarEvents)
+	err = configs.GetCollection("cometCalendar").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&cometCalendarEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")

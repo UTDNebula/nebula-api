@@ -16,8 +16,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var discountCollection *mongo.Collection = configs.GetCollection("discounts")
-
 var discountCategories []string
 var discountCategoriesOnce sync.Once
 
@@ -40,6 +38,7 @@ func DiscountSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
+	discountCollection := configs.GetCollection("discounts")
 	var cursor *mongo.Cursor
 	var err error
 
@@ -94,7 +93,7 @@ func fetchDiscountCategories() {
 		ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
 		defer cancel()
 
-		results, err := discountCollection.Distinct(ctx, "category", bson.M{})
+		results, err := configs.GetCollection("discounts").Distinct(ctx, "category", bson.M{})
 		if err != nil {
 			panic(err)
 		}

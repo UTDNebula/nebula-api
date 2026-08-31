@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/rest/configs"
 	"github.com/UTDNebula/nebula-api/rest/schema"
 
 	"github.com/gin-gonic/gin"
@@ -192,7 +193,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		{Key: "course_number", Value: number},
 	}
 
-	err = courseCollection.FindOne(ctx, sampleCourseFind).Decode(&sampleCourse)
+	err = configs.GetCollection("courses").FindOne(ctx, sampleCourseFind).Decode(&sampleCourse)
 	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
 		// If the error is not that there is no matching documents,
 		// throw an internal server error
@@ -204,35 +205,35 @@ func gradesAggregation(flag string, c *gin.Context) {
 	switch {
 	case flag == "course_endpoint":
 		// Filter on course ID, from the course endpoint
-		collection = courseCollection
+		collection = configs.GetCollection("courses")
 
 		courseMatch := bson.D{{Key: "$match", Value: bson.M{"_id": objId}}}
 		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage(), unwindSectionsStage(), projectGradeDistributionStage(flag, false), unwindGradeDistributionStage(), groupGradesStage(flag), sortGradesStage(flag), sumGradesStage(), groupGradeDistributionStage(flag)}
 
 	case flag == "section_endpoint":
 		// Filter on section ID, from section endpoint
-		collection = sectionCollection
+		collection = configs.GetCollection("sections")
 
 		sectionMatch := bson.D{{Key: "$match", Value: bson.M{"_id": objId}}}
 		pipeline = mongo.Pipeline{sectionMatch, projectGradeDistributionStage(flag, true), unwindGradeDistributionStage(), groupGradesStage(flag), sortGradesStage(flag), sumGradesStage(), groupGradeDistributionStage(flag)}
 
 	case flag == "professor_endpoint":
 		// Filter on Professor from professor endpoint
-		collection = professorCollection
+		collection = configs.GetCollection("professors")
 
 		professorMatch := bson.D{{Key: "$match", Value: bson.M{"_id": objId}}}
 		pipeline = mongo.Pipeline{professorMatch, lookupSectionsStage(), unwindSectionsStage(), projectGradeDistributionStage(flag, false), unwindGradeDistributionStage(), groupGradesStage(flag), sortGradesStage(flag), sumGradesStage(), groupGradeDistributionStage(flag)}
 
 	case prefix != "" && number == "" && section_number == "" && !professor:
 		// Filter on Course
-		collection = courseCollection
+		collection = configs.GetCollection("courses")
 
 		courseMatch = bson.D{{Key: "$match", Value: bson.M{"subject_prefix": prefix}}}
 		pipeline = mongo.Pipeline{courseMatch, lookupSectionsStage(), unwindSectionsStage(), projectGradeDistributionStage(flag, false), unwindGradeDistributionStage(), groupGradesStage(flag), sortGradesStage(flag), sumGradesStage(), groupGradeDistributionStage(flag)}
 
 	case prefix != "" && number != "" && section_number == "" && !professor:
 		// Filter on Course
-		collection = courseCollection
+		collection = configs.GetCollection("courses")
 
 		// Query using internal_course_number of the documents
 		courseMatch := bson.D{{Key: "$match", Value: bson.M{"internal_course_number": internalCourseNumber}}}
@@ -240,7 +241,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 	case prefix != "" && number != "" && section_number != "" && !professor:
 		// Filter on Course then Section
-		collection = courseCollection
+		collection = configs.GetCollection("courses")
 
 		// Here we query all the courses with the given internal_couse_number,
 		// and then filter on the section_number of those courses
@@ -251,7 +252,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 
 	case prefix == "" && number == "" && section_number == "" && professor:
 		// Filter on Professor
-		collection = professorCollection
+		collection = configs.GetCollection("professors")
 
 		// Build professorMatch
 		if last_name == "" {
@@ -271,7 +272,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		// and then we perform the grades aggregation against the sections collection,
 		// matching on the course_reference and professor
 
-		collection = sectionCollection
+		collection = configs.GetCollection("sections")
 
 		// Find valid professor ids
 		if last_name == "" {
@@ -282,7 +283,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 			professorFind = bson.D{{Key: "first_name", Value: first_name}, {Key: "last_name", Value: last_name}}
 		}
 
-		cursor, err = professorCollection.Find(ctx, professorFind)
+		cursor, err = configs.GetCollection("professors").Find(ctx, professorFind)
 		if err != nil {
 			respondWithInternalError(c, err)
 			return
@@ -307,7 +308,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 			courseFind = bson.D{{Key: "internal_course_number", Value: internalCourseNumber}}
 		}
 
-		cursor, err = courseCollection.Find(ctx, courseFind)
+		cursor, err = configs.GetCollection("courses").Find(ctx, courseFind)
 		if err != nil {
 			respondWithInternalError(c, err)
 			return

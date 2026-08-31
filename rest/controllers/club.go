@@ -57,7 +57,7 @@ func ClubDirectoryInfo(c *gin.Context) {
         )) as officers FROM officers where officers.club_id = club.id
     ) as officers on TRUE
     WHERE club.id = $1;
-  `, id).Scan(&raw)
+    `, id).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)
@@ -125,7 +125,7 @@ func ClubSearch(c *gin.Context) {
             paradedb.boost(5,paradedb.match('tags',$1,distance=>1))
             ]) and id @@@ 
         paradedb.const_score(0.0, paradedb.term('approved','approved'::approved_enum));
-  `, search).Scan(&raw)
+    `, search).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)

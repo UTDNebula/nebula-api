@@ -18,8 +18,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var eventsCollection *mongo.Collection = configs.GetCollection("events")
-
 // @Id				events
 // @Router			/events/{date} [get]
 // @Tags			Events
@@ -38,7 +36,9 @@ func Events(c *gin.Context) {
 	defer cancel()
 
 	// find and parse matching date
-	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
+	err := configs.GetCollection("events").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			events.Date = date
@@ -72,7 +72,9 @@ func EventsByBuilding(c *gin.Context) {
 	var eventsByBuilding schema.SingleBuildingEvents[schema.SectionWithTime]
 
 	// find and parse matching date
-	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
+	err := configs.GetCollection("events").FindOne(ctx, bson.M{
+		"date": date,
+	}).Decode(&events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			events.Date = date
@@ -130,7 +132,9 @@ func EventsByRoom(c *gin.Context) {
 	var events schema.MultiBuildingEvents[schema.SectionWithTime]
 	var eventsByRoom schema.RoomEvents[schema.SectionWithTime]
 
-	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
+	err := configs.GetCollection("events").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
@@ -202,7 +206,9 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	var sectionsByRoom schema.RoomEvents[schema.Section]
 
 	// Find events for the specified date
-	err := eventsCollection.FindOne(ctx, bson.M{"date": date}).Decode(&events)
+	err := configs.GetCollection("events").
+		FindOne(ctx, bson.M{"date": date}).
+		Decode(&events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
@@ -242,7 +248,9 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	}
 
 	// Fetch full section objects from the sections collection using the extracted IDs
-	cursor, err := sectionCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
+	cursor, err := configs.GetCollection("sections").Find(ctx, bson.M{
+		"_id": bson.M{"$in": sectionIDs},
+	})
 	if err != nil {
 		respondWithInternalError(c, err)
 		return

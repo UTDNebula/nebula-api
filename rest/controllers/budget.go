@@ -16,8 +16,6 @@ import (
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var budgetCollection *mongo.Collection = configs.GetCollection("budgets")
-
 // @Id				Budget
 // @Router			/budget/{year} [get]
 // @Tags			Other
@@ -36,7 +34,7 @@ func Budget(c *gin.Context) {
 	var budget schema.Budget
 
 	// Find budget given date
-	err := budgetCollection.FindOne(ctx, bson.M{"_id": year}).Decode(&budget)
+	err := configs.GetCollection("budgets").FindOne(ctx, bson.M{"_id": year}).Decode(&budget)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No budgets found for the specified fiscal year")
