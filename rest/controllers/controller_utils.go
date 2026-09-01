@@ -22,6 +22,22 @@ var typeToField = map[string]string{
 	"Professor": "professors",
 }
 
+func getSort(schemaType string) bson.D {
+	switch schemaType {
+	case "Course":
+		return bson.D{
+			{Key: "subject_prefix", Value: 1},
+			{Key: "course_number", Value: 1},
+			{Key: "catalog_year", Value: 1},
+			{Key: "_id", Value: 1},
+		}
+	case "Section", "Professor":
+		return bson.D{{Key: "_id", Value: 1}}
+	default:
+		panic("invalid schema: " + schemaType)
+	}
+}
+
 // Sets the API's response to a request, producing valid JSON given a status code and data.
 func respond[T any](c *gin.Context, status int, message string, data T) {
 	c.JSON(

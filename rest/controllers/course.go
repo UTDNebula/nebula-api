@@ -59,13 +59,7 @@ func CourseSearch(c *gin.Context) {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
-	opts := options.Find().
-		SetSort(bson.D{
-			{Key: "subject_prefix", Value: 1},
-			{Key: "course_number", Value: 1},
-			{Key: "catalog_year", Value: 1},
-		}).
-		SetSkip(offset).SetLimit(limit)
+	opts := options.Find().SetSort(getSort("Course")).SetSkip(offset).SetLimit(limit)
 
 	// Get cursor for query results
 	cursor, err := courseCollection.Find(ctx, query, opts)
@@ -270,12 +264,16 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 
 // buildCoursePipeline builds the pipeline to aggregate the list of object from list of courses
 func buildCoursePipeline(schemaType string, courseQuery bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
-	lookupSection := mongo.Pipeline{
+	field := typeToField[schemaType]
+	filterCourse := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: courseQuery}},
 
+		bson.D{{Key: "$sort", Value: getSort("Course")}},
 		paginateMap["former_offset"],
 		paginateMap["limit"],
+	}
 
+	var lookup = mongo.Pipeline{
 		// Lookup the list of sections from the courses
 		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "sections"},
@@ -284,22 +282,20 @@ func buildCoursePipeline(schemaType string, courseQuery bson.M, paginateMap map[
 			{Key: "as", Value: "sections"},
 		}}},
 	}
-
-	var lookupProf, dedup mongo.Pipeline
+	var dedup mongo.Pipeline
 	switch schemaType {
 	case "Section":
-		// No extra middle stages
+		// No extra stages
 
 	case "Professor":
 		// Lookup the list of professors from the list of sections
-		lookupProf = mongo.Pipeline{
+		lookup = append(lookup,
 			bson.D{{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "professors"},
 				{Key: "localField", Value: "sections.professors"},
 				{Key: "foreignField", Value: "_id"},
 				{Key: "as", Value: "professors"},
-			}}},
-		}
+			}}})
 
 		// Remove the duplicate professors
 		dedup = mongo.Pipeline{
@@ -316,25 +312,24 @@ func buildCoursePipeline(schemaType string, courseQuery bson.M, paginateMap map[
 	}
 
 	extract := mongo.Pipeline{
-		// Unwind the target object
+		// Unwind the target objects
 		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$" + typeToField[schemaType]},
+			{Key: "path", Value: "$" + field},
 			{Key: "preserveNullAndEmptyArrays", Value: false},
 		}}},
 
 		// Replace the courses with the target objects
-		bson.D{{Key: "$replaceWith", Value: "$" + typeToField[schemaType]}},
+		bson.D{{Key: "$replaceWith", Value: "$" + field}},
 	}
 
 	paginate := mongo.Pipeline{
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
+		bson.D{{Key: "$sort", Value: getSort(schemaType)}},
 		paginateMap["latter_offset"],
 		paginateMap["limit"],
 	}
 
-	pipeline := lookupSection
-	pipeline = append(pipeline, lookupProf...)
+	pipeline := filterCourse
+	pipeline = append(pipeline, lookup...)
 	pipeline = append(pipeline, extract...)
 	pipeline = append(pipeline, dedup...)
 	pipeline = append(pipeline, paginate...)
