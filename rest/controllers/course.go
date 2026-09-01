@@ -20,6 +20,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var courseTracer = otel.Tracer("course-controller")
+
 // @Id				courseSearch
 // @Router			/course [get]
 // @Tags			Courses
@@ -45,7 +47,7 @@ func CourseSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	ctx, span := otel.Tracer("course-controller").Start(ctx, "CourseSearch")
+	ctx, span := courseTracer.Start(ctx, "course.search")
 	defer span.End()
 
 	var courses []schema.Course
@@ -92,7 +94,7 @@ func CourseById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	ctx, span := otel.Tracer("course-controller").Start(ctx, "CourseById")
+	ctx, span := courseTracer.Start(ctx, "course.by.id")
 	defer span.End()
 
 	var course schema.Course
@@ -129,7 +131,7 @@ func CourseAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	ctx, span := otel.Tracer("course-controller").Start(ctx, "CourseAll")
+	ctx, span := courseTracer.Start(ctx, "course.all")
 	defer span.End()
 
 	var courses []schema.Course
@@ -142,10 +144,12 @@ func CourseAll(c *gin.Context) {
 	defer cursor.Close(ctx)
 
 	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &courses); err != nil {
+	cursorCtx, cursorSpan := courseTracer.Start(ctx, "course.decode.results")
+	if err = cursor.All(cursorCtx, &courses); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
+	cursorSpan.End()
 
 	respond(c, http.StatusOK, "success", courses)
 }
@@ -234,7 +238,7 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 	defer cancel()
 
 	schemaType := strings.Split(reflect.TypeFor[[]T]().String(), ".")[1]
-	ctx, span := otel.Tracer("course-controller").Start(ctx, "Course"+schemaType+flag)
+	ctx, span := courseTracer.Start(ctx, fmt.Sprintf("course.%s.%s", schemaType, flag))
 	defer span.End()
 
 	var queryResults []T

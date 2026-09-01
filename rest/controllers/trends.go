@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.opentelemetry.io/otel"
 )
 
 // @Id				trendsCourseSectionSearch
@@ -60,6 +61,10 @@ func TrendsCombinedSectionSearch(c *gin.Context) {
 func trendsSectionSearch(flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
+
+	trendsTracer := otel.Tracer("trends-controller")
+	ctx, span := trendsTracer.Start(ctx, "Trends"+flag)
+	defer span.End()
 
 	var detailedSections []schema.Section
 

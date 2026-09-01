@@ -9,6 +9,7 @@ import (
 
 	"log"
 
+	"github.com/XSAM/otelsql"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"go.mongodb.org/mongo-driver/bson"
@@ -125,7 +126,9 @@ func ConnectClubsDB() *sql.DB {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		db, err := sql.Open("pgx", GetClubsDBUri())
+		db, err := otelsql.Open("pgx", GetClubsDBUri(), otelsql.WithAttributes(
+			semconv.DBSystemNamePostgreSQL,
+		))
 		if err != nil {
 			log.Panic("Unable to connect to clubs database.")
 		}

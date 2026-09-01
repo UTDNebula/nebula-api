@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/otel"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,6 +17,8 @@ import (
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
+
+var astraTracer = otel.Tracer("astra-controller")
 
 // @Id				AstraEvents
 // @Router			/astra/{date} [get]
@@ -28,6 +31,9 @@ import (
 func AstraEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
+
+	ctx, span := astraTracer.Start(ctx, "astra.events")
+	defer span.End()
 
 	date := c.Param("date")
 
@@ -64,16 +70,19 @@ func AstraEventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
+	ctx, span := astraTracer.Start(ctx, "astra.events.by.building")
+	defer span.End()
+
 	date := c.Param("date")
 	building := strings.TrimSpace(c.Param("building")) // trimming the input
 
-	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
-	var astra_eventsByBuilding schema.SingleBuildingEvents[schema.AstraEvent]
+	var astraEvents schema.MultiBuildingEvents[schema.AstraEvent]
+	var astraEventsByBuilding schema.SingleBuildingEvents[schema.AstraEvent]
 
 	// Find astra event given date
 	err := configs.GetCollection("astra").
 		FindOne(ctx, bson.M{"date": date}).
-		Decode(&astra_events)
+		Decode(&astraEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
@@ -84,30 +93,26 @@ func AstraEventsByBuilding(c *gin.Context) {
 	}
 
 	// case insensitive matching
-	for _, b := range astra_events.Buildings {
+	for _, b := range astraEvents.Buildings {
 		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
-			astra_eventsByBuilding = b
+			astraEventsByBuilding = b
 			break
 		}
 	}
 
-	if astra_eventsByBuilding.Building == "" {
+	if astraEventsByBuilding.Building == "" {
 		// provide suggestion if not found
-		maxBuildings := min(len(astra_events.Buildings), 10)
 		var available []string
-
-		for i := range maxBuildings {
-			available = append(available, strings.TrimSpace(astra_events.Buildings[i].Building))
+		for i := range len(astraEvents.Buildings) {
+			available = append(available, strings.TrimSpace(astraEvents.Buildings[i].Building))
 		}
-		if len(astra_events.Buildings) > maxBuildings {
-			available = append(available, "(and more)")
-		}
-
-		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
+		respond(c, http.StatusNotFound, "error", map[string][]string{
+			"available": available,
+		})
 		return
 	}
 
-	respond(c, http.StatusOK, "success", astra_eventsByBuilding)
+	respond(c, http.StatusOK, "success", astraEventsByBuilding)
 }
 
 // @Id				AstraEventsByBuildingandRoom
@@ -125,17 +130,20 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
+	ctx, span := astraTracer.Start(ctx, "astra.events.by.building.and.room")
+	defer span.End()
+
 	date := c.Param("date")
 	building := strings.TrimSpace(c.Param("building"))
 	room := strings.TrimSpace(c.Param("room"))
 
-	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
+	var astraEvents schema.MultiBuildingEvents[schema.AstraEvent]
 	var roomEvents schema.RoomEvents[schema.AstraEvent]
 
 	// Find astra event given date
 	err := configs.GetCollection("astra").
 		FindOne(ctx, bson.M{"date": date}).
-		Decode(&astra_events)
+		Decode(&astraEvents)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
@@ -147,7 +155,7 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 
 	// matching buildings case-insensitively
 	var matchedBuilding *schema.SingleBuildingEvents[schema.AstraEvent]
-	for _, b := range astra_events.Buildings {
+	for _, b := range astraEvents.Buildings {
 		if strings.EqualFold(strings.TrimSpace(b.Building), building) {
 			matchedBuilding = &b
 			break
@@ -168,17 +176,13 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	}
 
 	if roomEvents.Room == "" {
-		maxRooms := min(len(matchedBuilding.Rooms), 20)
 		var available []string
-
-		for i := range maxRooms {
+		for i := range len(matchedBuilding.Rooms) {
 			available = append(available, strings.TrimSpace(matchedBuilding.Rooms[i].Room))
 		}
-		if len(matchedBuilding.Rooms) > maxRooms {
-			available = append(available, "(and more)")
-		}
-
-		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
+		respond(c, http.StatusNotFound, "error", map[string][]string{
+			"available": available,
+		})
 		return
 	}
 

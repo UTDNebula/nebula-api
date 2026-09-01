@@ -8,6 +8,7 @@ import (
 	_ "github.com/UTDNebula/nebula-api/rest/docs"
 	"github.com/UTDNebula/nebula-api/rest/routes"
 	"github.com/getsentry/sentry-go"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	sentryotel "github.com/getsentry/sentry-go/otel"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -53,11 +54,14 @@ func main() {
 		sentryDebug = true
 	}
 	if err := sentry.Init(sentry.ClientOptions{
-		Dsn:              sentryDsn,
-		Environment:      sentryEnv,
-		Debug:            sentryDebug,
-		EnableTracing:    true,
+		Dsn:           sentryDsn,
+		Environment:   sentryEnv,
+		Debug:         sentryDebug,
+		EnableTracing: false,
+
 		TracesSampleRate: 1.0,
+		AttachStacktrace: true,
+
 		Integrations: func(integrations []sentry.Integration) []sentry.Integration {
 			return append(integrations, sentryotel.NewOtelIntegration())
 		},
@@ -86,8 +90,11 @@ func main() {
 	router.Use(LogRequest)
 
 	// Attach Sentry
-	// router.Use(sentrygin.New(sentrygin.Options{}))
 	router.Use(otelgin.Middleware("nebula-api", otelgin.WithTracerProvider(provider)))
+
+	router.Use(sentrygin.New(sentrygin.Options{
+		Repanic: true,
+	}))
 
 	// Setup swagger-ui hosted
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
