@@ -12,8 +12,8 @@ import (
 	"github.com/UTDNebula/nebula-api/rest/configs"
 	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 var discountCollection *mongo.Collection = configs.GetCollection("discounts")
@@ -94,8 +94,13 @@ func fetchDiscountCategories() {
 		ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
 		defer cancel()
 
-		results, err := discountCollection.Distinct(ctx, "category", bson.M{})
-		if err != nil {
+		result := discountCollection.Distinct(ctx, "category", bson.M{})
+		if err := result.Err(); err != nil {
+			panic(err)
+		}
+
+		var results []any
+		if err := result.Decode(&results); err != nil {
 			panic(err)
 		}
 		for _, result := range results {

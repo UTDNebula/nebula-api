@@ -5,8 +5,22 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
+
+func buildFindOptions(t *testing.T, builder *options.FindOptionsBuilder) *options.FindOptions {
+	t.Helper()
+
+	findOptions := &options.FindOptions{}
+	for _, setter := range builder.List() {
+		if err := setter(findOptions); err != nil {
+			t.Fatalf("Failed to build find options: %v", err)
+		}
+	}
+
+	return findOptions
+}
 
 // TestGetOptionLimit checks if the function correctly parses offset from query params
 func TestGetOptionLimit(t *testing.T) {
@@ -18,7 +32,7 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/?offset=25", nil)
 
 		query := bson.M{"offset": "should-be-deleted"}
-		options, err := GetOptionLimit(&query, c)
+		optionsBuilder, err := GetOptionLimit(&query, c)
 
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err) // Use Fatalf to stop if options is nil
@@ -29,8 +43,9 @@ func TestGetOptionLimit(t *testing.T) {
 		}
 
 		// Ensure we compare the same types (int64)
-		if options.Skip == nil || *options.Skip != int64(25) {
-			t.Errorf("Expected Skip to be 25, got %v", options.Skip)
+		findOptions := buildFindOptions(t, optionsBuilder)
+		if findOptions.Skip == nil || *findOptions.Skip != int64(25) {
+			t.Errorf("Expected Skip to be 25, got %v", findOptions.Skip)
 		}
 	})
 
@@ -39,10 +54,11 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/", nil)
 
 		query := bson.M{}
-		options, _ := GetOptionLimit(&query, c)
+		optionsBuilder, _ := GetOptionLimit(&query, c)
 
-		if options.Skip == nil || *options.Skip != int64(0) {
-			t.Errorf("Expected default Skip to be 0, got %v", options.Skip)
+		findOptions := buildFindOptions(t, optionsBuilder)
+		if findOptions.Skip == nil || *findOptions.Skip != int64(0) {
+			t.Errorf("Expected default Skip to be 0, got %v", findOptions.Skip)
 		}
 	})
 
@@ -51,10 +67,15 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/?offset=not-a-number", nil)
 
 		query := bson.M{}
-		_, err := GetOptionLimit(&query, c)
+		optionsBuilder, err := GetOptionLimit(&query, c)
 
 		if err == nil {
 			t.Error("Expected an error when parsing a non-integer offset")
+		}
+
+		findOptions := buildFindOptions(t, optionsBuilder)
+		if findOptions.Skip == nil || *findOptions.Skip != int64(0) {
+			t.Errorf("Expected default Skip to be 0, got %v", findOptions.Skip)
 		}
 	})
 }
