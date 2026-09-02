@@ -1,0 +1,47 @@
+name: 🪲 Bug Report
+description: File a bug report
+labels: ["Bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this bug report! By submitting this issue, you agree to follow our [Code of Conduct](https://nebula-labs.atlassian.net/wiki/x/vAA-DQ)
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is the bug?
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps To Reproduce
+      description: Help us reproduce this bug. If helpful, you can include screenshots or logs! Be sure to wrap logs with ```` ```bash ```` before and ```` ``` ```` after.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Describe the bug in more detail. You can include related issues, helpful background knowledge, related documentation, or anything else that will help.
+    validations:
+      required: false
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: Where did you find this bug?
+      options:
+        - api.utdnebula.com
+        - a local development branch
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: What environment were you using when you encountered this bug?
+      value: |
+        API Client: 
+    validations:
+      required: true

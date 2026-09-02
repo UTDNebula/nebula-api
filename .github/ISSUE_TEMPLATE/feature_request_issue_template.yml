@@ -1,0 +1,28 @@
+name: 💡 Feature Request
+description: Suggest an idea for this project, e.g., a new feature, an improvement to an existing feature, or a new integration
+labels: ["Feature"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this feature request! By submitting this issue, you agree to follow our [Code of Conduct](https://nebula-labs.atlassian.net/wiki/x/vAA-DQ)
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What's the problem this feature would solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution
+      description: Describe your preferred solution to this problem. Include any alternative solutions or features you've considered if applicable. Include screenshots or designs if they would help
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Describe the feature in more detail. You can include related issues, helpful background knowledge, related documentation, or anything else that will help
+    validations:
+      required: false
