@@ -94,16 +94,11 @@ func fetchDiscountCategories() {
 		ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
 		defer cancel()
 
-		result := discountCollection.Distinct(ctx, "category", bson.M{})
-		if err := result.Err(); err != nil {
+		categories, err := decodeDiscountCategories(discountCollection.Distinct(ctx, "category", bson.M{}))
+		if err != nil {
 			panic(err)
 		}
-
-		var results []any
-		if err := result.Decode(&results); err != nil {
-			panic(err)
-		}
-		discountCategories = stringCategories(results)
+		discountCategories = categories
 		log.Printf("Available categories: %s.\n", discountCategories)
 	})
 }

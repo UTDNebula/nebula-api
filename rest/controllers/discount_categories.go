@@ -1,6 +1,20 @@
 package controllers
 
-func stringCategories(results []any) []string {
+type distinctResult interface {
+	Err() error
+	Decode(any) error
+}
+
+func decodeDiscountCategories(result distinctResult) ([]string, error) {
+	if err := result.Err(); err != nil {
+		return nil, err
+	}
+
+	var results []any
+	if err := result.Decode(&results); err != nil {
+		return nil, err
+	}
+
 	categories := make([]string, 0, len(results))
 	for _, result := range results {
 		category, ok := result.(string)
@@ -9,5 +23,5 @@ func stringCategories(results []any) []string {
 		}
 		categories = append(categories, category)
 	}
-	return categories
+	return categories, nil
 }
