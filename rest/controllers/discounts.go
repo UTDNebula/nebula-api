@@ -103,13 +103,7 @@ func fetchDiscountCategories() {
 		if err := result.Decode(&results); err != nil {
 			panic(err)
 		}
-		for _, result := range results {
-			category, ok := result.(string)
-			if !ok {
-				continue // Skip invalid category
-			}
-			discountCategories = append(discountCategories, category)
-		}
+		discountCategories = stringCategories(results)
 		log.Printf("Available categories: %s.\n", discountCategories)
 	})
 }
