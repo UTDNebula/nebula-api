@@ -22,6 +22,14 @@ func buildFindOptions(t *testing.T, builder *options.FindOptionsBuilder) *option
 	return findOptions
 }
 
+func TestNewMongoClientOptionsPreservesDocumentDecoding(t *testing.T) {
+	clientOptions := newMongoClientOptions("mongodb://localhost:27017")
+
+	if clientOptions.BSONOptions == nil || !clientOptions.BSONOptions.DefaultDocumentM {
+		t.Fatal("Expected nested documents to decode as bson.M")
+	}
+}
+
 // TestGetOptionLimit checks if the function correctly parses offset from query params
 func TestGetOptionLimit(t *testing.T) {
 	gin.SetMode(gin.TestMode)
@@ -47,6 +55,9 @@ func TestGetOptionLimit(t *testing.T) {
 		if findOptions.Skip == nil || *findOptions.Skip != int64(25) {
 			t.Errorf("Expected Skip to be 25, got %v", findOptions.Skip)
 		}
+		if findOptions.Limit == nil || *findOptions.Limit != GetEnvLimit() {
+			t.Errorf("Expected Limit to be %d, got %v", GetEnvLimit(), findOptions.Limit)
+		}
 	})
 
 	t.Run("EmptyOffset", func(t *testing.T) {
@@ -59,6 +70,9 @@ func TestGetOptionLimit(t *testing.T) {
 		findOptions := buildFindOptions(t, optionsBuilder)
 		if findOptions.Skip == nil || *findOptions.Skip != int64(0) {
 			t.Errorf("Expected default Skip to be 0, got %v", findOptions.Skip)
+		}
+		if findOptions.Limit == nil || *findOptions.Limit != GetEnvLimit() {
+			t.Errorf("Expected Limit to be %d, got %v", GetEnvLimit(), findOptions.Limit)
 		}
 	})
 
@@ -76,6 +90,9 @@ func TestGetOptionLimit(t *testing.T) {
 		findOptions := buildFindOptions(t, optionsBuilder)
 		if findOptions.Skip == nil || *findOptions.Skip != int64(0) {
 			t.Errorf("Expected default Skip to be 0, got %v", findOptions.Skip)
+		}
+		if findOptions.Limit == nil || *findOptions.Limit != GetEnvLimit() {
+			t.Errorf("Expected Limit to be %d, got %v", GetEnvLimit(), findOptions.Limit)
 		}
 	})
 }
