@@ -14,9 +14,6 @@ jobs:
 
   build_ubuntu:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./graphql
     steps:
     
     - name: Checkout
@@ -25,7 +22,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v6
       with:
-        go-version: '1.25'
+        go-version: '1.26'
         cache-dependency-path: "**/go.sum"
 
     - name: Setup
@@ -42,9 +39,6 @@ jobs:
 
   build_windows:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: .\graphql
     steps:
     
     - name: Checkout
@@ -53,7 +47,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v6
       with:
-        go-version: '1.25'
+        go-version: '1.26'
         cache-dependency-path: "**\\go.sum"
 
     - name: Setup

@@ -3,8 +3,9 @@ package graph
 import (
 	"context"
 	"fmt"
-	"graphql/graph/model"
 	"time"
+
+	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 )

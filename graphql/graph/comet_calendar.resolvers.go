@@ -9,9 +9,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"graphql/configs"
-	"graphql/graph/model"
 	"time"
+
+	"github.com/UTDNebula/nebula-api/graphql/configs"
+	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"graphql/configs"
-	"graphql/graph"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/UTDNebula/nebula-api/graphql/configs"
+	"github.com/UTDNebula/nebula-api/graphql/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"

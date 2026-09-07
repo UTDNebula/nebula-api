@@ -8,10 +8,11 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"graphql/graph/model"
 	"strconv"
 	"sync/atomic"
 	"time"
+
+	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
