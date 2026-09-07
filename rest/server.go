@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
 	_ "github.com/UTDNebula/nebula-api/rest/docs"
 	"github.com/UTDNebula/nebula-api/rest/routes"
+	sharedconfigs "github.com/UTDNebula/nebula-api/shared/configs"
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
@@ -45,8 +45,8 @@ func main() {
 	log.Default().SetFlags(log.Ltime | log.Llongfile)
 
 	// Establish the connection to the database
-	configs.ConnectDB()
-	configs.ConnectClubsDB()
+	sharedconfigs.ConnectDB()
+	sharedconfigs.ConnectClubsDB()
 
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{
@@ -93,7 +93,7 @@ func main() {
 	routes.BudgetRoute(router)
 
 	// Retrieve the port string to serve traffic on
-	portString := configs.GetPortString()
+	portString := ":" + sharedconfigs.GetPortString("8080")
 
 	// Serve Traffic
 	router.Run(portString)

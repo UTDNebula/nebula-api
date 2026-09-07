@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/graphql/configs"
 	"github.com/UTDNebula/nebula-api/graphql/graph"
+	"github.com/UTDNebula/nebula-api/shared/configs"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -19,7 +19,7 @@ import (
 )
 
 func main() {
-	port := configs.GetPortString()
+	port := configs.GetPortString("8000")
 	resolver := graph.Resolver{
 		CourseCollection:        configs.GetCollection("courses"),
 		SectionCollection:       configs.GetCollection("sections"),

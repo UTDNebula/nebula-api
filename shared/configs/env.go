@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -10,7 +9,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// Initialize this file to load environment variables from .env file
 func init() {
 	dir, err := os.Getwd()
 	if err != nil {
@@ -31,45 +29,31 @@ func init() {
 	}
 }
 
-func GetPortString() string {
-
-	portNumber, exist := os.LookupEnv("PORT")
-	if !exist {
-		portNumber = "8080"
+func GetPortString(defaultPort string) string {
+	portNumber, exists := os.LookupEnv("PORT")
+	if !exists {
+		portNumber = defaultPort
 	}
 
-	portString := fmt.Sprintf(":%s", portNumber)
-
-	return portString
+	return portNumber
 }
 
 func GetEnvMongoURI() string {
-
-	uri, exist := os.LookupEnv("MONGODB_URI")
-	if !exist {
+	uri, exists := os.LookupEnv("MONGODB_URI")
+	if !exists {
 		log.Fatalf("Error loading 'MONGODB_URI' from the .env file")
 	}
 
 	return uri
 }
 
-func GetClubsDBUri() string {
-	uri, exist := os.LookupEnv("CLUBS_DB_URI")
-	if !exist {
-		log.Panic("Error loading 'CLUBS_DB_URI' from the .env file")
-	}
-
-	return uri
-}
-
 func GetEnvLogin() (netID string, password string) {
-
-	netID, exist := os.LookupEnv("LOGIN_NETID")
-	if !exist {
+	netID, exists := os.LookupEnv("LOGIN_NETID")
+	if !exists {
 		log.Fatalf("Error loading 'LOGIN_NETID' from the .env file")
 	}
-	password, exist = os.LookupEnv("LOGIN_PASSWORD")
-	if !exist {
+	password, exists = os.LookupEnv("LOGIN_PASSWORD")
+	if !exists {
 		log.Fatalf("Error loading 'LOGIN_PASSWORD' from the .env file")
 	}
 
@@ -77,11 +61,10 @@ func GetEnvLogin() (netID string, password string) {
 }
 
 func GetEnvLimit() int64 {
-
 	const defaultLimit int64 = 20
 
-	limitString, exist := os.LookupEnv("LIMIT")
-	if !exist {
+	limitString, exists := os.LookupEnv("LIMIT")
+	if !exists {
 		return defaultLimit
 	}
 
@@ -93,14 +76,23 @@ func GetEnvLimit() int64 {
 	return limit
 }
 
+func GetClubsDBUri() string {
+	uri, exists := os.LookupEnv("CLUBS_DB_URI")
+	if !exists {
+		log.Panic("Error loading 'CLUBS_DB_URI' from the .env file")
+	}
+
+	return uri
+}
+
 func GetEnvMaxUploadSize() int64 {
 	const (
 		defaultLimit int64 = 30 * 1024 * 1024
 		hardCapLimit int64 = 50 * 1024 * 1024
 	)
 
-	limitString, exist := os.LookupEnv("MAX_UPLOAD_SIZE")
-	if !exist {
+	limitString, exists := os.LookupEnv("MAX_UPLOAD_SIZE")
+	if !exists {
 		return defaultLimit
 	}
 

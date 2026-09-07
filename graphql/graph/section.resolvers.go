@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/graphql/configs"
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
+	"github.com/UTDNebula/nebula-api/shared/configs"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

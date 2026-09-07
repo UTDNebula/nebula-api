@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
+	"github.com/UTDNebula/nebula-api/shared/configs"
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 

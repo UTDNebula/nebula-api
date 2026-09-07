@@ -15,8 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/iterator"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
 	"github.com/UTDNebula/nebula-api/rest/schema"
+	"github.com/UTDNebula/nebula-api/shared/configs"
 )
 
 const (

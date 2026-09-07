@@ -9,10 +9,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/graphql/configs"
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
+	"github.com/UTDNebula/nebula-api/shared/configs"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -64,11 +65,8 @@ func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometC
 			for _, cal := range calendars {
 				filteredBuildings := []*model.CometCalendarBuilding{}
 				for _, bldg := range cal.Buildings {
-					for _, name := range buildingNames {
-						if bldg.Building == name {
-							filteredBuildings = append(filteredBuildings, bldg)
-							break
-						}
+					if slices.Contains(buildingNames, bldg.Building) {
+						filteredBuildings = append(filteredBuildings, bldg)
 					}
 				}
 				cal.Buildings = filteredBuildings

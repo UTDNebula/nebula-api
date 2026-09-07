@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
 	"github.com/UTDNebula/nebula-api/rest/schema"
+	"github.com/UTDNebula/nebula-api/shared/configs"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

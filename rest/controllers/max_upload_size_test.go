@@ -1,4 +1,4 @@
-package main
+package controllers
 
 import (
 	"bytes"
@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"cloud.google.com/go/storage"
-	"github.com/UTDNebula/nebula-api/rest/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,9 +23,8 @@ func TestMaxUploadSize(t *testing.T) {
 	router := gin.New()
 
 	router.POST("/storage/:bucket/:objectID", func(c *gin.Context) {
-
 		c.Set("gcsClient", &storage.Client{})
-		controllers.PostObject(c)
+		PostObject(c)
 	})
 
 	t.Run("Upload within limit", func(t *testing.T) {

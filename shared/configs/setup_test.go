@@ -8,7 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// TestGetOptionLimit checks if the function correctly parses offset from query params
 func TestGetOptionLimit(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
@@ -21,14 +20,13 @@ func TestGetOptionLimit(t *testing.T) {
 		options, err := GetOptionLimit(&query, c)
 
 		if err != nil {
-			t.Fatalf("Expected no error, got %v", err) // Use Fatalf to stop if options is nil
+			t.Fatalf("Expected no error, got %v", err)
 		}
 
 		if _, exists := query["offset"]; exists {
 			t.Error("Expected 'offset' to be deleted from the query map")
 		}
 
-		// Ensure we compare the same types (int64)
 		if options.Skip == nil || *options.Skip != int64(25) {
 			t.Errorf("Expected Skip to be 25, got %v", options.Skip)
 		}
@@ -59,7 +57,6 @@ func TestGetOptionLimit(t *testing.T) {
 	})
 }
 
-// TestGetAggregateLimit achieves regression testing for the refactored logic
 func TestGetAggregateLimit(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
@@ -74,13 +71,11 @@ func TestGetAggregateLimit(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		// Check for the presence of keys and their BSON structure
 		for _, key := range []string{"former_offset", "latter_offset"} {
 			stage, ok := paginateMap[key]
 			if !ok {
 				t.Fatalf("Key %s missing from paginateMap", key)
 			}
-			// Use type assertion or direct indexing for bson.D
 			if len(stage) == 0 || stage[0].Key != "$skip" || !isEqual(stage[0].Value, 0) {
 				t.Errorf("Expected default $skip 0 for %s, got %v", key, stage)
 			}
@@ -96,7 +91,6 @@ func TestGetAggregateLimit(t *testing.T) {
 		paginateMap, _ := GetAggregateLimit(&query, c)
 
 		former := paginateMap["former_offset"]
-		// Explicitly check the value as int64 to avoid architecture-based build fails
 		if !isEqual(former[0].Value, 50) {
 			t.Errorf("Expected former_offset to be 50, got %v", former[0].Value)
 		}
@@ -107,15 +101,14 @@ func TestGetAggregateLimit(t *testing.T) {
 	})
 }
 
-// Helper function to handle cross-platform integer comparisons safely
 func isEqual(actual interface{}, expected int) bool {
-	switch v := actual.(type) {
+	switch value := actual.(type) {
 	case int:
-		return v == expected
+		return value == expected
 	case int64:
-		return v == int64(expected)
+		return value == int64(expected)
 	case int32:
-		return v == int32(expected)
+		return value == int32(expected)
 	default:
 		return false
 	}

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
+	sharedconfigs "github.com/UTDNebula/nebula-api/shared/configs"
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 
@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var courseCollection *mongo.Collection = configs.GetCollection("courses")
+var courseCollection *mongo.Collection = sharedconfigs.GetCollection("courses")
 
 // @Id				courseSearch
 // @Router			/course [get]
@@ -52,7 +52,7 @@ func CourseSearch(c *gin.Context) {
 		return
 	}
 
-	optionLimit, err := configs.GetOptionLimit(&query, c)
+	optionLimit, err := sharedconfigs.GetOptionLimit(&query, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
@@ -233,7 +233,7 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 	}
 
 	// Determine the offset and limit for pagination & delete offset fields
-	paginate, err := configs.GetAggregateLimit(&courseQuery, c)
+	paginate, err := sharedconfigs.GetAggregateLimit(&courseQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return

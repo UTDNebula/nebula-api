@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
+	sharedconfigs "github.com/UTDNebula/nebula-api/shared/configs"
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 
@@ -16,7 +16,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var sectionCollection *mongo.Collection = configs.GetCollection("sections")
+var sectionCollection *mongo.Collection = sharedconfigs.GetCollection("sections")
 
 // @Id				sectionSearch
 // @Router			/section [get]
@@ -61,7 +61,7 @@ func SectionSearch(c *gin.Context) {
 		return
 	}
 
-	optionLimit, err := configs.GetOptionLimit(&query, c)
+	optionLimit, err := sharedconfigs.GetOptionLimit(&query, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
@@ -180,7 +180,7 @@ func sectionCourse(flag string, c *gin.Context) {
 		return
 	}
 
-	paginate, err := configs.GetAggregateLimit(&sectionQuery, c)
+	paginate, err := sharedconfigs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
@@ -264,7 +264,7 @@ func sectionProfessor(flag string, c *gin.Context) {
 		return
 	}
 
-	paginate, err := configs.GetAggregateLimit(&sectionQuery, c)
+	paginate, err := sharedconfigs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
