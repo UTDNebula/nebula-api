@@ -31,12 +31,6 @@ Create your own fork by [forking this repository](https://docs.github.com/en/pul
 
 Submit proposed changes via a [Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
 
-## Repository Structure
-
-- `rest/` - REST API service implementation
-- `internal/` - Shared schemas, models, and utilities across services
-- `Makefile` & `build.bat` - Root-level build and development scripts
-
 ## Building
 ### Requirements
 - [Golang 1.26 or Higher](https://go.dev/dl/)
