@@ -51,7 +51,7 @@ type AstraRoom struct {
 
 type BuildingRooms struct {
 	Building string  `json:"building" bson:"building"`
-	Rooms    []*Room `json:"rooms,omitempty" bson:"rooms"`
+	Rooms    []*Room `json:"rooms" bson:"rooms"`
 	Lat      float64 `json:"lat" bson:"lat"`
 	Lon      float64 `json:"lon" bson:"lon"`
 }
@@ -110,7 +110,7 @@ type Course struct {
 	Prerequisites          *CollectionRequirement `json:"prerequisites,omitempty"`
 	Corequisites           *CollectionRequirement `json:"corequisites,omitempty"`
 	CoOrPreRequisites      *CollectionRequirement `json:"co_or_pre_requisites,omitempty"`
-	Sections               []string               `json:"sections"`
+	Sections               []*Section             `json:"sections"`
 	LectureContactHours    string                 `json:"lecture_contact_hours"`
 	LaboratoryContactHours string                 `json:"laboratory_contact_hours"`
 	OfferingFrequency      string                 `json:"offering_frequency"`

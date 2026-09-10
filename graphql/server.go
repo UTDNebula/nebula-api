@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/UTDNebula/nebula-api/graphql/graph"
 	"github.com/UTDNebula/nebula-api/shared/configs"
@@ -15,7 +13,6 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/vektah/gqlparser/v2/ast"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func main() {
@@ -30,11 +27,6 @@ func main() {
 		AstraCollection:         configs.GetCollection("astra"),
 		MazevoCollection:        configs.GetCollection("mazevo"),
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	count, _ := resolver.CometCalendarCollection.CountDocuments(ctx, bson.M{})
-	log.Printf("CometCalendar count: %d", count)
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
 	srv.Use(extension.FixedComplexityLimit(100)) // Avoid unlimited nesting (later)

@@ -60,6 +60,12 @@ func TransformCourse(dbCourse *DBCourse) *Course {
 	if dbCourse == nil {
 		return nil
 	}
+
+	sections := make([]*Section, len(dbCourse.Sections))
+	for i, sectionID := range dbCourse.Sections {
+		sections[i] = &Section{ID: sectionID}
+	}
+
 	return &Course{
 		dbCourse.ID,
 		dbCourse.SubjectPrefix,
@@ -76,7 +82,7 @@ func TransformCourse(dbCourse *DBCourse) *Course {
 		transformColReq(dbCourse.Prerequisites),
 		transformColReq(dbCourse.Corequisites),
 		transformColReq(dbCourse.Corequisites),
-		dbCourse.Sections,
+		sections,
 		dbCourse.LectureContactHours,
 		dbCourse.LaboratoryContactHours,
 		dbCourse.OfferingFrequency,

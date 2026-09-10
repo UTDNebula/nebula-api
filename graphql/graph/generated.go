@@ -12,10 +12,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/graphql/graph/model"
-
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -30,6 +29,7 @@ func NewExecutableSchema(cfg Config) graphql.ExecutableSchema {
 type Config = graphql.Config[ResolverRoot, DirectiveRoot, ComplexityRoot]
 
 type ResolverRoot interface {
+	Course() CourseResolver
 	Query() QueryResolver
 	SectionWithTime() SectionWithTimeResolver
 }
@@ -222,16 +222,16 @@ type ComplexityRoot struct {
 		AstraEventsByBuilding func(childComplexity int, date string, building string) int
 		AstraEventsByRoom     func(childComplexity int, date string, building string, room string) int
 		CometCalendar         func(childComplexity int, id string) int
-		CometCalendars        func(childComplexity int, filter *model.CometCalendarFilter, offset *int32) int
+		CometCalendars        func(childComplexity int, filter *model.CometCalendarFilter, offset int32) int
 		Course                func(childComplexity int, id string) int
-		Courses               func(childComplexity int, filter *model.CourseFilter, offset *int32) int
+		Courses               func(childComplexity int, filter *model.CourseFilter, offset int32) int
 		Events                func(childComplexity int, date string, building *string, room *string) int
 		MazevoEvents          func(childComplexity int, date string) int
 		Professor             func(childComplexity int, id string) int
-		Professors            func(childComplexity int, filter *model.ProfessorFilter, offset *int32) int
+		Professors            func(childComplexity int, filter *model.ProfessorFilter, offset int32) int
 		Rooms                 func(childComplexity int) int
 		Section               func(childComplexity int, id string) int
-		Sections              func(childComplexity int, filter *model.SectionFilter, offset *int32) int
+		Sections              func(childComplexity int, filter *model.SectionFilter, offset int32) int
 	}
 
 	Room struct {
@@ -273,15 +273,18 @@ type ComplexityRoot struct {
 	}
 }
 
+type CourseResolver interface {
+	Sections(ctx context.Context, obj *model.Course) ([]*model.Section, error)
+}
 type QueryResolver interface {
-	Courses(ctx context.Context, filter *model.CourseFilter, offset *int32) ([]*model.Course, error)
+	Courses(ctx context.Context, filter *model.CourseFilter, offset int32) ([]*model.Course, error)
 	Course(ctx context.Context, id string) (*model.Course, error)
-	Professors(ctx context.Context, filter *model.ProfessorFilter, offset *int32) ([]*model.Professor, error)
+	Professors(ctx context.Context, filter *model.ProfessorFilter, offset int32) ([]*model.Professor, error)
 	Professor(ctx context.Context, id string) (*model.Professor, error)
-	Sections(ctx context.Context, filter *model.SectionFilter, offset *int32) ([]*model.Section, error)
+	Sections(ctx context.Context, filter *model.SectionFilter, offset int32) ([]*model.Section, error)
 	Section(ctx context.Context, id string) (*model.Section, error)
 	Rooms(ctx context.Context) ([]*model.BuildingRooms, error)
-	CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset *int32) ([]*model.CometCalendar, error)
+	CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset int32) ([]*model.CometCalendar, error)
 	CometCalendar(ctx context.Context, id string) (*model.CometCalendar, error)
 	Events(ctx context.Context, date string, building *string, room *string) (model.EventResult, error)
 	AstraEvents(ctx context.Context, date string) (*model.AstraDayEvents, error)
@@ -1007,61 +1010,61 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Professor.Titles(childComplexity), true
 
-	case "Query.AstraEvents":
+	case "Query.astraEvents":
 		if e.ComplexityRoot.Query.AstraEvents == nil {
 			break
 		}
 
-		args, err := ec.field_Query_AstraEvents_args(ctx, rawArgs)
+		args, err := ec.field_Query_astraEvents_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.ComplexityRoot.Query.AstraEvents(childComplexity, args["date"].(string)), true
-	case "Query.AstraEventsByBuilding":
+	case "Query.astraEventsByBuilding":
 		if e.ComplexityRoot.Query.AstraEventsByBuilding == nil {
 			break
 		}
 
-		args, err := ec.field_Query_AstraEventsByBuilding_args(ctx, rawArgs)
+		args, err := ec.field_Query_astraEventsByBuilding_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.ComplexityRoot.Query.AstraEventsByBuilding(childComplexity, args["date"].(string), args["building"].(string)), true
-	case "Query.AstraEventsByRoom":
+	case "Query.astraEventsByRoom":
 		if e.ComplexityRoot.Query.AstraEventsByRoom == nil {
 			break
 		}
 
-		args, err := ec.field_Query_AstraEventsByRoom_args(ctx, rawArgs)
+		args, err := ec.field_Query_astraEventsByRoom_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.ComplexityRoot.Query.AstraEventsByRoom(childComplexity, args["date"].(string), args["building"].(string), args["room"].(string)), true
-	case "Query.CometCalendar":
+	case "Query.cometCalendar":
 		if e.ComplexityRoot.Query.CometCalendar == nil {
 			break
 		}
 
-		args, err := ec.field_Query_CometCalendar_args(ctx, rawArgs)
+		args, err := ec.field_Query_cometCalendar_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.ComplexityRoot.Query.CometCalendar(childComplexity, args["id"].(string)), true
-	case "Query.CometCalendars":
+	case "Query.cometCalendars":
 		if e.ComplexityRoot.Query.CometCalendars == nil {
 			break
 		}
 
-		args, err := ec.field_Query_CometCalendars_args(ctx, rawArgs)
+		args, err := ec.field_Query_cometCalendars_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.CometCalendars(childComplexity, args["filter"].(*model.CometCalendarFilter), args["offset"].(*int32)), true
+		return e.ComplexityRoot.Query.CometCalendars(childComplexity, args["filter"].(*model.CometCalendarFilter), args["offset"].(int32)), true
 	case "Query.course":
 		if e.ComplexityRoot.Query.Course == nil {
 			break
@@ -1083,7 +1086,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.Courses(childComplexity, args["filter"].(*model.CourseFilter), args["offset"].(*int32)), true
+		return e.ComplexityRoot.Query.Courses(childComplexity, args["filter"].(*model.CourseFilter), args["offset"].(int32)), true
 	case "Query.events":
 		if e.ComplexityRoot.Query.Events == nil {
 			break
@@ -1096,12 +1099,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Query.Events(childComplexity, args["date"].(string), args["building"].(*string), args["room"].(*string)), true
 
-	case "Query.MazevoEvents":
+	case "Query.mazevoEvents":
 		if e.ComplexityRoot.Query.MazevoEvents == nil {
 			break
 		}
 
-		args, err := ec.field_Query_MazevoEvents_args(ctx, rawArgs)
+		args, err := ec.field_Query_mazevoEvents_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
@@ -1128,7 +1131,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.Professors(childComplexity, args["filter"].(*model.ProfessorFilter), args["offset"].(*int32)), true
+		return e.ComplexityRoot.Query.Professors(childComplexity, args["filter"].(*model.ProfessorFilter), args["offset"].(int32)), true
 	case "Query.rooms":
 		if e.ComplexityRoot.Query.Rooms == nil {
 			break
@@ -1156,7 +1159,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.Sections(childComplexity, args["filter"].(*model.SectionFilter), args["offset"].(*int32)), true
+		return e.ComplexityRoot.Query.Sections(childComplexity, args["filter"].(*model.SectionFilter), args["offset"].(int32)), true
 
 	case "Room.capacity":
 		if e.ComplexityRoot.Room.Capacity == nil {
@@ -1375,7 +1378,7 @@ func newExecutionContext(
 	}
 }
 
-//go:embed "mazevo.graphqls" "schema.graphqls"
+//go:embed "schema.graphqls"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -1387,7 +1390,6 @@ func sourceData(filename string) string {
 }
 
 var sources = []*ast.Source{
-	{Name: "mazevo.graphqls", Input: sourceData("mazevo.graphqls"), BuiltIn: false},
 	{Name: "schema.graphqls", Input: sourceData("schema.graphqls"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -1396,7 +1398,18 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Query_AstraEventsByBuilding_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "name", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_astraEventsByBuilding_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
@@ -1412,7 +1425,7 @@ func (ec *executionContext) field_Query_AstraEventsByBuilding_args(ctx context.C
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_AstraEventsByRoom_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Query_astraEventsByRoom_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
@@ -1433,7 +1446,7 @@ func (ec *executionContext) field_Query_AstraEventsByRoom_args(ctx context.Conte
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_AstraEvents_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Query_astraEvents_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
@@ -1444,7 +1457,7 @@ func (ec *executionContext) field_Query_AstraEvents_args(ctx context.Context, ra
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_CometCalendar_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Query_cometCalendar_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
@@ -1455,41 +1468,19 @@ func (ec *executionContext) field_Query_CometCalendar_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_CometCalendars_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Query_cometCalendars_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOCometCalendarFilter2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarFilter)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOCometCalendarFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarFilter)
 	if err != nil {
 		return nil, err
 	}
 	args["filter"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
 	args["offset"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_MazevoEvents_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
-	if err != nil {
-		return nil, err
-	}
-	args["date"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "name", ec.unmarshalNString2string)
-	if err != nil {
-		return nil, err
-	}
-	args["name"] = arg0
 	return args, nil
 }
 
@@ -1507,12 +1498,12 @@ func (ec *executionContext) field_Query_course_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_courses_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOCourseFilter2ᚖgraphqlᚋgraphᚋmodelᚐCourseFilter)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOCourseFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourseFilter)
 	if err != nil {
 		return nil, err
 	}
 	args["filter"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -1541,6 +1532,17 @@ func (ec *executionContext) field_Query_events_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_mazevoEvents_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "date", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["date"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_professor_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -1555,12 +1557,12 @@ func (ec *executionContext) field_Query_professor_args(ctx context.Context, rawA
 func (ec *executionContext) field_Query_professors_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOProfessorFilter2ᚖgraphqlᚋgraphᚋmodelᚐProfessorFilter)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOProfessorFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessorFilter)
 	if err != nil {
 		return nil, err
 	}
 	args["filter"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -1582,12 +1584,12 @@ func (ec *executionContext) field_Query_section_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Query_sections_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOSectionFilter2ᚖgraphqlᚋgraphᚋmodelᚐSectionFilter)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "filter", ec.unmarshalOSectionFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionFilter)
 	if err != nil {
 		return nil, err
 	}
 	args["filter"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalNInt2int32)
 	if err != nil {
 		return nil, err
 	}
@@ -1889,7 +1891,7 @@ func (ec *executionContext) _AstraBuilding_rooms(ctx context.Context, field grap
 			return obj.Rooms, nil
 		},
 		nil,
-		ec.marshalNAstraRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraRoomᚄ,
+		ec.marshalNAstraRoom2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraRoomᚄ,
 		true,
 		true,
 	)
@@ -1953,7 +1955,7 @@ func (ec *executionContext) _AstraDayEvents_buildings(ctx context.Context, field
 			return obj.Buildings, nil
 		},
 		nil,
-		ec.marshalNAstraBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraBuildingᚄ,
+		ec.marshalNAstraBuilding2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraBuildingᚄ,
 		true,
 		true,
 	)
@@ -2249,7 +2251,7 @@ func (ec *executionContext) _AstraRoom_events(ctx context.Context, field graphql
 			return obj.Events, nil
 		},
 		nil,
-		ec.marshalNAstraEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraEventᚄ,
+		ec.marshalNAstraEvent2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraEventᚄ,
 		true,
 		true,
 	)
@@ -2325,9 +2327,9 @@ func (ec *executionContext) _BuildingRooms_rooms(ctx context.Context, field grap
 			return obj.Rooms, nil
 		},
 		nil,
-		ec.marshalORoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomᚄ,
+		ec.marshalNRoom2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐRoomᚄ,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -2592,7 +2594,7 @@ func (ec *executionContext) _CometCalendar_buildings(ctx context.Context, field 
 			return obj.Buildings, nil
 		},
 		nil,
-		ec.marshalNCometCalendarBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingᚄ,
+		ec.marshalNCometCalendarBuilding2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingᚄ,
 		true,
 		true,
 	)
@@ -2656,7 +2658,7 @@ func (ec *executionContext) _CometCalendarBuilding_rooms(ctx context.Context, fi
 			return obj.Rooms, nil
 		},
 		nil,
-		ec.marshalNCometCalendarRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomᚄ,
+		ec.marshalNCometCalendarRoom2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarRoomᚄ,
 		true,
 		true,
 	)
@@ -2720,7 +2722,7 @@ func (ec *executionContext) _CometCalendarRoom_events(ctx context.Context, field
 			return obj.Events, nil
 		},
 		nil,
-		ec.marshalNEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventᚄ,
+		ec.marshalNEvent2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEventᚄ,
 		true,
 		true,
 	)
@@ -3129,7 +3131,7 @@ func (ec *executionContext) _Course_prerequisites(ctx context.Context, field gra
 			return obj.Prerequisites, nil
 		},
 		nil,
-		ec.marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
+		ec.marshalOCollectionRequirement2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
 		true,
 		false,
 	)
@@ -3168,7 +3170,7 @@ func (ec *executionContext) _Course_corequisites(ctx context.Context, field grap
 			return obj.Corequisites, nil
 		},
 		nil,
-		ec.marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
+		ec.marshalOCollectionRequirement2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
 		true,
 		false,
 	)
@@ -3207,7 +3209,7 @@ func (ec *executionContext) _Course_co_or_pre_requisites(ctx context.Context, fi
 			return obj.CoOrPreRequisites, nil
 		},
 		nil,
-		ec.marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
+		ec.marshalOCollectionRequirement2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
 		true,
 		false,
 	)
@@ -3243,10 +3245,10 @@ func (ec *executionContext) _Course_sections(ctx context.Context, field graphql.
 		field,
 		ec.fieldContext_Course_sections,
 		func(ctx context.Context) (any, error) {
-			return obj.Sections, nil
+			return ec.Resolvers.Course().Sections(ctx, obj)
 		},
 		nil,
-		ec.marshalNID2ᚕstringᚄ,
+		ec.marshalNSection2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionᚄ,
 		true,
 		true,
 	)
@@ -3256,10 +3258,40 @@ func (ec *executionContext) fieldContext_Course_sections(_ context.Context, fiel
 	fc = &graphql.FieldContext{
 		Object:     "Course",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_Section__id(ctx, field)
+			case "section_number":
+				return ec.fieldContext_Section_section_number(ctx, field)
+			case "course_reference":
+				return ec.fieldContext_Section_course_reference(ctx, field)
+			case "section_corequisites":
+				return ec.fieldContext_Section_section_corequisites(ctx, field)
+			case "academic_session":
+				return ec.fieldContext_Section_academic_session(ctx, field)
+			case "professors":
+				return ec.fieldContext_Section_professors(ctx, field)
+			case "teaching_assistants":
+				return ec.fieldContext_Section_teaching_assistants(ctx, field)
+			case "internal_class_number":
+				return ec.fieldContext_Section_internal_class_number(ctx, field)
+			case "instruction_mode":
+				return ec.fieldContext_Section_instruction_mode(ctx, field)
+			case "meetings":
+				return ec.fieldContext_Section_meetings(ctx, field)
+			case "core_flags":
+				return ec.fieldContext_Section_core_flags(ctx, field)
+			case "syllabus_uri":
+				return ec.fieldContext_Section_syllabus_uri(ctx, field)
+			case "grade_distribution":
+				return ec.fieldContext_Section_grade_distribution(ctx, field)
+			case "attributes":
+				return ec.fieldContext_Section_attributes(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Section", field.Name)
 		},
 	}
 	return fc, nil
@@ -3971,7 +4003,7 @@ func (ec *executionContext) _MazevoBuilding_rooms(ctx context.Context, field gra
 			return obj.Rooms, nil
 		},
 		nil,
-		ec.marshalNMazevoRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoRoomᚄ,
+		ec.marshalNMazevoRoom2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoRoomᚄ,
 		true,
 		true,
 	)
@@ -4035,7 +4067,7 @@ func (ec *executionContext) _MazevoDayEvents_buildings(ctx context.Context, fiel
 			return obj.Buildings, nil
 		},
 		nil,
-		ec.marshalNMazevoBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoBuildingᚄ,
+		ec.marshalNMazevoBuilding2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoBuildingᚄ,
 		true,
 		true,
 	)
@@ -4360,7 +4392,7 @@ func (ec *executionContext) _MazevoRoom_events(ctx context.Context, field graphq
 			return obj.Events, nil
 		},
 		nil,
-		ec.marshalNMazevoEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoEventᚄ,
+		ec.marshalNMazevoEvent2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoEventᚄ,
 		true,
 		true,
 	)
@@ -4583,7 +4615,7 @@ func (ec *executionContext) _Meeting_location(ctx context.Context, field graphql
 			return obj.Location, nil
 		},
 		nil,
-		ec.marshalNLocation2ᚖgraphqlᚋgraphᚋmodelᚐLocation,
+		ec.marshalNLocation2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐLocation,
 		true,
 		true,
 	)
@@ -4649,7 +4681,7 @@ func (ec *executionContext) _MultiBuildingEvents_buildings(ctx context.Context, 
 			return obj.Buildings, nil
 		},
 		nil,
-		ec.marshalNSingleBuildingEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐSingleBuildingEventsᚄ,
+		ec.marshalNSingleBuildingEvents2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSingleBuildingEventsᚄ,
 		true,
 		true,
 	)
@@ -4945,7 +4977,7 @@ func (ec *executionContext) _Professor_office(ctx context.Context, field graphql
 			return obj.Office, nil
 		},
 		nil,
-		ec.marshalNOffice2ᚖgraphqlᚋgraphᚋmodelᚐOffice,
+		ec.marshalNOffice2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐOffice,
 		true,
 		true,
 	)
@@ -5096,12 +5128,12 @@ func (ec *executionContext) _Query_courses(ctx context.Context, field graphql.Co
 		ec.fieldContext_Query_courses,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Courses(ctx, fc.Args["filter"].(*model.CourseFilter), fc.Args["offset"].(*int32))
+			return ec.Resolvers.Query().Courses(ctx, fc.Args["filter"].(*model.CourseFilter), fc.Args["offset"].(int32))
 		},
 		nil,
-		ec.marshalOCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCourseᚄ,
+		ec.marshalNCourse2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourseᚄ,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -5184,7 +5216,7 @@ func (ec *executionContext) _Query_course(ctx context.Context, field graphql.Col
 			return ec.Resolvers.Query().Course(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse,
+		ec.marshalOCourse2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourse,
 		true,
 		false,
 	)
@@ -5266,12 +5298,12 @@ func (ec *executionContext) _Query_professors(ctx context.Context, field graphql
 		ec.fieldContext_Query_professors,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Professors(ctx, fc.Args["filter"].(*model.ProfessorFilter), fc.Args["offset"].(*int32))
+			return ec.Resolvers.Query().Professors(ctx, fc.Args["filter"].(*model.ProfessorFilter), fc.Args["offset"].(int32))
 		},
 		nil,
-		ec.marshalOProfessor2ᚕᚖgraphqlᚋgraphᚋmodelᚐProfessorᚄ,
+		ec.marshalNProfessor2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessorᚄ,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -5334,7 +5366,7 @@ func (ec *executionContext) _Query_professor(ctx context.Context, field graphql.
 			return ec.Resolvers.Query().Professor(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOProfessor2ᚖgraphqlᚋgraphᚋmodelᚐProfessor,
+		ec.marshalOProfessor2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessor,
 		true,
 		false,
 	)
@@ -5396,12 +5428,12 @@ func (ec *executionContext) _Query_sections(ctx context.Context, field graphql.C
 		ec.fieldContext_Query_sections,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Sections(ctx, fc.Args["filter"].(*model.SectionFilter), fc.Args["offset"].(*int32))
+			return ec.Resolvers.Query().Sections(ctx, fc.Args["filter"].(*model.SectionFilter), fc.Args["offset"].(int32))
 		},
 		nil,
-		ec.marshalOSection2ᚕᚖgraphqlᚋgraphᚋmodelᚐSectionᚄ,
+		ec.marshalNSection2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionᚄ,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -5470,7 +5502,7 @@ func (ec *executionContext) _Query_section(ctx context.Context, field graphql.Co
 			return ec.Resolvers.Query().Section(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOSection2ᚖgraphqlᚋgraphᚋmodelᚐSection,
+		ec.marshalOSection2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSection,
 		true,
 		false,
 	)
@@ -5540,9 +5572,9 @@ func (ec *executionContext) _Query_rooms(ctx context.Context, field graphql.Coll
 			return ec.Resolvers.Query().Rooms(ctx)
 		},
 		nil,
-		ec.marshalOBuildingRooms2ᚕᚖgraphqlᚋgraphᚋmodelᚐBuildingRoomsᚄ,
+		ec.marshalNBuildingRooms2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐBuildingRoomsᚄ,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -5569,24 +5601,24 @@ func (ec *executionContext) fieldContext_Query_rooms(_ context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_CometCalendars(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_cometCalendars(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_CometCalendars,
+		ec.fieldContext_Query_cometCalendars,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().CometCalendars(ctx, fc.Args["filter"].(*model.CometCalendarFilter), fc.Args["offset"].(*int32))
+			return ec.Resolvers.Query().CometCalendars(ctx, fc.Args["filter"].(*model.CometCalendarFilter), fc.Args["offset"].(int32))
 		},
 		nil,
-		ec.marshalOCometCalendar2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarᚄ,
+		ec.marshalNCometCalendar2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarᚄ,
 		true,
-		false,
+		true,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_CometCalendars(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_cometCalendars(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -5611,31 +5643,31 @@ func (ec *executionContext) fieldContext_Query_CometCalendars(ctx context.Contex
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_CometCalendars_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_cometCalendars_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_CometCalendar(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_cometCalendar(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_CometCalendar,
+		ec.fieldContext_Query_cometCalendar,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
 			return ec.Resolvers.Query().CometCalendar(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendar,
+		ec.marshalOCometCalendar2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendar,
 		true,
 		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_CometCalendar(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_cometCalendar(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -5660,7 +5692,7 @@ func (ec *executionContext) fieldContext_Query_CometCalendar(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_CometCalendar_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_cometCalendar_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -5678,9 +5710,9 @@ func (ec *executionContext) _Query_events(ctx context.Context, field graphql.Col
 			return ec.Resolvers.Query().Events(ctx, fc.Args["date"].(string), fc.Args["building"].(*string), fc.Args["room"].(*string))
 		},
 		nil,
-		ec.marshalNEventResult2graphqlᚋgraphᚋmodelᚐEventResult,
+		ec.marshalOEventResult2githubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEventResult,
 		true,
-		true,
+		false,
 	)
 }
 
@@ -5708,24 +5740,24 @@ func (ec *executionContext) fieldContext_Query_events(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_AstraEvents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_astraEvents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_AstraEvents,
+		ec.fieldContext_Query_astraEvents,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
 			return ec.Resolvers.Query().AstraEvents(ctx, fc.Args["date"].(string))
 		},
 		nil,
-		ec.marshalNAstraDayEvents2ᚖgraphqlᚋgraphᚋmodelᚐAstraDayEvents,
+		ec.marshalOAstraDayEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraDayEvents,
 		true,
-		true,
+		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_AstraEvents(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_astraEvents(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -5748,31 +5780,31 @@ func (ec *executionContext) fieldContext_Query_AstraEvents(ctx context.Context, 
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_AstraEvents_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_astraEvents_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_AstraEventsByBuilding(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_astraEventsByBuilding(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_AstraEventsByBuilding,
+		ec.fieldContext_Query_astraEventsByBuilding,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
 			return ec.Resolvers.Query().AstraEventsByBuilding(ctx, fc.Args["date"].(string), fc.Args["building"].(string))
 		},
 		nil,
-		ec.marshalNAstraBuilding2ᚖgraphqlᚋgraphᚋmodelᚐAstraBuilding,
+		ec.marshalOAstraBuilding2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraBuilding,
 		true,
-		true,
+		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_AstraEventsByBuilding(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_astraEventsByBuilding(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -5795,31 +5827,31 @@ func (ec *executionContext) fieldContext_Query_AstraEventsByBuilding(ctx context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_AstraEventsByBuilding_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_astraEventsByBuilding_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_AstraEventsByRoom(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_astraEventsByRoom(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_AstraEventsByRoom,
+		ec.fieldContext_Query_astraEventsByRoom,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
 			return ec.Resolvers.Query().AstraEventsByRoom(ctx, fc.Args["date"].(string), fc.Args["building"].(string), fc.Args["room"].(string))
 		},
 		nil,
-		ec.marshalNAstraRoom2ᚖgraphqlᚋgraphᚋmodelᚐAstraRoom,
+		ec.marshalOAstraRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraRoom,
 		true,
-		true,
+		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_AstraEventsByRoom(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_astraEventsByRoom(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -5842,31 +5874,31 @@ func (ec *executionContext) fieldContext_Query_AstraEventsByRoom(ctx context.Con
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_AstraEventsByRoom_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_astraEventsByRoom_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_MazevoEvents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_mazevoEvents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_MazevoEvents,
+		ec.fieldContext_Query_mazevoEvents,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
 			return ec.Resolvers.Query().MazevoEvents(ctx, fc.Args["date"].(string))
 		},
 		nil,
-		ec.marshalNMazevoDayEvents2ᚖgraphqlᚋgraphᚋmodelᚐMazevoDayEvents,
+		ec.marshalOMazevoDayEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoDayEvents,
 		true,
-		true,
+		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_MazevoEvents(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_mazevoEvents(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -5889,7 +5921,7 @@ func (ec *executionContext) fieldContext_Query_MazevoEvents(ctx context.Context,
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_MazevoEvents_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_mazevoEvents_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -6101,7 +6133,7 @@ func (ec *executionContext) _RoomEvents_section_events(ctx context.Context, fiel
 			return obj.SectionEvents, nil
 		},
 		nil,
-		ec.marshalNSectionWithTime2ᚕᚖgraphqlᚋgraphᚋmodelᚐSectionWithTimeᚄ,
+		ec.marshalNSectionWithTime2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionWithTimeᚄ,
 		true,
 		true,
 	)
@@ -6225,7 +6257,7 @@ func (ec *executionContext) _Section_section_corequisites(ctx context.Context, f
 			return obj.SectionCorequisites, nil
 		},
 		nil,
-		ec.marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
+		ec.marshalOCollectionRequirement2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCollectionRequirement,
 		true,
 		false,
 	)
@@ -6264,7 +6296,7 @@ func (ec *executionContext) _Section_academic_session(ctx context.Context, field
 			return obj.AcademicSession, nil
 		},
 		nil,
-		ec.marshalNAcademicSession2ᚖgraphqlᚋgraphᚋmodelᚐAcademicSession,
+		ec.marshalNAcademicSession2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAcademicSession,
 		true,
 		true,
 	)
@@ -6330,7 +6362,7 @@ func (ec *executionContext) _Section_teaching_assistants(ctx context.Context, fi
 			return obj.TeachingAssistants, nil
 		},
 		nil,
-		ec.marshalNAssistant2ᚕᚖgraphqlᚋgraphᚋmodelᚐAssistantᚄ,
+		ec.marshalNAssistant2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAssistantᚄ,
 		true,
 		true,
 	)
@@ -6427,7 +6459,7 @@ func (ec *executionContext) _Section_meetings(ctx context.Context, field graphql
 			return obj.Meetings, nil
 		},
 		nil,
-		ec.marshalNMeeting2ᚕᚖgraphqlᚋgraphᚋmodelᚐMeetingᚄ,
+		ec.marshalNMeeting2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMeetingᚄ,
 		true,
 		true,
 	)
@@ -6588,7 +6620,7 @@ func (ec *executionContext) _SectionWithTime_section(ctx context.Context, field 
 			return ec.Resolvers.SectionWithTime().Section(ctx, obj)
 		},
 		nil,
-		ec.marshalNSection2ᚖgraphqlᚋgraphᚋmodelᚐSection,
+		ec.marshalNSection2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSection,
 		true,
 		true,
 	)
@@ -6734,7 +6766,7 @@ func (ec *executionContext) _SingleBuildingEvents_rooms(ctx context.Context, fie
 			return obj.Rooms, nil
 		},
 		nil,
-		ec.marshalNRoomEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomEventsᚄ,
+		ec.marshalNRoomEvents2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐRoomEventsᚄ,
 		true,
 		true,
 	)
@@ -8232,7 +8264,7 @@ func (ec *executionContext) unmarshalInputCometCalendarBuildingInput(ctx context
 			it.Building = data
 		case "rooms":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rooms"))
-			data, err := ec.unmarshalOCometCalendarRoomInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx, v)
+			data, err := ec.unmarshalOCometCalendarRoomInput2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8269,7 +8301,7 @@ func (ec *executionContext) unmarshalInputCometCalendarFilter(ctx context.Contex
 			it.Date = data
 		case "buildings":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildings"))
-			data, err := ec.unmarshalOCometCalendarBuildingInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx, v)
+			data, err := ec.unmarshalOCometCalendarBuildingInput2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8306,7 +8338,7 @@ func (ec *executionContext) unmarshalInputCometCalendarRoomInput(ctx context.Con
 			it.Room = data
 		case "events":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("events"))
-			data, err := ec.unmarshalOEventInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx, v)
+			data, err := ec.unmarshalOEventInput2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEventInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8970,6 +9002,9 @@ func (ec *executionContext) _BuildingRooms(ctx context.Context, sel ast.Selectio
 			}
 		case "rooms":
 			out.Values[i] = ec._BuildingRooms_rooms(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "lat":
 			out.Values[i] = ec._BuildingRooms_lat(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -9205,62 +9240,62 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 		case "_id":
 			out.Values[i] = ec._Course__id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "subject_prefix":
 			out.Values[i] = ec._Course_subject_prefix(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "course_number":
 			out.Values[i] = ec._Course_course_number(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "title":
 			out.Values[i] = ec._Course_title(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "description":
 			out.Values[i] = ec._Course_description(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "enrollment_reqs":
 			out.Values[i] = ec._Course_enrollment_reqs(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "school":
 			out.Values[i] = ec._Course_school(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "credit_hours":
 			out.Values[i] = ec._Course_credit_hours(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "class_level":
 			out.Values[i] = ec._Course_class_level(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "activity_type":
 			out.Values[i] = ec._Course_activity_type(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "grading":
 			out.Values[i] = ec._Course_grading(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "internal_course_number":
 			out.Values[i] = ec._Course_internal_course_number(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "prerequisites":
 			out.Values[i] = ec._Course_prerequisites(ctx, field, obj)
@@ -9269,29 +9304,60 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 		case "co_or_pre_requisites":
 			out.Values[i] = ec._Course_co_or_pre_requisites(ctx, field, obj)
 		case "sections":
-			out.Values[i] = ec._Course_sections(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Course_sections(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "lecture_contact_hours":
 			out.Values[i] = ec._Course_lecture_contact_hours(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "laboratory_contact_hours":
 			out.Values[i] = ec._Course_laboratory_contact_hours(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "offering_frequency":
 			out.Values[i] = ec._Course_offering_frequency(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "catalog_year":
 			out.Values[i] = ec._Course_catalog_year(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "attributes":
 			out.Values[i] = ec._Course_attributes(ctx, field, obj)
@@ -9930,13 +9996,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "courses":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Query_courses(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -9968,13 +10037,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "professors":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Query_professors(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -10006,13 +10078,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "sections":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Query_sections(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -10044,13 +10119,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "rooms":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Query_rooms(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -10060,16 +10138,19 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "CometCalendars":
+		case "cometCalendars":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_CometCalendars(ctx, field)
+				res = ec._Query_cometCalendars(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -10079,7 +10160,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "CometCalendar":
+		case "cometCalendar":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -10088,7 +10169,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_CometCalendar(ctx, field)
+				res = ec._Query_cometCalendar(ctx, field)
 				return res
 			}
 
@@ -10101,16 +10182,13 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "events":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Query_events(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -10120,19 +10198,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "AstraEvents":
+		case "astraEvents":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_AstraEvents(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
+				res = ec._Query_astraEvents(ctx, field)
 				return res
 			}
 
@@ -10142,19 +10217,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "AstraEventsByBuilding":
+		case "astraEventsByBuilding":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_AstraEventsByBuilding(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
+				res = ec._Query_astraEventsByBuilding(ctx, field)
 				return res
 			}
 
@@ -10164,19 +10236,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "AstraEventsByRoom":
+		case "astraEventsByRoom":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_AstraEventsByRoom(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
+				res = ec._Query_astraEventsByRoom(ctx, field)
 				return res
 			}
 
@@ -10186,19 +10255,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "MazevoEvents":
+		case "mazevoEvents":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_MazevoEvents(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
+				res = ec._Query_mazevoEvents(ctx, field)
 				return res
 			}
 
@@ -10881,7 +10947,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAcademicSession2ᚖgraphqlᚋgraphᚋmodelᚐAcademicSession(ctx context.Context, sel ast.SelectionSet, v *model.AcademicSession) graphql.Marshaler {
+func (ec *executionContext) marshalNAcademicSession2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAcademicSession(ctx context.Context, sel ast.SelectionSet, v *model.AcademicSession) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -10891,11 +10957,11 @@ func (ec *executionContext) marshalNAcademicSession2ᚖgraphqlᚋgraphᚋmodel�
 	return ec._AcademicSession(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAssistant2ᚕᚖgraphqlᚋgraphᚋmodelᚐAssistantᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Assistant) graphql.Marshaler {
+func (ec *executionContext) marshalNAssistant2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAssistantᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Assistant) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNAssistant2ᚖgraphqlᚋgraphᚋmodelᚐAssistant(ctx, sel, v[i])
+		return ec.marshalNAssistant2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAssistant(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -10907,7 +10973,7 @@ func (ec *executionContext) marshalNAssistant2ᚕᚖgraphqlᚋgraphᚋmodelᚐAs
 	return ret
 }
 
-func (ec *executionContext) marshalNAssistant2ᚖgraphqlᚋgraphᚋmodelᚐAssistant(ctx context.Context, sel ast.SelectionSet, v *model.Assistant) graphql.Marshaler {
+func (ec *executionContext) marshalNAssistant2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAssistant(ctx context.Context, sel ast.SelectionSet, v *model.Assistant) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -10917,15 +10983,11 @@ func (ec *executionContext) marshalNAssistant2ᚖgraphqlᚋgraphᚋmodelᚐAssis
 	return ec._Assistant(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAstraBuilding2graphqlᚋgraphᚋmodelᚐAstraBuilding(ctx context.Context, sel ast.SelectionSet, v model.AstraBuilding) graphql.Marshaler {
-	return ec._AstraBuilding(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNAstraBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraBuilding) graphql.Marshaler {
+func (ec *executionContext) marshalNAstraBuilding2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraBuilding) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNAstraBuilding2ᚖgraphqlᚋgraphᚋmodelᚐAstraBuilding(ctx, sel, v[i])
+		return ec.marshalNAstraBuilding2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraBuilding(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -10937,7 +10999,7 @@ func (ec *executionContext) marshalNAstraBuilding2ᚕᚖgraphqlᚋgraphᚋmodel�
 	return ret
 }
 
-func (ec *executionContext) marshalNAstraBuilding2ᚖgraphqlᚋgraphᚋmodelᚐAstraBuilding(ctx context.Context, sel ast.SelectionSet, v *model.AstraBuilding) graphql.Marshaler {
+func (ec *executionContext) marshalNAstraBuilding2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraBuilding(ctx context.Context, sel ast.SelectionSet, v *model.AstraBuilding) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -10947,25 +11009,11 @@ func (ec *executionContext) marshalNAstraBuilding2ᚖgraphqlᚋgraphᚋmodelᚐA
 	return ec._AstraBuilding(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAstraDayEvents2graphqlᚋgraphᚋmodelᚐAstraDayEvents(ctx context.Context, sel ast.SelectionSet, v model.AstraDayEvents) graphql.Marshaler {
-	return ec._AstraDayEvents(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNAstraDayEvents2ᚖgraphqlᚋgraphᚋmodelᚐAstraDayEvents(ctx context.Context, sel ast.SelectionSet, v *model.AstraDayEvents) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._AstraDayEvents(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNAstraEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNAstraEvent2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraEvent) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNAstraEvent2ᚖgraphqlᚋgraphᚋmodelᚐAstraEvent(ctx, sel, v[i])
+		return ec.marshalNAstraEvent2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraEvent(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -10977,7 +11025,7 @@ func (ec *executionContext) marshalNAstraEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐA
 	return ret
 }
 
-func (ec *executionContext) marshalNAstraEvent2ᚖgraphqlᚋgraphᚋmodelᚐAstraEvent(ctx context.Context, sel ast.SelectionSet, v *model.AstraEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNAstraEvent2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraEvent(ctx context.Context, sel ast.SelectionSet, v *model.AstraEvent) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -10987,15 +11035,11 @@ func (ec *executionContext) marshalNAstraEvent2ᚖgraphqlᚋgraphᚋmodelᚐAstr
 	return ec._AstraEvent(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAstraRoom2graphqlᚋgraphᚋmodelᚐAstraRoom(ctx context.Context, sel ast.SelectionSet, v model.AstraRoom) graphql.Marshaler {
-	return ec._AstraRoom(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNAstraRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐAstraRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraRoom) graphql.Marshaler {
+func (ec *executionContext) marshalNAstraRoom2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AstraRoom) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNAstraRoom2ᚖgraphqlᚋgraphᚋmodelᚐAstraRoom(ctx, sel, v[i])
+		return ec.marshalNAstraRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraRoom(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11007,7 +11051,7 @@ func (ec *executionContext) marshalNAstraRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐAs
 	return ret
 }
 
-func (ec *executionContext) marshalNAstraRoom2ᚖgraphqlᚋgraphᚋmodelᚐAstraRoom(ctx context.Context, sel ast.SelectionSet, v *model.AstraRoom) graphql.Marshaler {
+func (ec *executionContext) marshalNAstraRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraRoom(ctx context.Context, sel ast.SelectionSet, v *model.AstraRoom) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11033,7 +11077,23 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNBuildingRooms2ᚖgraphqlᚋgraphᚋmodelᚐBuildingRooms(ctx context.Context, sel ast.SelectionSet, v *model.BuildingRooms) graphql.Marshaler {
+func (ec *executionContext) marshalNBuildingRooms2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐBuildingRoomsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.BuildingRooms) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNBuildingRooms2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐBuildingRooms(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNBuildingRooms2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐBuildingRooms(ctx context.Context, sel ast.SelectionSet, v *model.BuildingRooms) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11043,7 +11103,23 @@ func (ec *executionContext) marshalNBuildingRooms2ᚖgraphqlᚋgraphᚋmodelᚐB
 	return ec._BuildingRooms(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendar) graphql.Marshaler {
+func (ec *executionContext) marshalNCometCalendar2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendar) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNCometCalendar2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNCometCalendar2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendar) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11053,11 +11129,11 @@ func (ec *executionContext) marshalNCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐC
 	return ec._CometCalendar(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCometCalendarBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendarBuilding) graphql.Marshaler {
+func (ec *executionContext) marshalNCometCalendarBuilding2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendarBuilding) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNCometCalendarBuilding2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuilding(ctx, sel, v[i])
+		return ec.marshalNCometCalendarBuilding2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarBuilding(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11069,7 +11145,7 @@ func (ec *executionContext) marshalNCometCalendarBuilding2ᚕᚖgraphqlᚋgraph�
 	return ret
 }
 
-func (ec *executionContext) marshalNCometCalendarBuilding2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuilding(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendarBuilding) graphql.Marshaler {
+func (ec *executionContext) marshalNCometCalendarBuilding2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarBuilding(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendarBuilding) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11079,11 +11155,11 @@ func (ec *executionContext) marshalNCometCalendarBuilding2ᚖgraphqlᚋgraphᚋm
 	return ec._CometCalendarBuilding(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCometCalendarRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendarRoom) graphql.Marshaler {
+func (ec *executionContext) marshalNCometCalendarRoom2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendarRoom) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNCometCalendarRoom2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoom(ctx, sel, v[i])
+		return ec.marshalNCometCalendarRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarRoom(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11095,7 +11171,7 @@ func (ec *executionContext) marshalNCometCalendarRoom2ᚕᚖgraphqlᚋgraphᚋmo
 	return ret
 }
 
-func (ec *executionContext) marshalNCometCalendarRoom2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoom(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendarRoom) graphql.Marshaler {
+func (ec *executionContext) marshalNCometCalendarRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarRoom(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendarRoom) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11105,7 +11181,23 @@ func (ec *executionContext) marshalNCometCalendarRoom2ᚖgraphqlᚋgraphᚋmodel
 	return ec._CometCalendarRoom(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
+func (ec *executionContext) marshalNCourse2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Course) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNCourse2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourse(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNCourse2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11131,11 +11223,11 @@ func (ec *executionContext) marshalNDateTime2timeᚐTime(ctx context.Context, se
 	return res
 }
 
-func (ec *executionContext) marshalNEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Event) graphql.Marshaler {
+func (ec *executionContext) marshalNEvent2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Event) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNEvent2ᚖgraphqlᚋgraphᚋmodelᚐEvent(ctx, sel, v[i])
+		return ec.marshalNEvent2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEvent(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11147,7 +11239,7 @@ func (ec *executionContext) marshalNEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐEvent�
 	return ret
 }
 
-func (ec *executionContext) marshalNEvent2ᚖgraphqlᚋgraphᚋmodelᚐEvent(ctx context.Context, sel ast.SelectionSet, v *model.Event) graphql.Marshaler {
+func (ec *executionContext) marshalNEvent2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEvent(ctx context.Context, sel ast.SelectionSet, v *model.Event) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11155,16 +11247,6 @@ func (ec *executionContext) marshalNEvent2ᚖgraphqlᚋgraphᚋmodelᚐEvent(ctx
 		return graphql.Null
 	}
 	return ec._Event(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNEventResult2graphqlᚋgraphᚋmodelᚐEventResult(ctx context.Context, sel ast.SelectionSet, v model.EventResult) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._EventResult(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNFloat642float64(ctx context.Context, v any) (float64, error) {
@@ -11245,7 +11327,7 @@ func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNLocation2ᚖgraphqlᚋgraphᚋmodelᚐLocation(ctx context.Context, sel ast.SelectionSet, v *model.Location) graphql.Marshaler {
+func (ec *executionContext) marshalNLocation2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐLocation(ctx context.Context, sel ast.SelectionSet, v *model.Location) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11255,11 +11337,11 @@ func (ec *executionContext) marshalNLocation2ᚖgraphqlᚋgraphᚋmodelᚐLocati
 	return ec._Location(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMazevoBuilding2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoBuilding) graphql.Marshaler {
+func (ec *executionContext) marshalNMazevoBuilding2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoBuildingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoBuilding) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNMazevoBuilding2ᚖgraphqlᚋgraphᚋmodelᚐMazevoBuilding(ctx, sel, v[i])
+		return ec.marshalNMazevoBuilding2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoBuilding(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11271,7 +11353,7 @@ func (ec *executionContext) marshalNMazevoBuilding2ᚕᚖgraphqlᚋgraphᚋmodel
 	return ret
 }
 
-func (ec *executionContext) marshalNMazevoBuilding2ᚖgraphqlᚋgraphᚋmodelᚐMazevoBuilding(ctx context.Context, sel ast.SelectionSet, v *model.MazevoBuilding) graphql.Marshaler {
+func (ec *executionContext) marshalNMazevoBuilding2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoBuilding(ctx context.Context, sel ast.SelectionSet, v *model.MazevoBuilding) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11281,25 +11363,11 @@ func (ec *executionContext) marshalNMazevoBuilding2ᚖgraphqlᚋgraphᚋmodelᚐ
 	return ec._MazevoBuilding(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMazevoDayEvents2graphqlᚋgraphᚋmodelᚐMazevoDayEvents(ctx context.Context, sel ast.SelectionSet, v model.MazevoDayEvents) graphql.Marshaler {
-	return ec._MazevoDayEvents(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNMazevoDayEvents2ᚖgraphqlᚋgraphᚋmodelᚐMazevoDayEvents(ctx context.Context, sel ast.SelectionSet, v *model.MazevoDayEvents) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._MazevoDayEvents(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNMazevoEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNMazevoEvent2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoEvent) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNMazevoEvent2ᚖgraphqlᚋgraphᚋmodelᚐMazevoEvent(ctx, sel, v[i])
+		return ec.marshalNMazevoEvent2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoEvent(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11311,7 +11379,7 @@ func (ec *executionContext) marshalNMazevoEvent2ᚕᚖgraphqlᚋgraphᚋmodelᚐ
 	return ret
 }
 
-func (ec *executionContext) marshalNMazevoEvent2ᚖgraphqlᚋgraphᚋmodelᚐMazevoEvent(ctx context.Context, sel ast.SelectionSet, v *model.MazevoEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNMazevoEvent2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoEvent(ctx context.Context, sel ast.SelectionSet, v *model.MazevoEvent) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11321,11 +11389,11 @@ func (ec *executionContext) marshalNMazevoEvent2ᚖgraphqlᚋgraphᚋmodelᚐMaz
 	return ec._MazevoEvent(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMazevoRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐMazevoRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoRoom) graphql.Marshaler {
+func (ec *executionContext) marshalNMazevoRoom2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MazevoRoom) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNMazevoRoom2ᚖgraphqlᚋgraphᚋmodelᚐMazevoRoom(ctx, sel, v[i])
+		return ec.marshalNMazevoRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoRoom(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11337,7 +11405,7 @@ func (ec *executionContext) marshalNMazevoRoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐM
 	return ret
 }
 
-func (ec *executionContext) marshalNMazevoRoom2ᚖgraphqlᚋgraphᚋmodelᚐMazevoRoom(ctx context.Context, sel ast.SelectionSet, v *model.MazevoRoom) graphql.Marshaler {
+func (ec *executionContext) marshalNMazevoRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoRoom(ctx context.Context, sel ast.SelectionSet, v *model.MazevoRoom) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11347,11 +11415,11 @@ func (ec *executionContext) marshalNMazevoRoom2ᚖgraphqlᚋgraphᚋmodelᚐMaze
 	return ec._MazevoRoom(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMeeting2ᚕᚖgraphqlᚋgraphᚋmodelᚐMeetingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Meeting) graphql.Marshaler {
+func (ec *executionContext) marshalNMeeting2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMeetingᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Meeting) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting(ctx, sel, v[i])
+		return ec.marshalNMeeting2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMeeting(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11363,7 +11431,7 @@ func (ec *executionContext) marshalNMeeting2ᚕᚖgraphqlᚋgraphᚋmodelᚐMeet
 	return ret
 }
 
-func (ec *executionContext) marshalNMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting(ctx context.Context, sel ast.SelectionSet, v *model.Meeting) graphql.Marshaler {
+func (ec *executionContext) marshalNMeeting2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMeeting(ctx context.Context, sel ast.SelectionSet, v *model.Meeting) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11373,7 +11441,7 @@ func (ec *executionContext) marshalNMeeting2ᚖgraphqlᚋgraphᚋmodelᚐMeeting
 	return ec._Meeting(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNOffice2ᚖgraphqlᚋgraphᚋmodelᚐOffice(ctx context.Context, sel ast.SelectionSet, v *model.Office) graphql.Marshaler {
+func (ec *executionContext) marshalNOffice2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐOffice(ctx context.Context, sel ast.SelectionSet, v *model.Office) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11383,7 +11451,23 @@ func (ec *executionContext) marshalNOffice2ᚖgraphqlᚋgraphᚋmodelᚐOffice(c
 	return ec._Office(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProfessor2ᚖgraphqlᚋgraphᚋmodelᚐProfessor(ctx context.Context, sel ast.SelectionSet, v *model.Professor) graphql.Marshaler {
+func (ec *executionContext) marshalNProfessor2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessorᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Professor) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNProfessor2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessor(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNProfessor2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessor(ctx context.Context, sel ast.SelectionSet, v *model.Professor) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11393,7 +11477,23 @@ func (ec *executionContext) marshalNProfessor2ᚖgraphqlᚋgraphᚋmodelᚐProfe
 	return ec._Professor(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNRoom2ᚖgraphqlᚋgraphᚋmodelᚐRoom(ctx context.Context, sel ast.SelectionSet, v *model.Room) graphql.Marshaler {
+func (ec *executionContext) marshalNRoom2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Room) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐRoom(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐRoom(ctx context.Context, sel ast.SelectionSet, v *model.Room) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11403,11 +11503,11 @@ func (ec *executionContext) marshalNRoom2ᚖgraphqlᚋgraphᚋmodelᚐRoom(ctx c
 	return ec._Room(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNRoomEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomEventsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.RoomEvents) graphql.Marshaler {
+func (ec *executionContext) marshalNRoomEvents2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐRoomEventsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.RoomEvents) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNRoomEvents2ᚖgraphqlᚋgraphᚋmodelᚐRoomEvents(ctx, sel, v[i])
+		return ec.marshalNRoomEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐRoomEvents(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11419,7 +11519,7 @@ func (ec *executionContext) marshalNRoomEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐR
 	return ret
 }
 
-func (ec *executionContext) marshalNRoomEvents2ᚖgraphqlᚋgraphᚋmodelᚐRoomEvents(ctx context.Context, sel ast.SelectionSet, v *model.RoomEvents) graphql.Marshaler {
+func (ec *executionContext) marshalNRoomEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐRoomEvents(ctx context.Context, sel ast.SelectionSet, v *model.RoomEvents) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11429,11 +11529,27 @@ func (ec *executionContext) marshalNRoomEvents2ᚖgraphqlᚋgraphᚋmodelᚐRoom
 	return ec._RoomEvents(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNSection2graphqlᚋgraphᚋmodelᚐSection(ctx context.Context, sel ast.SelectionSet, v model.Section) graphql.Marshaler {
+func (ec *executionContext) marshalNSection2githubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSection(ctx context.Context, sel ast.SelectionSet, v model.Section) graphql.Marshaler {
 	return ec._Section(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSection2ᚖgraphqlᚋgraphᚋmodelᚐSection(ctx context.Context, sel ast.SelectionSet, v *model.Section) graphql.Marshaler {
+func (ec *executionContext) marshalNSection2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Section) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNSection2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSection(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNSection2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSection(ctx context.Context, sel ast.SelectionSet, v *model.Section) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11443,11 +11559,11 @@ func (ec *executionContext) marshalNSection2ᚖgraphqlᚋgraphᚋmodelᚐSection
 	return ec._Section(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNSectionWithTime2ᚕᚖgraphqlᚋgraphᚋmodelᚐSectionWithTimeᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SectionWithTime) graphql.Marshaler {
+func (ec *executionContext) marshalNSectionWithTime2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionWithTimeᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SectionWithTime) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNSectionWithTime2ᚖgraphqlᚋgraphᚋmodelᚐSectionWithTime(ctx, sel, v[i])
+		return ec.marshalNSectionWithTime2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionWithTime(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11459,7 +11575,7 @@ func (ec *executionContext) marshalNSectionWithTime2ᚕᚖgraphqlᚋgraphᚋmode
 	return ret
 }
 
-func (ec *executionContext) marshalNSectionWithTime2ᚖgraphqlᚋgraphᚋmodelᚐSectionWithTime(ctx context.Context, sel ast.SelectionSet, v *model.SectionWithTime) graphql.Marshaler {
+func (ec *executionContext) marshalNSectionWithTime2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionWithTime(ctx context.Context, sel ast.SelectionSet, v *model.SectionWithTime) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11469,11 +11585,11 @@ func (ec *executionContext) marshalNSectionWithTime2ᚖgraphqlᚋgraphᚋmodel�
 	return ec._SectionWithTime(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNSingleBuildingEvents2ᚕᚖgraphqlᚋgraphᚋmodelᚐSingleBuildingEventsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SingleBuildingEvents) graphql.Marshaler {
+func (ec *executionContext) marshalNSingleBuildingEvents2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSingleBuildingEventsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SingleBuildingEvents) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNSingleBuildingEvents2ᚖgraphqlᚋgraphᚋmodelᚐSingleBuildingEvents(ctx, sel, v[i])
+		return ec.marshalNSingleBuildingEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSingleBuildingEvents(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -11485,7 +11601,7 @@ func (ec *executionContext) marshalNSingleBuildingEvents2ᚕᚖgraphqlᚋgraph�
 	return ret
 }
 
-func (ec *executionContext) marshalNSingleBuildingEvents2ᚖgraphqlᚋgraphᚋmodelᚐSingleBuildingEvents(ctx context.Context, sel ast.SelectionSet, v *model.SingleBuildingEvents) graphql.Marshaler {
+func (ec *executionContext) marshalNSingleBuildingEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSingleBuildingEvents(ctx context.Context, sel ast.SelectionSet, v *model.SingleBuildingEvents) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -11700,6 +11816,27 @@ func (ec *executionContext) marshalOAny2interface(ctx context.Context, sel ast.S
 	return res
 }
 
+func (ec *executionContext) marshalOAstraBuilding2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraBuilding(ctx context.Context, sel ast.SelectionSet, v *model.AstraBuilding) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AstraBuilding(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOAstraDayEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraDayEvents(ctx context.Context, sel ast.SelectionSet, v *model.AstraDayEvents) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AstraDayEvents(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOAstraRoom2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐAstraRoom(ctx context.Context, sel ast.SelectionSet, v *model.AstraRoom) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AstraRoom(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -11730,59 +11867,21 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOBuildingRooms2ᚕᚖgraphqlᚋgraphᚋmodelᚐBuildingRoomsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.BuildingRooms) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
-		fc := graphql.GetFieldContext(ctx)
-		fc.Result = &v[i]
-		return ec.marshalNBuildingRooms2ᚖgraphqlᚋgraphᚋmodelᚐBuildingRooms(ctx, sel, v[i])
-	})
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOCollectionRequirement2ᚖgraphqlᚋgraphᚋmodelᚐCollectionRequirement(ctx context.Context, sel ast.SelectionSet, v *model.CollectionRequirement) graphql.Marshaler {
+func (ec *executionContext) marshalOCollectionRequirement2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCollectionRequirement(ctx context.Context, sel ast.SelectionSet, v *model.CollectionRequirement) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._CollectionRequirement(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOCometCalendar2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CometCalendar) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
-		fc := graphql.GetFieldContext(ctx)
-		fc.Result = &v[i]
-		return ec.marshalNCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx, sel, v[i])
-	})
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOCometCalendar2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendar) graphql.Marshaler {
+func (ec *executionContext) marshalOCometCalendar2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendar(ctx context.Context, sel ast.SelectionSet, v *model.CometCalendar) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._CometCalendar(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx context.Context, v any) ([]*model.CometCalendarBuildingInput, error) {
+func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx context.Context, v any) ([]*model.CometCalendarBuildingInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -11792,7 +11891,7 @@ func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚕᚖgraphql�
 	res := make([]*model.CometCalendarBuildingInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOCometCalendarBuildingInput2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOCometCalendarBuildingInput2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -11800,7 +11899,7 @@ func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚕᚖgraphql�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx context.Context, v any) (*model.CometCalendarBuildingInput, error) {
+func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarBuildingInput(ctx context.Context, v any) (*model.CometCalendarBuildingInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -11808,7 +11907,7 @@ func (ec *executionContext) unmarshalOCometCalendarBuildingInput2ᚖgraphqlᚋgr
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOCometCalendarFilter2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarFilter(ctx context.Context, v any) (*model.CometCalendarFilter, error) {
+func (ec *executionContext) unmarshalOCometCalendarFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarFilter(ctx context.Context, v any) (*model.CometCalendarFilter, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -11816,7 +11915,7 @@ func (ec *executionContext) unmarshalOCometCalendarFilter2ᚖgraphqlᚋgraphᚋm
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx context.Context, v any) ([]*model.CometCalendarRoomInput, error) {
+func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx context.Context, v any) ([]*model.CometCalendarRoomInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -11826,7 +11925,7 @@ func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚕᚖgraphqlᚋgra
 	res := make([]*model.CometCalendarRoomInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOCometCalendarRoomInput2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOCometCalendarRoomInput2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -11834,7 +11933,7 @@ func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚕᚖgraphqlᚋgra
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚖgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx context.Context, v any) (*model.CometCalendarRoomInput, error) {
+func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCometCalendarRoomInput(ctx context.Context, v any) (*model.CometCalendarRoomInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -11842,33 +11941,14 @@ func (ec *executionContext) unmarshalOCometCalendarRoomInput2ᚖgraphqlᚋgraph�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOCourse2ᚕᚖgraphqlᚋgraphᚋmodelᚐCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Course) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
-		fc := graphql.GetFieldContext(ctx)
-		fc.Result = &v[i]
-		return ec.marshalNCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx, sel, v[i])
-	})
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOCourse2ᚖgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
+func (ec *executionContext) marshalOCourse2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v *model.Course) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Course(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOCourseFilter2ᚖgraphqlᚋgraphᚋmodelᚐCourseFilter(ctx context.Context, v any) (*model.CourseFilter, error) {
+func (ec *executionContext) unmarshalOCourseFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourseFilter(ctx context.Context, v any) (*model.CourseFilter, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -11894,7 +11974,7 @@ func (ec *executionContext) marshalODateTime2ᚖtimeᚐTime(ctx context.Context,
 	return res
 }
 
-func (ec *executionContext) unmarshalOEventInput2ᚕᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx context.Context, v any) ([]*model.EventInput, error) {
+func (ec *executionContext) unmarshalOEventInput2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEventInput(ctx context.Context, v any) ([]*model.EventInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -11904,7 +11984,7 @@ func (ec *executionContext) unmarshalOEventInput2ᚕᚖgraphqlᚋgraphᚋmodel�
 	res := make([]*model.EventInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOEventInput2ᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOEventInput2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEventInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -11912,12 +11992,19 @@ func (ec *executionContext) unmarshalOEventInput2ᚕᚖgraphqlᚋgraphᚋmodel�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOEventInput2ᚖgraphqlᚋgraphᚋmodelᚐEventInput(ctx context.Context, v any) (*model.EventInput, error) {
+func (ec *executionContext) unmarshalOEventInput2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEventInput(ctx context.Context, v any) (*model.EventInput, error) {
 	if v == nil {
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputEventInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOEventResult2githubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐEventResult(ctx context.Context, sel ast.SelectionSet, v model.EventResult) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._EventResult(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOFloat642ᚖfloat64(ctx context.Context, v any) (*float64, error) {
@@ -11992,51 +12079,21 @@ func (ec *executionContext) marshalOInt2ᚕint32ᚄ(ctx context.Context, sel ast
 	return ret
 }
 
-func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v any) (*int32, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalInt32(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.SelectionSet, v *int32) graphql.Marshaler {
+func (ec *executionContext) marshalOMazevoDayEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoDayEvents(ctx context.Context, sel ast.SelectionSet, v *model.MazevoDayEvents) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	_ = sel
-	_ = ctx
-	res := graphql.MarshalInt32(*v)
-	return res
+	return ec._MazevoDayEvents(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOProfessor2ᚕᚖgraphqlᚋgraphᚋmodelᚐProfessorᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Professor) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
-		fc := graphql.GetFieldContext(ctx)
-		fc.Result = &v[i]
-		return ec.marshalNProfessor2ᚖgraphqlᚋgraphᚋmodelᚐProfessor(ctx, sel, v[i])
-	})
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOProfessor2ᚖgraphqlᚋgraphᚋmodelᚐProfessor(ctx context.Context, sel ast.SelectionSet, v *model.Professor) graphql.Marshaler {
+func (ec *executionContext) marshalOProfessor2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessor(ctx context.Context, sel ast.SelectionSet, v *model.Professor) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Professor(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOProfessorFilter2ᚖgraphqlᚋgraphᚋmodelᚐProfessorFilter(ctx context.Context, v any) (*model.ProfessorFilter, error) {
+func (ec *executionContext) unmarshalOProfessorFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessorFilter(ctx context.Context, v any) (*model.ProfessorFilter, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -12044,52 +12101,14 @@ func (ec *executionContext) unmarshalOProfessorFilter2ᚖgraphqlᚋgraphᚋmodel
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalORoom2ᚕᚖgraphqlᚋgraphᚋmodelᚐRoomᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Room) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
-		fc := graphql.GetFieldContext(ctx)
-		fc.Result = &v[i]
-		return ec.marshalNRoom2ᚖgraphqlᚋgraphᚋmodelᚐRoom(ctx, sel, v[i])
-	})
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOSection2ᚕᚖgraphqlᚋgraphᚋmodelᚐSectionᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Section) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
-		fc := graphql.GetFieldContext(ctx)
-		fc.Result = &v[i]
-		return ec.marshalNSection2ᚖgraphqlᚋgraphᚋmodelᚐSection(ctx, sel, v[i])
-	})
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOSection2ᚖgraphqlᚋgraphᚋmodelᚐSection(ctx context.Context, sel ast.SelectionSet, v *model.Section) graphql.Marshaler {
+func (ec *executionContext) marshalOSection2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSection(ctx context.Context, sel ast.SelectionSet, v *model.Section) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Section(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOSectionFilter2ᚖgraphqlᚋgraphᚋmodelᚐSectionFilter(ctx context.Context, v any) (*model.SectionFilter, error) {
+func (ec *executionContext) unmarshalOSectionFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionFilter(ctx context.Context, v any) (*model.SectionFilter, error) {
 	if v == nil {
 		return nil, nil
 	}

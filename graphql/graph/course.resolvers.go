@@ -13,13 +13,12 @@ import (
 )
 
 // Courses is the resolver for the courses field.
-func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter, offset *int32) ([]*model.Course, error) {
+func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter, offset int32) ([]*model.Course, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	var courses []*model.Course
 	var dbCourses []*model.DBCourse
-	var err error
 
 	// Build the mongo query from the filter's struct
 	var courseQuery bson.M
@@ -33,7 +32,7 @@ func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter,
 		}
 	}
 	// Paginate the list of courses
-	paginate := options.Find().SetSkip(int64(*offset)).SetLimit(configs.GetEnvLimit())
+	paginate := options.Find().SetSkip(int64(offset)).SetLimit(configs.GetEnvLimit())
 
 	// Query from Database
 	cursor, err := r.CourseCollection.Find(timeoutCtx, courseQuery, paginate)
@@ -42,7 +41,6 @@ func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter,
 	}
 	defer cursor.Close(timeoutCtx)
 
-	// Parse the cursor from database to the course types
 	if err = cursor.All(timeoutCtx, &dbCourses); err != nil {
 		return nil, err
 	}
@@ -60,17 +58,14 @@ func (r *queryResolver) Course(ctx context.Context, id string) (*model.Course, e
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	var dbCourse model.DBCourse
-	var err error
-
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	err = r.CourseCollection.FindOne(
-		timeoutCtx, bson.M{"_id": objectId}).Decode(&dbCourse)
-	if err != nil {
+	var dbCourse model.DBCourse
+	result := r.CourseCollection.FindOne(timeoutCtx, bson.M{"_id": objectId})
+	if err = result.Decode(&dbCourse); err != nil {
 		return nil, err
 	}
 

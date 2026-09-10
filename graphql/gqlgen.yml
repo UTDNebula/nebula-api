@@ -163,6 +163,11 @@ models:
       - github.com/99designs/gqlgen/graphql.Any
   
   # Forcing field resolvers
+  Course:
+    fields:
+      sections:
+        resolver: true
+
   SectionWithTime:
     fields:
       section:

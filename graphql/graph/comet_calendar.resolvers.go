@@ -23,21 +23,13 @@ import (
 
 // CometCalendars is the resolver for the CometCalendars field.
 // CometCalendars is the resolver for the CometCalendars field.
-func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset *int32) ([]*model.CometCalendar, error) {
+func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset int32) ([]*model.CometCalendar, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	// Build query from filter explicitly. JSON will not work due to nested type conflicts
 	query := buildCometCalendarQuery(filter)
-
-	// Pagination
-	skip := int64(0)
-	if offset != nil {
-		skip = int64(*offset)
-	}
-
-	limit := configs.GetEnvLimit()
-	paginate := options.Find().SetSkip(skip).SetLimit(limit)
+	paginate := options.Find().SetSkip(int64(offset)).SetLimit(configs.GetEnvLimit())
 
 	// Query the correct collection
 	cursor, err := r.CometCalendarCollection.Find(timeoutCtx, query, paginate)

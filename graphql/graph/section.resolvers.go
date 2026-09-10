@@ -16,15 +16,12 @@ import (
 func (r *queryResolver) Sections(
 	ctx context.Context,
 	filter *model.SectionFilter,
-	offset *int32,
+	offset int32,
 ) ([]*model.Section, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	// graphql output
 	var sections []*model.Section
-
-	// mongo decoding target
 	var dbSections []*model.DBSection
 
 	// building mongo query from filter (nil filter --> empty query --> return all)
@@ -40,7 +37,7 @@ func (r *queryResolver) Sections(
 	}
 
 	// pagination logic
-	paginate := options.Find().SetSkip(int64(*offset)).SetLimit(configs.GetEnvLimit())
+	paginate := options.Find().SetSkip(int64(offset)).SetLimit(configs.GetEnvLimit())
 
 	// query database
 	cursor, err := r.SectionCollection.Find(timeoutCtx, sectionQuery, paginate)
@@ -54,7 +51,6 @@ func (r *queryResolver) Sections(
 		return nil, err
 	}
 
-	// Transform DB ----> GraphQL
 	for _, dbSection := range dbSections {
 		sections = append(sections, model.TransformSection(dbSection))
 	}
@@ -74,8 +70,8 @@ func (r *queryResolver) Section(ctx context.Context, id string) (*model.Section,
 
 	// decoding to a real value and not a nullptr
 	var dbSection model.DBSection
-	if err := r.SectionCollection.FindOne(
-		timeoutCtx, bson.M{"_id": objectId}).Decode(&dbSection); err != nil {
+	result := r.SectionCollection.FindOne(timeoutCtx, bson.M{"_id": objectId})
+	if err = result.Decode(&dbSection); err != nil {
 		return nil, err
 	}
 
