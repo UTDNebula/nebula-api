@@ -4,7 +4,7 @@ This file provides a brief overview of important directories and files.
 ```text
 nebula-api/
 ├── .github/              # Configuration for the GitHub repo. Used for GitHub workflows.
-├── dev-docs/             # Pages for developer wiki documentation.
+├── docs/                 # Pages for developer wiki documentation.
 ├── rest/                 # Directory for our RESTful API endpoints.
 │   ├── configs/          # Congfiguration to set up for endpoints.
 │   ├── controllers/      # Main part of API. Handles HTTP requests and responds to them.
