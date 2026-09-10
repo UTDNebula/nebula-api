@@ -77,3 +77,24 @@ func (r *queryResolver) Section(ctx context.Context, id string) (*model.Section,
 
 	return model.TransformSection(&dbSection), nil
 }
+
+func (r *sectionResolver) CourseReference(
+	ctx context.Context,
+	obj *model.Section,
+) (*model.Course, error) {
+	return r.Query().Course(ctx, obj.CourseReference.ID)
+}
+
+func (r *sectionResolver) Professors(ctx context.Context, obj *model.Section) ([]*model.Professor, error) {
+	professors := make([]*model.Professor, 0, len(obj.Professors))
+
+	for _, professorRef := range obj.Professors {
+		professor, err := r.Query().Professor(ctx, professorRef.ID)
+		if err != nil {
+			return nil, err
+		}
+		professors = append(professors, professor)
+	}
+
+	return professors, nil
+}

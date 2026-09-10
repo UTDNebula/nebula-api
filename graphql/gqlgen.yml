@@ -168,6 +168,18 @@ models:
       sections:
         resolver: true
 
+  Section:
+    fields:
+      course_reference:
+        resolver: true
+      professors:
+        resolver: true
+
+  Professor:
+    fields:
+      sections:
+        resolver: true
+
   SectionWithTime:
     fields:
       section:

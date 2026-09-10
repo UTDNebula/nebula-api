@@ -30,7 +30,9 @@ type Config = graphql.Config[ResolverRoot, DirectiveRoot, ComplexityRoot]
 
 type ResolverRoot interface {
 	Course() CourseResolver
+	Professor() ProfessorResolver
 	Query() QueryResolver
+	Section() SectionResolver
 	SectionWithTime() SectionWithTimeResolver
 }
 
@@ -276,6 +278,9 @@ type ComplexityRoot struct {
 type CourseResolver interface {
 	Sections(ctx context.Context, obj *model.Course) ([]*model.Section, error)
 }
+type ProfessorResolver interface {
+	Sections(ctx context.Context, obj *model.Professor) ([]*model.Section, error)
+}
 type QueryResolver interface {
 	Courses(ctx context.Context, filter *model.CourseFilter, offset int32) ([]*model.Course, error)
 	Course(ctx context.Context, id string) (*model.Course, error)
@@ -291,6 +296,11 @@ type QueryResolver interface {
 	AstraEventsByBuilding(ctx context.Context, date string, building string) (*model.AstraBuilding, error)
 	AstraEventsByRoom(ctx context.Context, date string, building string, room string) (*model.AstraRoom, error)
 	MazevoEvents(ctx context.Context, date string) (*model.MazevoDayEvents, error)
+}
+type SectionResolver interface {
+	CourseReference(ctx context.Context, obj *model.Section) (*model.Course, error)
+
+	Professors(ctx context.Context, obj *model.Section) ([]*model.Professor, error)
 }
 type SectionWithTimeResolver interface {
 	Section(ctx context.Context, obj *model.SectionWithTime) (*model.Section, error)
@@ -5098,10 +5108,10 @@ func (ec *executionContext) _Professor_sections(ctx context.Context, field graph
 		field,
 		ec.fieldContext_Professor_sections,
 		func(ctx context.Context) (any, error) {
-			return obj.Sections, nil
+			return ec.Resolvers.Professor().Sections(ctx, obj)
 		},
 		nil,
-		ec.marshalNID2ᚕstringᚄ,
+		ec.marshalNSection2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionᚄ,
 		true,
 		true,
 	)
@@ -5111,10 +5121,40 @@ func (ec *executionContext) fieldContext_Professor_sections(_ context.Context, f
 	fc = &graphql.FieldContext{
 		Object:     "Professor",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_Section__id(ctx, field)
+			case "section_number":
+				return ec.fieldContext_Section_section_number(ctx, field)
+			case "course_reference":
+				return ec.fieldContext_Section_course_reference(ctx, field)
+			case "section_corequisites":
+				return ec.fieldContext_Section_section_corequisites(ctx, field)
+			case "academic_session":
+				return ec.fieldContext_Section_academic_session(ctx, field)
+			case "professors":
+				return ec.fieldContext_Section_professors(ctx, field)
+			case "teaching_assistants":
+				return ec.fieldContext_Section_teaching_assistants(ctx, field)
+			case "internal_class_number":
+				return ec.fieldContext_Section_internal_class_number(ctx, field)
+			case "instruction_mode":
+				return ec.fieldContext_Section_instruction_mode(ctx, field)
+			case "meetings":
+				return ec.fieldContext_Section_meetings(ctx, field)
+			case "core_flags":
+				return ec.fieldContext_Section_core_flags(ctx, field)
+			case "syllabus_uri":
+				return ec.fieldContext_Section_syllabus_uri(ctx, field)
+			case "grade_distribution":
+				return ec.fieldContext_Section_grade_distribution(ctx, field)
+			case "attributes":
+				return ec.fieldContext_Section_attributes(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Section", field.Name)
 		},
 	}
 	return fc, nil
@@ -6225,10 +6265,10 @@ func (ec *executionContext) _Section_course_reference(ctx context.Context, field
 		field,
 		ec.fieldContext_Section_course_reference,
 		func(ctx context.Context) (any, error) {
-			return obj.CourseReference, nil
+			return ec.Resolvers.Section().CourseReference(ctx, obj)
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNCourse2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourse,
 		true,
 		true,
 	)
@@ -6238,10 +6278,54 @@ func (ec *executionContext) fieldContext_Section_course_reference(_ context.Cont
 	fc = &graphql.FieldContext{
 		Object:     "Section",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_Course__id(ctx, field)
+			case "subject_prefix":
+				return ec.fieldContext_Course_subject_prefix(ctx, field)
+			case "course_number":
+				return ec.fieldContext_Course_course_number(ctx, field)
+			case "title":
+				return ec.fieldContext_Course_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Course_description(ctx, field)
+			case "enrollment_reqs":
+				return ec.fieldContext_Course_enrollment_reqs(ctx, field)
+			case "school":
+				return ec.fieldContext_Course_school(ctx, field)
+			case "credit_hours":
+				return ec.fieldContext_Course_credit_hours(ctx, field)
+			case "class_level":
+				return ec.fieldContext_Course_class_level(ctx, field)
+			case "activity_type":
+				return ec.fieldContext_Course_activity_type(ctx, field)
+			case "grading":
+				return ec.fieldContext_Course_grading(ctx, field)
+			case "internal_course_number":
+				return ec.fieldContext_Course_internal_course_number(ctx, field)
+			case "prerequisites":
+				return ec.fieldContext_Course_prerequisites(ctx, field)
+			case "corequisites":
+				return ec.fieldContext_Course_corequisites(ctx, field)
+			case "co_or_pre_requisites":
+				return ec.fieldContext_Course_co_or_pre_requisites(ctx, field)
+			case "sections":
+				return ec.fieldContext_Course_sections(ctx, field)
+			case "lecture_contact_hours":
+				return ec.fieldContext_Course_lecture_contact_hours(ctx, field)
+			case "laboratory_contact_hours":
+				return ec.fieldContext_Course_laboratory_contact_hours(ctx, field)
+			case "offering_frequency":
+				return ec.fieldContext_Course_offering_frequency(ctx, field)
+			case "catalog_year":
+				return ec.fieldContext_Course_catalog_year(ctx, field)
+			case "attributes":
+				return ec.fieldContext_Course_attributes(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Course", field.Name)
 		},
 	}
 	return fc, nil
@@ -6330,10 +6414,10 @@ func (ec *executionContext) _Section_professors(ctx context.Context, field graph
 		field,
 		ec.fieldContext_Section_professors,
 		func(ctx context.Context) (any, error) {
-			return obj.Professors, nil
+			return ec.Resolvers.Section().Professors(ctx, obj)
 		},
 		nil,
-		ec.marshalNID2ᚕstringᚄ,
+		ec.marshalNProfessor2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessorᚄ,
 		true,
 		true,
 	)
@@ -6343,10 +6427,34 @@ func (ec *executionContext) fieldContext_Section_professors(_ context.Context, f
 	fc = &graphql.FieldContext{
 		Object:     "Section",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_Professor__id(ctx, field)
+			case "first_name":
+				return ec.fieldContext_Professor_first_name(ctx, field)
+			case "last_name":
+				return ec.fieldContext_Professor_last_name(ctx, field)
+			case "titles":
+				return ec.fieldContext_Professor_titles(ctx, field)
+			case "email":
+				return ec.fieldContext_Professor_email(ctx, field)
+			case "phone_number":
+				return ec.fieldContext_Professor_phone_number(ctx, field)
+			case "office":
+				return ec.fieldContext_Professor_office(ctx, field)
+			case "profile_uri":
+				return ec.fieldContext_Professor_profile_uri(ctx, field)
+			case "image_uri":
+				return ec.fieldContext_Professor_image_uri(ctx, field)
+			case "office_hours":
+				return ec.fieldContext_Professor_office_hours(ctx, field)
+			case "sections":
+				return ec.fieldContext_Professor_sections(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Professor", field.Name)
 		},
 	}
 	return fc, nil
@@ -9902,55 +10010,86 @@ func (ec *executionContext) _Professor(ctx context.Context, sel ast.SelectionSet
 		case "_id":
 			out.Values[i] = ec._Professor__id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "first_name":
 			out.Values[i] = ec._Professor_first_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "last_name":
 			out.Values[i] = ec._Professor_last_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "titles":
 			out.Values[i] = ec._Professor_titles(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "email":
 			out.Values[i] = ec._Professor_email(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "phone_number":
 			out.Values[i] = ec._Professor_phone_number(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "office":
 			out.Values[i] = ec._Professor_office(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "profile_uri":
 			out.Values[i] = ec._Professor_profile_uri(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "image_uri":
 			out.Values[i] = ec._Professor_image_uri(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "office_hours":
 			out.Values[i] = ec._Professor_office_hours(ctx, field, obj)
 		case "sections":
-			out.Values[i] = ec._Professor_sections(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Professor_sections(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10407,59 +10546,121 @@ func (ec *executionContext) _Section(ctx context.Context, sel ast.SelectionSet, 
 		case "_id":
 			out.Values[i] = ec._Section__id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "section_number":
 			out.Values[i] = ec._Section_section_number(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "course_reference":
-			out.Values[i] = ec._Section_course_reference(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Section_course_reference(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "section_corequisites":
 			out.Values[i] = ec._Section_section_corequisites(ctx, field, obj)
 		case "academic_session":
 			out.Values[i] = ec._Section_academic_session(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "professors":
-			out.Values[i] = ec._Section_professors(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Section_professors(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "teaching_assistants":
 			out.Values[i] = ec._Section_teaching_assistants(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "internal_class_number":
 			out.Values[i] = ec._Section_internal_class_number(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "instruction_mode":
 			out.Values[i] = ec._Section_instruction_mode(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "meetings":
 			out.Values[i] = ec._Section_meetings(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "core_flags":
 			out.Values[i] = ec._Section_core_flags(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "syllabus_uri":
 			out.Values[i] = ec._Section_syllabus_uri(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "grade_distribution":
 			out.Values[i] = ec._Section_grade_distribution(ctx, field, obj)
@@ -11181,6 +11382,10 @@ func (ec *executionContext) marshalNCometCalendarRoom2ᚖgithubᚗcomᚋUTDNebul
 	return ec._CometCalendarRoom(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNCourse2githubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourse(ctx context.Context, sel ast.SelectionSet, v model.Course) graphql.Marshaler {
+	return ec._Course(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNCourse2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Course) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
@@ -11279,36 +11484,6 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
-	var vSlice []any
-	vSlice = graphql.CoerceList(v)
-	var err error
-	res := make([]string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {

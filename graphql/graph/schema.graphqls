@@ -61,7 +61,7 @@ type Professor {
 	profile_uri: String!
 	image_uri: String!
 	office_hours: Any
-	sections: [ID!]!
+	sections: [Section!]!
 }
 input ProfessorFilter {
 	email: String @goTag(key: "bson", value: "email,omitempty")
@@ -98,10 +98,10 @@ type Meeting {
 type Section {
 	_id: ID!
 	section_number: String!
-	course_reference: ID!
+	course_reference: Course!
 	section_corequisites: CollectionRequirement
 	academic_session: AcademicSession!
-	professors: [ID!]!
+	professors: [Professor!]!
 	teaching_assistants: [Assistant!]!
 	internal_class_number: String!
 	instruction_mode: String!

@@ -70,3 +70,18 @@ func (r *queryResolver) Professor(ctx context.Context, id string) (*model.Profes
 	return model.TransformProfessor(dbProfessor), err
 
 }
+
+// Sections is the resolver for the section field referenced from professor
+func (r *professorResolver) Sections(ctx context.Context, obj *model.Professor) ([]*model.Section, error) {
+	sections := make([]*model.Section, 0, len(obj.Sections))
+
+	for _, sectionRef := range obj.Sections {
+		section, err := r.Query().Section(ctx, sectionRef.ID)
+		if err != nil {
+			return nil, err
+		}
+		sections = append(sections, section)
+	}
+
+	return sections, nil
+}

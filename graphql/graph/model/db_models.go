@@ -127,6 +127,11 @@ func TransformProfessor(dbProfessor *DBProfessor) *Professor {
 		return nil
 	}
 
+	sections := make([]*Section, len(dbProfessor.Sections))
+	for i, sectionID := range dbProfessor.Sections {
+		sections[i] = &Section{ID: sectionID}
+	}
+
 	return &Professor{
 		dbProfessor.ID,
 		dbProfessor.FirstName,
@@ -138,7 +143,7 @@ func TransformProfessor(dbProfessor *DBProfessor) *Professor {
 		dbProfessor.ProfileURI,
 		dbProfessor.ImageURI,
 		dbProfessor.OfficeHours,
-		dbProfessor.Sections,
+		sections,
 	}
 }
 
@@ -244,6 +249,17 @@ func TransformSection(dbSection *DBSection) *Section {
 		return nil
 	}
 
+	courseRef := &Course{
+		ID: dbSection.CourseReference,
+	}
+
+	professors := make([]*Professor, len(dbSection.Professors))
+	for i, professorID := range dbSection.Professors {
+		professors[i] = &Professor{
+			ID: professorID,
+		}
+	}
+
 	assistants := make([]*Assistant, len(dbSection.TeachingAssistants))
 	for i := range dbSection.TeachingAssistants {
 		assistants[i] = transformAssistant(&dbSection.TeachingAssistants[i])
@@ -257,10 +273,10 @@ func TransformSection(dbSection *DBSection) *Section {
 	return &Section{
 		ID:                  dbSection.ID,
 		SectionNumber:       dbSection.SectionNumber,
-		CourseReference:     dbSection.CourseReference,
+		CourseReference:     courseRef,
 		SectionCorequisites: transformColReq(dbSection.SectionCorequisites),
 		AcademicSession:     transformAcademicSession(&dbSection.AcademicSession),
-		Professors:          dbSection.Professors,
+		Professors:          professors,
 		TeachingAssistants:  assistants,
 		InternalClassNumber: dbSection.InternalClassNumber,
 		InstructionMode:     dbSection.InstructionMode,

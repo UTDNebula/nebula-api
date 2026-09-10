@@ -219,17 +219,17 @@ type Office struct {
 }
 
 type Professor struct {
-	ID          string   `json:"_id"`
-	FirstName   string   `json:"first_name"`
-	LastName    string   `json:"last_name"`
-	Titles      []string `json:"titles"`
-	Email       string   `json:"email"`
-	PhoneNumber string   `json:"phone_number"`
-	Office      *Office  `json:"office"`
-	ProfileURI  string   `json:"profile_uri"`
-	ImageURI    string   `json:"image_uri"`
-	OfficeHours any      `json:"office_hours,omitempty"`
-	Sections    []string `json:"sections"`
+	ID          string     `json:"_id"`
+	FirstName   string     `json:"first_name"`
+	LastName    string     `json:"last_name"`
+	Titles      []string   `json:"titles"`
+	Email       string     `json:"email"`
+	PhoneNumber string     `json:"phone_number"`
+	Office      *Office    `json:"office"`
+	ProfileURI  string     `json:"profile_uri"`
+	ImageURI    string     `json:"image_uri"`
+	OfficeHours any        `json:"office_hours,omitempty"`
+	Sections    []*Section `json:"sections"`
 }
 
 type ProfessorFilter struct {
@@ -258,10 +258,10 @@ func (RoomEvents) IsEventResult() {}
 type Section struct {
 	ID                  string                 `json:"_id"`
 	SectionNumber       string                 `json:"section_number"`
-	CourseReference     string                 `json:"course_reference"`
+	CourseReference     *Course                `json:"course_reference"`
 	SectionCorequisites *CollectionRequirement `json:"section_corequisites,omitempty"`
 	AcademicSession     *AcademicSession       `json:"academic_session"`
-	Professors          []string               `json:"professors"`
+	Professors          []*Professor           `json:"professors"`
 	TeachingAssistants  []*Assistant           `json:"teaching_assistants"`
 	InternalClassNumber string                 `json:"internal_class_number"`
 	InstructionMode     string                 `json:"instruction_mode"`
