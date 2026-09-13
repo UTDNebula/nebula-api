@@ -67,6 +67,8 @@ jobs:
           else
             echo "Nothing to test"
           fi
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
       - name: Builds
         shell: bash
@@ -114,6 +116,8 @@ jobs:
           else
             echo "Nothing to test"
           fi
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
       - name: Builds
         shell: bash
