@@ -58,8 +58,13 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          log_test() { echo -e "\033[34m$1\033[0m" }
-          log_warn() { echo -e "\033[33m$1\033[0m" }
+          log_test() {
+            printf '\033[34m%s\033[0m\n' "$1"
+          }
+
+          log_warn() {
+            printf '\033[33m%s\033[0m\n' "$1"
+          }
 
           if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
             log_test "Unit test the REST server"
@@ -79,7 +84,9 @@ jobs:
       - name: Builds
         shell: bash
         run: |
-          log_build() { echo -e "\033[35m$1\033[0m" }
+          log_build() {
+            printf '\033[35m%s\033[0m\n' "$1"
+          }
 
           # If changes are in rest, then build rest
           # If changes are in graphql, then build graphql
