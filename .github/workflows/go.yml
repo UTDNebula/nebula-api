@@ -25,15 +25,18 @@ jobs:
         id: filter
         uses: dorny/paths-filter@v3
         with:
+          base: develop
           filters: |
             graphql:
               - 'graphql/**'
             rest:
               - 'rest/**'
-              - 'update-gateway.sh'
-              - 'update-gateway.bat'
             shared:
               - 'shared/**'
+              - 'go.mod'
+              - 'go.sum'
+              - 'Makefile'
+              - 'build.bat'
 
   build_ubuntu:
     name: Build Ubuntu
@@ -58,48 +61,59 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          log_test() {
-            printf '\033[34m%s\033[0m\n' "$1"
-          }
+          log_test() { printf '\033[34m%s\033[0m\n' "$1"; }
+          log_warn() { printf '\033[33m%s\033[0m\n' "$1"; }
 
-          log_warn() {
-            printf '\033[33m%s\033[0m\n' "$1"
-          }
+          if [[ "${{ needs.detect_changes.outputs.shared }}" == "true" ]]; then
+            log_test "Testing all modules"
+            make test
+            exit 0
+          fi
 
-          if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
-            log_test "Unit test the REST server"
+          if [[ "${{ needs.detect_changes.outputs.rest }}" == "true" ]]; then
+            log_test "Testing the REST server"
             make test-rest
-          elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
-            log_test "Unit test the GraphQL server"
-            make test-graphql
-          elif [[ "${{ needs.detect_changes.outputs.shared }}" = "true" ]]; then
-            log_test "Unit test the shared module"
-            make test-shared
-          else
-            log_warn "Nothing to test"
+          fi
+          if [[ "${{ needs.detect_changes.outputs.graphql }}" == "true" ]]; then
+            log_test "Testing the GraphQL server"
+            make test-graph
+          fi
+
+          if [[
+            "${{ needs.detect_changes.outputs.rest }}" != "true" &&
+            "${{ needs.detect_changes.outputs.graphql }}" != "true"
+          ]]; then
+            log_warn "Skipping tests"
           fi
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
-      - name: Builds
+      - name: Build
         shell: bash
         run: |
-          log_build() {
-            printf '\033[35m%s\033[0m\n' "$1"
-          }
+          log_build() { printf '\033[35m%s\033[0m\n' "$1"; }
+          log_warn() { printf '\033[33m%s\033[0m\n' "$1"; }
 
-          # If changes are in rest, then build rest
-          # If changes are in graphql, then build graphql
-          # If changes are in any other parts, then build both servers
-          if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
-            log_build "Build-test the REST server"
-            make build-rest
-          elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
-            log_build "Build-test the GraphQL server"
-            make build-graph
-          else
-            log_build "Build-test REST and GraphQL server"
+          if [[ "${{ needs.detect_changes.outputs.shared }}" == "true" ]]; then
+            log_build "Building REST and GraphQL"
             make build
+            exit 0
+          fi
+
+          if [[ "${{ needs.detect_changes.outputs.rest }}" == "true" ]]; then
+            log_build "Building REST server"
+            make build-rest
+          fi
+          if [[ "${{ needs.detect_changes.outputs.graphql }}" == "true" ]]; then
+            log_build "Building GraphQL server"
+            make build-graph
+          fi
+
+          if [[
+            "${{ needs.detect_changes.outputs.rest }}" != "true" &&
+            "${{ needs.detect_changes.outputs.graphql }}" != "true"
+          ]]; then
+            log_warn "Skipping builds"
           fi
 
   build_windows:
@@ -126,57 +140,70 @@ jobs:
         shell: pwsh
         run: |
           function Write-TestLog {
-            param(
-              [string]$Message
-            )
+            param([string]$Message)
             Write-Host $Message -ForegroundColor Cyan
           }
 
           function Write-WarnLog {
-            param(
-              [string]$Message
-            )
+            param([string]$Message)
             Write-Host $Message -ForegroundColor Yellow
           }
 
-          # Depending on changes are in Rest or Graphql server, only test that server
+          if ("${{ needs.detect_changes.outputs.shared }}" -eq "true") {
+            Write-TestLog "Testing all modules"
+            .\build.bat test
+            exit 0
+          }
+
           if ("${{ needs.detect_changes.outputs.rest }}" -eq "true") {
-            Write-TestLog "Unit test the REST server"
+            Write-TestLog "Testing the REST server"
             .\build.bat test-rest
           }
-          elseif ("${{ needs.detect_changes.outputs.graphql }}" -eq "true") {
-            Write-TestLog "Unit test the GraphQL server"
-            .\build.bat test-graphql
+          if ("${{ needs.detect_changes.outputs.graphql }}" -eq "true") {
+            Write-TestLog "Testing the GraphQL server"
+            .\build.bat test-graph
           }
-          elseif ("${{ needs.detect_changes.outputs.shared }}" -eq "true") {
-            Write-TestLog "Unit test the shared module"
-            .\build.bat test-shared
-          }
-          else {
-            Write-WarnLog "Nothing to test"
+
+          if (
+            "${{ needs.detect_changes.outputs.rest }}" -ne "true" -and
+            "${{ needs.detect_changes.outputs.graphql }}" -ne "true"
+          ) {
+            Write-WarnLog "Skipping tests"
           }
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
-      - name: Builds
+      - name: Build
         shell: pwsh
         run: |
           function Write-BuildLog {
-            param(
-              [string]$Message
-            )
+            param([string]$Message)
             Write-Host $Message -ForegroundColor Magenta
           }
 
+          function Write-WarnLog {
+            param([string]$Message)
+            Write-Host $Message -ForegroundColor Yellow
+          }
+
+          if ("${{ needs.detect_changes.outputs.shared }}" -eq "true") {
+            Write-BuildLog "Building REST and GraphQL"
+            .\build.bat build
+            exit 0
+          }
+
           if ("${{ needs.detect_changes.outputs.rest }}" -eq "true") {
-            Write-BuildLog "Build-test the REST server"
+            Write-BuildLog "Building REST server"
             .\build.bat build-rest
           }
-          elseif ("${{ needs.detect_changes.outputs.graphql }}" -eq "true") {
-            Write-BuildLog "Build-test the GraphQL server"
+          if ("${{ needs.detect_changes.outputs.graphql }}" -eq "true") {
+            Write-BuildLog "Building GraphQL server"
             .\build.bat build-graph
           }
-          else {
-            Write-BuildLog "Build-test REST and GraphQL server"
-            .\build.bat build
+
+          if (
+            "${{ needs.detect_changes.outputs.rest }}" -ne "true" -and
+            "${{ needs.detect_changes.outputs.graphql }}" -ne "true"
+          ) {
+            Write-WarnLog "Skipping build"
           }

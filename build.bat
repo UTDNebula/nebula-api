@@ -1,21 +1,23 @@
 @echo off
+
 setlocal enabledelayedexpansion
 
 ::vars
 set REST_EXEC_NAME=rest-api.exe
-set GRAPH_EXEC_NAME=go-graph.exe
+set GRAPH_EXEC_NAME=graph-api.exe
 
 ::param jump
 if "%1"=="" goto all
 if "%1"=="all" goto all
 if "%1"=="setup" goto setup
+if "%1"=="format" goto format
 if "%1"=="docs" goto docs
 if "%1"=="doc" goto docs
 if "%1"=="checks" goto checks
 if "%1"=="check" goto checks
 if "%1"=="test" goto test
 if "%1"=="tests" goto test
-if "%1"=="test-graphql" goto test-graphql
+if "%1"=="test-graph" goto test-graph
 if "%1"=="test-rest" goto test-rest
 if "%1"=="test-shared" goto test-shared
 if "%1"=="build" goto build
@@ -25,7 +27,7 @@ if "%1"=="generate" goto generate
 if "%1"=="clean" goto clean
 
 echo Unknown target: %1
-echo Available targets: setup, docs, check, test, test-graphql, test-rest, test-shared, generate, build, build-rest, build-graph, clean, all
+echo Available targets: setup, format, docs, check, test, test-graph, test-rest, test-shared, generate, build, build-rest, build-graph, clean, all
 exit /b 1
 
 :all
@@ -51,6 +53,18 @@ echo Setup done!
 echo.
 exit /b 0
 
+:format
+echo Formatting...
+go mod tidy
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+gofmt -w .
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+goimports -w .
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+echo Formatting done!
+echo.
+exit /b 0
+
 :docs
 echo Generating docs...
 swag fmt -d rest
@@ -65,14 +79,22 @@ exit /b 0
 echo Performing checks...
 go mod tidy
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+git diff --exit-code -- go.mod go.sum
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 go vet ./...
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 staticcheck ./...
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
-gofmt -w .
-if ERRORLEVEL 1 exit /b %ERRORLEVEL%
-goimports -w .
-if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+set "GOFMT_FILES="
+for /f "delims=" %%F in ('gofmt -l .') do (
+    set "GOFMT_FILES=1"
+)
+if defined GOFMT_FILES exit /b 1
+set "GOIMPORTS_FILES="
+for /f "delims=" %%F in ('goimports -l .') do (
+    set "GOIMPORTS_FILES=1"
+)
+if defined GOIMPORTS_FILES exit /b 1
 echo Checks done!
 echo.
 exit /b 0
@@ -83,14 +105,13 @@ call :test-shared
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 call :test-rest
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
-call :test-graphql
+call :test-graph
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 echo Testing complete!
 echo.
 exit /b 0
 
-:test-graphql
-echo Testing GraphQL...
+:test-graph
 go test ./graphql/... -count=1
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 echo GraphQL testing complete!
