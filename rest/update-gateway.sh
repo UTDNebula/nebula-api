@@ -4,14 +4,10 @@
 set -e
 
 # Locate swagger.yaml spec
-SPEC_PATH="./rest/docs/swagger.yaml"
+SPEC_PATH="./docs/swagger.yaml"
 if [ ! -f "$SPEC_PATH" ]; then
-  if [ -f "./docs/swagger.yaml" ]; then
-    SPEC_PATH="./docs/swagger.yaml"
-  else
-    echo "ERROR! Could not find config file at path './rest/docs/swagger.yaml' or './docs/swagger.yaml'!"
-    exit 1
-  fi
+  echo "ERROR! Could not find config file at path './docs/swagger.yaml'!"
+  exit 1
 fi
 
 # Determine the current git branch

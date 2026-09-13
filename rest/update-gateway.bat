@@ -2,14 +2,10 @@
 :: GCP sadly doesn't allow us to update the yaml config of an existing gateway config or do direct replacement of an existing config
 :: instead, we make a temp config with the new yaml, deploy it, delete the original config, make a new one with the new yaml, migrate to that, and then delete the temp configs
 
-set SPEC_PATH=.\rest\docs\swagger.yaml
+set SPEC_PATH=.\docs\swagger.yaml
 IF NOT EXIST %SPEC_PATH% (
-	IF EXIST .\docs\swagger.yaml (
-		set SPEC_PATH=.\docs\swagger.yaml
-	) ELSE (
-		echo ERROR! Could not find config file at path ".\rest\docs\swagger.yaml" or ".\docs\swagger.yaml"!
-		exit /B 1
-	)
+	echo ERROR! Could not find config file at path ".\docs\swagger.yaml"!
+	exit /B 1
 )
 
 :: update prod or dev config depending on branch
