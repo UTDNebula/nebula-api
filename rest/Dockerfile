@@ -7,6 +7,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./rest ./rest
+COPY .shared ./shared
 
 RUN CGO_ENABLED=0 go build -v -o /build/rest-api ./rest
 

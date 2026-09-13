@@ -11,53 +11,120 @@ on:
   workflow_dispatch:
 
 jobs:
+  detect_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      graphql: ${{ steps.filter.outputs.graphql }}
+      rest: ${{ steps.filter.outputs.rest }}
+      shared: ${{ steps.filter.outputs.shared }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Detect paths of changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            graphql:
+              - 'graphql/**'
+            rest:
+              - 'rest/**'
+              - 'update-gateway.sh'
+              - 'update-gateway.bat'
+            shared:
+              - 'shared/**'
 
   build_ubuntu:
+    name: Build Ubuntu
+    needs: detect_changes
     runs-on: ubuntu-latest
     steps:
-    
-    - name: Checkout
-      uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
 
-    - name: Set up Go
-      uses: actions/setup-go@v6
-      with:
-        go-version: '1.26'
-        cache-dependency-path: "**/go.sum"
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+          cache-dependency-path: "**/go.sum"
 
-    - name: Setup
-      run: make setup
+      - name: Setup
+        run: make setup
 
-    - name: Check
-      run: make check
+      - name: Check
+        run: make check
 
-    - name: Test
-      run: make test
+      - name: Test
+        shell: bash
+        run: |
+          if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
+            make test-rest
+          elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
+            make test-graphql
+          elif [[ "${{ needs.detect_changes.outputs.shared }}" = "true" ]]; then
+            make test-shared
+          else
+            echo "Nothing to test"
+          fi
 
-    - name: Build
-      run: make build
+      - name: Builds
+        shell: bash
+        run: |
+          # If changes are in rest, then build rest
+          # If changes are in graphql, then build graphql
+          # If changes are in any other parts, then build both servers
+          if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
+            make build-rest
+          elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
+            make build-graph
+          else
+            make build
+          fi
 
   build_windows:
+    name: Build Windows
+    needs: detect_changes
     runs-on: windows-latest
     steps:
-    
-    - name: Checkout
-      uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
 
-    - name: Set up Go
-      uses: actions/setup-go@v6
-      with:
-        go-version: '1.26'
-        cache-dependency-path: "**\\go.sum"
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+          cache-dependency-path: "**\\go.sum"
 
-    - name: Setup
-      run: .\build.bat setup
+      - name: Setup
+        run: .\build.bat setup
 
-    - name: Check
-      run: .\build.bat checks
+      - name: Check
+        run: .\build.bat checks
 
-    - name: Test
-      run: .\build.bat test
+      - name: Test
+        shell: bash
+        run: |
+          if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
+            .\build.bat test-rest
+          elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
+            .\build.bat test-graphql
+          elif [[ "${{ needs.detect_changes.outputs.shared }}" = "true" ]]; then
+            .\build.bat test-shared
+          else
+            echo "Nothing to test"
+          fi
 
-    - name: Build
-      run: .\build.bat build
+      - name: Builds
+        shell: bash
+        run: |
+          # If changes are in rest, then build rest
+          # If changes are in graphql, then build graphql
+          # If changes are in any other parts, then build both servers
+          if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
+            .\build.bat build-rest
+          elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
+            .\build.bat build-graph
+          else
+            .\build.bat build
+          fi

@@ -10,8 +10,6 @@ GRAPH_EXEC_NAME?=graph-api
 GRAPH_REGISTRY?=localhost:5001
 GRAPH_BASE_TAG=$(GRAPH_REGISTRY)/utdnebula/graphql/graphql-api
 
-.PHONY: all setup check test docs docs-rest build build-rest clean docker docker-rest
-
 all: check test build
 
 setup:
@@ -26,8 +24,16 @@ check:
 	gofmt -w .
 	goimports -w .
 
-test:
-	go test ./... -count=1
+test-graph:
+	go test ./graphql/... -count=1
+
+test-rest:
+	go test ./rest/... -count=1
+
+test-shared:
+	go test ./shared/... -count=1
+
+test: test-shared test-rest test-graph
 
 docs-rest:
 	swag fmt -d rest
@@ -41,19 +47,23 @@ build-rest: docs-rest
 build-graph:
 	go build -o $(GRAPH_EXEC_NAME) ./graphql
 
+build: build-rest build-graph
+
 clean-rest:
 	rm -f $(REST_EXEC_NAME) rest/$(REST_EXEC_NAME) $(REST_EXEC_NAME).exe rest/$(REST_EXEC_NAME).exe
 
 clean-graph:
 	rm -f $(GRAPH_EXEC_NAME) graphql/$(GRAPH_EXEC_NAME) $(GRAPH_EXEC_NAME).exe graphql/$(GRAPH_EXEC_NAME).exe
 
-clean:
-	clean-rest
-	clean-graph
+clean: clean-rest clean-graph
 
 docker-rest:
-	$(DOCKER_RUNNER) build -f rest/Dockerfile -t $(BASE_TAG):$(RELEASE_TAG) .
-	$(DOCKER_RUNNER) tag $(BASE_TAG):$(RELEASE_TAG) $(BASE_TAG):latest
+	$(DOCKER_RUNNER) build -f rest/Dockerfile -t $(REST_BASE_TAG):$(RELEASE_TAG) .
+	$(DOCKER_RUNNER) tag $(REST_BASE_TAG):$(RELEASE_TAG) $(REST_BASE_TAG):latest
 
-docker: docker-rest
+docker-graph:
+	$(DOCKER_RUNNER) build -f graphql/Dockerfile -t $(GRAPH_BASE_TAG):$(RELEASE_TAG) .
+	$(DOCKER_RUNNER) tag $(GRAPH_BASE_TAG):$(RELEASE_TAG) $(GRAPH_BASE_TAG):latest
+
+docker: docker-rest docker-graph
 
