@@ -58,14 +58,20 @@ jobs:
       - name: Test
         shell: bash
         run: |
+          log_test() { echo -e "\033[34m$1\033[0m" }
+          log_warn() { echo -e "\033[33m$1\033[0m" }
+
           if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
+            log_test "Unit test the REST server"
             make test-rest
           elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
+            log_test "Unit test the GraphQL server"
             make test-graphql
           elif [[ "${{ needs.detect_changes.outputs.shared }}" = "true" ]]; then
+            log_test "Unit test the shared module"
             make test-shared
           else
-            echo "Nothing to test"
+            log_warn "Nothing to test"
           fi
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
@@ -73,14 +79,19 @@ jobs:
       - name: Builds
         shell: bash
         run: |
+          log_build() { echo -e "\033[35m$1\033[0m" }
+
           # If changes are in rest, then build rest
           # If changes are in graphql, then build graphql
           # If changes are in any other parts, then build both servers
           if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
+            log_build "Build-test the REST server"
             make build-rest
           elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
+            log_build "Build-test the GraphQL server"
             make build-graph
           else
+            log_build "Build-test REST and GraphQL server"
             make build
           fi
 
@@ -105,30 +116,60 @@ jobs:
         run: .\build.bat checks
 
       - name: Test
-        shell: bash
+        shell: pwsh
         run: |
-          if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
+          function Write-TestLog {
+            param(
+              [string]$Message
+            )
+            Write-Host $Message -ForegroundColor Cyan
+          }
+
+          function Write-WarnLog {
+            param(
+              [string]$Message
+            )
+            Write-Host $Message -ForegroundColor Yellow
+          }
+
+          # Depending on changes are in Rest or Graphql server, only test that server
+          if ("${{ needs.detect_changes.outputs.rest }}" -eq "true") {
+            Write-TestLog "Unit test the REST server"
             .\build.bat test-rest
-          elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
+          }
+          elseif ("${{ needs.detect_changes.outputs.graphql }}" -eq "true") {
+            Write-TestLog "Unit test the GraphQL server"
             .\build.bat test-graphql
-          elif [[ "${{ needs.detect_changes.outputs.shared }}" = "true" ]]; then
+          }
+          elseif ("${{ needs.detect_changes.outputs.shared }}" -eq "true") {
+            Write-TestLog "Unit test the shared module"
             .\build.bat test-shared
-          else
-            echo "Nothing to test"
-          fi
+          }
+          else {
+            Write-WarnLog "Nothing to test"
+          }
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
       - name: Builds
-        shell: bash
+        shell: pwsh
         run: |
-          # If changes are in rest, then build rest
-          # If changes are in graphql, then build graphql
-          # If changes are in any other parts, then build both servers
-          if [[ "${{ needs.detect_changes.outputs.rest }}" = "true" ]]; then
+          function Write-BuildLog {
+            param(
+              [string]$Message
+            )
+            Write-Host $Message -ForegroundColor Magenta
+          }
+
+          if ("${{ needs.detect_changes.outputs.rest }}" -eq "true") {
+            Write-BuildLog "Build-test the REST server"
             .\build.bat build-rest
-          elif [[ "${{ needs.detect_changes.outputs.graphql }}" = "true" ]]; then
+          }
+          elseif ("${{ needs.detect_changes.outputs.graphql }}" -eq "true") {
+            Write-BuildLog "Build-test the GraphQL server"
             .\build.bat build-graph
-          else
+          }
+          else {
+            Write-BuildLog "Build-test REST and GraphQL server"
             .\build.bat build
-          fi
+          }
