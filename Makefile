@@ -27,8 +27,8 @@ check:
 	git diff --exit-code -- go.mod go.sum
 	go vet ./...
 	staticcheck ./...
-	@test -z "$$(gofmt -l .)" || (echo "Files requiring gofmt" && exit 1)
-	@test -z "$$(goimports -l .)" || (echo "Files requiring goimports" && exit 1)
+	test -z "$$(gofmt -l .)" || (echo "Files requiring gofmt" && exit 1)
+	test -z "$$(goimports -l .)" || (echo "Files requiring goimports" && exit 1)
 
 test-graph:
 	go test ./graphql/... -count=1
