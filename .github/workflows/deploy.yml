@@ -1,0 +1,109 @@
+# This workflow will deploy the Rest or GraphQL Server (or both) depending on the changes in monorepo
+
+name: Deploy
+
+on:
+  push:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+jobs:
+  detect_changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+
+    outputs:
+      graphql: ${{ steps.filter.outputs.graphql }}
+      rest: ${{ steps.filter.outputs.rest }}
+      rest_docs: ${{ steps.filter.outputs.rest_docs }}
+      shared: ${{ steps.filter.outputs.shared }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Detect paths of changes
+        id: filter
+        uses: dorny/paths-filter@v4
+        with:
+          base: develop
+          filters: |
+            graphql:
+              - 'graphql/**'
+            rest:
+              - 'rest/**'
+            rest_docs:
+              - 'rest/docs/**'
+            shared:
+              - 'shared/**'
+              - 'go.mod'
+              - 'go.sum'
+              - 'Makefile'
+              - 'build.bat'
+
+  deploy:
+    name: Deploy
+    needs: detect_changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: GCP Auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up GCloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Deploy to Cloud Run with Cloud Build
+        shell: bash
+        run: |
+          log_deploy() { printf '\033[32m%s\033[0m\n' "$1"; }
+          log_warn() { printf '\033[33m%s\033[0m\n' "$1"; }
+
+          if [[ "${{ needs.detect_changes.outputs.shared }}" == "true" ]]; then
+            log_deploy "Deploying REST and GraphQL"
+
+            gcloud builds submit \
+              --config rest/cloudbuild.yaml \
+              --substitutions=COMMIT_SHA="${{ github.sha }}" \
+              .
+
+            log_warn "GraphQL deployment is not configured yet"
+            exit 0
+          fi
+
+          if [[ "${{ needs.detect_changes.outputs.rest }}" == "true" ]]; then
+            log_deploy "Deploying REST"
+            gcloud builds submit \
+              --config rest/cloudbuild.yaml \
+              --substitutions=COMMIT_SHA="${{ github.sha }}" \
+              .
+          fi
+
+          if [[ "${{ needs.detect_changes.outputs.graphql }}" == "true" ]]; then
+            log_warn "Deploying GraphQL but no deployment configuration yet"
+          fi
+
+          if [[
+            "${{ needs.detect_changes.outputs.rest }}" != "true" &&
+            "${{ needs.detect_changes.outputs.graphql }}" != "true"
+          ]]; then
+            log_warn "Skipping deployments"
+          fi
+
+      - name: Update REST Gateway 
+        if: needs.detect_changes.outputs.rest_docs == 'true'
+        shell: bash
+        run: |
+          log_gateway() { printf '\033[36m%s\033[0m\n' "$1"; }
+          log_gateway "REST API documentation changed; updating API Gateway"
+
+          chmod +x rest/update-gateway.sh
+          ./rest/update-gateway.sh
