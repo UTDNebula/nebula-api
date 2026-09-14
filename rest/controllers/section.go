@@ -258,6 +258,10 @@ func sectionAggregate[T any](flag string, c *gin.Context) {
 		return
 	}
 
+	if flag == "ById" && schemaType == "Course" && len(queryResults) > 0 {
+		respond(c, http.StatusOK, "success", queryResults[0])
+		return
+	}
 	respond(c, http.StatusOK, "success", queryResults)
 }
 
