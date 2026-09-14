@@ -3,7 +3,10 @@ package controllers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
@@ -14,6 +17,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // @Id				sectionSearch
@@ -59,14 +63,15 @@ func SectionSearch(c *gin.Context) {
 		return
 	}
 
-	optionLimit, err := configs.GetOptionLimit(&query, c)
+	offset, limit, err := configs.GetLimit(&query, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
+	opts := options.Find().SetSkip(offset).SetLimit(limit)
 
 	// get cursor for query results
-	cursor, err := configs.GetCollection("sections").Find(ctx, query, optionLimit)
+	cursor, err := configs.GetCollection("sections").Find(ctx, query, opts)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -150,7 +155,7 @@ func SectionById(c *gin.Context) {
 // @Failure		500								{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]			"A string describing the error"
 func SectionCourseSearch(c *gin.Context) {
-	sectionCourse("Search", c)
+	sectionAggregate[schema.Course]("Search", c)
 }
 
 // @Id				sectionCourseById
@@ -163,43 +168,7 @@ func SectionCourseSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
 func SectionCourseById(c *gin.Context) {
-	sectionCourse("ById", c)
-}
-
-// Get an array of courses from sections, filtered based on the the flag
-func sectionCourse(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
-	defer cancel()
-
-	var sectionCourses []schema.Course
-	var sectionQuery bson.M
-	var err error
-	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
-		return
-	}
-
-	paginate, err := configs.GetAggregateLimit(&sectionQuery, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
-		return
-	}
-
-	cursor, err := configs.GetCollection("sections").Aggregate(ctx, buildSectionPipeline("courses", sectionQuery, paginate))
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-	if err = cursor.All(ctx, &sectionCourses); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	switch flag {
-	case "Search":
-		respond(c, http.StatusOK, "success", sectionCourses)
-	case "ById":
-		respond(c, http.StatusOK, "success", sectionCourses[0])
-	}
+	sectionAggregate[schema.Course]("ById", c)
 }
 
 // @Id				sectionProfessorSearch
@@ -234,7 +203,7 @@ func sectionCourse(flag string, c *gin.Context) {
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
 func SectionProfessorSearch(c *gin.Context) {
-	sectionProfessor("Search", c)
+	sectionAggregate[schema.Professor]("Search", c)
 }
 
 // @Id				sectionProfessorById
@@ -247,107 +216,97 @@ func SectionProfessorSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
 func SectionProfessorById(c *gin.Context) {
-	sectionProfessor("ById", c)
+	sectionAggregate[schema.Professor]("ById", c)
 }
 
-// Get an array of professors from sections,
-func sectionProfessor(flag string, c *gin.Context) {
+// sectionAggregate returns the list of aggregated objects from list of filtered sections
+func sectionAggregate[T any](flag string, c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	var sectionProfessors []schema.Professor
+	schemaType := strings.Split(reflect.TypeFor[[]T]().String(), ".")[1]
+	ctx, span := courseTracer.Start(ctx, fmt.Sprintf("section.%s.%s", schemaType, flag))
+	defer span.End()
+
+	var queryResults []T
 	var sectionQuery bson.M
+
+	// Determine the section query
 	sectionQuery, err := getQuery[schema.Section](flag, c)
 	if err != nil {
 		return
 	}
 
-	paginate, err := configs.GetAggregateLimit(&sectionQuery, c)
+	// Determine the offset and limit for pagination & delete offset fields
+	paginateMap, err := configs.GetAggregateLimit(&sectionQuery, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
 		return
 	}
 
-	cursor, err := configs.GetCollection("sections").Aggregate(ctx, buildSectionPipeline("professors", sectionQuery, paginate))
+	sectionPipeline := buildSectionPipeline(schemaType, sectionQuery, paginateMap)
+
+	cursor, err := configs.GetCollection("sections").Aggregate(ctx, sectionPipeline)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-	if err = cursor.All(ctx, &sectionProfessors); err != nil {
+	defer cursor.Close(ctx)
+
+	if err = cursor.All(ctx, &queryResults); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	respond(c, http.StatusOK, "success", sectionProfessors)
+	if flag == "ById" && schemaType == "Course" && len(queryResults) > 0 {
+		respond(c, http.StatusOK, "success", queryResults[0])
+		return
+	}
+	respond(c, http.StatusOK, "success", queryResults)
 }
 
-// buildSectionPipeline builds the pipeline to aggregate courses or professors
-// from filtered sections.
-func buildSectionPipeline(endpoint string, sectionFilter bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
-	filterSection := mongo.Pipeline{
-		bson.D{{Key: "$match", Value: sectionFilter}},
+// buildSectionPipeline builds the pipeline to aggregate targets from filtered sections
+func buildSectionPipeline(schemaType string, sectionQuery bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
+	field := typeToField[schemaType]
 
+	filterSection := mongo.Pipeline{
+		bson.D{{Key: "$match", Value: sectionQuery}},
+
+		bson.D{{Key: "$sort", Value: getSort("Section")}},
 		paginateMap["former_offset"],
 		paginateMap["limit"],
 	}
 
-	var lookupObj mongo.Pipeline
-	switch endpoint {
-	case "courses":
-		lookupObj = mongo.Pipeline{
-			bson.D{{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "course_reference"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "courses"},
-			}}},
-		}
-
-	case "professors":
-		lookupObj = mongo.Pipeline{
-			bson.D{{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "professors"},
-				{Key: "localField", Value: "professors"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "professors"},
-			}}},
-		}
-
-	default:
-		panic("invalid endpoint for buildSectionPipeline: " + endpoint)
+	var lookup = mongo.Pipeline{
+		// Lookup the target objects from sections
+		bson.D{{Key: "$lookup", Value: bson.D{
+			{Key: "from", Value: field},
+			{Key: "localField", Value: field},
+			{Key: "foreignField", Value: "_id"},
+			{Key: "as", Value: field},
+		}}},
 	}
 
 	extract := mongo.Pipeline{
-		bson.D{{Key: "$project", Value: bson.D{
-			{Key: endpoint, Value: "$" + endpoint},
-		}}},
-
-		// unwind the objects
+		// Unwind the target objects
 		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$" + endpoint},
+			{Key: "path", Value: "$" + field},
 			{Key: "preserveNullAndEmptyArrays", Value: false},
 		}}},
 
-		// replace the combinations of id and objects with objects entirely
-		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
-
-		// remove duplicate objects
-		bson.D{{Key: "$group", Value: bson.D{
-			{Key: "_id", Value: "$_id"},
-			{Key: "item", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
-		}}},
-		bson.D{{Key: "$replaceWith", Value: "$item"}},
+		// Replace the sections with the target objects
+		bson.D{{Key: "$replaceWith", Value: "$" + field}},
 	}
 
 	paginate := mongo.Pipeline{
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+		bson.D{{Key: "$sort", Value: getSort(schemaType)}},
 
 		paginateMap["latter_offset"],
 		paginateMap["limit"],
 	}
 
 	pipeline := filterSection
-	pipeline = append(pipeline, lookupObj...)
+	pipeline = append(pipeline, lookup...)
 	pipeline = append(pipeline, extract...)
 	pipeline = append(pipeline, paginate...)
 	return pipeline

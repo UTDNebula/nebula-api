@@ -16,12 +16,8 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-var aggregateMap = map[string]string{
-	"Course":  "courses",
-	"Section": "sections",
-}
 
 // @Id				professorSearch
 // @Router			/professor [get]
@@ -66,14 +62,15 @@ func ProfessorSearch(c *gin.Context) {
 		return
 	}
 
-	optionLimit, err := configs.GetOptionLimit(&query, c)
+	offset, limit, err := configs.GetLimit(&query, c)
 	if err != nil {
 		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
 		return
 	}
+	opts := options.Find().SetSkip(offset).SetLimit(limit)
 
 	// get cursor for query results
-	cursor, err := configs.GetCollection("professors").Find(ctx, query, optionLimit)
+	cursor, err := configs.GetCollection("professors").Find(ctx, query, opts)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -269,9 +266,8 @@ func professorAggregate[T any](flag string, c *gin.Context) {
 	}
 
 	// Pipeline to query the courses or sections from the filtered professors (or a single professor)
-	endpointType := strings.Split(reflect.TypeOf(profAggregate).String(), ".")[1]
-	endpoint := aggregateMap[endpointType]
-	profPipeline := buildProfessorPipeline(endpoint, profQuery, paginate)
+	schemaType := strings.Split(reflect.TypeFor[[]T]().String(), ".")[1]
+	profPipeline := buildProfessorPipeline(schemaType, profQuery, paginate)
 
 	// Perform aggreration on the pipeline
 	cursor, err := configs.GetCollection("professors").Aggregate(ctx, profPipeline)
@@ -281,7 +277,7 @@ func professorAggregate[T any](flag string, c *gin.Context) {
 		return
 	}
 
-	// Parse the array of courses or sections from these professors
+	// Parse the array of objects from these professors
 	if err = cursor.All(ctx, &profAggregate); err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -291,15 +287,19 @@ func professorAggregate[T any](flag string, c *gin.Context) {
 }
 
 // Pipeline builder for professor aggregate endpoints
-func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
-	lookupSection := mongo.Pipeline{
-		// filter the professors
+func buildProfessorPipeline(schemaType string, professorQuery bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
+	field := typeToField[schemaType]
+
+	filterProf := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: professorQuery}},
 
+		bson.D{{Key: "$sort", Value: getSort("Professor")}},
 		paginateMap["former_offset"],
 		paginateMap["limit"],
+	}
 
-		// lookup the array of sections from sections collection
+	var lookup = mongo.Pipeline{
+		// Lookup the array of sections from professors
 		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "sections"},
 			{Key: "localField", Value: "sections"},
@@ -307,52 +307,42 @@ func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginateMap 
 			{Key: "as", Value: "sections"},
 		}}},
 	}
-
-	var lookupCourse mongo.Pipeline
-	switch endpoint {
-	case "courses":
-		lookupCourse = mongo.Pipeline{
-			// project the courses referenced by each section in the array
-			bson.D{{Key: "$project", Value: bson.D{
-				{Key: "courses", Value: "$sections.course_reference"},
-			}}},
-
-			// lookup the array of courses from courses collection
+	switch schemaType {
+	case "Course":
+		lookup = append(lookup,
+			// Lookup the array of courses from array of sections
 			bson.D{{Key: "$lookup", Value: bson.D{
 				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "courses"},
+				{Key: "localField", Value: "sections.course_reference"},
 				{Key: "foreignField", Value: "_id"},
 				{Key: "as", Value: "courses"},
 			}}},
-		}
+		)
 
-	case "sections":
-		// No extra stages needed
+	case "Section":
+		// No extra stages
 
 	default:
-		panic("invalid endpoint for professorPipeline: " + endpoint)
+		panic("invalid schema for professorPipeline: " + schemaType)
 	}
 
 	extract := mongo.Pipeline{
-		// unwind the objects
 		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$" + endpoint},
+			{Key: "path", Value: "$" + field},
 			{Key: "preserveNullAndEmptyArrays", Value: false},
 		}}},
 
-		// replace the combination of ids and objects with the objects entirely
-		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
+		bson.D{{Key: "$replaceWith", Value: "$" + field}},
 	}
 
 	paginate := mongo.Pipeline{
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
+		bson.D{{Key: "$sort", Value: getSort(schemaType)}},
 		paginateMap["latter_offset"],
 		paginateMap["limit"],
 	}
 
-	pipeline := lookupSection
-	pipeline = append(pipeline, lookupCourse...)
+	pipeline := filterProf
+	pipeline = append(pipeline, lookup...)
 	pipeline = append(pipeline, extract...)
 	pipeline = append(pipeline, paginate...)
 	return pipeline
