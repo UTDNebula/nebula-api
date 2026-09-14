@@ -261,6 +261,7 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 
 	// Pipeline to query the field from the filtered courses
 	courseQueryPipeline := buildCoursePipeline(schemaType, courseQuery, paginateMap)
+	//PrettyPrint(courseQueryPipeline)
 
 	// perform aggregation on the pipeline
 	cursor, err := configs.GetCollection("courses").Aggregate(ctx, courseQueryPipeline)

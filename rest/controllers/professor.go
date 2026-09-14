@@ -268,6 +268,7 @@ func professorAggregate[T any](flag string, c *gin.Context) {
 	// Pipeline to query the courses or sections from the filtered professors (or a single professor)
 	schemaType := strings.Split(reflect.TypeFor[[]T]().String(), ".")[1]
 	profPipeline := buildProfessorPipeline(schemaType, profQuery, paginate)
+	//PrettyPrint(profPipeline)
 
 	// Perform aggreration on the pipeline
 	cursor, err := configs.GetCollection("professors").Aggregate(ctx, profPipeline)
