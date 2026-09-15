@@ -5,7 +5,18 @@ _A database for some really useful UTD data collected by our [tools](https://git
 
 Project maintained by [Nebula Labs](https://about.utdnebula.com).
 
-## Documentation
+## Quick Navigation
+
+- [API Documentation](https://api.utdnebula.com/swagger/index.html)
+- [Developer Wiki](docs/Home.md)
+- [Getting Started Guide](/docs/Getting-Started.md)
+- [Project Architecture](/docs/Project-Architecture.md)
+- [Project Structure](/docs/Project-Structure.md)
+- [Contributing Guide](/docs/How-to-Contribute.md)
+- [Troubleshooting & FAQ](/docs/Troubleshooting.md)
+- [Discord Community](https://discord.utdnebula.com)
+
+## API Documentation
 
 Documentation for the current production API can be found [here.](https://api.utdnebula.com/swagger/index.html)
 
@@ -21,4 +32,8 @@ Contributions are welcome!
 
 This project uses the MIT License.
 
-Please visit our [Discord](https://discord.utdnebula.com) and talk to us if you'd like to contribute! Don't be afraid to ask for help!
+Please visit our [Developer Wiki](docs/Home.md) to get started!
+
+## Community & Support
+
+Have questions, suggestions, or want to contribute? Reach out on our [Discord](https://discord.utdnebula.com)!
