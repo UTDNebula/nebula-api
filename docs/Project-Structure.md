@@ -24,3 +24,7 @@ nebula-api/
 ├── update-gateway.bat    # For updating the API gateway configuration on Windows.
 └── update-gateway.sh     # For updating the API gateway configuration on Mac or Linux.
 ```
+
+## Next Step
+
+See [How-to-Contribute.md](How-to-Contribute.md)

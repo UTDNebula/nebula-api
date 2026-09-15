@@ -1,73 +1,60 @@
-Moving stuff off of README.md
+# How to Contribute
 
-### How to Contribute
+Thank you for your interest in contributing to `nebula-api`! Here's how to contribute to our project.
+Don't worry if you don't quite know what you're doing, we're here to help. We don't expect perfection and appreciate anything you can do to help!
 
-Create your own fork by [forking this repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo#forking-a-repository)
+## Find something to work on
 
-[Clone](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo#cloning-your-forked-repository) your forked repository. (Don't forget to install Git if you haven't already)
+Look at our current issues, or make your own on our [issues page](https://github.com/UTDNebula/nebula-api/issues).
 
-Submit proposed changes via a [Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+For beginner issues, please write the code yourself rather than using AI to generate it. These issues are designed to help new members learn the codebase and build familiarity with the project. We allow AI in Nebula Labs, but review our [AI Policy](https://nebula-labs.atlassian.net/wiki/spaces/NLG/pages/1135607810/AI+Policy) for more information on acceptable uses of AI.
 
-## Building
-### Requirements
-- [Golang 1.26 or Higher](https://go.dev/dl/)
+Once you find an issue, write a comment asking if you can work on it.
 
-### Building for Windows
+If you're unsure about something, **don't hesitate to ask for help**. We're happy to answer questions and help you work through issues. You can reach out on GitHub, Discord, or in person.
 
-Setup Go Dependencies with:
+## Create a branch
+
+Nebula recruits and members should make their changes on a branch, external contributors should work off of a fork as they do not have permission to make a branch.
+
+## Make Your Changes
+
+It's time to code!
+
+Don't forget to format and check your code. We have helper scripts with **Make** and **build.bat**:
+
+Check your code with
+
+```bash
+make check
+```
+
+or
+
 ```cmd
-.\build.bat setup
+.\build.bat check
 ```
 
-Build with:
+Run tests with
+
+```bash
+make test
+```
+
+or
+
 ```cmd
-.\build.bat build
+.\build.bat test
 ```
 
-This will create an executable named `rest-api.exe` in the root directory.
+We would appreciate if you make a draft Pull Request as your working on it, so we can see your progress and help you out!
 
-Run with:
-```cmd
-.\rest-api.exe
-```
-> Note: Some users have experienced issues with Windows Defender or other antivirus blocking `rest-api.exe` from reading files, editing files, or causing slowed performance. Consider adding an exception to your `nebula-api` folder.
+## Making a Pull Request (PR)
 
-### Building for macOS, Linux, and WSL
+Open [our Pull Request Page](https://github.com/UTDNebula/nebula-api/pulls), and create a PR. If you're not finished, you can make your PR a draft.
 
-Setup Go dependencies with:
-```bash
-make setup
-```
+Maintainers will review your PR and may provide suggestions or request changes before approval.
 
-Build with:
-```bash
-make build
-```
+## Next Step
 
-This will create an executable named `rest-api` in the root directory.
-
-> Note: If Make fails with "swag: No such file or directory" or similar, you may need to add GOPATH/bin to your path. On Mac/Linux, use `echo 'export PATH=${PATH}:'$(go env GOPATH)'/bin' >> ~/.zshrc && source ~/.zshrc` (or `.bashrc`) to add it permanently.
-
-Run with:
-```bash
-./rest-api
-```
-
-## Running API locally
-Copy `.env.template` to `.env` with:
-```bash
-cp .env.template .env
-```
-
-Enter Nebula MongoDB URI in `.env` (ask for help in the [Discord](https://discord.utdnebula.com))
-
-Run `rest-api`:
-```bash
-./rest-api
-```
-
-Check command output to see the route serving traffic. It's likely port 8080.
-
-Visit `http://localhost:8080` to access nebula-api locally.
-
-> Storage and email routes require additional environment variables. If you're working on these routes, ask for help in the [Discord](https://discord.utdnebula.com)
+You have everything you need to start, but do feel free to check out other pages first.

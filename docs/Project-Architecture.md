@@ -5,7 +5,7 @@ Nebula API provides UTD data for others to use, including information on courses
 Here's a quick look at Nebula API.
 
 ### REST API
-The Nebula API is a RESTful API. [What's an API? What does that mean?](https://aws.amazon.com/what-is/restful-api/)
+The Nebula API is a RESTful API. [What's an API? What does RESTful mean?](https://aws.amazon.com/what-is/restful-api/)
 
 Currently, the Nebula API offers information about the following:
 - Courses
@@ -87,6 +87,10 @@ Swagger is responsible for auto-generating our documentation for our API endpoin
 Sentry provides performance and error monitoring to help us find and fix problems.
 
 ### Google Cloud
-[Documentation](https://pkg.go.dev/cloud.google.com/go#section-readme) - 
+[Documentation](https://pkg.go.dev/cloud.google.com/go#section-readme) - Google Cloud Services for Golang.
 
 We use Google Cloud for our email and storage endpoints.
+
+## Next Step
+
+See [Project-Structure.md](Project-Structure.md)
