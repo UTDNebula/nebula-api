@@ -374,7 +374,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 	switch flag {
 	case "overall", "course_endpoint", "section_endpoint", "professor_endpoint":
 		// combine all semester grade_distributions
-		overallResponse := [14]int{}
+		overallResponse := [18]int{}
 		for _, sem := range grades {
 			for i, grade := range sem.GradeDistribution {
 				overallResponse[i] += grade
@@ -494,7 +494,6 @@ func sumGradesStage() bson.D {
 	}
 }
 
-// Stage to group grade distribution
 func groupGradeDistributionStage(flag string) bson.D {
 	var groupDistributionID any = "$_id.academic_session"
 	// Add the section-type criteria
@@ -514,7 +513,10 @@ func groupGradeDistributionStage(flag string) bson.D {
 	}
 }
 
-// Additional stages for "section-type" pipeline
+// --------------------------------------------------------
+// NOTE: Additional stages for the section-type pipeline
+// --------------------------------------------------------
+
 // Stage to sort the section-type-specific grade distributions before grouping
 func sortGradeDistributionsStage() bson.D {
 	return bson.D{
