@@ -1,0 +1,27 @@
+name: Publish Wiki
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-wiki
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync docs to GitHub Wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v5
+        with:
+          path: docs/
