@@ -79,8 +79,13 @@ If you installed **Go** with [**Homebrew**](https://brew.sh/), you need to add G
 
 ### Configure Environment Variables
 
-Make a file called `.env` at the root of the project, and copy the contents of `.env.template` into it. Some parts in `nebula-api` require certain environment variables, which you can fill in `.env`.
+First, make a file called `.env` at the root of the project. 
+
+Then, copy the contents of `.env.template` into it. Some parts in `nebula-api` require certain environment variables, which you can fill in `.env`.
+
 If you're not sure what to put, please try contacting one of our members through [Discord](https://discord.utdnebula.com).
+
+> [!IMPORTANT] Do NOT put any environment variables into `.env.template`.
 
 ### Run Code Verification & Formatting
 
