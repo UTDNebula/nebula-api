@@ -39,7 +39,7 @@ Submit proposed changes via a [Pull Request](https://docs.github.com/en/pull-req
 
 ## Building
 ### Requirements
-- [Golang 1.25 or Higher](https://go.dev/dl/)
+- [Golang 1.26 or Higher](https://go.dev/dl/)
 
 ### Building for Windows
 
