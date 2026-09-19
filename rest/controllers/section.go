@@ -267,7 +267,11 @@ func sectionAggregate[T any](flag string, c *gin.Context) {
 
 // buildSectionPipeline builds the pipeline to aggregate targets from filtered sections
 func buildSectionPipeline(schemaType string, sectionQuery bson.M, paginateMap map[string]bson.D) mongo.Pipeline {
-	field := typeToField[schemaType]
+	collection := typeToField[schemaType]
+	field := collection
+	if field == "courses" {
+		field = "course_reference" // Section references Course through course_reference
+	}
 
 	filterSection := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: sectionQuery}},
@@ -280,7 +284,7 @@ func buildSectionPipeline(schemaType string, sectionQuery bson.M, paginateMap ma
 	var lookup = mongo.Pipeline{
 		// Lookup the target objects from sections
 		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: field},
+			{Key: "from", Value: collection},
 			{Key: "localField", Value: field},
 			{Key: "foreignField", Value: "_id"},
 			{Key: "as", Value: field},

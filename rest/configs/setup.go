@@ -60,9 +60,6 @@ func GetCollection(collectionName string) *mongo.Collection {
 // Returns the offset and limit for pagination options
 // Produces an error if user-provided offset isn't able to be parsed.
 func GetLimit(query *bson.M, c *gin.Context) (int64, int64, error) {
-	// Removes offset (if present) in query since is not field in collections
-	delete(*query, "offset")
-
 	var offset int64 = 0 // Init the default value of offset
 	var limit = GetEnvLimit()
 	var err error
@@ -91,9 +88,6 @@ func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]bson.D, error)
 	for field := range paginateMap {
 		// Only change values of the map if specified
 		if field != "limit" && c.Query(field) != "" {
-			// Remove offset field (if present) in the query
-			delete(*query, field)
-
 			// Build the stage from the parsed field
 			offset, err := strconv.ParseInt(c.Query(field), 10, 64)
 			if err != nil {

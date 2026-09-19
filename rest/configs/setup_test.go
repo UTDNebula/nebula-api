@@ -17,17 +17,12 @@ func TestGetLimit(t *testing.T) {
 		c, _ := gin.CreateTestContext(w)
 		c.Request = httptest.NewRequest("GET", "/?offset=25", nil)
 
-		query := bson.M{"offset": "should-be-deleted"}
+		query := bson.M{"offset": "should-be-ignored"}
 		offset, _, err := GetLimit(&query, c)
 		if err != nil {
-			t.Fatalf("Expected no error, got %v", err) // Use Fatalf to stop if options is nil
+			t.Fatalf("Expected no error, got %v", err)
 		}
 
-		if _, exists := query["offset"]; exists {
-			t.Error("Expected 'offset' to be deleted from the query map")
-		}
-
-		// Ensure we compare the same types (int64)
 		if offset != int64(25) {
 			t.Errorf("Expected offset to be 25, got %v", offset)
 		}
@@ -93,17 +88,12 @@ func TestGetAggregateLimit(t *testing.T) {
 		c, _ := gin.CreateTestContext(w)
 		c.Request = httptest.NewRequest("GET", "/?former_offset=50", nil)
 
-		query := bson.M{"former_offset": "to-be-deleted"}
+		query := bson.M{"former_offset": "to-be-ignored"}
 		paginateMap, _ := GetAggregateLimit(&query, c)
 
 		former := paginateMap["former_offset"]
-		// Explicitly check the value as int64 to avoid architecture-based build fails
 		if !isEqual(former[0].Value, 50) {
 			t.Errorf("Expected former_offset to be 50, got %v", former[0].Value)
-		}
-
-		if _, exists := query["former_offset"]; exists {
-			t.Error("Expected 'former_offset' to be deleted from query map")
 		}
 	})
 }
