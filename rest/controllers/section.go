@@ -164,6 +164,7 @@ func SectionCourseSearch(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[schema.Course]	"A course"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
+// @Failure		404	{object}	schema.APIResponse[string]			"A string describing the error"
 func SectionCourseById(c *gin.Context) {
 	sectionCourse("ById", c)
 }
