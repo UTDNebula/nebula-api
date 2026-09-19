@@ -57,27 +57,21 @@ func GetCollection(collectionName string) *mongo.Collection {
 	return collection
 }
 
-// Returns *options.FindOptions with a limit and offset applied.
+// Returns the offset and limit for pagination options
 // Produces an error if user-provided offset isn't able to be parsed.
-func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error) {
-	delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
-
-	// parses offset if included in the query
-	var offset int64
+func GetLimit(query *bson.M, c *gin.Context) (int64, int64, error) {
+	var offset int64 = 0 // Init the default value of offset
+	var limit = GetEnvLimit()
 	var err error
 
-	var limit int64 = GetEnvLimit()
-
-	if c.Query("offset") == "" {
-		offset = 0 // default value for offset
-	} else {
+	if c.Query("offset") != "" {
 		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
 		if err != nil {
-			return options.Find().SetSkip(0).SetLimit(limit), err // default value for offset
+			return -1, -1, err
 		}
 	}
 
-	return options.Find().SetSkip(offset).SetLimit(limit), err
+	return offset, limit, nil
 }
 
 // Returns the offsets and limit for pagination stage for aggregate endpoints pipeline
@@ -94,9 +88,6 @@ func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]bson.D, error)
 	for field := range paginateMap {
 		// Only change values of the map if specified
 		if field != "limit" && c.Query(field) != "" {
-			// Remove offset field (if present) in the query
-			delete(*query, field)
-
 			// Build the stage from the parsed field
 			offset, err := strconv.ParseInt(c.Query(field), 10, 64)
 			if err != nil {
