@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"sync"
 
 	"github.com/joho/godotenv"
 )
@@ -30,6 +31,15 @@ func init() {
 		dir = parent
 	}
 }
+
+// A misconfigured variable is a single, process-wide mistake, but these readers
+// run on every request that paginates or uploads. Each warning therefore fires
+// at most once per process rather than once per request.
+var (
+	limitWarnOnce         sync.Once
+	uploadSizeWarnOnce    sync.Once
+	uploadSizeCapWarnOnce sync.Once
+)
 
 func GetPortString() string {
 
@@ -87,7 +97,9 @@ func GetEnvLimit() int64 {
 
 	limit, err := strconv.ParseInt(limitString, 10, 64)
 	if err != nil {
-		log.Printf("Ignoring 'LIMIT' value %q: not a number, using the default of %d\n", limitString, defaultLimit)
+		limitWarnOnce.Do(func() {
+			log.Printf("Ignoring 'LIMIT' value %q: not a number, using the default of %d\n", limitString, defaultLimit)
+		})
 		return defaultLimit
 	}
 
@@ -107,12 +119,16 @@ func GetEnvMaxUploadSize() int64 {
 
 	limit, err := strconv.ParseInt(limitString, 10, 64)
 	if err != nil {
-		log.Printf("Ignoring 'MAX_UPLOAD_SIZE' value %q: not a number, using the default of %d\n", limitString, defaultLimit)
+		uploadSizeWarnOnce.Do(func() {
+			log.Printf("Ignoring 'MAX_UPLOAD_SIZE' value %q: not a number, using the default of %d\n", limitString, defaultLimit)
+		})
 		return defaultLimit
 	}
 
 	if limit > hardCapLimit {
-		log.Printf("Capping 'MAX_UPLOAD_SIZE' of %d to the maximum of %d\n", limit, hardCapLimit)
+		uploadSizeCapWarnOnce.Do(func() {
+			log.Printf("Capping 'MAX_UPLOAD_SIZE' of %d to the maximum of %d\n", limit, hardCapLimit)
+		})
 		return hardCapLimit
 	}
 
