@@ -87,6 +87,7 @@ func GetEnvLimit() int64 {
 
 	limit, err := strconv.ParseInt(limitString, 10, 64)
 	if err != nil {
+		log.Printf("Ignoring 'LIMIT' value %q: not a number, using the default of %d\n", limitString, defaultLimit)
 		return defaultLimit
 	}
 
@@ -106,10 +107,12 @@ func GetEnvMaxUploadSize() int64 {
 
 	limit, err := strconv.ParseInt(limitString, 10, 64)
 	if err != nil {
+		log.Printf("Ignoring 'MAX_UPLOAD_SIZE' value %q: not a number, using the default of %d\n", limitString, defaultLimit)
 		return defaultLimit
 	}
 
 	if limit > hardCapLimit {
+		log.Printf("Capping 'MAX_UPLOAD_SIZE' of %d to the maximum of %d\n", limit, hardCapLimit)
 		return hardCapLimit
 	}
 
