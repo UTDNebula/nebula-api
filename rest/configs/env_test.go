@@ -6,17 +6,6 @@ import (
 	"testing"
 )
 
-// unsetEnv removes a variable for the duration of the test, restoring whatever
-// value it had once the test finishes.
-func unsetEnv(t *testing.T, key string) {
-	t.Helper()
-
-	// t.Setenv records the original value so it is restored on cleanup; the
-	// unset immediately afterwards is what the test actually wants.
-	t.Setenv(key, "")
-	os.Unsetenv(key)
-}
-
 // The environment readers below exit through log.Fatalf when a required
 // variable is missing, which would take the test binary down with them. Each
 // case is instead run in a subprocess that calls the reader directly, so the
@@ -30,6 +19,17 @@ var fatalCases = map[string]func(){
 		os.Setenv("LOGIN_NETID", "abc123456")
 		GetEnvLogin()
 	},
+}
+
+// unsetEnv removes a variable for the duration of the test, restoring whatever
+// value it had once the test finishes.
+func unsetEnv(t *testing.T, key string) {
+	t.Helper()
+
+	// t.Setenv records the original value so it is restored on cleanup; the
+	// unset immediately afterwards is what the test actually wants.
+	t.Setenv(key, "")
+	os.Unsetenv(key)
 }
 
 // TestEnvFatalSubprocess is the entry point for the subprocesses spawned by
