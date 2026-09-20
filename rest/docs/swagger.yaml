@@ -10,6 +10,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_AcademicProgram:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.AcademicProgram'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_Autocomplete:
     properties:
       data:
@@ -300,6 +311,21 @@ definitions:
       status:
         type: integer
     type: object
+  schema.AcademicProgram:
+    properties:
+      areas_of_interest:
+        items:
+          type: string
+        type: array
+      degree_options:
+        items:
+          $ref: '#/definitions/schema.Degree'
+        type: array
+      name:
+        type: string
+      school:
+        type: string
+    type: object
   schema.AcademicSession:
     properties:
       end_date:
@@ -558,6 +584,19 @@ definitions:
         type: string
       title:
         type: string
+    type: object
+  schema.Degree:
+    properties:
+      cip_code:
+        type: string
+      joint_program:
+        type: boolean
+      level:
+        type: string
+      public_url:
+        type: string
+      stem_designated:
+        type: boolean
     type: object
   schema.DiscountProgram:
     properties:
@@ -1885,6 +1924,60 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Courses
+  /degrees:
+    get:
+      description: '"Returns paginated academic programs matching the query''s string-typed
+        key-value pairs. An areas_of_interest query matches any area in the program''s
+        areas_of_interest array."'
+      operationId: degrees
+      parameters:
+      - description: The starting position of the current page of degrees (e.g. For
+          starting at the 17th degree, offset=16).
+        in: query
+        name: offset
+        type: number
+      - description: The name of the academic program
+        in: query
+        name: name
+        type: string
+      - description: The school offering the academic program
+        in: query
+        name: school
+        type: string
+      - description: The level of one degree option, such as BS or MS
+        in: query
+        name: degree_options.level
+        type: string
+      - description: The public URL of one degree option
+        in: query
+        name: degree_options.public_url
+        type: string
+      - description: The Classification of Instructional Programs code of one degree
+          option
+        in: query
+        name: degree_options.cip_code
+        type: string
+      - description: One area of interest for the academic program
+        in: query
+        name: areas_of_interest
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of academic programs
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_AcademicProgram'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Degrees
   /discountPrograms:
     get:
       description: '"Returns list of discounts filtered using field-specific keyword
