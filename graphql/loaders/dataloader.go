@@ -26,7 +26,7 @@ type Loaders struct {
 // NewLoaders instantiates data loaders for the middleware
 func NewLoaders() *Loaders {
 	// Define the dataloaders
-	sectionReader := &sectionReader{collection: configs.GetCollection("sections"),}
+	sectionReader := &sectionReader{collection: configs.GetCollection("sections")}
 
 	return &Loaders{
 		SectionLoader: dataloadgen.NewLoader(sectionReader.getSections, dataloadgen.WithWait(time.Millisecond)),

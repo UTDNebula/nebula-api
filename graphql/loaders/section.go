@@ -11,7 +11,7 @@ import (
 )
 
 type sectionReader struct {
-	collection *mongo.Collection 
+	collection *mongo.Collection
 }
 
 // getSections implements a batch function that can retrieve many users by ID for use in a dataloader
@@ -33,12 +33,12 @@ func (s *sectionReader) getSections(ctx context.Context, sectionIDs []primitive.
 	// so we order with map.
 	sectionMap := make(map[primitive.ObjectID]*model.Section, len(dbSections))
 	for _, dbSection := range dbSections {
-			sectionMap[dbSection.ID] = model.TransformSection(dbSection)
+		sectionMap[dbSection.ID] = model.TransformSection(dbSection)
 	}
 
 	sections := make([]*model.Section, len(sectionIDs))
 	for i, ID := range sectionIDs {
-			sections[i] = sectionMap[ID]
+		sections[i] = sectionMap[ID]
 	}
 
 	return sections, nil
@@ -67,7 +67,7 @@ func GetSections(ctx context.Context, sections []*model.Section) ([]*model.Secti
 		}
 		sectionIDs[i] = sectionID
 	}
-	
+
 	loaders := For(ctx)
 	return loaders.SectionLoader.LoadAll(ctx, sectionIDs)
 }
