@@ -14,6 +14,7 @@ require (
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.16.6
 	github.com/vektah/gqlparser/v2 v2.5.32
+	github.com/vikstrous/dataloadgen v0.0.10
 	github.com/wneessen/go-mail v0.8.1
 	go.mongodb.org/mongo-driver v1.17.9
 	google.golang.org/api v0.293.0
