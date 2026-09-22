@@ -47,13 +47,27 @@ func (s *sectionReader) getSections(ctx context.Context, sectionIDs []primitive.
 // For convenience in resolvers
 
 // GetSection returns single user by id efficiently
-func GetSection(ctx context.Context, sectionID primitive.ObjectID) (*model.Section, error) {
+func GetSection(ctx context.Context, section *model.Section) (*model.Section, error) {
+	sectionID, err := primitive.ObjectIDFromHex(section.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	loaders := For(ctx)
 	return loaders.SectionLoader.Load(ctx, sectionID)
 }
 
 // GetSections returns many users by ids efficiently
-func GetSections(ctx context.Context, sectionIDs []primitive.ObjectID) ([]*model.Section, error) {
+func GetSections(ctx context.Context, sections []*model.Section) ([]*model.Section, error) {
+	sectionIDs := make([]primitive.ObjectID, len(sections))
+	for i, section := range sections {
+		sectionID, err := primitive.ObjectIDFromHex(section.ID)
+		if err != nil {
+			return nil, err
+		}
+		sectionIDs[i] = sectionID
+	}
+	
 	loaders := For(ctx)
 	return loaders.SectionLoader.LoadAll(ctx, sectionIDs)
 }
