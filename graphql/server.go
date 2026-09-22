@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/UTDNebula/nebula-api/graphql/graph"
+	"github.com/UTDNebula/nebula-api/graphql/loaders"
 	"github.com/UTDNebula/nebula-api/shared/configs"
 
 	"github.com/99designs/gqlgen/graphql/handler"
