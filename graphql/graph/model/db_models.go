@@ -178,7 +178,7 @@ type DBMeeting struct {
 }
 
 type DBSection struct {
-	ID                  string                   `bson:"_id"`
+	ID                  primitive.ObjectID       `bson:"_id"`
 	SectionNumber       string                   `bson:"section_number"`
 	CourseReference     string                   `bson:"course_reference"`
 	SectionCorequisites *DBCollectionRequirement `bson:"section_corequisites"`
@@ -271,7 +271,7 @@ func TransformSection(dbSection *DBSection) *Section {
 	}
 
 	return &Section{
-		ID:                  dbSection.ID,
+		ID:                  dbSection.ID.Hex(),
 		SectionNumber:       dbSection.SectionNumber,
 		CourseReference:     courseRef,
 		SectionCorequisites: transformColReq(dbSection.SectionCorequisites),
