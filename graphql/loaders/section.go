@@ -46,9 +46,11 @@ func (s *sectionReader) getSections(ctx context.Context, sectionIDs []primitive.
 
 // For convenience in resolvers
 
-// GetSection returns single user by id efficiently
-func GetSection(ctx context.Context, section *model.Section) (*model.Section, error) {
-	sectionID, err := primitive.ObjectIDFromHex(section.ID)
+// GetSection returns single section by id efficiently
+// Note that sectionRef contains only its ObjectID.
+// All other fields in sectionRef are empty.
+func GetSection(ctx context.Context, sectionRef *model.Section) (*model.Section, error) {
+	sectionID, err := primitive.ObjectIDFromHex(sectionRef.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -57,10 +59,12 @@ func GetSection(ctx context.Context, section *model.Section) (*model.Section, er
 	return loaders.SectionLoader.Load(ctx, sectionID)
 }
 
-// GetSections returns many users by ids efficiently
-func GetSections(ctx context.Context, sections []*model.Section) ([]*model.Section, error) {
-	sectionIDs := make([]primitive.ObjectID, len(sections))
-	for i, section := range sections {
+// GetSections returns many sections by ids efficiently
+// Note that sectionsRef contains only the sections' ObjectID.
+// All other fields of each section in sectionsRef are empty.
+func GetSections(ctx context.Context, sectionsRef []*model.Section) ([]*model.Section, error) {
+	sectionIDs := make([]primitive.ObjectID, len(sectionsRef))
+	for i, section := range sectionsRef {
 		sectionID, err := primitive.ObjectIDFromHex(section.ID)
 		if err != nil {
 			return nil, err
