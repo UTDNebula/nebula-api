@@ -114,10 +114,15 @@ var clubsDbInstance *sql.DB
 var clubOnce sync.Once
 
 func ConnectClubsDB() *sql.DB {
+	uri := GetClubsDBUri()
+	if uri == "" {
+		return nil
+	}
+
 	clubOnce.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		db, err := sql.Open("pgx", GetClubsDBUri())
+		db, err := sql.Open("pgx", uri)
 		if err != nil {
 			log.Panic("Unable to connect to clubs database.")
 		}

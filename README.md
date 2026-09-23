@@ -90,6 +90,8 @@ cp .env.template .env
 
 Enter Nebula MongoDB URI in `.env` (ask for help in the [Discord](https://discord.utdnebula.com))
 
+`CLUBS_DB_URI` is optional. Leave it empty to run the API without club routes.
+
 Run `rest-api`:
 ```bash
 ./rest-api

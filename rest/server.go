@@ -46,7 +46,6 @@ func main() {
 
 	// Establish the connection to the database
 	configs.ConnectDB()
-	configs.ConnectClubsDB()
 
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{

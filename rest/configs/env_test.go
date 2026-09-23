@@ -125,7 +125,7 @@ func TestGetClubsDBUri(t *testing.T) {
 
 	t.Run("Set returns the URI", func(t *testing.T) {
 
-		const expected = "mongodb://localhost:27017/clubs"
+		const expected = "postgres://localhost:5432/clubs"
 		t.Setenv("CLUBS_DB_URI", expected)
 
 		if uri := GetClubsDBUri(); uri != expected {
@@ -133,17 +133,20 @@ func TestGetClubsDBUri(t *testing.T) {
 		}
 	})
 
-	t.Run("Unset panics", func(t *testing.T) {
+	t.Run("Unset returns empty", func(t *testing.T) {
 
 		unsetEnv(t, "CLUBS_DB_URI")
 
-		defer func() {
-			if recovered := recover(); recovered == nil {
-				t.Error("expected a panic when CLUBS_DB_URI is unset")
-			}
-		}()
+		if uri := GetClubsDBUri(); uri != "" {
+			t.Errorf("expected an empty URI when CLUBS_DB_URI is unset, got %q", uri)
+		}
+	})
 
-		GetClubsDBUri()
+	t.Run("Empty returns empty", func(t *testing.T) {
+		t.Setenv("CLUBS_DB_URI", "")
+		if uri := GetClubsDBUri(); uri != "" {
+			t.Errorf("expected an empty URI, got %q", uri)
+		}
 	})
 }
 

@@ -8,6 +8,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+func TestConnectClubsDBWithoutURI(t *testing.T) {
+	t.Setenv("CLUBS_DB_URI", "")
+	if db := ConnectClubsDB(); db != nil {
+		t.Fatal("expected no Clubs database connection without a URI")
+	}
+}
+
 // TestGetOptionLimit checks if the function correctly parses offset from query params
 func TestGetOptionLimit(t *testing.T) {
 	gin.SetMode(gin.TestMode)
