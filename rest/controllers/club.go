@@ -26,7 +26,7 @@ func ClubDirectoryInfo(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase *sql.DB = configs.GetClubsDB()
 	id := c.Param("id")
 
 	var raw []byte
@@ -90,7 +90,7 @@ func ClubSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase *sql.DB = configs.GetClubsDB()
 	search := c.Query("q")
 
 	var raw []byte

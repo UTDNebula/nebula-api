@@ -10,12 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var buildingCollection *mongo.Collection = configs.GetCollection("rooms")
+var buildingCollection *mongo.Collection
 
 // @Id				rooms
 // @Router			/rooms [get]

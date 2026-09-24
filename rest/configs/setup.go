@@ -3,11 +3,11 @@ package configs
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"log"
 	"strconv"
 	"sync"
 	"time"
-
-	"log"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -21,23 +21,25 @@ type DBSingleton struct {
 }
 
 var dbInstance *DBSingleton
+var dbErr error
 var once sync.Once
 
-func ConnectDB() *mongo.Client {
+func ConnectDB(uri string) error {
 	once.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
-		if err != nil {
-			log.Fatalf("Unable to create MongoDB client")
-		}
-
 		defer cancel()
+
+		client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+		if err != nil {
+			dbErr = fmt.Errorf("create MongoDB client: %w", err)
+			return
+		}
 
 		// ping the database
 		err = client.Ping(ctx, nil)
 		if err != nil {
-			log.Fatalf("Unable to ping database")
+			dbErr = fmt.Errorf("ping MongoDB: %w", err)
+			return
 		}
 
 		log.Printf("Connected to MongoDB")
@@ -47,13 +49,12 @@ func ConnectDB() *mongo.Client {
 		}
 	})
 
-	return dbInstance.client
+	return dbErr
 }
 
 // getting database collections
 func GetCollection(collectionName string) *mongo.Collection {
-	client := ConnectDB()
-	collection := client.Database("combinedDB").Collection(collectionName)
+	collection := dbInstance.client.Database("combinedDB").Collection(collectionName)
 	return collection
 }
 
@@ -111,23 +112,25 @@ func GetAggregateLimit(query *bson.M, c *gin.Context) (map[string]bson.D, error)
 }
 
 var clubsDbInstance *sql.DB
+var clubsDBErr error
 var clubOnce sync.Once
 
-func ConnectClubsDB() *sql.DB {
+func ConnectClubsDB(uri string) error {
 	clubOnce.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-		db, err := sql.Open("pgx", GetClubsDBUri())
-		if err != nil {
-			log.Panic("Unable to connect to clubs database.")
-		}
-
 		defer cancel()
+
+		db, err := sql.Open("pgx", uri)
+		if err != nil {
+			clubsDBErr = fmt.Errorf("open clubs database: %w", err)
+			return
+		}
 
 		// ping the database
 		err = db.PingContext(ctx)
 		if err != nil {
-			log.Panic("Unable to ping database")
+			clubsDBErr = fmt.Errorf("ping clubs database: %w", err)
+			return
 		}
 
 		log.Printf("Connected to Clubs DB")
@@ -135,5 +138,9 @@ func ConnectClubsDB() *sql.DB {
 		clubsDbInstance = db
 	})
 
+	return clubsDBErr
+}
+
+func GetClubsDB() *sql.DB {
 	return clubsDbInstance
 }

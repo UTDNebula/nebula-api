@@ -7,8 +7,6 @@ import (
 	"strings" // adding missing import
 	"time"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +16,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var eventsCollection *mongo.Collection = configs.GetCollection("events")
+var eventsCollection *mongo.Collection
 
 // @Id				events
 // @Router			/events/{date} [get]

@@ -2,24 +2,8 @@ package configs
 
 import (
 	"os"
-	"os/exec"
 	"testing"
 )
-
-// The environment readers below exit through log.Fatalf when a required
-// variable is missing, which would take the test binary down with them. Each
-// case is instead run in a subprocess that calls the reader directly, so the
-// exit status can be observed.
-const fatalCaseVar = "NEBULA_ENV_FATAL_CASE"
-
-var fatalCases = map[string]func(){
-	"mongo_uri":   func() { GetEnvMongoURI() },
-	"login_netid": func() { GetEnvLogin() },
-	"login_password": func() {
-		os.Setenv("LOGIN_NETID", "abc123456")
-		GetEnvLogin()
-	},
-}
 
 // unsetEnv removes a variable for the duration of the test, restoring whatever
 // value it had once the test finishes.
@@ -30,54 +14,6 @@ func unsetEnv(t *testing.T, key string) {
 	// unset immediately afterwards is what the test actually wants.
 	t.Setenv(key, "")
 	os.Unsetenv(key)
-}
-
-// TestEnvFatalSubprocess is the entry point for the subprocesses spawned by
-// runFatalCase. It does nothing during a normal test run.
-func TestEnvFatalSubprocess(t *testing.T) {
-
-	name := os.Getenv(fatalCaseVar)
-	if name == "" {
-		t.Skip("not running as a fatal-case subprocess")
-	}
-
-	fatalCase, ok := fatalCases[name]
-	if !ok {
-		t.Fatalf("unknown fatal case %q", name)
-	}
-
-	fatalCase()
-}
-
-// runFatalCase re-runs this test binary with only TestEnvFatalSubprocess
-// enabled, and returns the resulting exit code.
-func runFatalCase(t *testing.T, name string) int {
-	t.Helper()
-
-	executable, err := os.Executable()
-	if err != nil {
-		t.Fatalf("could not locate the test binary: %v", err)
-	}
-
-	cmd := exec.Command(executable, "-test.run", "^TestEnvFatalSubprocess$")
-	cmd.Env = []string{fatalCaseVar + "=" + name}
-
-	// Run from an empty directory so the subprocess cannot pick up a
-	// contributor's .env while walking up from the package directory.
-	cmd.Dir = t.TempDir()
-
-	err = cmd.Run()
-
-	exitError, isExitError := err.(*exec.ExitError)
-	switch {
-	case err == nil:
-		return 0
-	case isExitError:
-		return exitError.ExitCode()
-	default:
-		t.Fatalf("could not run the fatal case %q: %v", name, err)
-		return -1
-	}
 }
 
 func TestGetPortString(t *testing.T) {
@@ -108,15 +44,24 @@ func TestGetEnvMongoURI(t *testing.T) {
 		const expected = "mongodb://localhost:27017"
 		t.Setenv("MONGODB_URI", expected)
 
-		if uri := GetEnvMongoURI(); uri != expected {
+		uri, err := GetEnvMongoURI()
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
+		if uri != expected {
 			t.Errorf("expected %q, got %q", expected, uri)
 		}
 	})
 
-	t.Run("Unset exits", func(t *testing.T) {
+	t.Run("Unset returns an error", func(t *testing.T) {
+		unsetEnv(t, "MONGODB_URI")
 
-		if code := runFatalCase(t, "mongo_uri"); code != 1 {
-			t.Errorf("expected exit code 1 when MONGODB_URI is unset, got %d", code)
+		uri, err := GetEnvMongoURI()
+		if err == nil {
+			t.Error("expected an error when MONGODB_URI is unset")
+		}
+		if uri != "" {
+			t.Errorf("expected an empty URI, got %q", uri)
 		}
 	})
 }
@@ -128,22 +73,26 @@ func TestGetClubsDBUri(t *testing.T) {
 		const expected = "mongodb://localhost:27017/clubs"
 		t.Setenv("CLUBS_DB_URI", expected)
 
-		if uri := GetClubsDBUri(); uri != expected {
+		uri, err := GetClubsDBUri()
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
+		if uri != expected {
 			t.Errorf("expected %q, got %q", expected, uri)
 		}
 	})
 
-	t.Run("Unset panics", func(t *testing.T) {
+	t.Run("Unset returns an error", func(t *testing.T) {
 
 		unsetEnv(t, "CLUBS_DB_URI")
 
-		defer func() {
-			if recovered := recover(); recovered == nil {
-				t.Error("expected a panic when CLUBS_DB_URI is unset")
-			}
-		}()
-
-		GetClubsDBUri()
+		uri, err := GetClubsDBUri()
+		if err == nil {
+			t.Error("expected an error when CLUBS_DB_URI is unset")
+		}
+		if uri != "" {
+			t.Errorf("expected an empty URI, got %q", uri)
+		}
 	})
 }
 
@@ -158,7 +107,10 @@ func TestGetEnvLogin(t *testing.T) {
 		t.Setenv("LOGIN_NETID", expectedNetID)
 		t.Setenv("LOGIN_PASSWORD", expectedPassword)
 
-		netID, password := GetEnvLogin()
+		netID, password, err := GetEnvLogin()
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
 
 		if netID != expectedNetID {
 			t.Errorf("expected net ID %q, got %q", expectedNetID, netID)
@@ -168,17 +120,29 @@ func TestGetEnvLogin(t *testing.T) {
 		}
 	})
 
-	t.Run("Missing net ID exits", func(t *testing.T) {
+	t.Run("Missing net ID returns an error", func(t *testing.T) {
+		unsetEnv(t, "LOGIN_NETID")
+		t.Setenv("LOGIN_PASSWORD", "hunter2")
 
-		if code := runFatalCase(t, "login_netid"); code != 1 {
-			t.Errorf("expected exit code 1 when LOGIN_NETID is unset, got %d", code)
+		netID, password, err := GetEnvLogin()
+		if err == nil {
+			t.Error("expected an error when LOGIN_NETID is unset")
+		}
+		if netID != "" || password != "" {
+			t.Errorf("expected empty login values, got net ID %q and password %q", netID, password)
 		}
 	})
 
-	t.Run("Missing password exits", func(t *testing.T) {
+	t.Run("Missing password returns an error", func(t *testing.T) {
+		t.Setenv("LOGIN_NETID", "abc123456")
+		unsetEnv(t, "LOGIN_PASSWORD")
 
-		if code := runFatalCase(t, "login_password"); code != 1 {
-			t.Errorf("expected exit code 1 when LOGIN_PASSWORD is unset, got %d", code)
+		netID, password, err := GetEnvLogin()
+		if err == nil {
+			t.Error("expected an error when LOGIN_PASSWORD is unset")
+		}
+		if netID != "" || password != "" {
+			t.Errorf("expected empty login values, got net ID %q and password %q", netID, password)
 		}
 	})
 }
