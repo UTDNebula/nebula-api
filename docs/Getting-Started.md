@@ -79,7 +79,7 @@ If you installed **Go** with [**Homebrew**](https://brew.sh/), you need to add G
 
 ### Configure Environment Variables
 
-First, make a file called `.env` at the root of the project. 
+First, make a file called `.env` at the root of the project.
 
 Then, copy the contents of `.env.template` into it. Some parts in `nebula-api` require certain environment variables, which you can fill in `.env`.
 

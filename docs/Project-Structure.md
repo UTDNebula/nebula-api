@@ -1,4 +1,5 @@
-# Project Structure 
+# Project Structure
+
 This file provides a brief overview of important directories and files.
 
 ```text
