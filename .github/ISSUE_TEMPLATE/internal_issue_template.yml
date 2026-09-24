@@ -1,6 +1,6 @@
 name: 🔧  Internal Change
 description: Suggest an internal change, e.g., documentation, dependencies, a code refactor
-labels: ["Task"]
+type: Task
 body:
   - type: markdown
     attributes:
