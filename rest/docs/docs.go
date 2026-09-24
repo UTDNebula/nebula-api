@@ -15,6 +15,79 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/academicCalendars/current": {
+            "get": {
+                "description": "Returns one academic calendar whose timeline is current.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Academic Calendars"
+                ],
+                "operationId": "academicCalendarsCurrent",
+                "responses": {
+                    "200": {
+                        "description": "The current academic calendar",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_AcademicCalendar"
+                        }
+                    },
+                    "404": {
+                        "description": "No current academic calendar",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/academicCalendars/{id}": {
+            "get": {
+                "description": "Returns the academic calendar for the given term ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Academic Calendars"
+                ],
+                "operationId": "academicCalendarsById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Academic term ID, for example 26F",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An academic calendar",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_AcademicCalendar"
+                        }
+                    },
+                    "404": {
+                        "description": "No matching academic calendar",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/astra/{date}": {
             "get": {
                 "description": "\"Returns AstraEvent based on the input date\"",
@@ -3679,6 +3752,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-schema_AcademicCalendar": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.AcademicCalendar"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-schema_BucketInfo": {
             "type": "object",
             "properties": {
@@ -3942,6 +4029,123 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "schema.AcademicCalendar": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "enrollment_opens": {
+                    "type": "string"
+                },
+                "last_from_waitlist": {
+                    "type": "string"
+                },
+                "last_readmission": {
+                    "type": "string"
+                },
+                "midterms_due": {
+                    "type": "string"
+                },
+                "no_classes": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "online_add_swap_ends": {
+                    "type": "string"
+                },
+                "schedule_planner_available": {
+                    "type": "string"
+                },
+                "sessions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.AcademicCalendarSession"
+                    }
+                },
+                "timeline": {
+                    "type": "string"
+                },
+                "university_closings": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.AcademicCalendarDropDeadlines": {
+            "type": "object",
+            "properties": {
+                "graduate_withdrawl_ends": {
+                    "type": "string"
+                },
+                "undergrad_approval_required": {
+                    "type": "string"
+                },
+                "without_w": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.AcademicCalendarSession": {
+            "type": "object",
+            "properties": {
+                "begin": {
+                    "type": "string"
+                },
+                "census_day": {
+                    "type": "string"
+                },
+                "drop_deadlines": {
+                    "$ref": "#/definitions/schema.AcademicCalendarDropDeadlines"
+                },
+                "end": {
+                    "type": "string"
+                },
+                "exams": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "final_grading_period": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "last_registration": {
+                    "type": "string"
+                },
+                "late_registration": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "reading_days": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

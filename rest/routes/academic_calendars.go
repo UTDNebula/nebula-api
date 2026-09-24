@@ -11,5 +11,5 @@ func AcademicCalendarRoute(router *gin.Engine) {
 
 	academicCalendarsGroup.OPTIONS("", controllers.Preflight)
 	academicCalendarsGroup.GET(":id", controllers.AcademicCalendarsById)
-	academicCalendarsGroup.GET("/current", controllers.AcadenemicCalendarsCurrent)
+	academicCalendarsGroup.GET("/current", controllers.AcademicCalendarsCurrent)
 }

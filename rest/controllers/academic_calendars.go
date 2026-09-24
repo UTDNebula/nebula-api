@@ -64,7 +64,7 @@ func AcademicCalendarsById(c *gin.Context) {
 //	@Success		200	{object}	schema.APIResponse[schema.AcademicCalendar]	"The current academic calendar"
 //	@Failure		404	{object}	schema.APIResponse[string]					"No current academic calendar"
 //	@Failure		500	{object}	schema.APIResponse[string]					"An internal server error"
-func AcadenemicCalendarsCurrent(c *gin.Context) {
+func AcademicCalendarsCurrent(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

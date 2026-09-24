@@ -129,6 +129,15 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-schema_AcademicCalendar:
+    properties:
+      data:
+        $ref: '#/definitions/schema.AcademicCalendar'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-schema_BucketInfo:
     properties:
       data:
@@ -299,6 +308,83 @@ definitions:
         type: string
       status:
         type: integer
+    type: object
+  schema.AcademicCalendar:
+    properties:
+      _id:
+        type: string
+      enrollment_opens:
+        type: string
+      last_from_waitlist:
+        type: string
+      last_readmission:
+        type: string
+      midterms_due:
+        type: string
+      no_classes:
+        items:
+          items:
+            type: string
+          type: array
+        type: array
+      online_add_swap_ends:
+        type: string
+      schedule_planner_available:
+        type: string
+      sessions:
+        items:
+          $ref: '#/definitions/schema.AcademicCalendarSession'
+        type: array
+      timeline:
+        type: string
+      university_closings:
+        items:
+          items:
+            type: string
+          type: array
+        type: array
+      url:
+        type: string
+    type: object
+  schema.AcademicCalendarDropDeadlines:
+    properties:
+      graduate_withdrawl_ends:
+        type: string
+      undergrad_approval_required:
+        type: string
+      without_w:
+        type: string
+    type: object
+  schema.AcademicCalendarSession:
+    properties:
+      begin:
+        type: string
+      census_day:
+        type: string
+      drop_deadlines:
+        $ref: '#/definitions/schema.AcademicCalendarDropDeadlines'
+      end:
+        type: string
+      exams:
+        items:
+          type: string
+        type: array
+      final_grading_period:
+        items:
+          type: string
+        type: array
+      last_registration:
+        type: string
+      late_registration:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      reading_days:
+        items:
+          type: string
+        type: array
     type: object
   schema.AcademicSession:
     properties:
@@ -1161,6 +1247,54 @@ info:
   title: dev-nebula-api
   version: 1.1.0
 paths:
+  /academicCalendars/{id}:
+    get:
+      description: Returns the academic calendar for the given term ID.
+      operationId: academicCalendarsById
+      parameters:
+      - description: Academic term ID, for example 26F
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: An academic calendar
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_AcademicCalendar'
+        "404":
+          description: No matching academic calendar
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: An internal server error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Academic Calendars
+  /academicCalendars/current:
+    get:
+      description: Returns one academic calendar whose timeline is current.
+      operationId: academicCalendarsCurrent
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The current academic calendar
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_AcademicCalendar'
+        "404":
+          description: No current academic calendar
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: An internal server error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Academic Calendars
   /astra/{date}:
     get:
       description: '"Returns AstraEvent based on the input date"'
