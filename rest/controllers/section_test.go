@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func TestCourseById(t *testing.T) {
+func TestSectionCourseById(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	testCases := []struct {
@@ -23,7 +23,7 @@ func TestCourseById(t *testing.T) {
 	}{
 		{
 			name:                    "ReturnCourseSuccessfully",
-			id:                      "6a8f623120b48b6efe790172",
+			id:                      "6a8f623120b48b6efe790176",
 			expectedStatus:          http.StatusOK,
 			expectedResponseMessage: "success",
 		},
@@ -34,11 +34,11 @@ func TestCourseById(t *testing.T) {
 			expectedResponseMessage: `Parameter "id" is not a valid ObjectID.`,
 		},
 		{
-			name:                    "NoCourseFound",
+			name:                    "NoSectionFound",
 			id:                      primitive.NewObjectID().Hex(),
 			expectedStatus:          http.StatusNotFound,
 			expectedResponseMessage: "error",
-			expectedData:            "No courses with given ID",
+			expectedData:            "No section with given ID",
 		},
 	}
 
@@ -49,7 +49,7 @@ func TestCourseById(t *testing.T) {
 			context.Request = httptest.NewRequest(http.MethodGet, "/", nil)
 			context.Params = []gin.Param{{Key: "id", Value: testCase.id}}
 
-			CourseById(context)
+			SectionCourseById(context)
 
 			if responseRecorder.Code != testCase.expectedStatus {
 				t.Fatalf("expected status %d, got %d", testCase.expectedStatus, responseRecorder.Code)

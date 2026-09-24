@@ -50,7 +50,7 @@ func main() {
 
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{
-		Dsn:              "https://530f8e39f757b71ab26ad1aa12e17a4d@o4504918397353984.ingest.us.sentry.io/4509397160493056",
+		Dsn:              configs.GetEnvSentryDSN(),
 		TracesSampleRate: 1.0,
 		EnableTracing:    true,
 	}); err != nil {

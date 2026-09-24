@@ -115,3 +115,11 @@ func GetEnvMaxUploadSize() int64 {
 
 	return limit
 }
+
+func GetEnvSentryDSN() string {
+
+	// Sentry is disabled when initialized without a DSN, so an unset
+	// SENTRY_DSN keeps development errors out of Sentry. Only production
+	// sets this variable.
+	return os.Getenv("SENTRY_DSN")
+}
