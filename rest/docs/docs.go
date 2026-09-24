@@ -3078,6 +3078,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/schema.APIResponse-string"
                         }
                     },
+                    "404": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
                     "500": {
                         "description": "A string describing the error",
                         "schema": {
