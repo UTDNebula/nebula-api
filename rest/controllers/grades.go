@@ -54,7 +54,7 @@ import (
 // @Id				gradeAggregationBySemester
 // @Router			/grades/semester [get]
 // @Tags			Grades
-// @Description	"Returns grade distributions aggregated by semester"
+// @Description	"Returns grade distributions aggregated by semester. The grade_distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Produce		json
 // @Param			prefix			query		string									false	"The course's subject prefix"
 // @Param			number			query		string									false	"The course's official number"
@@ -71,7 +71,7 @@ func GradeAggregationSemester(c *gin.Context) {
 // @Id				gradeAggregationSectionType
 // @Router			/grades/semester/sectionType [get]
 // @Tags			Grades
-// @Description	"Returns the grade distributions aggregated by semester and broken down into section type"
+// @Description	"Returns the grade distributions aggregated by semester and broken down into section type. The grade_distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Produce		json
 // @Param			prefix			query		string										false	"The course's subject prefix"
 // @Param			number			query		string										false	"The course's official number"
@@ -88,14 +88,14 @@ func GradesAggregationSectionType(c *gin.Context) {
 // @Id				gradeAggregationOverall
 // @Router			/grades/overall [get]
 // @Tags			Grades
-// @Description	"Returns the overall grade distribution"
+// @Description	"Returns the overall grade distribution. The grade distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Produce		json
 // @Param			prefix			query		string						false	"The course's subject prefix"
 // @Param			number			query		string						false	"The course's official number"
 // @Param			first_name		query		string						false	"The professor's first name"
 // @Param			last_name		query		string						false	"The professors's last name"
 // @Param			section_number	query		string						false	"The number of the section"
-// @Success		200				{object}	schema.APIResponse[[]int]	"A grade distribution array"
+// @Success		200				{object}	schema.APIResponse[[]int]	"An 18-element grade distribution array: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Failure		500				{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400				{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesAggregationOverall(c *gin.Context) {
@@ -105,10 +105,10 @@ func GradesAggregationOverall(c *gin.Context) {
 // @Id				GradesByCourseID
 // @Router			/course/{id}/grades [get]
 // @Tags			Courses
-// @Description	"Returns the overall grade distribution for a course"
+// @Description	"Returns the overall grade distribution for a course. The grade distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Produce		json
 // @Param			id	path		string						true	"ID of course to get grades for"
-// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the course"
+// @Success		200	{object}	schema.APIResponse[[]int]	"An 18-element grade distribution array for the course: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesByCourseID(c *gin.Context) {
@@ -118,10 +118,10 @@ func GradesByCourseID(c *gin.Context) {
 // @Id				GradesBySectionID
 // @Router			/section/{id}/grades [get]
 // @Tags			Sections
-// @Description	"Returns the overall grade distribution for a section"
+// @Description	"Returns the overall grade distribution for a section. The grade distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Produce		json
 // @Param			id	path		string						true	"ID of section to get grades for"
-// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the section"
+// @Success		200	{object}	schema.APIResponse[[]int]	"An 18-element grade distribution array for the section: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesBySectionID(c *gin.Context) {
@@ -131,10 +131,10 @@ func GradesBySectionID(c *gin.Context) {
 // @Id				GradesByProfessorID
 // @Router			/professor/{id}/grades [get]
 // @Tags			Professors
-// @Description	"Returns the overall grade distribution for a professor"
+// @Description	"Returns the overall grade distribution for a professor. The grade distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Produce		json
 // @Param			id	path		string						true	"ID of professor to get grades for"
-// @Success		200	{object}	schema.APIResponse[[]int]	"A grade distribution array for the professor"
+// @Success		200	{object}	schema.APIResponse[[]int]	"An 18-element grade distribution array for the professor: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]"
 // @Failure		500	{object}	schema.APIResponse[string]	"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]	"A string describing the error"
 func GradesByProfessorID(c *gin.Context) {
@@ -374,7 +374,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 	switch flag {
 	case "overall", "course_endpoint", "section_endpoint", "professor_endpoint":
 		// combine all semester grade_distributions
-		overallResponse := [14]int{}
+		overallResponse := [18]int{}
 		for _, sem := range grades {
 			for i, grade := range sem.GradeDistribution {
 				overallResponse[i] += grade
@@ -494,7 +494,6 @@ func sumGradesStage() bson.D {
 	}
 }
 
-// Stage to group grade distribution
 func groupGradeDistributionStage(flag string) bson.D {
 	var groupDistributionID any = "$_id.academic_session"
 	// Add the section-type criteria
@@ -514,7 +513,10 @@ func groupGradeDistributionStage(flag string) bson.D {
 	}
 }
 
-// Additional stages for "section-type" pipeline
+// --------------------------------------------------------
+// NOTE: Additional stages for the section-type pipeline
+// --------------------------------------------------------
+
 // Stage to sort the section-type-specific grade distributions before grouping
 func sortGradeDistributionsStage() bson.D {
 	return bson.D{
