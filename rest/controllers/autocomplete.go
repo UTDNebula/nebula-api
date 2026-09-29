@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var DAGCollection *mongo.Collection = configs.GetCollection("DAG")
+var DAGCollection *mongo.Collection
 
 // @Id				autocompleteDAG
 // @Router			/autocomplete/dag [get]

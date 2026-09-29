@@ -14,12 +14,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var cometCalendarCollection *mongo.Collection = configs.GetCollection("cometCalendar")
+var cometCalendarCollection *mongo.Collection
 
 // @Id				CometCalendarEvents
 // @Router			/calendar/{date} [get]

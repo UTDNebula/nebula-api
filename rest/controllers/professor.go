@@ -18,7 +18,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var professorCollection *mongo.Collection = configs.GetCollection("professors")
+var professorCollection *mongo.Collection
 var aggregateMap = map[string]string{
 	"Course":  "courses",
 	"Section": "sections",
