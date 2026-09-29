@@ -11,9 +11,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type DBSingleton struct {
@@ -27,7 +27,7 @@ func ConnectDB() *mongo.Client {
 	once.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
+		client, err := mongo.Connect(newMongoClientOptions(GetEnvMongoURI()))
 		if err != nil {
 			log.Fatalf("Unable to create MongoDB client")
 		}
@@ -50,6 +50,12 @@ func ConnectDB() *mongo.Client {
 	return dbInstance.client
 }
 
+func newMongoClientOptions(uri string) *options.ClientOptions {
+	return options.Client().
+		ApplyURI(uri).
+		SetBSONOptions(&options.BSONOptions{DefaultDocumentM: true})
+}
+
 // getting database collections
 func GetCollection(collectionName string) *mongo.Collection {
 	client := ConnectDB()
@@ -57,9 +63,9 @@ func GetCollection(collectionName string) *mongo.Collection {
 	return collection
 }
 
-// Returns *options.FindOptions with a limit and offset applied.
+// Returns *options.FindOptionsBuilder with a limit and offset applied.
 // Produces an error if user-provided offset isn't able to be parsed.
-func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error) {
+func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptionsBuilder, error) {
 	delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
 
 	// parses offset if included in the query

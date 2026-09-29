@@ -10,9 +10,8 @@ import (
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // Sets the API's response to a request, producing valid JSON given a status code and data.
@@ -69,9 +68,9 @@ func respondWithInternalError(c *gin.Context, err error) {
 
 // Attempts to convert the given parameter to an ObjectID for use with MongoDB.
 // Automatically responds with http.StatusBadRequest if conversion fails.
-func objectIDFromParam(c *gin.Context, paramName string) (*primitive.ObjectID, error) {
+func objectIDFromParam(c *gin.Context, paramName string) (*bson.ObjectID, error) {
 	idHex := c.Param(paramName)
-	objectId, convertIdErr := primitive.ObjectIDFromHex(idHex)
+	objectId, convertIdErr := bson.ObjectIDFromHex(idHex)
 	if convertIdErr != nil {
 		// Respond with an error if we can't covert successfully
 		log.Println(convertIdErr)
