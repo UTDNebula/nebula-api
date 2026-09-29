@@ -106,7 +106,12 @@ func ClubSearch(c *gin.Context) {
             'updated_at', (updated_at AT TIME ZONE 'UTC'),
             'officers', officers,
             'contacts', contacts
-        ) ORDER BY paradedb.score(id) DESC) as club
+        ) ORDER BY (
+            (20.0 * word_similarity($1, coalesce(club.alias, '')))
+            + (10.0 * word_similarity($1, club.name))
+            + (5.0 * word_similarity($1, coalesce(array_to_string(club.tags, ' '), '')))
+            + (coalesce(-1.0 * (club.search_tsv <@> to_bm25query(to_tsvector('english', $1), 'club_search_idx')), 0.0))
+        ) DESC) as club
     FROM club
     JOIN LATERAL (
         SELECT jsonb_agg(jsonb_build_object(
@@ -116,15 +121,16 @@ func ClubSearch(c *gin.Context) {
     ) as contacts on TRUE
     JOIN LATERAL (
         SELECT jsonb_agg(jsonb_build_object('name',officers.name, 'position',officers.position)) as officers FROM officers where officers.club_id = club.id
-    ) as officers on TRUE where id @@@
-        paradedb.boolean(
-            should => ARRAY[
-            paradedb.boost(20,paradedb.match('alias',$1,distance=>2)),
-            paradedb.boost(10,paradedb.match('name',$1,distance=>2)),
-            paradedb.boost(1,paradedb.match('description',$1,distance=>1)),
-            paradedb.boost(5,paradedb.match('tags',$1,distance=>1))
-            ]) and id @@@ 
-        paradedb.const_score(0.0, paradedb.term('approved','approved'::approved_enum));
+    ) as officers on TRUE
+    WHERE (
+        club.search_tsv @@ websearch_to_tsquery('english', $1)
+        OR word_similarity($1, club.name) >= 0.2
+        OR word_similarity($1, COALESCE(club.alias, '')) >= 0.2
+        OR club.name ILIKE '%' || $1 || '%'
+        OR club.alias ILIKE '%' || $1 || '%'
+    ) AND (
+        'approved' = 'approved'::approved_enum
+    )
   `, search).Scan(&raw)
 
 	if err != nil {
