@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/UTDNebula/nebula-api/graphql/graph"
+	"github.com/UTDNebula/nebula-api/graphql/loaders"
 	"github.com/UTDNebula/nebula-api/shared/configs"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -42,8 +43,11 @@ func main() {
 		Cache: lru.New[string](100),
 	})
 
+	// Wraps the query handler with middleware for dataloaders
+	graphHandler := loaders.Middleware(srv)
+
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", graphHandler)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

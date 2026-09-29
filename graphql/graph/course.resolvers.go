@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
+	"github.com/UTDNebula/nebula-api/graphql/loaders"
 	"github.com/UTDNebula/nebula-api/shared/configs"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -74,15 +75,5 @@ func (r *queryResolver) Course(ctx context.Context, id string) (*model.Course, e
 
 // Sections is the resolver for the section field referenced from course
 func (r *courseResolver) Sections(ctx context.Context, obj *model.Course) ([]*model.Section, error) {
-	sections := make([]*model.Section, 0, len(obj.Sections))
-
-	for _, sectionRef := range obj.Sections {
-		section, err := r.Query().Section(ctx, sectionRef.ID)
-		if err != nil {
-			return nil, err
-		}
-		sections = append(sections, section)
-	}
-
-	return sections, nil
+	return loaders.GetSections(ctx, obj.Sections)
 }
