@@ -81,7 +81,7 @@ type Meeting struct {
 type Section struct {
 	Id                    primitive.ObjectID     `bson:"_id" json:"_id"`
 	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
-	Course                CourseKey              `bson:"course_key" json:"course_key" queryable:""`
+	Course                CourseKey              `bson:"course" json:"course" queryable:""`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
 	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session"`
 	Professors            []ProfessorKey         `bson:"professors" json:"professors"`
