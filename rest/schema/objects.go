@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"cloud.google.com/go/storage"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 type Course struct {
-	Id                       primitive.ObjectID     `bson:"_id" json:"_id"`
+	Id                       bson.ObjectID     `bson:"_id" json:"_id"`
 	Subject_prefix           string                 `bson:"subject_prefix" json:"subject_prefix" queryable:""`
 	Course_number            string                 `bson:"course_number" json:"course_number" queryable:""`
 	Title                    string                 `bson:"title" json:"title" queryable:""`
@@ -24,7 +24,7 @@ type Course struct {
 	Prerequisites            *CollectionRequirement `bson:"prerequisites" json:"prerequisites"`
 	Corequisites             *CollectionRequirement `bson:"corequisites" json:"corequisites"`
 	Co_or_pre_requisites     *CollectionRequirement `bson:"co_or_pre_requisites" json:"co_or_pre_requisites"`
-	Sections                 []primitive.ObjectID   `bson:"sections" json:"sections"`
+	Sections                 []bson.ObjectID   `bson:"sections" json:"sections"`
 	Lecture_contact_hours    string                 `bson:"lecture_contact_hours" json:"lecture_contact_hours" queryable:""`
 	Laboratory_contact_hours string                 `bson:"laboratory_contact_hours" json:"laboratory_contact_hours" queryable:""`
 	Offering_frequency       string                 `bson:"offering_frequency" json:"offering_frequency" queryable:""`
@@ -33,7 +33,7 @@ type Course struct {
 }
 
 type BasicCourse struct {
-	Id             primitive.ObjectID `bson:"_id" json:"_id"`
+	Id             bson.ObjectID `bson:"_id" json:"_id"`
 	Subject_prefix string             `bson:"subject_prefix" json:"subject_prefix" queryable:""`
 	Course_number  string             `bson:"course_number" json:"course_number" queryable:""`
 	Title          string             `bson:"title" json:"title" queryable:""`
@@ -73,12 +73,12 @@ type Meeting struct {
 }
 
 type Section struct {
-	Id                    primitive.ObjectID     `bson:"_id" json:"_id"`
+	Id                    bson.ObjectID     `bson:"_id" json:"_id"`
 	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
-	Course_reference      primitive.ObjectID     `bson:"course_reference" json:"course_reference" queryable:""`
+	Course_reference      bson.ObjectID     `bson:"course_reference" json:"course_reference" queryable:""`
 	Section_corequisites  *CollectionRequirement `bson:"section_corequisites" json:"section_corequisites"`
 	Academic_session      AcademicSession        `bson:"academic_session" json:"academic_session" queryable:""`
-	Professors            []primitive.ObjectID   `bson:"professors" json:"professors"`
+	Professors            []bson.ObjectID   `bson:"professors" json:"professors"`
 	Teaching_assistants   []Assistant            `bson:"teaching_assistants" json:"teaching_assistants" queryable:""`
 	Internal_class_number string                 `bson:"internal_class_number" json:"internal_class_number" queryable:""`
 	Instruction_mode      string                 `bson:"instruction_mode" json:"instruction_mode" queryable:""`
@@ -92,7 +92,7 @@ type Section struct {
 }
 
 type Professor struct {
-	Id           primitive.ObjectID   `bson:"_id" json:"_id"`
+	Id           bson.ObjectID   `bson:"_id" json:"_id"`
 	First_name   string               `bson:"first_name" json:"first_name" queryable:""`
 	Last_name    string               `bson:"last_name" json:"last_name" queryable:""`
 	Titles       []string             `bson:"titles" json:"titles" queryable:""`
@@ -102,11 +102,11 @@ type Professor struct {
 	Profile_uri  string               `bson:"profile_uri" json:"profile_uri" queryable:""`
 	Image_uri    string               `bson:"image_uri" json:"image_uri" queryable:""`
 	Office_hours []Meeting            `bson:"office_hours" json:"office_hours" queryable:""`
-	Sections     []primitive.ObjectID `bson:"sections" json:"sections"`
+	Sections     []bson.ObjectID `bson:"sections" json:"sections"`
 }
 
 type BasicProfessor struct {
-	Id           primitive.ObjectID `bson:"_id" json:"_id"`
+	Id           bson.ObjectID `bson:"_id" json:"_id"`
 	First_name   string             `bson:"first_name" json:"first_name" queryable:""`
 	Last_name    string             `bson:"last_name" json:"last_name" queryable:""`
 	Email        string             `bson:"email" json:"email" queryable:""`
@@ -116,7 +116,7 @@ type BasicProfessor struct {
 }
 
 type Organization struct {
-	Id             primitive.ObjectID `bson:"_id" json:"_id"`
+	Id             bson.ObjectID `bson:"_id" json:"_id"`
 	Title          string             `bson:"title" json:"title"`
 	Description    string             `bson:"description" json:"description"`
 	Categories     []string           `bson:"categories" json:"categories"`
@@ -126,7 +126,7 @@ type Organization struct {
 }
 
 type DiscountProgram struct {
-	Id       primitive.ObjectID `bson:"_id" json:"_id"`
+	Id       bson.ObjectID `bson:"_id" json:"_id"`
 	Category string             `bson:"category" json:"category"`
 	Business string             `bson:"business" json:"business"`
 	Address  []string           `bson:"address" json:"address"`
@@ -165,7 +165,7 @@ func (params *DiscountQueryParams) HasFields() bool {
 }
 
 type Event struct {
-	Id                 primitive.ObjectID `bson:"_id" json:"_id"`
+	Id                 bson.ObjectID `bson:"_id" json:"_id"`
 	Summary            string             `bson:"summary" json:"summary"`
 	Location           string             `bson:"location" json:"location"`
 	StartTime          time.Time          `bson:"start_time" json:"start_time"`
@@ -200,7 +200,7 @@ type RoomEvents[T any] struct {
 
 // Event types
 type SectionWithTime struct {
-	Section   primitive.ObjectID `bson:"section" json:"section"`
+	Section   bson.ObjectID `bson:"section" json:"section"`
 	StartTime string             `bson:"start_time" json:"start_time"`
 	EndTime   string             `bson:"end_time" json:"end_time"`
 }
@@ -430,7 +430,7 @@ type EvaluationField struct {
 }
 
 type Evaluation struct {
-	Id                   primitive.ObjectID `bson:"_id" json:"_id"`
+	Id                   bson.ObjectID `bson:"_id" json:"_id"`
 	CourseExperience     []EvaluationField  `bson:"course_experience" json:"course_experience"`
 	InstructorExperience []EvaluationField  `bson:"instructor_experience" json:"instructor_experience"`
 	StudentExperience    []EvaluationField  `bson:"student_experience" json:"student_experience"`
