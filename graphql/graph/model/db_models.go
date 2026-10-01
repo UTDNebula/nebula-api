@@ -178,7 +178,7 @@ type DBMeeting struct {
 }
 
 type DBSection struct {
-	ID                  bson.ObjectID       `bson:"_id"`
+	ID                  bson.ObjectID            `bson:"_id"`
 	SectionNumber       string                   `bson:"section_number"`
 	CourseReference     string                   `bson:"course_reference"`
 	SectionCorequisites *DBCollectionRequirement `bson:"section_corequisites"`
@@ -306,8 +306,8 @@ type DBRoomEvents struct {
 
 type DBSectionWithTime struct {
 	Section   bson.ObjectID `bson:"section" json:"section"`
-	StartTime string             `bson:"start_time" json:"start_time"`
-	EndTime   string             `bson:"end_time" json:"end_time"`
+	StartTime string        `bson:"start_time" json:"start_time"`
+	EndTime   string        `bson:"end_time" json:"end_time"`
 }
 
 func TransformSectionWithTime(dbSectionWithTime *DBSectionWithTime) *SectionWithTime {

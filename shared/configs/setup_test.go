@@ -115,8 +115,8 @@ func isEqual(actual interface{}, expected int) bool {
 
 func buildOptions(optionsBuilder *options.FindOptionsBuilder) options.FindOptions {
 	var options options.FindOptions
-		for _, set := range optionsBuilder.Opts {
-			_ = set(&options)
+	for _, set := range optionsBuilder.Opts {
+		_ = set(&options)
 	}
 	return options
 }

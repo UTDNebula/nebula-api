@@ -22,7 +22,7 @@ func NewCourseRequirement(classRef string, minGrade string) *CourseRequirement {
 
 type SectionRequirement struct {
 	Requirement      `bson:",inline" json:",inline"`
-	SectionReference  bson.ObjectID `bson:"section_reference" json:"section_reference"`
+	SectionReference bson.ObjectID `bson:"section_reference" json:"section_reference"`
 }
 
 func NewSectionRequirement(sectionRef bson.ObjectID) *SectionRequirement {

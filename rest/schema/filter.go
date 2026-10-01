@@ -14,7 +14,7 @@ import (
 var (
 	queryableCache sync.Map
 	baseStruct     = map[reflect.Type]bool{
-		reflect.TypeFor[time.Time]():          true,
+		reflect.TypeFor[time.Time]():     true,
 		reflect.TypeFor[bson.ObjectID](): true,
 	}
 	ignoredParameters = map[string]bool{
