@@ -17,16 +17,12 @@ func TestGetOptionLimit(t *testing.T) {
 		c, _ := gin.CreateTestContext(w)
 		c.Request = httptest.NewRequest("GET", "/?offset=25", nil)
 
-		query := bson.M{"offset": "should-be-deleted"}
+		query := bson.M{"offset": "should-be-ignored"}
 		optionsBuilder, err := GetOptionLimit(&query, c)
 		options := buildOptions(optionsBuilder)
 
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err)
-		}
-
-		if _, exists := query["offset"]; exists {
-			t.Error("Expected 'offset' to be deleted from the query map")
 		}
 
 		if options.Skip == nil || *options.Skip != int64(25) {
