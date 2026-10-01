@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 /*
@@ -178,7 +178,7 @@ type DBMeeting struct {
 }
 
 type DBSection struct {
-	ID                  primitive.ObjectID       `bson:"_id"`
+	ID                  bson.ObjectID       `bson:"_id"`
 	SectionNumber       string                   `bson:"section_number"`
 	CourseReference     string                   `bson:"course_reference"`
 	SectionCorequisites *DBCollectionRequirement `bson:"section_corequisites"`
@@ -305,7 +305,7 @@ type DBRoomEvents struct {
 }
 
 type DBSectionWithTime struct {
-	Section   primitive.ObjectID `bson:"section" json:"section"`
+	Section   bson.ObjectID `bson:"section" json:"section"`
 	StartTime string             `bson:"start_time" json:"start_time"`
 	EndTime   string             `bson:"end_time" json:"end_time"`
 }
