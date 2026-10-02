@@ -10,9 +10,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // We want to Filter (Match) ASAP
@@ -161,7 +160,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 	var sampleCourse schema.Course // the sample course with the given prefix and course number parameter
 	var sampleCourseFind bson.D    // the filter using prefix and course number to get sample course
 
-	var objId *primitive.ObjectID
+	var objId *bson.ObjectID
 
 	var err error
 
@@ -292,9 +291,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 			return
 		}
 
-		profIDs := make([]primitive.ObjectID, 0, len(results))
+		profIDs := make([]bson.ObjectID, 0, len(results))
 		for _, prof := range results {
-			profID := prof["_id"].(primitive.ObjectID)
+			profID := prof["_id"].(bson.ObjectID)
 			profIDs = append(profIDs, profID)
 		}
 
@@ -317,9 +316,9 @@ func gradesAggregation(flag string, c *gin.Context) {
 			return
 		}
 
-		courseIDs := make([]primitive.ObjectID, 0, len(results))
+		courseIDs := make([]bson.ObjectID, 0, len(results))
 		for _, course := range results {
-			courseID := course["_id"].(primitive.ObjectID)
+			courseID := course["_id"].(bson.ObjectID)
 			courseIDs = append(courseIDs, courseID)
 		}
 

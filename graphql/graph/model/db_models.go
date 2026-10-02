@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 /*
@@ -32,7 +32,7 @@ func transformColReq(dbColReq *DBCollectionRequirement) *CollectionRequirement {
 // NOTE: For now, course on Mongo side is identical to course on GraphQL side
 // However, in the near future, when we implement the REFERENCE RESOLVER, there will be diffs
 type DBCourse struct {
-	ID                     string                   `bson:"_id"`
+	ID                     bson.ObjectID            `bson:"_id"`
 	SubjectPrefix          string                   `bson:"subject_prefix"`
 	CourseNumber           string                   `bson:"course_number"`
 	Title                  string                   `bson:"title"`
@@ -47,7 +47,7 @@ type DBCourse struct {
 	Prerequisites          *DBCollectionRequirement `bson:"prerequisites"`
 	Corequisites           *DBCollectionRequirement `bson:"corequisites"`
 	CoOrPreRequisites      *DBCollectionRequirement `bson:"co_or_pre_requisites"`
-	Sections               []string                 `bson:"sections"`
+	Sections               []bson.ObjectID          `bson:"sections"`
 	LectureContactHours    string                   `bson:"lecture_contact_hours"`
 	LaboratoryContactHours string                   `bson:"laboratory_contact_hours"`
 	OfferingFrequency      string                   `bson:"offering_frequency"`
@@ -63,11 +63,11 @@ func TransformCourse(dbCourse *DBCourse) *Course {
 
 	sections := make([]*Section, len(dbCourse.Sections))
 	for i, sectionID := range dbCourse.Sections {
-		sections[i] = &Section{ID: sectionID}
+		sections[i] = &Section{ID: sectionID.Hex()}
 	}
 
 	return &Course{
-		dbCourse.ID,
+		dbCourse.ID.Hex(),
 		dbCourse.SubjectPrefix,
 		dbCourse.CourseNumber,
 		dbCourse.Title,
@@ -109,17 +109,17 @@ func TransformOffice(dbOffice *DBOffice) *Office {
 }
 
 type DBProfessor struct {
-	ID          string    `bson:"_id"`
-	FirstName   string    `bson:"first_name"`
-	LastName    string    `bson:"last_name"`
-	Titles      []string  `bson:"titles"`
-	Email       string    `bson:"email"`
-	PhoneNumber string    `bson:"phone_number"`
-	Office      *DBOffice `bson:"office"`
-	ProfileURI  string    `bson:"profile_uri"`
-	ImageURI    string    `bson:"image_uri"`
-	OfficeHours any       `bson:"office_hours"`
-	Sections    []string  `bson:"sections"`
+	ID          bson.ObjectID   `bson:"_id"`
+	FirstName   string          `bson:"first_name"`
+	LastName    string          `bson:"last_name"`
+	Titles      []string        `bson:"titles"`
+	Email       string          `bson:"email"`
+	PhoneNumber string          `bson:"phone_number"`
+	Office      *DBOffice       `bson:"office"`
+	ProfileURI  string          `bson:"profile_uri"`
+	ImageURI    string          `bson:"image_uri"`
+	OfficeHours any             `bson:"office_hours"`
+	Sections    []bson.ObjectID `bson:"sections"`
 }
 
 func TransformProfessor(dbProfessor *DBProfessor) *Professor {
@@ -129,11 +129,11 @@ func TransformProfessor(dbProfessor *DBProfessor) *Professor {
 
 	sections := make([]*Section, len(dbProfessor.Sections))
 	for i, sectionID := range dbProfessor.Sections {
-		sections[i] = &Section{ID: sectionID}
+		sections[i] = &Section{ID: sectionID.Hex()}
 	}
 
 	return &Professor{
-		dbProfessor.ID,
+		dbProfessor.ID.Hex(),
 		dbProfessor.FirstName,
 		dbProfessor.LastName,
 		dbProfessor.Titles,
@@ -178,12 +178,12 @@ type DBMeeting struct {
 }
 
 type DBSection struct {
-	ID                  primitive.ObjectID       `bson:"_id"`
+	ID                  bson.ObjectID            `bson:"_id"`
 	SectionNumber       string                   `bson:"section_number"`
-	CourseReference     string                   `bson:"course_reference"`
+	CourseReference     bson.ObjectID            `bson:"course_reference"`
 	SectionCorequisites *DBCollectionRequirement `bson:"section_corequisites"`
 	AcademicSession     DBAcademicSession        `bson:"academic_session"`
-	Professors          []string                 `bson:"professors"`
+	Professors          []bson.ObjectID          `bson:"professors"`
 	TeachingAssistants  []DBAssistant            `bson:"teaching_assistants"`
 	InternalClassNumber string                   `bson:"internal_class_number"`
 	InstructionMode     string                   `bson:"instruction_mode"`
@@ -250,13 +250,13 @@ func TransformSection(dbSection *DBSection) *Section {
 	}
 
 	courseRef := &Course{
-		ID: dbSection.CourseReference,
+		ID: dbSection.CourseReference.Hex(),
 	}
 
 	professors := make([]*Professor, len(dbSection.Professors))
 	for i, professorID := range dbSection.Professors {
 		professors[i] = &Professor{
-			ID: professorID,
+			ID: professorID.Hex(),
 		}
 	}
 
@@ -305,9 +305,9 @@ type DBRoomEvents struct {
 }
 
 type DBSectionWithTime struct {
-	Section   primitive.ObjectID `bson:"section" json:"section"`
-	StartTime string             `bson:"start_time" json:"start_time"`
-	EndTime   string             `bson:"end_time" json:"end_time"`
+	Section   bson.ObjectID `bson:"section" json:"section"`
+	StartTime string        `bson:"start_time" json:"start_time"`
+	EndTime   string        `bson:"end_time" json:"end_time"`
 }
 
 func TransformSectionWithTime(dbSectionWithTime *DBSectionWithTime) *SectionWithTime {

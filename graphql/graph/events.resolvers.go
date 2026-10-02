@@ -7,7 +7,7 @@ import (
 
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func (r *queryResolver) Events(ctx context.Context, date string, building *string, room *string) (model.EventResult, error) {

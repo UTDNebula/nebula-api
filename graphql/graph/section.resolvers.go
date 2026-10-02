@@ -7,9 +7,8 @@ import (
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 	"github.com/UTDNebula/nebula-api/shared/configs"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 // Sections is the resolver for the sections field.
@@ -63,7 +62,7 @@ func (r *queryResolver) Section(ctx context.Context, id string) (*model.Section,
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	objectId, err := primitive.ObjectIDFromHex(id)
+	objectId, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
