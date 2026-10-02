@@ -119,7 +119,7 @@ type DBProfessor struct {
 	ProfileURI  string        `bson:"profile_uri"`
 	ImageURI    string        `bson:"image_uri"`
 	OfficeHours any           `bson:"office_hours"`
-	Sections    []string      `bson:"sections"`
+	Sections    []bson.ObjectID      `bson:"sections"`
 }
 
 func TransformProfessor(dbProfessor *DBProfessor) *Professor {
@@ -129,7 +129,7 @@ func TransformProfessor(dbProfessor *DBProfessor) *Professor {
 
 	sections := make([]*Section, len(dbProfessor.Sections))
 	for i, sectionID := range dbProfessor.Sections {
-		sections[i] = &Section{ID: sectionID}
+		sections[i] = &Section{ID: sectionID.Hex()}
 	}
 
 	return &Professor{
