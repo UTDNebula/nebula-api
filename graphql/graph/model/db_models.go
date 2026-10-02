@@ -109,17 +109,17 @@ func TransformOffice(dbOffice *DBOffice) *Office {
 }
 
 type DBProfessor struct {
-	ID          bson.ObjectID `bson:"_id"`
-	FirstName   string        `bson:"first_name"`
-	LastName    string        `bson:"last_name"`
-	Titles      []string      `bson:"titles"`
-	Email       string        `bson:"email"`
-	PhoneNumber string        `bson:"phone_number"`
-	Office      *DBOffice     `bson:"office"`
-	ProfileURI  string        `bson:"profile_uri"`
-	ImageURI    string        `bson:"image_uri"`
-	OfficeHours any           `bson:"office_hours"`
-	Sections    []bson.ObjectID      `bson:"sections"`
+	ID          bson.ObjectID   `bson:"_id"`
+	FirstName   string          `bson:"first_name"`
+	LastName    string          `bson:"last_name"`
+	Titles      []string        `bson:"titles"`
+	Email       string          `bson:"email"`
+	PhoneNumber string          `bson:"phone_number"`
+	Office      *DBOffice       `bson:"office"`
+	ProfileURI  string          `bson:"profile_uri"`
+	ImageURI    string          `bson:"image_uri"`
+	OfficeHours any             `bson:"office_hours"`
+	Sections    []bson.ObjectID `bson:"sections"`
 }
 
 func TransformProfessor(dbProfessor *DBProfessor) *Professor {
