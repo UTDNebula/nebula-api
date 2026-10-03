@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/bson/primitive"
 )
 
 type Requirement struct {
@@ -23,10 +22,10 @@ func NewCourseRequirement(classRef string, minGrade string) *CourseRequirement {
 
 type SectionRequirement struct {
 	Requirement      `bson:",inline" json:",inline"`
-	SectionReference primitive.ObjectID `bson:"section_reference" json:"section_reference"`
+	SectionReference bson.ObjectID `bson:"section_reference" json:"section_reference"`
 }
 
-func NewSectionRequirement(sectionRef primitive.ObjectID) *SectionRequirement {
+func NewSectionRequirement(sectionRef bson.ObjectID) *SectionRequirement {
 	return &SectionRequirement{Requirement{"section"}, sectionRef}
 }
 

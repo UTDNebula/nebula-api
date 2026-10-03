@@ -14,7 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
@@ -213,7 +212,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 	}
 
 	// Extract section IDs for the specified building and room using case-insensitive matching
-	var sectionIDs []primitive.ObjectID
+	var sectionIDs []bson.ObjectID
 	buildingFound := false
 	for _, b := range events.Buildings {
 		if strings.EqualFold(strings.TrimSpace(b.Building), building) {

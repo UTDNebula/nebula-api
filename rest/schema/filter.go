@@ -9,14 +9,13 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/bson/primitive"
 )
 
 var (
 	queryableCache sync.Map
 	baseStruct     = map[reflect.Type]bool{
-		reflect.TypeFor[time.Time]():          true,
-		reflect.TypeFor[primitive.ObjectID](): true,
+		reflect.TypeFor[time.Time]():     true,
+		reflect.TypeFor[bson.ObjectID](): true,
 	}
 	ignoredParameters = map[string]bool{
 		"offset": true,
