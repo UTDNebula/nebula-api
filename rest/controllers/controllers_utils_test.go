@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson/primitive"
 )
 
 // TestObjectIDFromParam validates the conversion of URL string parameters to MongoDB ObjectIDs.

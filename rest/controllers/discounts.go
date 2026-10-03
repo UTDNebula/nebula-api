@@ -12,8 +12,8 @@ import (
 	"github.com/UTDNebula/nebula-api/rest/configs"
 	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 var discountCollection *mongo.Collection = configs.GetCollection("discounts")

@@ -8,7 +8,7 @@ import (
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson/primitive"
 )
 
 func TestCourseById(t *testing.T) {
