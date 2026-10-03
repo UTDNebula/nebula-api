@@ -8,7 +8,7 @@ import (
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/v2/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func TestCourseById(t *testing.T) {
@@ -35,7 +35,7 @@ func TestCourseById(t *testing.T) {
 		},
 		{
 			name:                    "NoCourseFound",
-			id:                      primitive.NewObjectID().Hex(),
+			id:                      bson.NewObjectID().Hex(),
 			expectedStatus:          http.StatusNotFound,
 			expectedResponseMessage: "error",
 			expectedData:            "No courses with given ID",
