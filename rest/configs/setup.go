@@ -27,7 +27,7 @@ func ConnectDB() *mongo.Client {
 	once.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
+		client, err := mongo.Connect(options.Client().ApplyURI(GetEnvMongoURI()))
 		if err != nil {
 			log.Fatalf("Unable to create MongoDB client")
 		}
@@ -59,7 +59,7 @@ func GetCollection(collectionName string) *mongo.Collection {
 
 // Returns *options.FindOptions with a limit and offset applied.
 // Produces an error if user-provided offset isn't able to be parsed.
-func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error) {
+func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptionsBuilder, error) {
 	delete(*query, "offset") // removes offset (if present) in query --offset is not field in collections
 
 	// parses offset if included in the query
@@ -73,7 +73,7 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error)
 	} else {
 		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
 		if err != nil {
-			return options.Find().SetSkip(0).SetLimit(limit), err // default value for offset
+			return options.Find().SetSkip(0).SetLimit(limit), err
 		}
 	}
 
