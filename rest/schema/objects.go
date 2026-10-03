@@ -381,6 +381,19 @@ type Club struct {
 	Contacts     []Contact           `json:"contacts"`
 }
 
+type ClubEvent struct {
+	ID          string    `json:"id"`
+	ClubID      string    `json:"club_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	StartTime   time.Time `json:"start_time"`
+	EndTime     time.Time `json:"end_time"`
+	Location    string    `json:"location"`
+	Image       string    `json:"image"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
 type EmailAttachment struct {
 	Name string `json:"name" binding:"required"`
 	Data []byte `json:"data" binding:"required"`

@@ -74,6 +74,7 @@ func ClubDirectoryInfo(c *gin.Context) {
 		return
 	}
 
+	// Since filtering by ID, return the single club
 	respond(c, http.StatusOK, "success", clubs[0])
 }
 
@@ -148,6 +149,53 @@ func ClubSearch(c *gin.Context) {
 		return
 	}
 
-	// Since filtering by ID, return the single club
 	respond(c, http.StatusOK, "success", clubs)
+}
+
+func EventSearch(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	search := c.Query("q")
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, `
+		SELECT 
+            jsonb_agg(jsonb_build_object(
+                'id', events.id,
+                'club_id', events.club_id,
+                'name', events.name,
+                'description', events.description,
+                'start_time', (start_time AT TIME ZONE 'UTC'),
+                'end_time', (end_time AT TIME ZONE 'UTC'),
+                'location', events.location,
+                'image', events.image,
+                'created_at', (created_at AT TIME ZONE 'UTC'),
+                'updated_at', (updated_at AT TIME ZONE 'UTC')
+            ) ORDER BY (
+                ts_rank(search_tsv, websearch_to_tsquery('english', $1))
+            ) DESC) as events
+        FROM events
+        WHERE events.search_tsv @@ (websearch_to_tsquery('english', $1))
+        AND events.approved = 'approved'::status_enum
+  `, search).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "Event not found")
+		return
+	}
+
+	var clubEvents []schema.ClubEvent
+	if err := json.Unmarshal(raw, &clubEvents); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// Since filtering by ID, return the single club
+	respond(c, http.StatusOK, "success", clubEvents)
 }
