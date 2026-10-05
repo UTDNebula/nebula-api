@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 // TestGetOptionLimit checks if the function correctly parses offset from query params
@@ -18,19 +19,28 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/?offset=25", nil)
 
 		query := bson.M{"offset": "should-be-deleted"}
-		options, err := GetOptionLimit(&query, c)
+
+		optBuilder, err := GetOptionLimit(&query, c)
 
 		if err != nil {
-			t.Fatalf("Expected no error, got %v", err) // Use Fatalf to stop if options is nil
+			t.Fatalf("Expected no error, got %v", err)
 		}
 
 		if _, exists := query["offset"]; exists {
 			t.Error("Expected 'offset' to be deleted from the query map")
 		}
 
-		// Ensure we compare the same types (int64)
-		if options.Skip == nil || *options.Skip != int64(25) {
-			t.Errorf("Expected Skip to be 25, got %v", options.Skip)
+		// Extract the builder data into a testable struct
+		// opt acts as a setter
+		findOpts := &options.FindOptions{}
+		for _, opt := range optBuilder.Opts {
+			if err := opt(findOpts); err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		if findOpts.Skip == nil || *findOpts.Skip != int64(25) {
+			t.Errorf("Expected Skip to be 25, got %v", findOpts.Skip)
 		}
 	})
 
@@ -39,10 +49,20 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/", nil)
 
 		query := bson.M{}
-		options, _ := GetOptionLimit(&query, c)
 
-		if options.Skip == nil || *options.Skip != int64(0) {
-			t.Errorf("Expected default Skip to be 0, got %v", options.Skip)
+		optBuilder, _ := GetOptionLimit(&query, c)
+
+		// Extract the builder data into a testable struct
+		// opt acts as a setter
+		findOpts := &options.FindOptions{}
+		for _, opt := range optBuilder.Opts {
+			if err := opt(findOpts); err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		if findOpts.Skip == nil || *findOpts.Skip != int64(0) {
+			t.Errorf("Expected default Skip to be 0, got %v", findOpts.Skip)
 		}
 	})
 

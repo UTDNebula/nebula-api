@@ -8,7 +8,7 @@ import (
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func TestSectionCourseById(t *testing.T) {
@@ -35,7 +35,7 @@ func TestSectionCourseById(t *testing.T) {
 		},
 		{
 			name:                    "NoSectionFound",
-			id:                      primitive.NewObjectID().Hex(),
+			id:                      bson.NewObjectID().Hex(),
 			expectedStatus:          http.StatusNotFound,
 			expectedResponseMessage: "error",
 			expectedData:            "No section with given ID",
