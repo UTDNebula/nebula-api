@@ -7,10 +7,12 @@ import (
 
 func ClubRoute(router *gin.Engine) {
 	// All routes related to courses come here
-	clubGroup := router.Group("/club")
+	clubGroup := router.Group("/clubs")
 
 	clubGroup.OPTIONS("", controllers.Preflight)
-	clubGroup.GET(":id", controllers.ClubDirectoryInfo)
+	clubGroup.GET("/:id", controllers.ClubById)
+	clubGroup.GET("/:id/events", controllers.ClubEvents)
 	clubGroup.GET("/search", controllers.ClubSearch)
-	clubGroup.GET("/searchEvent", controllers.EventSearch)
+	clubGroup.GET("/events/:id", controllers.ClubsEventById)
+	clubGroup.GET("/events/search", controllers.ClubsEventSearch)
 }

@@ -381,7 +381,7 @@ type Club struct {
 	Contacts     []Contact           `json:"contacts"`
 }
 
-type ClubEvent struct {
+type ClubsEvent struct {
 	ID          string    `json:"id"`
 	ClubID      string    `json:"club_id"`
 	Name        string    `json:"name"`

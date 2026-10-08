@@ -13,8 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Id				clubGet
-// @Router			/club/{id} [get]
+// @Id				clubById
+// @Router			/clubs/{id} [get]
 // @Tags			Clubs
 // @Description	"Returns the directory info for given club."
 // @Produce		json
@@ -22,7 +22,7 @@ import (
 // @Success		200	{object}	schema.APIResponse[schema.Club]	"A club"
 // @Failure		500	{object}	schema.APIResponse[string]		"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]		"A string describing the error"
-func ClubDirectoryInfo(c *gin.Context) {
+func ClubById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -78,8 +78,62 @@ func ClubDirectoryInfo(c *gin.Context) {
 	respond(c, http.StatusOK, "success", clubs[0])
 }
 
+// @Id				clubEvents
+// @Router			/clubs/{id}/events [get]
+// @Tags			Clubs
+// @Description	"Returns the upcoming events for given club."
+// @Produce		json
+// @Param			id	path		string									true	"ID of the club to get"
+// @Success		200	{object}	schema.APIResponse[schema.ClubsEvent]	"An event"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+func ClubEvents(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	id := c.Param("id")
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, `
+    SELECT 
+        jsonb_agg(jsonb_build_object(
+            'id', events.id,
+            'club_id', events.club_id,
+            'name', events.name,
+            'description', events.description,
+            'start_time', (start_time AT TIME ZONE 'UTC'),
+            'end_time', (end_time AT TIME ZONE 'UTC'),
+            'location', events.location,
+            'image', events.image,
+            'created_at', (created_at AT TIME ZONE 'UTC'),
+            'updated_at', (updated_at AT TIME ZONE 'UTC')
+        )) as events
+    FROM events
+    WHERE events.club_id = $1
+    AND events.approved = 'approved'::status_enum;
+  `, id).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "Club not found")
+		return
+	}
+
+	var clubsEvents []schema.ClubsEvent
+	if err := json.Unmarshal(raw, &clubsEvents); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", clubsEvents)
+}
+
 // @Id				clubSearch
-// @Router			/club/search [get]
+// @Router			/clubs/search [get]
 // @Tags			Clubs
 // @Description	"Returns list of clubs matching the search string"
 // @Produce		json
@@ -152,7 +206,70 @@ func ClubSearch(c *gin.Context) {
 	respond(c, http.StatusOK, "success", clubs)
 }
 
-func EventSearch(c *gin.Context) {
+// @Id				clubsEventById
+// @Router			/clubs/events/{id} [get]
+// @Tags			Clubs, Events
+// @Description	"Returns the directory info for given event"
+// @Produce		json
+// @Param			id	path		string									true	"ID of the event to get"
+// @Success		200	{object}	schema.APIResponse[schema.ClubsEvent]	"An event"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+func ClubsEventById(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	id := c.Param("id")
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, `
+		SELECT 
+            jsonb_agg(jsonb_build_object(
+                'id', events.id,
+                'club_id', events.club_id,
+                'name', events.name,
+                'description', events.description,
+                'start_time', (start_time AT TIME ZONE 'UTC'),
+                'end_time', (end_time AT TIME ZONE 'UTC'),
+                'location', events.location,
+                'image', events.image,
+                'created_at', (created_at AT TIME ZONE 'UTC'),
+                'updated_at', (updated_at AT TIME ZONE 'UTC')
+            )) as events
+        FROM events
+        WHERE events.id = $1
+  `, id).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "Event not found")
+		return
+	}
+
+	var clubsEvents []schema.ClubsEvent
+	if err := json.Unmarshal(raw, &clubsEvents); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// Return single event
+	respond(c, http.StatusOK, "success", clubsEvents[0])
+}
+
+// @Id				clubsEventSearch
+// @Router			/clubs/events/search [get]
+// @Tags			Clubs, Events
+// @Description	"Returns list of events matching the search string"
+// @Produce		json
+// @Param			q	query		string									true	"Search string"
+// @Success		200	{object}	schema.APIResponse[[]schema.ClubsEvent]	"List of matching events"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+func ClubsEventSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -190,12 +307,11 @@ func EventSearch(c *gin.Context) {
 		return
 	}
 
-	var clubEvents []schema.ClubEvent
-	if err := json.Unmarshal(raw, &clubEvents); err != nil {
+	var clubsEvents []schema.ClubsEvent
+	if err := json.Unmarshal(raw, &clubsEvents); err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
 
-	// Since filtering by ID, return the single club
-	respond(c, http.StatusOK, "success", clubEvents)
+	respond(c, http.StatusOK, "success", clubsEvents)
 }
