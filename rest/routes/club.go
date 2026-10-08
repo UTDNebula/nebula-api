@@ -6,7 +6,7 @@ import (
 )
 
 func ClubRoute(router *gin.Engine) {
-	// All routes related to courses come here
+	// All routes related to UTD Clubs come here
 	clubGroup := router.Group("/clubs")
 
 	clubGroup.OPTIONS("", controllers.Preflight)

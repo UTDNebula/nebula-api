@@ -1442,7 +1442,7 @@ paths:
       - Events
   /clubs/{id}:
     get:
-      description: '"Returns the directory info for given club."'
+      description: Returns the listing info for the club with given ID
       operationId: clubById
       parameters:
       - description: ID of the club to get
@@ -1469,10 +1469,10 @@ paths:
       - Clubs
   /clubs/{id}/events:
     get:
-      description: '"Returns the upcoming events for given club."'
+      description: Returns the upcoming events for the club with given ID
       operationId: clubEvents
       parameters:
-      - description: ID of the club to get
+      - description: ID of the club to get events for
         in: path
         name: id
         required: true
@@ -1496,7 +1496,7 @@ paths:
       - Clubs
   /clubs/events/{id}:
     get:
-      description: '"Returns the directory info for given event"'
+      description: Returns the listing info for the event with given ID
       operationId: clubsEventById
       parameters:
       - description: ID of the event to get
@@ -1521,10 +1521,9 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Clubs
-      - Events
   /clubs/events/search:
     get:
-      description: '"Returns list of events matching the search string"'
+      description: Returns list of events matching the search string
       operationId: clubsEventSearch
       parameters:
       - description: Search string
@@ -1549,10 +1548,9 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Clubs
-      - Events
   /clubs/search:
     get:
-      description: '"Returns list of clubs matching the search string"'
+      description: Returns list of clubs matching the search string
       operationId: clubSearch
       parameters:
       - description: Search string

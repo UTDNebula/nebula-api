@@ -360,13 +360,12 @@ const docTemplate = `{
         },
         "/clubs/events/search": {
             "get": {
-                "description": "\"Returns list of events matching the search string\"",
+                "description": "Returns list of events matching the search string",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Clubs",
-                    "Events"
+                    "Clubs"
                 ],
                 "operationId": "clubsEventSearch",
                 "parameters": [
@@ -402,13 +401,12 @@ const docTemplate = `{
         },
         "/clubs/events/{id}": {
             "get": {
-                "description": "\"Returns the directory info for given event\"",
+                "description": "Returns the listing info for the event with given ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Clubs",
-                    "Events"
+                    "Clubs"
                 ],
                 "operationId": "clubsEventById",
                 "parameters": [
@@ -444,7 +442,7 @@ const docTemplate = `{
         },
         "/clubs/search": {
             "get": {
-                "description": "\"Returns list of clubs matching the search string\"",
+                "description": "Returns list of clubs matching the search string",
                 "produces": [
                     "application/json"
                 ],
@@ -485,7 +483,7 @@ const docTemplate = `{
         },
         "/clubs/{id}": {
             "get": {
-                "description": "\"Returns the directory info for given club.\"",
+                "description": "Returns the listing info for the club with given ID",
                 "produces": [
                     "application/json"
                 ],
@@ -526,7 +524,7 @@ const docTemplate = `{
         },
         "/clubs/{id}/events": {
             "get": {
-                "description": "\"Returns the upcoming events for given club.\"",
+                "description": "Returns the upcoming events for the club with given ID",
                 "produces": [
                     "application/json"
                 ],
@@ -537,7 +535,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID of the club to get",
+                        "description": "ID of the club to get events for",
                         "name": "id",
                         "in": "path",
                         "required": true

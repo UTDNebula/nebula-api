@@ -16,7 +16,7 @@ import (
 // @Id				clubById
 // @Router			/clubs/{id} [get]
 // @Tags			Clubs
-// @Description	"Returns the directory info for given club."
+// @Description	Returns the listing info for the club with given ID
 // @Produce		json
 // @Param			id	path		string							true	"ID of the club to get"
 // @Success		200	{object}	schema.APIResponse[schema.Club]	"A club"
@@ -74,16 +74,16 @@ func ClubById(c *gin.Context) {
 		return
 	}
 
-	// Since filtering by ID, return the single club
+	// Return single club since filtering by unique ID
 	respond(c, http.StatusOK, "success", clubs[0])
 }
 
 // @Id				clubEvents
 // @Router			/clubs/{id}/events [get]
 // @Tags			Clubs
-// @Description	"Returns the upcoming events for given club."
+// @Description	Returns the upcoming events for the club with given ID
 // @Produce		json
-// @Param			id	path		string									true	"ID of the club to get"
+// @Param			id	path		string									true	"ID of the club to get events for"
 // @Success		200	{object}	schema.APIResponse[schema.ClubsEvent]	"An event"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
@@ -135,7 +135,7 @@ func ClubEvents(c *gin.Context) {
 // @Id				clubSearch
 // @Router			/clubs/search [get]
 // @Tags			Clubs
-// @Description	"Returns list of clubs matching the search string"
+// @Description	Returns list of clubs matching the search string
 // @Produce		json
 // @Param			q	query		string								true	"Search string"
 // @Success		200	{object}	schema.APIResponse[[]schema.Club]	"List of matching clubs"
@@ -208,8 +208,8 @@ func ClubSearch(c *gin.Context) {
 
 // @Id				clubsEventById
 // @Router			/clubs/events/{id} [get]
-// @Tags			Clubs, Events
-// @Description	"Returns the directory info for given event"
+// @Tags			Clubs
+// @Description	Returns the listing info for the event with given ID
 // @Produce		json
 // @Param			id	path		string									true	"ID of the event to get"
 // @Success		200	{object}	schema.APIResponse[schema.ClubsEvent]	"An event"
@@ -256,14 +256,14 @@ func ClubsEventById(c *gin.Context) {
 		return
 	}
 
-	// Return single event
+	// Return single event since filtering by unique ID
 	respond(c, http.StatusOK, "success", clubsEvents[0])
 }
 
 // @Id				clubsEventSearch
 // @Router			/clubs/events/search [get]
-// @Tags			Clubs, Events
-// @Description	"Returns list of events matching the search string"
+// @Tags			Clubs
+// @Description	Returns list of events matching the search string
 // @Produce		json
 // @Param			q	query		string									true	"Search string"
 // @Success		200	{object}	schema.APIResponse[[]schema.ClubsEvent]	"List of matching events"
