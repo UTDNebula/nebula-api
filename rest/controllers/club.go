@@ -13,6 +13,41 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const ClubsClubJSONB = `jsonb_build_object(
+    'slug', slug,
+    'id', club.id,
+    'name', club.name,
+    'description', club.description,
+    'tags', tags,
+    'profile_image', profile_image,
+    'updated_at', (updated_at AT TIME ZONE 'UTC'),
+    'officers', officers,
+    'contacts', contacts
+)`
+
+const ClubsContactJSONB = `jsonb_build_object(
+    'platform', contacts.platform,
+    'url', contacts.url
+)`
+
+const ClubsOfficerJSONB = `jsonb_build_object(
+    'name', officers.name,
+    'position', officers.position
+)`
+
+const ClubsEventJSONB = `jsonb_build_object(
+    'id', events.id,
+    'club_id', events.club_id,
+    'name', events.name,
+    'description', events.description,
+    'start_time', (start_time AT TIME ZONE 'UTC'),
+    'end_time', (end_time AT TIME ZONE 'UTC'),
+    'location', events.location,
+    'image', events.image,
+    'created_at', (created_at AT TIME ZONE 'UTC'),
+    'updated_at', (updated_at AT TIME ZONE 'UTC')
+)`
+
 // @Id				clubById
 // @Router			/clubs/{id} [get]
 // @Tags			Clubs
@@ -31,33 +66,22 @@ func ClubById(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-    SELECT
-        jsonb_agg(jsonb_build_object(
-            'slug', slug,
-            'id', club.id,
-            'name', club.name,
-            'description', club.description,
-            'tags', tags,
-            'profile_image', profile_image,
-            'updated_at', (updated_at AT TIME ZONE 'UTC'),
-            'officers', officers,
-            'contacts', contacts
-        ))
-    FROM club
-    JOIN LATERAL (
-        SELECT jsonb_agg(jsonb_build_object(
-            'platform', contacts.platform,
-            'url', contacts.url
-        ) ORDER BY contacts.platform) as contacts from contacts where contacts.club_id = club.id
-    ) as contacts on TRUE
-    JOIN LATERAL (
-        SELECT jsonb_agg(jsonb_build_object(
-            'name', officers.name, 
-            'position', officers.position
-        )) as officers FROM officers where officers.club_id = club.id
-    ) as officers on TRUE
-    WHERE club.id = $1;
-  `, id).Scan(&raw)
+        SELECT jsonb_agg(`+ClubsClubJSONB+`)
+        FROM club
+            JOIN LATERAL (
+                SELECT jsonb_agg(`+ClubsContactJSONB+`
+                        ORDER BY contacts.platform
+                    ) AS contacts
+                FROM contacts
+                WHERE contacts.club_id = club.id
+            ) AS contacts ON TRUE
+            JOIN LATERAL (
+                SELECT jsonb_agg(`+ClubsOfficerJSONB+`) AS officers
+                FROM officers
+                WHERE officers.club_id = club.id
+            ) AS officers ON TRUE
+        WHERE club.id = $1;`,
+		id).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)
@@ -96,23 +120,11 @@ func ClubEvents(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-    SELECT 
-        jsonb_agg(jsonb_build_object(
-            'id', events.id,
-            'club_id', events.club_id,
-            'name', events.name,
-            'description', events.description,
-            'start_time', (start_time AT TIME ZONE 'UTC'),
-            'end_time', (end_time AT TIME ZONE 'UTC'),
-            'location', events.location,
-            'image', events.image,
-            'created_at', (created_at AT TIME ZONE 'UTC'),
-            'updated_at', (updated_at AT TIME ZONE 'UTC')
-        )) as events
-    FROM events
-    WHERE events.club_id = $1
-    AND events.approved = 'approved'::status_enum;
-  `, id).Scan(&raw)
+        SELECT jsonb_agg(`+ClubsEventJSONB+`) AS events
+        FROM events
+        WHERE events.club_id = $1
+            AND events.approved = 'approved'::status_enum;`,
+		id).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)
@@ -150,43 +162,36 @@ func ClubSearch(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-	SELECT
-        jsonb_agg(jsonb_build_object(
-            'slug',slug,
-            'id', club.id,
-            'name',club.name,
-            'description', club.description,
-            'tags',tags,
-            'profile_image', profile_image,
-            'updated_at', (updated_at AT TIME ZONE 'UTC'),
-            'officers', officers,
-            'contacts', contacts
-        ) ORDER BY (
-            (20.0 * word_similarity($1, coalesce(club.alias, '')))
-            + (10.0 * word_similarity($1, club.name))
-            + (5.0 * word_similarity($1, coalesce(array_to_string(club.tags, ' '), '')))
-            + (coalesce(-1.0 * (club.search_tsv <@> to_bm25query(to_tsvector('english', $1), 'club_search_idx')), 0.0))
-        ) DESC) as club
-    FROM club
-    JOIN LATERAL (
-        SELECT jsonb_agg(jsonb_build_object(
-            'platform',contacts.platform,
-            'url', contacts.url
-        ) ORDER BY contacts.platform) as contacts from contacts where contacts.club_id = club.id
-    ) as contacts on TRUE
-    JOIN LATERAL (
-        SELECT jsonb_agg(jsonb_build_object('name',officers.name, 'position',officers.position)) as officers FROM officers where officers.club_id = club.id
-    ) as officers on TRUE
-    WHERE (
-        club.search_tsv @@ websearch_to_tsquery('english', $1)
-        OR word_similarity($1, club.name) >= 0.2
-        OR word_similarity($1, COALESCE(club.alias, '')) >= 0.2
-        OR club.name ILIKE '%' || $1 || '%'
-        OR club.alias ILIKE '%' || $1 || '%'
-    ) AND (
-        'approved' = 'approved'::approved_enum
-    )
-  `, search).Scan(&raw)
+        SELECT jsonb_agg(`+ClubsClubJSONB+`
+                ORDER BY (
+                    (20.0 * word_similarity($1, coalesce(club.alias, '')))
+                    + (10.0 * word_similarity($1, club.name))
+                    + (5.0 * word_similarity($1, coalesce(array_to_string(club.tags, ' '), '')))
+                    + (coalesce(-1.0 * (club.search_tsv <@> to_bm25query(to_tsvector('english', $1), 'club_search_idx')), 0.0))
+                ) DESC
+            ) AS club
+        FROM club
+            JOIN LATERAL (
+                SELECT jsonb_agg(`+ClubsContactJSONB+`
+                        ORDER BY contacts.platform
+                    ) AS contacts
+                FROM contacts
+                WHERE contacts.club_id = club.id
+            ) AS contacts ON TRUE
+            JOIN LATERAL (
+                SELECT jsonb_agg(`+ClubsOfficerJSONB+`) AS officers
+                FROM officers
+                WHERE officers.club_id = club.id
+            ) AS officers ON TRUE
+        WHERE (
+                club.search_tsv @@ websearch_to_tsquery('english', $1)
+                OR word_similarity($1, club.name) >= 0.2
+                OR word_similarity($1, COALESCE(club.alias, '')) >= 0.2
+                OR club.name ILIKE '%' || $1 || '%'
+                OR club.alias ILIKE '%' || $1 || '%'
+            )
+            AND 'approved' = 'approved'::approved_enum`,
+		search).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)
@@ -224,22 +229,10 @@ func ClubsEventById(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-		SELECT 
-            jsonb_agg(jsonb_build_object(
-                'id', events.id,
-                'club_id', events.club_id,
-                'name', events.name,
-                'description', events.description,
-                'start_time', (start_time AT TIME ZONE 'UTC'),
-                'end_time', (end_time AT TIME ZONE 'UTC'),
-                'location', events.location,
-                'image', events.image,
-                'created_at', (created_at AT TIME ZONE 'UTC'),
-                'updated_at', (updated_at AT TIME ZONE 'UTC')
-            )) as events
+        SELECT jsonb_agg(`+ClubsEventJSONB+`) AS events
         FROM events
-        WHERE events.id = $1
-  `, id).Scan(&raw)
+        WHERE events.id = $1`,
+		id).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)
@@ -278,25 +271,15 @@ func ClubsEventSearch(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-		SELECT 
-            jsonb_agg(jsonb_build_object(
-                'id', events.id,
-                'club_id', events.club_id,
-                'name', events.name,
-                'description', events.description,
-                'start_time', (start_time AT TIME ZONE 'UTC'),
-                'end_time', (end_time AT TIME ZONE 'UTC'),
-                'location', events.location,
-                'image', events.image,
-                'created_at', (created_at AT TIME ZONE 'UTC'),
-                'updated_at', (updated_at AT TIME ZONE 'UTC')
-            ) ORDER BY (
-                ts_rank(search_tsv, websearch_to_tsquery('english', $1))
-            ) DESC) as events
+		SELECT jsonb_agg(`+ClubsEventJSONB+`
+                ORDER BY (
+                    ts_rank(search_tsv, websearch_to_tsquery('english', $1))
+                ) DESC
+            ) AS events
         FROM events
         WHERE events.search_tsv @@ (websearch_to_tsquery('english', $1))
-        AND events.approved = 'approved'::status_enum
-  `, search).Scan(&raw)
+            AND events.approved = 'approved'::status_enum`,
+		search).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)
