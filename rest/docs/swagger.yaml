@@ -476,24 +476,36 @@ definitions:
     type: object
   schema.Club:
     properties:
+      alias:
+        type: string
+      banner_image:
+        type: string
       contacts:
         items:
-          $ref: '#/definitions/schema.Contact'
+          $ref: '#/definitions/schema.ClubsContact'
         type: array
       description:
         type: string
+      founding_date:
+        type: string
       id:
         type: string
+      membership_forms:
+        items:
+          $ref: '#/definitions/schema.ClubsMembershipForm'
+        type: array
       name:
         type: string
       officers:
         items:
-          additionalProperties:
-            type: string
-          type: object
+          $ref: '#/definitions/schema.ClubsOfficer'
         type: array
       profile_image:
         type: string
+      schools:
+        items:
+          type: string
+        type: array
       slug:
         type: string
       tags:
@@ -501,6 +513,13 @@ definitions:
           type: string
         type: array
       updated_at:
+        type: string
+    type: object
+  schema.ClubsContact:
+    properties:
+      platform:
+        type: string
+      url:
         type: string
     type: object
   schema.ClubsEvent:
@@ -526,6 +545,20 @@ definitions:
       updated_at:
         type: string
     type: object
+  schema.ClubsMembershipForm:
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  schema.ClubsOfficer:
+    properties:
+      name:
+        type: string
+      position:
+        type: string
+    type: object
   schema.CollectionRequirement:
     properties:
       name:
@@ -536,13 +569,6 @@ definitions:
       required:
         type: integer
       type:
-        type: string
-    type: object
-  schema.Contact:
-    properties:
-      platform:
-        type: string
-      url:
         type: string
     type: object
   schema.Course:

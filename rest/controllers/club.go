@@ -14,20 +14,20 @@ import (
 )
 
 const ClubsClubJSONB = `jsonb_build_object(
-    'slug', slug,
     'id', club.id,
+    'slug', club.slug,
     'name', club.name,
+    'alias', club.alias,
+    'founding_date', (club.founding_date AT TIME ZONE 'UTC'),
+    'updated_at', (club.updated_at AT TIME ZONE 'UTC'),
     'description', club.description,
-    'tags', tags,
-    'profile_image', profile_image,
-    'updated_at', (updated_at AT TIME ZONE 'UTC'),
+    'tags', club.tags,
+    'profile_image', club.profile_image,
+    'banner_image', club.banner_image,
+    'schools', club.schools,
     'officers', officers,
-    'contacts', contacts
-)`
-
-const ClubsContactJSONB = `jsonb_build_object(
-    'platform', contacts.platform,
-    'url', contacts.url
+    'contacts', contacts,
+    'membership_forms', membership_forms
 )`
 
 const ClubsOfficerJSONB = `jsonb_build_object(
@@ -35,17 +35,27 @@ const ClubsOfficerJSONB = `jsonb_build_object(
     'position', officers.position
 )`
 
+const ClubsContactJSONB = `jsonb_build_object(
+    'platform', contacts.platform,
+    'url', contacts.url
+)`
+
+const ClubsMembershipFormJSONB = `jsonb_build_object(
+    'name', membership_forms.name,
+    'url', membership_forms.url
+)`
+
 const ClubsEventJSONB = `jsonb_build_object(
     'id', events.id,
     'club_id', events.club_id,
     'name', events.name,
     'description', events.description,
-    'start_time', (start_time AT TIME ZONE 'UTC'),
-    'end_time', (end_time AT TIME ZONE 'UTC'),
+    'start_time', (events.start_time AT TIME ZONE 'UTC'),
+    'end_time', (events.end_time AT TIME ZONE 'UTC'),
     'location', events.location,
     'image', events.image,
-    'created_at', (created_at AT TIME ZONE 'UTC'),
-    'updated_at', (updated_at AT TIME ZONE 'UTC')
+    'created_at', (events.created_at AT TIME ZONE 'UTC'),
+    'updated_at', (events.updated_at AT TIME ZONE 'UTC')
 )`
 
 // @Id				clubById
@@ -69,17 +79,26 @@ func ClubById(c *gin.Context) {
         SELECT jsonb_agg(`+ClubsClubJSONB+`)
         FROM club
             JOIN LATERAL (
+                SELECT jsonb_agg(`+ClubsOfficerJSONB+`
+                        ORDER BY officers.display_order
+                    ) AS officers
+                FROM officers
+                WHERE officers.club_id = club.id
+            ) AS officers ON TRUE
+            JOIN LATERAL (
                 SELECT jsonb_agg(`+ClubsContactJSONB+`
-                        ORDER BY contacts.platform
+                        ORDER BY contacts.display_order
                     ) AS contacts
                 FROM contacts
                 WHERE contacts.club_id = club.id
             ) AS contacts ON TRUE
             JOIN LATERAL (
-                SELECT jsonb_agg(`+ClubsOfficerJSONB+`) AS officers
-                FROM officers
-                WHERE officers.club_id = club.id
-            ) AS officers ON TRUE
+                SELECT jsonb_agg(`+ClubsMembershipFormJSONB+`
+                        ORDER BY membership_forms.display_order
+                    ) AS membership_forms
+                FROM membership_forms
+                WHERE membership_forms.club_id = club.id
+            ) AS membership_forms ON TRUE
         WHERE club.id = $1;`,
 		id).Scan(&raw)
 
@@ -172,17 +191,26 @@ func ClubSearch(c *gin.Context) {
             ) AS club
         FROM club
             JOIN LATERAL (
+                SELECT jsonb_agg(`+ClubsOfficerJSONB+`
+                        ORDER BY officers.display_order
+                    ) AS officers
+                FROM officers
+                WHERE officers.club_id = club.id
+            ) AS officers ON TRUE
+            JOIN LATERAL (
                 SELECT jsonb_agg(`+ClubsContactJSONB+`
-                        ORDER BY contacts.platform
+                        ORDER BY contacts.display_order
                     ) AS contacts
                 FROM contacts
                 WHERE contacts.club_id = club.id
             ) AS contacts ON TRUE
             JOIN LATERAL (
-                SELECT jsonb_agg(`+ClubsOfficerJSONB+`) AS officers
-                FROM officers
-                WHERE officers.club_id = club.id
-            ) AS officers ON TRUE
+                SELECT jsonb_agg(`+ClubsMembershipFormJSONB+`
+                        ORDER BY membership_forms.display_order
+                    ) AS membership_forms
+                FROM membership_forms
+                WHERE membership_forms.club_id = club.id
+            ) AS membership_forms ON TRUE
         WHERE (
                 club.search_tsv @@ websearch_to_tsquery('english', $1)
                 OR word_similarity($1, club.name) >= 0.2

@@ -4339,17 +4339,32 @@ const docTemplate = `{
         "schema.Club": {
             "type": "object",
             "properties": {
+                "alias": {
+                    "type": "string"
+                },
+                "banner_image": {
+                    "type": "string"
+                },
                 "contacts": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.Contact"
+                        "$ref": "#/definitions/schema.ClubsContact"
                     }
                 },
                 "description": {
                     "type": "string"
                 },
+                "founding_date": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
+                },
+                "membership_forms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.ClubsMembershipForm"
+                    }
                 },
                 "name": {
                     "type": "string"
@@ -4357,14 +4372,17 @@ const docTemplate = `{
                 "officers": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "string"
-                        }
+                        "$ref": "#/definitions/schema.ClubsOfficer"
                     }
                 },
                 "profile_image": {
                     "type": "string"
+                },
+                "schools": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "slug": {
                     "type": "string"
@@ -4376,6 +4394,17 @@ const docTemplate = `{
                     }
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ClubsContact": {
+            "type": "object",
+            "properties": {
+                "platform": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }
@@ -4415,6 +4444,28 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.ClubsMembershipForm": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ClubsOfficer": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.CollectionRequirement": {
             "type": "object",
             "properties": {
@@ -4429,17 +4480,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.Contact": {
-            "type": "object",
-            "properties": {
-                "platform": {
-                    "type": "string"
-                },
-                "url": {
                     "type": "string"
                 }
             }
