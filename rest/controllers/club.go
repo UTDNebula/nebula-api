@@ -134,6 +134,11 @@ func ClubEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
+	now := time.Now()
+	nowDateTime := now.Format(time.DateTime)
+	inOneYear := time.Now().Add(365 * 24 * time.Hour)
+	inOneYearDateTime := inOneYear.Format(time.DateTime)
+
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
 	id := c.Param("id")
 
@@ -142,6 +147,8 @@ func ClubEvents(c *gin.Context) {
         SELECT jsonb_agg(`+ClubsEventJSONB+`) AS events
         FROM events
         WHERE events.club_id = $1
+            AND events.end_time >= '`+nowDateTime+`'
+            AND events.start_time <= '`+inOneYearDateTime+`'
             AND events.approved = 'approved'::status_enum;`,
 		id).Scan(&raw)
 
@@ -294,6 +301,11 @@ func ClubsEventSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
+	now := time.Now()
+	nowDateTime := now.Format(time.DateTime)
+	inOneYear := time.Now().Add(365 * 24 * time.Hour)
+	inOneYearDateTime := inOneYear.Format(time.DateTime)
+
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
 	search := c.Query("q")
 
@@ -306,6 +318,8 @@ func ClubsEventSearch(c *gin.Context) {
             ) AS events
         FROM events
         WHERE events.search_tsv @@ (websearch_to_tsquery('english', $1))
+            AND events.end_time >= '`+nowDateTime+`'
+            AND events.start_time <= '`+inOneYearDateTime+`'
             AND events.approved = 'approved'::status_enum`,
 		search).Scan(&raw)
 
