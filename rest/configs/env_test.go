@@ -1,8 +1,12 @@
 package configs
 
 import (
+	"bytes"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
+	"sync"
 	"testing"
 )
 
@@ -78,6 +82,36 @@ func runFatalCase(t *testing.T, name string) int {
 		t.Fatalf("could not run the fatal case %q: %v", name, err)
 		return -1
 	}
+}
+
+// captureLog redirects the standard logger for the duration of the test and
+// returns what was written to it.
+func captureLog(t *testing.T) *bytes.Buffer {
+	t.Helper()
+
+	var captured bytes.Buffer
+
+	originalOutput := log.Writer()
+	originalFlags := log.Flags()
+	log.SetOutput(&captured)
+	log.SetFlags(0)
+
+	t.Cleanup(func() {
+		log.SetOutput(originalOutput)
+		log.SetFlags(originalFlags)
+	})
+
+	return &captured
+}
+
+// resetEnvWarnings clears the once-guards so a test can observe a warning that
+// an earlier test has already consumed.
+func resetEnvWarnings(t *testing.T) {
+	t.Helper()
+
+	limitWarnOnce = sync.Once{}
+	uploadSizeWarnOnce = sync.Once{}
+	uploadSizeCapWarnOnce = sync.Once{}
 }
 
 func TestGetPortString(t *testing.T) {
@@ -196,21 +230,53 @@ func TestGetEnvLimit(t *testing.T) {
 		}
 	})
 
-	t.Run("Set returns the parsed limit", func(t *testing.T) {
+	t.Run("Set returns the parsed limit without warning", func(t *testing.T) {
 
 		t.Setenv("LIMIT", "50")
+		resetEnvWarnings(t)
+		captured := captureLog(t)
 
 		if limit := GetEnvLimit(); limit != 50 {
 			t.Errorf("expected 50, got %d", limit)
 		}
+
+		if logged := captured.String(); logged != "" {
+			t.Errorf("expected no log output for a valid LIMIT, got %q", logged)
+		}
 	})
 
-	t.Run("Unparseable falls back to the default limit", func(t *testing.T) {
+	t.Run("Unparseable falls back to the default limit and warns", func(t *testing.T) {
 
 		t.Setenv("LIMIT", "not-a-number")
+		resetEnvWarnings(t)
+		captured := captureLog(t)
 
 		if limit := GetEnvLimit(); limit != defaultLimit {
 			t.Errorf("expected the default limit %d, got %d", defaultLimit, limit)
+		}
+
+		logged := captured.String()
+		for _, want := range []string{"LIMIT", "not-a-number", "20"} {
+			if !strings.Contains(logged, want) {
+				t.Errorf("expected the warning to mention %q, got %q", want, logged)
+			}
+		}
+	})
+
+	t.Run("Warns only once per process", func(t *testing.T) {
+
+		t.Setenv("LIMIT", "not-a-number")
+		resetEnvWarnings(t)
+		captured := captureLog(t)
+
+		GetEnvLimit()
+		GetEnvLimit()
+		GetEnvLimit()
+
+		// GetEnvLimit runs on every paginated request, so a misconfigured
+		// LIMIT must not log once per request.
+		if lines := strings.Count(captured.String(), "\n"); lines != 1 {
+			t.Errorf("expected exactly 1 warning across 3 calls, got %d: %q", lines, captured.String())
 		}
 	})
 }
@@ -240,21 +306,39 @@ func TestGetEnvMaxUploadSize(t *testing.T) {
 		}
 	})
 
-	t.Run("Unparseable falls back to the default size", func(t *testing.T) {
+	t.Run("Unparseable falls back to the default size and warns", func(t *testing.T) {
 
 		t.Setenv("MAX_UPLOAD_SIZE", "not-a-number")
+		resetEnvWarnings(t)
+		captured := captureLog(t)
 
 		if size := GetEnvMaxUploadSize(); size != defaultLimit {
 			t.Errorf("expected the default size %d, got %d", defaultLimit, size)
 		}
+
+		logged := captured.String()
+		for _, want := range []string{"MAX_UPLOAD_SIZE", "not-a-number", "31457280"} {
+			if !strings.Contains(logged, want) {
+				t.Errorf("expected the warning to mention %q, got %q", want, logged)
+			}
+		}
 	})
 
-	t.Run("Above the hard cap returns the hard cap", func(t *testing.T) {
+	t.Run("Above the hard cap returns the hard cap and warns", func(t *testing.T) {
 
 		t.Setenv("MAX_UPLOAD_SIZE", "104857600")
+		resetEnvWarnings(t)
+		captured := captureLog(t)
 
 		if size := GetEnvMaxUploadSize(); size != hardCapLimit {
 			t.Errorf("expected the hard cap %d, got %d", hardCapLimit, size)
+		}
+
+		logged := captured.String()
+		for _, want := range []string{"MAX_UPLOAD_SIZE", "104857600", "52428800"} {
+			if !strings.Contains(logged, want) {
+				t.Errorf("expected the warning to mention %q, got %q", want, logged)
+			}
 		}
 	})
 }
