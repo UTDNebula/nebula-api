@@ -20,12 +20,12 @@ var academicCalendarsCollection *mongo.Collection = configs.GetCollection("acade
 
 // AcademicCalendarsById returns an academic calendar by its string ID.
 //
-//	@Id					academicCalendarsById
-//	@Router				/academicCalendars/{id} [get]
-//	@Tags				Academic Calendars
-//	@Description		Returns the academic calendar for the given term ID.
-//	@Produce			json
-//	@Param			id	path		string										true							"Academic term ID, for example 26F"
+//	@Id				academicCalendarsById
+//	@Router			/academicCalendars/{id} [get]
+//	@Tags			Academic Calendars
+//	@Description	Returns the academic calendar for the given term ID.
+//	@Produce		json
+//	@Param			id	path		string										true	"Academic term ID, for example 26F"
 //	@Success		200	{object}	schema.APIResponse[schema.AcademicCalendar]	"An academic calendar"
 //	@Failure		404	{object}	schema.APIResponse[string]					"No matching academic calendar"
 //	@Failure		500	{object}	schema.APIResponse[string]					"An internal server error"
@@ -56,11 +56,11 @@ func AcademicCalendarsById(c *gin.Context) {
 
 // AcademicCalendarsCurrent returns an academic calendar marked as current.
 //
-//	@Id					academicCalendarsCurrent
-//	@Router				/academicCalendars/current [get]
-//	@Tags				Academic Calendars
-//	@Description		Returns one academic calendar whose timeline is current.
-//	@Produce			json
+//	@Id				academicCalendarsCurrent
+//	@Router			/academicCalendars/current [get]
+//	@Tags			Academic Calendars
+//	@Description	Returns one academic calendar whose timeline is current.
+//	@Produce		json
 //	@Success		200	{object}	schema.APIResponse[schema.AcademicCalendar]	"The current academic calendar"
 //	@Failure		404	{object}	schema.APIResponse[string]					"No current academic calendar"
 //	@Failure		500	{object}	schema.APIResponse[string]					"An internal server error"
