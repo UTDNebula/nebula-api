@@ -409,6 +409,20 @@ type ClubsEvent struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+type ClubsEventQueryParams struct {
+	Query     string    `form:"q"`
+	Sort      string    `form:"sort" binding:"omitempty,oneof=relevant upcoming past updated"`
+	Limit     int       `form:"limit" default:"20" binding:"omitempty,min=1,max=100"`
+	Offset    int       `form:"offset" default:"1" binding:"omitempty,min=1"`
+	StartDate time.Time `form:"start_date" time_format:"2006-01-02"`
+	EndDate   time.Time `form:"end_date" time_format:"2006-01-02"`
+	Tags      []string  `form:"tag"`
+}
+
+func (params *ClubsEventQueryParams) TrimSpace() {
+	params.Query = strings.TrimSpace(params.Query)
+}
+
 type EmailAttachment struct {
 	Name string `json:"name" binding:"required"`
 	Data []byte `json:"data" binding:"required"`

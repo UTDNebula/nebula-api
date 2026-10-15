@@ -3,7 +3,9 @@ package controllers
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"encoding/json"
@@ -269,22 +271,126 @@ func ClubsEventSearch(c *gin.Context) {
 	inOneYear := time.Now().Add(365 * 24 * time.Hour)
 	inOneYearDateTime := inOneYear.Format(time.DateTime)
 
+	var params schema.ClubsEventQueryParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+	params.TrimSpace()
+
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
-	search := c.Query("q")
+
+	var args []any
+	argc := 0
+	var conditions []string
+	join := ""
+	orderBy := ""
+	limit := "LIMIT 20"
+	offset := ""
+
+	// Handle Query
+	if params.Query != "" {
+		args = append(args, params.Query)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.search_tsv @@ (websearch_to_tsquery('english', $`, argc, `))`))
+		// By default, order by relevance if there's a search query
+		orderBy = fmt.Sprint(`ORDER BY (ts_rank(events.search_tsv, websearch_to_tsquery('english', $`, argc, `))) DESC`)
+	}
+
+	// Handle Sort
+	// By default, sort by upcoming. If Query is present, sort by relevant. If Sort is present, sort according to that
+	switch params.Sort {
+	case "relevant":
+		// Use orderBy statement from Query handler
+	case "past":
+		orderBy = "ORDER BY events.start_time DESC"
+	case "updated":
+		orderBy = "ORDER BY events.updated_at DESC"
+	default:
+		if params.Query != "" {
+			break
+		}
+		fallthrough
+	case "upcoming":
+		orderBy = "ORDER BY events.start_time ASC"
+	}
+
+	// Handle Tags
+	if len(params.Tags) != 0 {
+		args = append(args, params.Tags)
+		argc++
+		join = "JOIN club ON events.club_id = club.id"
+		conditions = append(conditions, fmt.Sprint(`club.tags && $`, argc))
+	}
+
+	// Handle StartDate
+	if params.StartDate.IsZero() {
+		if params.Sort != "past" {
+			conditions = append(conditions, `events.end_time >= '`+nowDateTime+`'`)
+		}
+	} else {
+		args = append(args, params.StartDate)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.end_time >= $`, argc, ``))
+	}
+
+	// Handle EndDate
+	if params.EndDate.IsZero() {
+		if params.Sort != "past" {
+			conditions = append(conditions, `events.start_time <= '`+inOneYearDateTime+`'`)
+		} else {
+			conditions = append(conditions, `events.start_time <= '`+nowDateTime+`'`)
+		}
+	} else {
+		args = append(args, params.EndDate)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.start_time <= $`, argc, ``))
+	}
+
+	// Handle Limit
+	if params.Limit > 0 {
+		args = append(args, params.Limit)
+		argc++
+		limit = fmt.Sprint("LIMIT $", argc)
+	}
+
+	// Handle Offset
+	if params.Offset > 0 {
+		args = append(args, params.Offset)
+		argc++
+		offset = fmt.Sprint("OFFSET $", argc)
+	}
+
+	// Construct query
+	var conditionsBuilder strings.Builder
+	for _, condition := range conditions {
+		conditionsBuilder.WriteString(" AND ")
+		conditionsBuilder.WriteString(condition)
+	}
+	query := `
+        SELECT jsonb_agg(subquery.event_data) AS events
+        FROM (
+            SELECT ` + schema.ClubsEventJSONB + ` AS event_data
+            FROM events
+            ` + join + `
+            WHERE events.approved = 'approved'::status_enum` + conditionsBuilder.String() + `
+            ` + orderBy + `
+            ` + limit + `
+            ` + offset + `
+        ) AS subquery;`
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("  ", argc, "ARGS:", args)
+	// fmt.Println(" ORDER BY:", orderBy)
+	// fmt.Println("    LIMIT:", limit)
+	// fmt.Println("   OFFSET:", offset)
+	// fmt.Println("StartDate:", params.StartDate)
+	// fmt.Println("  EndDate:", params.EndDate)
 
 	var raw []byte
-	err := clubsDatabase.QueryRowContext(ctx, `
-		SELECT jsonb_agg(`+schema.ClubsEventJSONB+`
-                ORDER BY (
-                    ts_rank(search_tsv, websearch_to_tsquery('english', $1))
-                ) DESC
-            ) AS events
-        FROM events
-        WHERE events.search_tsv @@ (websearch_to_tsquery('english', $1))
-            AND events.end_time >= '`+nowDateTime+`'
-            AND events.start_time <= '`+inOneYearDateTime+`'
-            AND events.approved = 'approved'::status_enum`,
-		search).Scan(&raw)
+	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)
