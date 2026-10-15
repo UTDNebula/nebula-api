@@ -97,22 +97,30 @@ func ClubEvents(c *gin.Context) {
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
 	id := c.Param("id")
 
+	var clubExists bool
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT jsonb_agg(`+schema.ClubsEventJSONB+`) AS events
-        FROM events
-        WHERE events.club_id = $1
-            AND events.end_time >= '`+nowDateTime+`'
-            AND events.start_time <= '`+inOneYearDateTime+`'
-            AND events.approved = 'approved'::status_enum;`,
-		id).Scan(&raw)
-
+        SELECT
+            EXISTS (SELECT 1 FROM club WHERE club.id = $1) AS club_exists,
+            (
+                SELECT jsonb_agg(`+schema.ClubsEventJSONB+`) AS events
+                FROM events
+                WHERE events.club_id = $1
+                    AND events.end_time >= '`+nowDateTime+`'
+                    AND events.start_time <= '`+inOneYearDateTime+`'
+                    AND events.approved = 'approved'::status_enum
+            ) AS events;`,
+		id).Scan(&clubExists, &raw)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-	if raw == nil {
+	if !clubExists {
 		respond(c, http.StatusNotFound, "error", "Club not found")
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "No events found for club")
 		return
 	}
 
@@ -188,7 +196,7 @@ func ClubSearch(c *gin.Context) {
 		return
 	}
 	if raw == nil {
-		respond(c, http.StatusNotFound, "error", "Club not found")
+		respond(c, http.StatusNotFound, "error", "No clubs found")
 		return
 	}
 
@@ -283,7 +291,7 @@ func ClubsEventSearch(c *gin.Context) {
 		return
 	}
 	if raw == nil {
-		respond(c, http.StatusNotFound, "error", "Event not found")
+		respond(c, http.StatusNotFound, "error", "No events found")
 		return
 	}
 
