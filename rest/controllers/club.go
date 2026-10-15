@@ -13,51 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const ClubsClubJSONB = `jsonb_build_object(
-    'id', club.id,
-    'slug', club.slug,
-    'name', club.name,
-    'alias', club.alias,
-    'founding_date', (club.founding_date AT TIME ZONE 'UTC'),
-    'updated_at', (club.updated_at AT TIME ZONE 'UTC'),
-    'description', club.description,
-    'tags', club.tags,
-    'profile_image', club.profile_image,
-    'banner_image', club.banner_image,
-    'schools', club.schools,
-    'officers', officers,
-    'contacts', contacts,
-    'membership_forms', membership_forms
-)`
-
-const ClubsOfficerJSONB = `jsonb_build_object(
-    'name', officers.name,
-    'position', officers.position
-)`
-
-const ClubsContactJSONB = `jsonb_build_object(
-    'platform', contacts.platform,
-    'url', contacts.url
-)`
-
-const ClubsMembershipFormJSONB = `jsonb_build_object(
-    'name', membership_forms.name,
-    'url', membership_forms.url
-)`
-
-const ClubsEventJSONB = `jsonb_build_object(
-    'id', events.id,
-    'club_id', events.club_id,
-    'name', events.name,
-    'description', events.description,
-    'start_time', (events.start_time AT TIME ZONE 'UTC'),
-    'end_time', (events.end_time AT TIME ZONE 'UTC'),
-    'location', events.location,
-    'image', events.image,
-    'created_at', (events.created_at AT TIME ZONE 'UTC'),
-    'updated_at', (events.updated_at AT TIME ZONE 'UTC')
-)`
-
 // @Id				clubById
 // @Router			/clubs/{id} [get]
 // @Tags			Clubs
@@ -76,24 +31,24 @@ func ClubById(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT jsonb_agg(`+ClubsClubJSONB+`)
+        SELECT jsonb_agg(`+schema.ClubsClubJSONB+`)
         FROM club
             JOIN LATERAL (
-                SELECT jsonb_agg(`+ClubsOfficerJSONB+`
+                SELECT jsonb_agg(`+schema.ClubsOfficerJSONB+`
                         ORDER BY officers.display_order
                     ) AS officers
                 FROM officers
                 WHERE officers.club_id = club.id
             ) AS officers ON TRUE
             JOIN LATERAL (
-                SELECT jsonb_agg(`+ClubsContactJSONB+`
+                SELECT jsonb_agg(`+schema.ClubsContactJSONB+`
                         ORDER BY contacts.display_order
                     ) AS contacts
                 FROM contacts
                 WHERE contacts.club_id = club.id
             ) AS contacts ON TRUE
             JOIN LATERAL (
-                SELECT jsonb_agg(`+ClubsMembershipFormJSONB+`
+                SELECT jsonb_agg(`+schema.ClubsMembershipFormJSONB+`
                         ORDER BY membership_forms.display_order
                     ) AS membership_forms
                 FROM membership_forms
@@ -144,7 +99,7 @@ func ClubEvents(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT jsonb_agg(`+ClubsEventJSONB+`) AS events
+        SELECT jsonb_agg(`+schema.ClubsEventJSONB+`) AS events
         FROM events
         WHERE events.club_id = $1
             AND events.end_time >= '`+nowDateTime+`'
@@ -188,7 +143,7 @@ func ClubSearch(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT jsonb_agg(`+ClubsClubJSONB+`
+        SELECT jsonb_agg(`+schema.ClubsClubJSONB+`
                 ORDER BY (
                     (20.0 * word_similarity($1, coalesce(club.alias, '')))
                     + (10.0 * word_similarity($1, club.name))
@@ -198,21 +153,21 @@ func ClubSearch(c *gin.Context) {
             ) AS club
         FROM club
             JOIN LATERAL (
-                SELECT jsonb_agg(`+ClubsOfficerJSONB+`
+                SELECT jsonb_agg(`+schema.ClubsOfficerJSONB+`
                         ORDER BY officers.display_order
                     ) AS officers
                 FROM officers
                 WHERE officers.club_id = club.id
             ) AS officers ON TRUE
             JOIN LATERAL (
-                SELECT jsonb_agg(`+ClubsContactJSONB+`
+                SELECT jsonb_agg(`+schema.ClubsContactJSONB+`
                         ORDER BY contacts.display_order
                     ) AS contacts
                 FROM contacts
                 WHERE contacts.club_id = club.id
             ) AS contacts ON TRUE
             JOIN LATERAL (
-                SELECT jsonb_agg(`+ClubsMembershipFormJSONB+`
+                SELECT jsonb_agg(`+schema.ClubsMembershipFormJSONB+`
                         ORDER BY membership_forms.display_order
                     ) AS membership_forms
                 FROM membership_forms
@@ -264,7 +219,7 @@ func ClubsEventById(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT jsonb_agg(`+ClubsEventJSONB+`) AS events
+        SELECT jsonb_agg(`+schema.ClubsEventJSONB+`) AS events
         FROM events
         WHERE events.id = $1`,
 		id).Scan(&raw)
@@ -311,7 +266,7 @@ func ClubsEventSearch(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-		SELECT jsonb_agg(`+ClubsEventJSONB+`
+		SELECT jsonb_agg(`+schema.ClubsEventJSONB+`
                 ORDER BY (
                     ts_rank(search_tsv, websearch_to_tsquery('english', $1))
                 ) DESC
