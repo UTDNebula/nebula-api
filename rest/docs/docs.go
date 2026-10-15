@@ -433,7 +433,7 @@ const docTemplate = `{
         },
         "/clubs/events/search": {
             "get": {
-                "description": "Returns list of events matching the search string",
+                "description": "Returns list of events matching the search string and filters",
                 "produces": [
                     "application/json"
                 ],
@@ -444,10 +444,60 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Search string",
+                        "description": "Search string to match event names and descriptions.",
                         "name": "q",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relevant",
+                            "upcoming",
+                            "past",
+                            "updated"
+                        ],
+                        "type": "string",
+                        "description": "Order of returned events. Default to upcoming. If ` + "`" + `q` + "`" + ` is provided, then defaults to relevant.",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date to begin searching for events. Defaults to current date. If ` + "`" + `sort` + "`" + ` is ` + "`" + `past` + "`" + `, then defaults to no value.\nFormat: YYYY-MM-DD",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date to search for events up to. Defaults to one year in the future. If ` + "`" + `sort` + "`" + ` is ` + "`" + `past` + "`" + `, then defaults to current date.\nFormat: YYYY-MM-DD",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Number of results to return.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "default": 0,
+                        "description": "The starting position of the current page of events",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "A club tag that should exist in the returned events' host clubs.",
+                        "name": "tag",
+                        "in": "query"
                     }
                 ],
                 "responses": {

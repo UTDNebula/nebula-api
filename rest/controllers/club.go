@@ -256,12 +256,18 @@ func ClubsEventById(c *gin.Context) {
 // @Id				clubsEventSearch
 // @Router			/clubs/events/search [get]
 // @Tags			Clubs
-// @Description	Returns list of events matching the search string
+// @Description	Returns list of events matching the search string and filters
 // @Produce		json
-// @Param			q	query		string									true	"Search string"
-// @Success		200	{object}	schema.APIResponse[[]schema.ClubsEvent]	"List of matching events"
-// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Param			q			query		string									false	"Search string to match event names and descriptions."
+// @Param			sort		query		string									false	"Order of returned events. Default to upcoming. If `q` is provided, then defaults to relevant."	Enums(relevant, upcoming, past, updated)
+// @Param			start_date	query		string									false	"Start date to begin searching for events. Defaults to current date. If `sort` is `past`, then defaults to no value.\nFormat: YYYY-MM-DD"
+// @Param			end_date	query		string									false	"End date to search for events up to. Defaults to one year in the future. If `sort` is `past`, then defaults to current date.\nFormat: YYYY-MM-DD"
+// @Param			limit		query		int										false	"Number of results to return."							minimum(1)	maximum(100)	default(20)
+// @Param			offset		query		int										false	"The starting position of the current page of events"	minimum(0)	default(0)
+// @Param			tag			query		[]string								false	"A club tag that should exist in the returned events' host clubs."
+// @Success		200			{object}	schema.APIResponse[[]schema.ClubsEvent]	"List of matching events"
+// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400			{object}	schema.APIResponse[string]				"A string describing the error"
 func ClubsEventSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()

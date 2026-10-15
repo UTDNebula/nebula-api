@@ -1683,14 +1683,55 @@ paths:
       - Clubs
   /clubs/events/search:
     get:
-      description: Returns list of events matching the search string
+      description: Returns list of events matching the search string and filters
       operationId: clubsEventSearch
       parameters:
-      - description: Search string
+      - description: Search string to match event names and descriptions.
         in: query
         name: q
-        required: true
         type: string
+      - description: Order of returned events. Default to upcoming. If `q` is provided,
+          then defaults to relevant.
+        enum:
+        - relevant
+        - upcoming
+        - past
+        - updated
+        in: query
+        name: sort
+        type: string
+      - description: |-
+          Start date to begin searching for events. Defaults to current date. If `sort` is `past`, then defaults to no value.
+          Format: YYYY-MM-DD
+        in: query
+        name: start_date
+        type: string
+      - description: |-
+          End date to search for events up to. Defaults to one year in the future. If `sort` is `past`, then defaults to current date.
+          Format: YYYY-MM-DD
+        in: query
+        name: end_date
+        type: string
+      - default: 20
+        description: Number of results to return.
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 0
+        description: The starting position of the current page of events
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - collectionFormat: csv
+        description: A club tag that should exist in the returned events' host clubs.
+        in: query
+        items:
+          type: string
+        name: tag
+        type: array
       produces:
       - application/json
       responses:
