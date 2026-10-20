@@ -86,8 +86,8 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 		trendsQuery = bson.M{
 			"_id": bson.M{
 				"course":     c.Query("subject_prefix") + c.Query("course_number"),
-				"prof_first": c.Query("first_name"),
-				"prof_last":  c.Query("last_name"),
+				"first_name": c.Query("first_name"),
+				"last_name":  c.Query("last_name"),
 			},
 		}
 	default:
