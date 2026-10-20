@@ -109,17 +109,6 @@ definitions:
       status:
         type: integer
     type: object
-  schema.APIResponse-array_string:
-    properties:
-      data:
-        items:
-          type: string
-        type: array
-      message:
-        type: string
-      status:
-        type: integer
-    type: object
   schema.APIResponse-int:
     properties:
       data:
@@ -169,15 +158,6 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/schema.Course'
-      message:
-        type: string
-      status:
-        type: integer
-    type: object
-  schema.APIResponse-schema_EmailRequest:
-    properties:
-      data:
-        $ref: '#/definitions/schema.EmailRequest'
       message:
         type: string
       status:
@@ -665,43 +645,6 @@ definitions:
         type: string
       website:
         type: string
-    type: object
-  schema.EmailAttachment:
-    properties:
-      data:
-        items:
-          type: integer
-        type: array
-      name:
-        type: string
-    required:
-    - data
-    - name
-    type: object
-  schema.EmailRequest:
-    properties:
-      attachments:
-        items:
-          $ref: '#/definitions/schema.EmailAttachment'
-        type: array
-      body:
-        type: string
-      embeds:
-        items:
-          $ref: '#/definitions/schema.EmailAttachment'
-        type: array
-      from:
-        type: string
-      subject:
-        type: string
-      to:
-        items:
-          type: string
-        type: array
-    required:
-    - body
-    - subject
-    - to
     type: object
   schema.Event:
     properties:
@@ -2062,79 +2005,6 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Discounts
-  /email/queue:
-    post:
-      consumes:
-      - application/json
-      description: '"Queue an email to be sent via SMTP. Multi-recipient emails will
-        be queued as separate emails to avoid bypassing queueing system. This route
-        is restricted to only Nebula Labs internal Projects."'
-      operationId: QueueEmail
-      parameters:
-      - description: Email Request Body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/schema.EmailRequest'
-      - description: The internal email queue key
-        in: header
-        name: x-email-queue-key
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: The list of queued task names
-          schema:
-            $ref: '#/definitions/schema.APIResponse-array_string'
-        "400":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-        "500":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-      tags:
-      - Internal
-  /email/send:
-    post:
-      consumes:
-      - application/json
-      description: '"Send an email via SMTP. This route is restricted to only Nebula
-        Labs internal Projects."'
-      operationId: sendEmail
-      parameters:
-      - description: Email Request Body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/schema.EmailRequest'
-      - description: The internal email send key
-        in: header
-        name: x-email-send-key
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Email Request Body
-          schema:
-            $ref: '#/definitions/schema.APIResponse-schema_EmailRequest'
-        "400":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-        "500":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-      tags:
-      - Internal
   /events/{date}:
     get:
       description: '"Returns all sections with meetings on the specified date"'

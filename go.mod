@@ -75,7 +75,6 @@ require (
 )
 
 require (
-	cloud.google.com/go/cloudtasks v1.19.0
 	github.com/bytedance/gopkg v0.1.4 // indirect
 	github.com/bytedance/sonic v1.15.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.15 // indirect
