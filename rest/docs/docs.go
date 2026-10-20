@@ -431,9 +431,141 @@ const docTemplate = `{
                 }
             }
         },
-        "/club/search": {
+        "/clubs/events/search": {
             "get": {
-                "description": "\"Returns list of clubs matching the search string\"",
+                "description": "Returns list of events matching the search string and filters",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "operationId": "clubsEventSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search string to match event names and descriptions.",
+                        "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relevant",
+                            "upcoming",
+                            "past",
+                            "updated"
+                        ],
+                        "type": "string",
+                        "description": "Order of returned events. Default to upcoming. If ` + "`" + `q` + "`" + ` is provided, then defaults to relevant.",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date to begin searching for events. Defaults to current date. If ` + "`" + `sort` + "`" + ` is ` + "`" + `past` + "`" + `, then defaults to no value.\nFormat: YYYY-MM-DD",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date to search for events up to. Defaults to one year in the future. If ` + "`" + `sort` + "`" + ` is ` + "`" + `past` + "`" + `, then defaults to current date.\nFormat: YYYY-MM-DD",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Number of results to return.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "default": 0,
+                        "description": "The starting position of the current page of events",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "A club tag that should exist in the returned events' host clubs.",
+                        "name": "tag",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of matching events",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_ClubsEvent"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/events/{id}": {
+            "get": {
+                "description": "Returns the listing info for the event with given ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "operationId": "clubsEventById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the event to get",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An event",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_ClubsEvent"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/search": {
+            "get": {
+                "description": "Returns list of clubs matching the search string",
                 "produces": [
                     "application/json"
                 ],
@@ -472,16 +604,16 @@ const docTemplate = `{
                 }
             }
         },
-        "/club/{id}": {
+        "/clubs/{id}": {
             "get": {
-                "description": "\"Returns the directory info for given club.\"",
+                "description": "Returns the listing info for the club with given ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Clubs"
                 ],
-                "operationId": "clubGet",
+                "operationId": "clubById",
                 "parameters": [
                     {
                         "type": "string",
@@ -496,6 +628,47 @@ const docTemplate = `{
                         "description": "A club",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-schema_Club"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/{id}/events": {
+            "get": {
+                "description": "Returns the upcoming events for the club with given ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "operationId": "clubEvents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the club to get events for",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An event",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_ClubsEvent"
                         }
                     },
                     "400": {
@@ -3513,6 +3686,23 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-array_schema_ClubsEvent": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.ClubsEvent"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-array_schema_Course": {
             "type": "object",
             "properties": {
@@ -3676,6 +3866,20 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/schema.Club"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-schema_ClubsEvent": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/schema.ClubsEvent"
                 },
                 "message": {
                     "type": "string"
@@ -4252,17 +4456,32 @@ const docTemplate = `{
         "schema.Club": {
             "type": "object",
             "properties": {
+                "alias": {
+                    "type": "string"
+                },
+                "banner_image": {
+                    "type": "string"
+                },
                 "contacts": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.Contact"
+                        "$ref": "#/definitions/schema.ClubsContact"
                     }
                 },
                 "description": {
                     "type": "string"
                 },
+                "founding_date": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
+                },
+                "membership_forms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.ClubsMembershipForm"
+                    }
                 },
                 "name": {
                     "type": "string"
@@ -4270,14 +4489,17 @@ const docTemplate = `{
                 "officers": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "string"
-                        }
+                        "$ref": "#/definitions/schema.ClubsOfficer"
                     }
                 },
                 "profile_image": {
                     "type": "string"
+                },
+                "schools": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "slug": {
                     "type": "string"
@@ -4289,6 +4511,74 @@ const docTemplate = `{
                     }
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ClubsContact": {
+            "type": "object",
+            "properties": {
+                "platform": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ClubsEvent": {
+            "type": "object",
+            "properties": {
+                "club_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ClubsMembershipForm": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ClubsOfficer": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "position": {
                     "type": "string"
                 }
             }
@@ -4307,17 +4597,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.Contact": {
-            "type": "object",
-            "properties": {
-                "platform": {
-                    "type": "string"
-                },
-                "url": {
                     "type": "string"
                 }
             }
