@@ -5302,7 +5302,7 @@ const docTemplate = `{
                     "name": "read-limit",
                     "unit": "1/min/{project}",
                     "values": {
-                        "STANDARD": 1000
+                        "STANDARD": 4000
                     }
                 }
             ]
@@ -5312,7 +5312,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.2.0",
+	Version:          "1.3.0",
 	Host:             "api.utdnebula.com",
 	BasePath:         "",
 	Schemes:          []string{"https", "http"},
