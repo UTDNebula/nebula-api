@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
+	"github.com/UTDNebula/nebula-api/graphql/loaders"
 	"github.com/UTDNebula/nebula-api/shared/configs"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -86,15 +87,5 @@ func (r *sectionResolver) CourseReference(
 }
 
 func (r *sectionResolver) Professors(ctx context.Context, obj *model.Section) ([]*model.Professor, error) {
-	professors := make([]*model.Professor, 0, len(obj.Professors))
-
-	for _, professorRef := range obj.Professors {
-		professor, err := r.Query().Professor(ctx, professorRef.ID)
-		if err != nil {
-			return nil, err
-		}
-		professors = append(professors, professor)
-	}
-
-	return professors, nil
+	return loaders.GetProfessors(ctx, obj.Professors)
 }

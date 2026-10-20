@@ -20,16 +20,19 @@ const (
 )
 
 type Loaders struct {
-	SectionLoader *dataloadgen.Loader[primitive.ObjectID, *model.Section]
+	SectionLoader   *dataloadgen.Loader[primitive.ObjectID, *model.Section]
+	ProfessorLoader *dataloadgen.Loader[primitive.ObjectID, *model.Professor]
 }
 
 // NewLoaders instantiates data loaders for the middleware
 func NewLoaders() *Loaders {
 	// Define the dataloaders
 	sectionReader := &sectionReader{collection: configs.GetCollection("sections")}
+	professorReader := &professorReader{collection: configs.GetCollection("professors")}
 
 	return &Loaders{
-		SectionLoader: dataloadgen.NewLoader(sectionReader.getSections, dataloadgen.WithWait(time.Millisecond)),
+		SectionLoader:   dataloadgen.NewLoader(sectionReader.getSections, dataloadgen.WithWait(time.Millisecond)),
+		ProfessorLoader: dataloadgen.NewLoader(professorReader.getProfessors, dataloadgen.WithWait(time.Millisecond)),
 	}
 }
 

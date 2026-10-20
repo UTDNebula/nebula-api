@@ -109,17 +109,17 @@ func TransformOffice(dbOffice *DBOffice) *Office {
 }
 
 type DBProfessor struct {
-	ID          string    `bson:"_id"`
-	FirstName   string    `bson:"first_name"`
-	LastName    string    `bson:"last_name"`
-	Titles      []string  `bson:"titles"`
-	Email       string    `bson:"email"`
-	PhoneNumber string    `bson:"phone_number"`
-	Office      *DBOffice `bson:"office"`
-	ProfileURI  string    `bson:"profile_uri"`
-	ImageURI    string    `bson:"image_uri"`
-	OfficeHours any       `bson:"office_hours"`
-	Sections    []string  `bson:"sections"`
+	ID          primitive.ObjectID   `bson:"_id"`
+	FirstName   string               `bson:"first_name"`
+	LastName    string               `bson:"last_name"`
+	Titles      []string             `bson:"titles"`
+	Email       string               `bson:"email"`
+	PhoneNumber string               `bson:"phone_number"`
+	Office      *DBOffice            `bson:"office"`
+	ProfileURI  string               `bson:"profile_uri"`
+	ImageURI    string               `bson:"image_uri"`
+	OfficeHours any                  `bson:"office_hours"`
+	Sections    []primitive.ObjectID `bson:"sections"`
 }
 
 func TransformProfessor(dbProfessor *DBProfessor) *Professor {
@@ -129,11 +129,11 @@ func TransformProfessor(dbProfessor *DBProfessor) *Professor {
 
 	sections := make([]*Section, len(dbProfessor.Sections))
 	for i, sectionID := range dbProfessor.Sections {
-		sections[i] = &Section{ID: sectionID}
+		sections[i] = &Section{ID: sectionID.Hex()}
 	}
 
 	return &Professor{
-		dbProfessor.ID,
+		dbProfessor.ID.Hex(),
 		dbProfessor.FirstName,
 		dbProfessor.LastName,
 		dbProfessor.Titles,
@@ -183,7 +183,7 @@ type DBSection struct {
 	CourseReference     string                   `bson:"course_reference"`
 	SectionCorequisites *DBCollectionRequirement `bson:"section_corequisites"`
 	AcademicSession     DBAcademicSession        `bson:"academic_session"`
-	Professors          []string                 `bson:"professors"`
+	Professors          []primitive.ObjectID     `bson:"professors"`
 	TeachingAssistants  []DBAssistant            `bson:"teaching_assistants"`
 	InternalClassNumber string                   `bson:"internal_class_number"`
 	InstructionMode     string                   `bson:"instruction_mode"`
@@ -256,7 +256,7 @@ func TransformSection(dbSection *DBSection) *Section {
 	professors := make([]*Professor, len(dbSection.Professors))
 	for i, professorID := range dbSection.Professors {
 		professors[i] = &Professor{
-			ID: professorID,
+			ID: professorID.Hex(),
 		}
 	}
 
