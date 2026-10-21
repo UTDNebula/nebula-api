@@ -405,8 +405,21 @@ type APIResponse[T any] struct {
 
 // Program Schema
 type Program struct {
+	ID       int             `json:"programId"`
 	Current  ProgramBrochure `json:"current"`
 	NextCost *Cost           `json:"nextAppCycleCostSheet"`
+	// The brochure has no name, term, or location of its own, so these are merged in from the discovery search
+	Name      string            `json:"programName"`
+	Summary   string            `json:"summary"`
+	Terms     []string          `json:"terms"`
+	Locations []ProgramLocation `json:"locations"`
+}
+
+type ProgramLocation struct {
+	City      string  `json:"city"`
+	Country   string  `json:"country"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }
 
 type ProgramBrochure struct {
