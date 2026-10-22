@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"encoding/json"
 	"strings"
 	"time"
 
@@ -405,9 +404,9 @@ type APIResponse[T any] struct {
 
 // Program Schema
 type Program struct {
-	ID       int             `json:"programId"`
-	Current  ProgramBrochure `json:"current"`
-	NextCost *Cost           `json:"nextAppCycleCostSheet"`
+	ID       int              `json:"programId"`
+	Sections []ProgramSection `json:"sections"` // About, Program Overview, Academics and Courses, Costs, Practical Information, etc.
+	NextCost *Cost            `json:"nextAppCycleCostSheet"`
 	// The brochure has no name, term, or location of its own, so these are merged in from the discovery search
 	Name      string            `json:"programName"`
 	Summary   string            `json:"summary"`
@@ -422,23 +421,15 @@ type ProgramLocation struct {
 	Longitude float64 `json:"longitude"`
 }
 
-type ProgramBrochure struct {
-	Sections []ProgramSection `json:"sections"` // About, Program Overview, Academics and Courses, Costs, Practical Information, etc.
-}
-
 type ProgramSection struct {
 	DisplayName string          `json:"sectionDisplayName"`
 	Widgets     []ProgramWidget `json:"sectionWidgets"` // content, information sheet, media, EMPTY: action buttons, dates / deadlines, costSheet
 }
 
 type ProgramWidget struct {
-	ContentType string          `json:"contentType"`
-	ContentHTML string          `json:"contentHTML"`
-	Information json.RawMessage `json:"contentInformationSheet"` // This should be parsed into an InformationSheet, however somtimes its empty, so store raw message first and then later put into the information sheet struct
-}
-
-type InformationSheet struct {
-	Parameters []Parameter `json:"parameters"`
+	ContentType string      `json:"contentType"`
+	ContentHTML string      `json:"contentHTML"`
+	Parameters  []Parameter `json:"parameters"` // rows of the information sheet, only set on "information sheet" widgets
 }
 
 type Parameter struct {
@@ -457,14 +448,9 @@ type Cost struct {
 }
 
 type CostItem struct {
-	Name  string       `json:"costSheetItemName"`
-	Type  string       `json:"costSheetItemType"` // Tells how item cost is interpreted, for example "fixed" means its just the cost value, while "perCreditHour" cost value x credit hours
-	Costs []CostDetail `json:"costs"`
-}
-
-type CostDetail struct {
-	Key   string  `json:"costKey"` // e.g. "In-State", "Out-of-State", empty for fixed
-	Value float64 `json:"costValue"`
+	Name  string             `json:"costSheetItemName"`
+	Type  string             `json:"costSheetItemType"` // Tells how item cost is interpreted, for example "fixed" means its just the cost value, while "perCreditHour" cost value x credit hours
+	Costs map[string]float64 `json:"costDetails"`       // cost key (e.g. "In-State", "Out-of-State", empty for fixed) to cost value
 }
 
 /* Can uncomment these if we ever get evals
