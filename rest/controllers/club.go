@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"database/sql"
 	"net/http"
 	"time"
 
@@ -26,7 +25,7 @@ func ClubDirectoryInfo(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase = configs.ConnectClubsDB()
 	id := c.Param("id")
 
 	var raw []byte
@@ -90,7 +89,7 @@ func ClubSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase = configs.ConnectClubsDB()
 	search := c.Query("q")
 
 	var raw []byte

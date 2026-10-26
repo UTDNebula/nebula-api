@@ -247,7 +247,7 @@ func SectionsByRoomDetailed(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	defer cursor.Close(ctx)
+	defer func() { _ = cursor.Close(ctx) }()
 
 	if err = cursor.All(ctx, &sectionsByRoom.Events); err != nil {
 		respondWithInternalError(c, err)

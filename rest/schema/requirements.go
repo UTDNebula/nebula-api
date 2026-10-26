@@ -114,51 +114,75 @@ func (cr *CollectionRequirement) UnmarshalBSON(data []byte) error {
 		switch optionType {
 		case "course":
 			var t CourseRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "section":
 			var t SectionRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "major":
 			var t MajorRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "minor":
 			var t MinorRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "gpa":
 			var t GPARequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "consent":
 			var t ConsentRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "collection":
 			var t CollectionRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "hours":
 			var t HoursRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "other":
 			var t OtherRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "choice":
 			var t ChoiceRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "limit":
 			var t LimitRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		case "core":
 			var t CoreRequirement
-			bson.Unmarshal(bytes, &t)
+			if err := bson.Unmarshal(bytes, &t); err != nil {
+				return err
+			}
 			out = append(out, t)
 		default:
 			return fmt.Errorf("unknown option type: %v", err)
