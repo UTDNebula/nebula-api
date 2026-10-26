@@ -260,6 +260,34 @@ type TypedGradeData struct {
 	} `bson:"data" json:"data"`
 }
 
+// Request body for the batched UTD Trends grades endpoint
+type TrendsGradesRequest struct {
+	// Courses as "<subject prefix> <course number>", e.g. "CS 2336"
+	Courses []string `json:"courses" binding:"required,min=1,dive,required" example:"CS 2336,CS 1200"`
+	// Professors as "<first name> <last name>", e.g. "John Cole". Empty or omitted returns every professor of the courses
+	Professors []string `json:"professors" binding:"dive,required" example:"John Cole"`
+}
+
+type TrendsCourseGrades struct {
+	Id         string                  `bson:"_id" json:"_id"`
+	Professors []TrendsProfessorGrades `bson:"professors" json:"professors"`
+}
+
+type TrendsProfessorGrades struct {
+	Professor string                 `bson:"professor" json:"professor"`
+	Semesters []TrendsSemesterGrades `bson:"semesters" json:"semesters"`
+}
+
+type TrendsSemesterGrades struct {
+	Semester string             `bson:"semester" json:"semester"`
+	Types    []TrendsTypeGrades `bson:"types" json:"types"`
+}
+
+type TrendsTypeGrades struct {
+	Type              string `bson:"type" json:"type"`
+	GradeDistribution []int  `bson:"grade_distribution" json:"grade_distribution"`
+}
+
 // Prefix used for cloud storage bucket names
 const BUCKET_PREFIX = "utdnebula_"
 

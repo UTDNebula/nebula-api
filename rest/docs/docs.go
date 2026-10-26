@@ -1698,6 +1698,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/grades/trends": {
+            "post": {
+                "description": "\"Returns grade distributions for a batch of courses, grouped by course, professor, semester, and section type. If professors are given, only the course-professor pairs that actually exist are returned; otherwise every professor of the given courses is returned. Specialized convenience endpoint for UTD Trends internal use.\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Grades"
+                ],
+                "operationId": "trendsGrades",
+                "parameters": [
+                    {
+                        "description": "Courses and optional professors",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.TrendsGradesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Grade distributions grouped by course",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_TrendsCourseGrades"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/mazevo/{date}": {
             "get": {
                 "description": "\"Returns MazevoEvent based on the input date\"",
@@ -3704,6 +3750,23 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-array_schema_TrendsCourseGrades": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.TrendsCourseGrades"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-array_schema_TypedGradeData": {
             "type": "object",
             "properties": {
@@ -5428,6 +5491,93 @@ const docTemplate = `{
                 },
                 "total": {
                     "$ref": "#/definitions/schema.FundsValues"
+                }
+            }
+        },
+        "schema.TrendsCourseGrades": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "professors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.TrendsProfessorGrades"
+                    }
+                }
+            }
+        },
+        "schema.TrendsGradesRequest": {
+            "type": "object",
+            "required": [
+                "courses",
+                "professors"
+            ],
+            "properties": {
+                "courses": {
+                    "description": "Courses as \"\u003csubject prefix\u003e \u003ccourse number\u003e\", e.g. \"CS 2336\"",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "CS 2336",
+                        "CS 1200"
+                    ]
+                },
+                "professors": {
+                    "description": "Professors as \"\u003cfirst name\u003e \u003clast name\u003e\", e.g. \"John Cole\". Empty or omitted returns every professor of the courses",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "John Cole"
+                    ]
+                }
+            }
+        },
+        "schema.TrendsProfessorGrades": {
+            "type": "object",
+            "properties": {
+                "professor": {
+                    "type": "string"
+                },
+                "semesters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.TrendsSemesterGrades"
+                    }
+                }
+            }
+        },
+        "schema.TrendsSemesterGrades": {
+            "type": "object",
+            "properties": {
+                "semester": {
+                    "type": "string"
+                },
+                "types": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.TrendsTypeGrades"
+                    }
+                }
+            }
+        },
+        "schema.TrendsTypeGrades": {
+            "type": "object",
+            "properties": {
+                "grade_distribution": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },

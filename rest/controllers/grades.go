@@ -404,26 +404,9 @@ func unwindSectionsStage() bson.D {
 }
 
 func projectGradeDistributionStage(flag string, withSection bool) bson.D {
-	// Arrays of regexes and section types
-	typeRegexes := [14]string{"0[0-9][0-9]", "0W[0-9]", "0H[0-9]", "0L[0-9]", "5H[0-9]", "1[0-9][0-9]", "2[0-9][0-9]", "3[0-9][0-9]", "5[0-9][0-9]", "6[0-9][0-9]", "7[0-9][0-9]", "HN[0-9]", "HON", "[0-9]U[0-9]"}
-	typeStrings := [14]string{"0xx", "0Wx", "0Hx", "0Lx", "5Hx", "1xx", "2xx", "3xx", "5xx", "6xx", "7xx", "HNx", "HON", "xUx"}
-
-	// Build the branches for the regex stage, each branch representing a section type
-	var regexBranches [14]bson.D
 	regexInput := "$sections.section_number"
 	if withSection {
 		regexInput = "$section_number"
-	}
-	for i, typeRegex := range typeRegexes {
-		regexBranches[i] = bson.D{
-			{Key: "case", Value: bson.D{
-				{Key: "$regexMatch", Value: bson.D{
-					{Key: "input", Value: regexInput},
-					{Key: "regex", Value: typeRegex},
-				}},
-			}},
-			{Key: "then", Value: typeStrings[i]},
-		}
 	}
 
 	id, gradeDist := "$sections.academic_session.name", "$sections.grade_distribution"
@@ -436,14 +419,37 @@ func projectGradeDistributionStage(flag string, withSection bool) bson.D {
 	}
 	// Add the section_type for each section
 	if flag == "section_type" {
-		projectCrit = append(projectCrit, bson.E{Key: "section_type", Value: bson.D{
-			{Key: "$switch", Value: bson.D{
-				{Key: "branches", Value: regexBranches},
-				{Key: "default", Value: "OTHERS"}, // Cases in which section doesn't have the listed type
-			}},
-		}})
+		projectCrit = append(projectCrit, bson.E{Key: "section_type", Value: sectionTypeSwitch(regexInput)})
 	}
 	return bson.D{{Key: "$project", Value: projectCrit}}
+}
+
+// sectionTypeSwitch builds the expression mapping a section number (e.g. "001", "HN1") to its section type (e.g. "0xx", "HNx")
+func sectionTypeSwitch(sectionNumberField string) bson.D {
+	// Arrays of regexes and section types
+	typeRegexes := [14]string{"0[0-9][0-9]", "0W[0-9]", "0H[0-9]", "0L[0-9]", "5H[0-9]", "1[0-9][0-9]", "2[0-9][0-9]", "3[0-9][0-9]", "5[0-9][0-9]", "6[0-9][0-9]", "7[0-9][0-9]", "HN[0-9]", "HON", "[0-9]U[0-9]"}
+	typeStrings := [14]string{"0xx", "0Wx", "0Hx", "0Lx", "5Hx", "1xx", "2xx", "3xx", "5xx", "6xx", "7xx", "HNx", "HON", "xUx"}
+
+	// Build the branches for the regex stage, each branch representing a section type
+	var regexBranches [14]bson.D
+	for i, typeRegex := range typeRegexes {
+		regexBranches[i] = bson.D{
+			{Key: "case", Value: bson.D{
+				{Key: "$regexMatch", Value: bson.D{
+					{Key: "input", Value: sectionNumberField},
+					{Key: "regex", Value: typeRegex},
+				}},
+			}},
+			{Key: "then", Value: typeStrings[i]},
+		}
+	}
+
+	return bson.D{
+		{Key: "$switch", Value: bson.D{
+			{Key: "branches", Value: regexBranches},
+			{Key: "default", Value: "OTHERS"}, // Cases in which section doesn't have the listed type
+		}},
+	}
 }
 
 func unwindGradeDistributionStage() bson.D {
