@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type professorReader struct {
@@ -14,7 +14,7 @@ type professorReader struct {
 }
 
 // getProfessors fetches professors by ID and returns them in the requested order.
-func (p *professorReader) getProfessors(ctx context.Context, professorIDs []primitive.ObjectID) ([]*model.Professor, []error) {
+func (p *professorReader) getProfessors(ctx context.Context, professorIDs []bson.ObjectID) ([]*model.Professor, []error) {
 	cursor, err := p.collection.Find(ctx, bson.M{"_id": bson.M{"$in": professorIDs}})
 	if err != nil {
 		return nil, []error{err}
@@ -26,7 +26,7 @@ func (p *professorReader) getProfessors(ctx context.Context, professorIDs []prim
 		return nil, []error{err}
 	}
 
-	professorMap := make(map[primitive.ObjectID]*model.Professor, len(dbProfessors))
+	professorMap := make(map[bson.ObjectID]*model.Professor, len(dbProfessors))
 	for _, dbProfessor := range dbProfessors {
 		professorMap[dbProfessor.ID] = model.TransformProfessor(dbProfessor)
 	}
@@ -45,7 +45,7 @@ func (p *professorReader) getProfessors(ctx context.Context, professorIDs []prim
 
 // GetProfessor loads a professor from a reference that contains only its ID.
 func GetProfessor(ctx context.Context, professorRef *model.Professor) (*model.Professor, error) {
-	professorID, err := primitive.ObjectIDFromHex(professorRef.ID)
+	professorID, err := bson.ObjectIDFromHex(professorRef.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -55,9 +55,9 @@ func GetProfessor(ctx context.Context, professorRef *model.Professor) (*model.Pr
 
 // GetProfessors loads professors from references that contain only their IDs.
 func GetProfessors(ctx context.Context, professorsRef []*model.Professor) ([]*model.Professor, error) {
-	professorIDs := make([]primitive.ObjectID, len(professorsRef))
+	professorIDs := make([]bson.ObjectID, len(professorsRef))
 	for i, professor := range professorsRef {
-		professorID, err := primitive.ObjectIDFromHex(professor.ID)
+		professorID, err := bson.ObjectIDFromHex(professor.ID)
 		if err != nil {
 			return nil, err
 		}

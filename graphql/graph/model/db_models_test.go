@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func TestTransformProfessor(t *testing.T) {
 	input := &DBProfessor{
-		ID:          primitive.ObjectID{1},
+		ID:          bson.ObjectID{1},
 		FirstName:   "Ada",
 		LastName:    "Example",
 		Titles:      []string{"Professor", "Department Chair"},
@@ -20,7 +20,7 @@ func TestTransformProfessor(t *testing.T) {
 		ProfileURI:  "https://example.com/profile",
 		ImageURI:    "https://example.com/image",
 		OfficeHours: []string{"Monday 10:00-11:00"},
-		Sections:    []primitive.ObjectID{{2}, {3}},
+		Sections:    []bson.ObjectID{{2}, {3}},
 	}
 	want := &Professor{
 		ID:          "010000000000000000000000",
@@ -54,14 +54,14 @@ func TestTransformSection(t *testing.T) {
 	startDate := time.Date(2026, time.August, 17, 0, 0, 0, 0, time.UTC)
 	endDate := time.Date(2026, time.December, 11, 0, 0, 0, 0, time.UTC)
 	input := &DBSection{
-		ID:              primitive.ObjectID{2},
+		ID:              bson.ObjectID{2},
 		SectionNumber:   "001",
-		CourseReference: "course-example",
+		CourseReference: bson.ObjectID{4},
 		SectionCorequisites: &DBCollectionRequirement{
 			Type: "all", Name: "Lab", Required: 1, Options: []string{"CS 1100"},
 		},
 		AcademicSession: DBAcademicSession{Name: "Fall 2026", StartDate: startDate, EndDate: endDate},
-		Professors:      []primitive.ObjectID{{1}, {3}},
+		Professors:      []bson.ObjectID{{1}, {3}},
 		TeachingAssistants: []DBAssistant{
 			{FirstName: "Grace", LastName: "Example", Role: "TA", Email: "grace@example.com"},
 			{FirstName: "Alan", LastName: "Sample", Role: "Tutor", Email: "alan@example.com"},
@@ -88,7 +88,7 @@ func TestTransformSection(t *testing.T) {
 	want := &Section{
 		ID:              "020000000000000000000000",
 		SectionNumber:   "001",
-		CourseReference: &Course{ID: "course-example"},
+		CourseReference: &Course{ID: "040000000000000000000000"},
 		SectionCorequisites: &CollectionRequirement{
 			Type: "all", Name: "Lab", Required: 1, Options: []string{"CS 1100"},
 		},
