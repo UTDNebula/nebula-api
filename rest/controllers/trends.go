@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
+	"unicode"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
 	"github.com/UTDNebula/nebula-api/rest/schema"
@@ -52,6 +54,211 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
 func TrendsCombinedSectionSearch(c *gin.Context) {
 	trendsSectionSearch("Combined", c)
+}
+
+// @Id				trendsGrades
+// @Router			/grades/trends [post]
+// @Tags			Grades
+// @Description	"Returns grade distributions for a batch of courses, grouped by course, professor, semester, and section type. If professors are given, only the course-professor pairs that actually exist are returned; otherwise every professor of the given courses is returned. Specialized convenience endpoint for UTD Trends internal use."
+// @Accept			json
+// @Produce		json
+// @Param			request	body		schema.TrendsGradesRequest						true	"Courses and optional professors"
+// @Success		200		{object}	schema.APIResponse[[]schema.TrendsCourseGrades]	"Grade distributions grouped by course"
+// @Failure		400		{object}	schema.APIResponse[string]						"A string describing the error"
+// @Failure		500		{object}	schema.APIResponse[string]						"A string describing the error"
+func TrendsGrades(c *gin.Context) {
+	var req schema.TrendsGradesRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		respond(c, http.StatusBadRequest, "invalid request payload", err.Error())
+		return
+	}
+
+	trendsQuery, err := trendsGradesQuery(req)
+	if err != nil {
+		respond(c, http.StatusBadRequest, "invalid request payload", err.Error())
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	cursor, err := configs.GetCollection("trends_course_and_prof_sections").Aggregate(ctx, buildTrendsGradesPipeline(trendsQuery))
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	defer cursor.Close(ctx)
+
+	var courseGrades []schema.TrendsCourseGrades
+	if err := cursor.All(ctx, &courseGrades); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	if courseGrades == nil {
+		courseGrades = []schema.TrendsCourseGrades{}
+	}
+	for i := range courseGrades {
+		courseGrades[i].Id = formatTrendsCourse(courseGrades[i].Id)
+	}
+
+	respond(c, http.StatusOK, "success", courseGrades)
+}
+
+// trendsGradesQuery builds a $match query over trends_course_and_prof_sections whose _id is
+// {course, first_name, last_name}
+// Both branches are bounded on _id so they are served by the default _id index.
+func trendsGradesQuery(req schema.TrendsGradesRequest) (bson.M, error) {
+	var courses []string
+	seenCourses := map[string]bool{}
+	for _, rawCourse := range req.Courses {
+
+		course := strings.ToUpper(strings.Join(strings.Fields(rawCourse), ""))
+		if course == "" {
+			return nil, fmt.Errorf("course %q is empty", rawCourse)
+		}
+		if !seenCourses[course] {
+			seenCourses[course] = true
+			courses = append(courses, course)
+		}
+	}
+
+	if len(req.Professors) == 0 {
+		// Every _id with the given course sorts between {course: X} and {course: X + "\x00"}
+		courseRanges := bson.A{}
+		for _, course := range courses {
+			courseRanges = append(courseRanges, bson.M{"_id": bson.D{
+				{Key: "$gte", Value: bson.D{{Key: "course", Value: course}}},
+				{Key: "$lt", Value: bson.D{{Key: "course", Value: course + "\x00"}}},
+			}})
+		}
+		return bson.M{"$or": courseRanges}, nil
+	}
+
+	// Embedded _id documents only match exactly when the field order is identical, so bson.D is required
+	ids := bson.A{}
+	seenNames := map[[2]string]bool{}
+	for _, professor := range req.Professors {
+		words := strings.Fields(professor)
+		if len(words) < 2 {
+			return nil, fmt.Errorf("professor %q must include a first and last name", professor)
+		}
+		// Both first and last names may contain spaces, so try every split point
+		for split := 1; split < len(words); split++ {
+			name := [2]string{strings.Join(words[:split], " "), strings.Join(words[split:], " ")}
+			if seenNames[name] {
+				continue
+			}
+			seenNames[name] = true
+			for _, course := range courses {
+				ids = append(ids, bson.D{
+					{Key: "course", Value: course},
+					{Key: "first_name", Value: name[0]},
+					{Key: "last_name", Value: name[1]},
+				})
+			}
+		}
+	}
+	return bson.M{"_id": bson.M{"$in": ids}}, nil
+}
+
+// buildTrendsGradesPipeline sums the grade distributions of the matched sections per
+// course, professor, semester, and section type, then nests them in that order
+func buildTrendsGradesPipeline(trendsQuery bson.M) mongo.Pipeline {
+	return mongo.Pipeline{
+		bson.D{{Key: "$match", Value: trendsQuery}},
+
+		bson.D{{Key: "$unwind", Value: "$sections"}},
+
+		bson.D{{Key: "$match", Value: bson.D{
+			{Key: "sections.grade_distribution.0", Value: bson.D{{Key: "$exists", Value: true}}},
+		}}},
+
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: bson.D{
+				{Key: "course", Value: "$_id.course"},
+				{Key: "professor", Value: bson.D{{Key: "$concat", Value: bson.A{"$_id.first_name", " ", "$_id.last_name"}}}},
+				{Key: "semester", Value: "$sections.academic_session.name"},
+				{Key: "type", Value: sectionTypeSwitch("$sections.section_number")},
+			}},
+			{Key: "grade_distributions", Value: bson.D{{Key: "$push", Value: "$sections.grade_distribution"}}},
+		}}},
+
+		// Element-wise sum of the grade distributions
+		bson.D{{Key: "$project", Value: bson.D{
+			{Key: "grade_distribution", Value: bson.D{{Key: "$reduce", Value: bson.D{
+				{Key: "input", Value: "$grade_distributions"},
+				{Key: "initialValue", Value: bson.A{}},
+				{Key: "in", Value: bson.D{{Key: "$map", Value: bson.D{
+					{Key: "input", Value: bson.D{{Key: "$zip", Value: bson.D{
+						{Key: "inputs", Value: bson.A{"$$value", "$$this"}},
+						{Key: "useLongestLength", Value: true},
+						{Key: "defaults", Value: bson.A{0, 0}},
+					}}}},
+					{Key: "as", Value: "pair"},
+					{Key: "in", Value: bson.D{{Key: "$sum", Value: "$$pair"}}},
+				}}}},
+			}}}},
+		}}},
+
+		// Nest types into semesters, semesters into professors, and professors into courses.
+		// Each $sort keeps the pushed arrays ordered.
+		bson.D{{Key: "$sort", Value: bson.D{
+			{Key: "_id.course", Value: 1},
+			{Key: "_id.professor", Value: 1},
+			{Key: "_id.semester", Value: 1},
+			{Key: "_id.type", Value: 1},
+		}}},
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: bson.D{
+				{Key: "course", Value: "$_id.course"},
+				{Key: "professor", Value: "$_id.professor"},
+				{Key: "semester", Value: "$_id.semester"},
+			}},
+			{Key: "types", Value: bson.D{{Key: "$push", Value: bson.D{
+				{Key: "type", Value: "$_id.type"},
+				{Key: "grade_distribution", Value: "$grade_distribution"},
+			}}}},
+		}}},
+
+		bson.D{{Key: "$sort", Value: bson.D{
+			{Key: "_id.course", Value: 1},
+			{Key: "_id.professor", Value: 1},
+			{Key: "_id.semester", Value: 1},
+		}}},
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: bson.D{
+				{Key: "course", Value: "$_id.course"},
+				{Key: "professor", Value: "$_id.professor"},
+			}},
+			{Key: "semesters", Value: bson.D{{Key: "$push", Value: bson.D{
+				{Key: "semester", Value: "$_id.semester"},
+				{Key: "types", Value: "$types"},
+			}}}},
+		}}},
+
+		bson.D{{Key: "$sort", Value: bson.D{
+			{Key: "_id.course", Value: 1},
+			{Key: "_id.professor", Value: 1},
+		}}},
+		bson.D{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$_id.course"},
+			{Key: "professors", Value: bson.D{{Key: "$push", Value: bson.D{
+				{Key: "professor", Value: "$_id.professor"},
+				{Key: "semesters", Value: "$semesters"},
+			}}}},
+		}}},
+
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
+	}
+}
+
+// formatTrendsCourse turns a stored course key into the request format
+func formatTrendsCourse(course string) string {
+	if i := strings.IndexFunc(course, unicode.IsDigit); i > 0 {
+		return course[:i] + " " + course[i:]
+	}
+	return course
 }
 
 // trendsSectionSearch handles trends-based section routes for both course and professor query.
