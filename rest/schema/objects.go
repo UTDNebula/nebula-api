@@ -350,16 +350,16 @@ type AcademicCalendarDropDeadlines struct {
 }
 
 type AcademicProgram struct {
-	Title           string   `bson:"name" json:"name"`
-	School          string   `bson:"school" json:"school"`
-	DegreeOptions   []Degree `bson:"degree_options" json:"degree_options"`
-	AreasOfInterest []string `bson:"areas_of_interest" json:"areas_of_interest"`
+	Title           string   `bson:"name" json:"name" queryable:""`
+	School          string   `bson:"school" json:"school" queryable:""`
+	DegreeOptions   []Degree `bson:"degree_options" json:"degree_options" queryable:""`
+	AreasOfInterest []string `bson:"areas_of_interest" json:"areas_of_interest" queryable:""`
 }
 
 type Degree struct {
-	Level          string `bson:"level" json:"level"`
-	PublicUrl      string `bson:"public_url" json:"public_url"`
-	CipCode        string `bson:"cip_code" json:"cip_code"`
+	Level          string `bson:"level" json:"level" queryable:""`
+	PublicUrl      string `bson:"public_url" json:"public_url" queryable:""`
+	CipCode        string `bson:"cip_code" json:"cip_code" queryable:""`
 	StemDesignated bool   `bson:"stem_designated" json:"stem_designated"`
 	JointProgram   bool   `bson:"joint_program" json:"joint_program"`
 }
