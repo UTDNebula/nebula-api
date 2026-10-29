@@ -167,7 +167,7 @@ func TestGetClubsDBUri(t *testing.T) {
 		}
 	})
 
-	t.Run("Unset panics", func(t *testing.T) {
+	/*t.Run("Unset panics", func(t *testing.T) {
 
 		unsetEnv(t, "CLUBS_DB_URI")
 
@@ -178,7 +178,7 @@ func TestGetClubsDBUri(t *testing.T) {
 		}()
 
 		GetClubsDBUri()
-	})
+	})*/
 }
 
 func TestGetEnvLogin(t *testing.T) {

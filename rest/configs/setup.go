@@ -116,21 +116,27 @@ var clubOnce sync.Once
 func ConnectClubsDB() *sql.DB {
 	clubOnce.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
-		db, err := sql.Open("pgx", GetClubsDBUri())
+		// Skip Clubs DB initialization when the optional CLUBS_DB_URI is not configured.
+		uri := GetClubsDBUri()
+		if uri == "" {
+			log.Println("No CLUBS_DB_URI provided in env file. Skipping Clubs DB connection.")
+			return
+		}
+
+		db, err := sql.Open("pgx", uri)
 		if err != nil {
 			log.Panic("Unable to connect to clubs database.")
 		}
 
-		defer cancel()
-
 		// ping the database
 		err = db.PingContext(ctx)
 		if err != nil {
-			log.Panic("Unable to ping database")
+			log.Panic("Unable to ping database.")
 		}
 
-		log.Printf("Connected to Clubs DB")
+		log.Println("Connected to Clubs DB.")
 
 		clubsDbInstance = db
 	})
