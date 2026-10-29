@@ -91,6 +91,7 @@ func main() {
 	routes.ClubRoute(router)
 	routes.DiscountRoutes(router)
 	routes.BudgetRoute(router)
+	routes.SemestersRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
