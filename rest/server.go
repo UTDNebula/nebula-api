@@ -75,6 +75,7 @@ func main() {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Connect Routes
+	routes.AcademicCalendarRoute(router)
 	routes.CourseRoute(router)
 	routes.SectionRoute(router)
 	routes.ProfessorRoute(router)
@@ -90,7 +91,6 @@ func main() {
 	routes.DegreesRoute(router)
 	routes.ClubRoute(router)
 	routes.DiscountRoutes(router)
-	routes.EmailRoute(router)
 	routes.BudgetRoute(router)
 
 	// Retrieve the port string to serve traffic on
