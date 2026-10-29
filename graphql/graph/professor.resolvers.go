@@ -8,9 +8,8 @@ import (
 	"github.com/UTDNebula/nebula-api/graphql/loaders"
 	"github.com/UTDNebula/nebula-api/shared/configs"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func (r *queryResolver) Professors(ctx context.Context, filter *model.ProfessorFilter, offset int32) ([]*model.Professor, error) {
@@ -56,7 +55,7 @@ func (r *queryResolver) Professor(ctx context.Context, id string) (*model.Profes
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	objectId, err := primitive.ObjectIDFromHex(id)
+	objectId, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}

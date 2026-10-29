@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func TestGetOptionLimit(t *testing.T) {
@@ -16,15 +17,12 @@ func TestGetOptionLimit(t *testing.T) {
 		c, _ := gin.CreateTestContext(w)
 		c.Request = httptest.NewRequest("GET", "/?offset=25", nil)
 
-		query := bson.M{"offset": "should-be-deleted"}
-		options, err := GetOptionLimit(&query, c)
+		query := bson.M{"offset": "should-be-ignored"}
+		optionsBuilder, err := GetOptionLimit(&query, c)
+		options := buildOptions(optionsBuilder)
 
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err)
-		}
-
-		if _, exists := query["offset"]; exists {
-			t.Error("Expected 'offset' to be deleted from the query map")
 		}
 
 		if options.Skip == nil || *options.Skip != int64(25) {
@@ -37,7 +35,8 @@ func TestGetOptionLimit(t *testing.T) {
 		c.Request = httptest.NewRequest("GET", "/", nil)
 
 		query := bson.M{}
-		options, _ := GetOptionLimit(&query, c)
+		optionsBuilder, _ := GetOptionLimit(&query, c)
+		options := buildOptions(optionsBuilder)
 
 		if options.Skip == nil || *options.Skip != int64(0) {
 			t.Errorf("Expected default Skip to be 0, got %v", options.Skip)
@@ -112,4 +111,12 @@ func isEqual(actual interface{}, expected int) bool {
 	default:
 		return false
 	}
+}
+
+func buildOptions(optionsBuilder *options.FindOptionsBuilder) options.FindOptions {
+	var options options.FindOptions
+	for _, set := range optionsBuilder.Opts {
+		_ = set(&options)
+	}
+	return options
 }

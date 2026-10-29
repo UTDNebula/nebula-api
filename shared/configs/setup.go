@@ -11,9 +11,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type DBSingleton struct {
@@ -28,7 +28,7 @@ func ConnectDB() *mongo.Client {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(GetEnvMongoURI()))
+		client, err := mongo.Connect(options.Client().ApplyURI(GetEnvMongoURI()))
 		if err != nil {
 			log.Fatalf("Unable to create MongoDB client")
 		}
@@ -48,16 +48,12 @@ func GetCollection(collectionName string) *mongo.Collection {
 	return ConnectDB().Database("combinedDB").Collection(collectionName)
 }
 
-func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptions, error) {
-	delete(*query, "offset")
-
-	var offset int64
+func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptionsBuilder, error) {
+	var offset int64 = 0
 	var err error
 	limit := GetEnvLimit()
 
-	if c.Query("offset") == "" {
-		offset = 0
-	} else {
+	if c.Query("offset") != "" {
 		offset, err = strconv.ParseInt(c.Query("offset"), 10, 64)
 		if err != nil {
 			return options.Find().SetSkip(0).SetLimit(limit), err

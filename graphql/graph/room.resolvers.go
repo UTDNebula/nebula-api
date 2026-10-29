@@ -6,7 +6,7 @@ import (
 
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // Rooms is the resolver for the rooms field.

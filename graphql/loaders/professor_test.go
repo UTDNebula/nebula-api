@@ -6,12 +6,12 @@ import (
 
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 	"github.com/vikstrous/dataloadgen"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func TestGetProfessorsInvalidID(t *testing.T) {
 	// ID validation must finish before the loader can make a database query.
-	refs := []*model.Professor{{ID: primitive.NewObjectID().Hex()}, {ID: "invalid"}}
+	refs := []*model.Professor{{ID: bson.NewObjectID().Hex()}, {ID: "invalid"}}
 	if _, err := GetProfessors(context.Background(), refs); err == nil {
 		t.Fatal("expected invalid ID error")
 	}
@@ -21,7 +21,7 @@ func TestGetProfessorsInvalidID(t *testing.T) {
 }
 
 func TestGetProfessorsEmpty(t *testing.T) {
-	loader := dataloadgen.NewLoader(func(context.Context, []primitive.ObjectID) ([]*model.Professor, []error) {
+	loader := dataloadgen.NewLoader(func(context.Context, []bson.ObjectID) ([]*model.Professor, []error) {
 		t.Error("empty references must not query the database")
 		return nil, nil
 	})

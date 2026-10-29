@@ -8,7 +8,7 @@ import (
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 	"github.com/UTDNebula/nebula-api/shared/configs"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 
 	"github.com/vikstrous/dataloadgen"
 )
@@ -20,8 +20,8 @@ const (
 )
 
 type Loaders struct {
-	SectionLoader   *dataloadgen.Loader[primitive.ObjectID, *model.Section]
-	ProfessorLoader *dataloadgen.Loader[primitive.ObjectID, *model.Professor]
+	SectionLoader   *dataloadgen.Loader[bson.ObjectID, *model.Section]
+	ProfessorLoader *dataloadgen.Loader[bson.ObjectID, *model.Professor]
 }
 
 // NewLoaders instantiates data loaders for the middleware

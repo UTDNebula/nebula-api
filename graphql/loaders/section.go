@@ -5,9 +5,8 @@ import (
 
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type sectionReader struct {
@@ -15,7 +14,7 @@ type sectionReader struct {
 }
 
 // getSections implements a batch function that can retrieve many users by ID for use in a dataloader
-func (s *sectionReader) getSections(ctx context.Context, sectionIDs []primitive.ObjectID) ([]*model.Section, []error) {
+func (s *sectionReader) getSections(ctx context.Context, sectionIDs []bson.ObjectID) ([]*model.Section, []error) {
 	// Find documents matching sectionIDs
 	cursor, err := s.collection.Find(ctx, bson.M{"_id": bson.M{"$in": sectionIDs}})
 	if err != nil {
@@ -31,7 +30,7 @@ func (s *sectionReader) getSections(ctx context.Context, sectionIDs []primitive.
 
 	// $in does not return in order of given sectionIDs
 	// so we order with map.
-	sectionMap := make(map[primitive.ObjectID]*model.Section, len(dbSections))
+	sectionMap := make(map[bson.ObjectID]*model.Section, len(dbSections))
 	for _, dbSection := range dbSections {
 		sectionMap[dbSection.ID] = model.TransformSection(dbSection)
 	}
@@ -50,7 +49,7 @@ func (s *sectionReader) getSections(ctx context.Context, sectionIDs []primitive.
 // Note that sectionRef contains only its ObjectID.
 // All other fields in sectionRef are empty.
 func GetSection(ctx context.Context, sectionRef *model.Section) (*model.Section, error) {
-	sectionID, err := primitive.ObjectIDFromHex(sectionRef.ID)
+	sectionID, err := bson.ObjectIDFromHex(sectionRef.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -63,9 +62,9 @@ func GetSection(ctx context.Context, sectionRef *model.Section) (*model.Section,
 // Note that sectionsRef contains only the sections' ObjectID.
 // All other fields of each section in sectionsRef are empty.
 func GetSections(ctx context.Context, sectionsRef []*model.Section) ([]*model.Section, error) {
-	sectionIDs := make([]primitive.ObjectID, len(sectionsRef))
+	sectionIDs := make([]bson.ObjectID, len(sectionsRef))
 	for i, section := range sectionsRef {
-		sectionID, err := primitive.ObjectIDFromHex(section.ID)
+		sectionID, err := bson.ObjectIDFromHex(section.ID)
 		if err != nil {
 			return nil, err
 		}

@@ -1,6 +1,6 @@
 package graph
 
-import "go.mongodb.org/mongo-driver/mongo"
+import "go.mongodb.org/mongo-driver/v2/mongo"
 
 // This file will not be regenerated automatically.
 //
