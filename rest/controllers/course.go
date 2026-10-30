@@ -64,7 +64,7 @@ func CourseSearch(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	defer cursor.Close(ctx)
+	defer func() { _ = cursor.Close(ctx) }()
 
 	// Retrieve and parse all valid documents
 	if err = cursor.All(ctx, &courses); err != nil {
@@ -129,7 +129,7 @@ func CourseAll(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	defer cursor.Close(ctx)
+	defer func() { _ = cursor.Close(ctx) }()
 
 	// retrieve and parse all valid documents
 	if err = cursor.All(ctx, &courses); err != nil {
@@ -262,7 +262,7 @@ func courseAggregate[T any](flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	defer cursor.Close(ctx)
+	defer func() { _ = cursor.Close(ctx) }()
 
 	if err = cursor.All(ctx, &queryResults); err != nil {
 		respondWithInternalError(c, err)

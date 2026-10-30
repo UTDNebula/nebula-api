@@ -20,7 +20,9 @@ var fatalCases = map[string]func(){
 	"mongo_uri":   func() { GetEnvMongoURI() },
 	"login_netid": func() { GetEnvLogin() },
 	"login_password": func() {
-		os.Setenv("LOGIN_NETID", "abc123456")
+		if err := os.Setenv("LOGIN_NETID", "abc123456"); err != nil {
+			log.Fatalf("Error setting 'LOGIN_NETID'")
+		}
 		GetEnvLogin()
 	},
 }
@@ -33,7 +35,10 @@ func unsetEnv(t *testing.T, key string) {
 	// t.Setenv records the original value so it is restored on cleanup; the
 	// unset immediately afterwards is what the test actually wants.
 	t.Setenv(key, "")
-	os.Unsetenv(key)
+	if err := os.Unsetenv(key); err != nil {
+		t.Fatalf("Error unsetting key")
+	}
+
 }
 
 // TestEnvFatalSubprocess is the entry point for the subprocesses spawned by

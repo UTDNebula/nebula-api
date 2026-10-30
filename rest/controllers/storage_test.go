@@ -15,8 +15,15 @@ import (
 
 func TestMaxUploadSize(t *testing.T) {
 	// Set the environment variable for max upload size (e.g., 100 bytes)
-	os.Setenv("MAX_UPLOAD_SIZE", "100")
-	defer os.Unsetenv("MAX_UPLOAD_SIZE")
+	if err := os.Setenv("MAX_UPLOAD_SIZE", "100"); err != nil {
+		t.Fatalf("Error setting 'MAX_UPLOAD_SIZE'")
+	}
+
+	defer func() {
+		if err := os.Unsetenv("MAX_UPLOAD_SIZE"); err != nil {
+			t.Fatalf("Error unsetting 'MAX_UPLOAD_SIZE'")
+		}
+	}()
 
 	// Setup Gin
 	gin.SetMode(gin.TestMode)
@@ -32,7 +39,7 @@ func TestMaxUploadSize(t *testing.T) {
 
 		defer func() {
 			if r := recover(); r != nil {
-
+				t.Fatalf("Recover panicked unexpectedly")
 			}
 		}()
 
@@ -67,8 +74,8 @@ func TestMaxUploadSize(t *testing.T) {
 	t.Run("Upload exceeding limit via Stream", func(t *testing.T) {
 		pr, pw := io.Pipe()
 		go func() {
-			pw.Write(make([]byte, 150))
-			pw.Close()
+			_, _ = pw.Write(make([]byte, 150))
+			_ = pw.Close()
 		}()
 
 		req, _ := http.NewRequest("POST", "/storage/test-bucket/stream-file", pr)

@@ -40,6 +40,8 @@ go install golang.org/x/tools/cmd/goimports@latest
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 go install github.com/swaggo/swag/cmd/swag@latest
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 echo Setup done!
 echo.
 exit /b 0
@@ -65,6 +67,8 @@ if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 gofmt -w .
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 goimports -w .
+if ERRORLEVEL 1 exit /b %ERRORLEVEL%
+golangci-lint run ./...
 if ERRORLEVEL 1 exit /b %ERRORLEVEL%
 echo Checks done!
 echo.
