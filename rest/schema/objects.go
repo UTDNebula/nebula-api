@@ -364,21 +364,63 @@ type Degree struct {
 	JointProgram   bool   `bson:"joint_program" json:"joint_program"`
 }
 
-type Contact struct {
+type ClubsOfficer struct {
+	Name     string `json:"name"`
+	Position string `json:"position"`
+}
+
+type ClubsContact struct {
 	Platform string `json:"platform"`
 	URL      string `json:"url"`
 }
 
+type ClubsMembershipForm struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+}
+
 type Club struct {
-	Slug         string              `json:"slug"`
-	ID           string              `json:"id"`
-	Name         string              `json:"name"`
-	Description  string              `json:"description"`
-	Tags         []string            `json:"tags"`
-	ProfileImage string              `json:"profile_image"`
-	UpdatedAt    time.Time           `json:"updated_at"`
-	Officers     []map[string]string `json:"officers"`
-	Contacts     []Contact           `json:"contacts"`
+	ID              string                `json:"id"`
+	Slug            string                `json:"slug"`
+	Name            string                `json:"name"`
+	Alias           string                `json:"alias"`
+	Description     string                `json:"description"`
+	Tags            []string              `json:"tags"`
+	Schools         []string              `json:"schools"`
+	FoundingDate    time.Time             `json:"founding_date"`
+	UpdatedAt       time.Time             `json:"updated_at"`
+	ProfileImage    string                `json:"profile_image"`
+	BannerImage     string                `json:"banner_image"`
+	Officers        []ClubsOfficer        `json:"officers"`
+	Contacts        []ClubsContact        `json:"contacts"`
+	MembershipForms []ClubsMembershipForm `json:"membership_forms"`
+}
+
+type ClubsEvent struct {
+	ID          string    `json:"id"`
+	ClubID      string    `json:"club_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	StartTime   time.Time `json:"start_time"`
+	EndTime     time.Time `json:"end_time"`
+	Location    string    `json:"location"`
+	Image       string    `json:"image"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type ClubsEventQueryParams struct {
+	Query     string    `form:"q"`
+	Sort      string    `form:"sort" binding:"omitempty,oneof=relevant upcoming past updated"`
+	Limit     int       `form:"limit" default:"20" binding:"omitempty,min=1,max=100"`
+	Offset    int       `form:"offset" default:"1" binding:"omitempty,min=1"`
+	StartDate time.Time `form:"start_date" time_format:"2006-01-02"`
+	EndDate   time.Time `form:"end_date" time_format:"2006-01-02"`
+	Tags      []string  `form:"tag"`
+}
+
+func (params *ClubsEventQueryParams) TrimSpace() {
+	params.Query = strings.TrimSpace(params.Query)
 }
 
 type EmailAttachment struct {
