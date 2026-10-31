@@ -1022,7 +1022,7 @@ const docTemplate = `{
         },
         "/course/{id}/grades": {
             "get": {
-                "description": "\"Returns the overall grade distribution for a course\"",
+                "description": "\"Returns the overall grade distribution for a course. The grade distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]\"",
                 "produces": [
                     "application/json"
                 ],
@@ -1041,7 +1041,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "A grade distribution array for the course",
+                        "description": "An 18-element grade distribution array for the course: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_int"
                         }
@@ -1402,7 +1402,7 @@ const docTemplate = `{
         },
         "/grades/overall": {
             "get": {
-                "description": "\"Returns the overall grade distribution\"",
+                "description": "\"Returns the overall grade distribution. The grade distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]\"",
                 "produces": [
                     "application/json"
                 ],
@@ -1444,7 +1444,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "A grade distribution array",
+                        "description": "An 18-element grade distribution array: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_int"
                         }
@@ -1466,7 +1466,7 @@ const docTemplate = `{
         },
         "/grades/semester": {
             "get": {
-                "description": "\"Returns grade distributions aggregated by semester\"",
+                "description": "\"Returns grade distributions aggregated by semester. The grade_distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]\"",
                 "produces": [
                     "application/json"
                 ],
@@ -1530,7 +1530,7 @@ const docTemplate = `{
         },
         "/grades/semester/sectionType": {
             "get": {
-                "description": "\"Returns the grade distributions aggregated by semester and broken down into section type\"",
+                "description": "\"Returns the grade distributions aggregated by semester and broken down into section type. The grade_distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]\"",
                 "produces": [
                     "application/json"
                 ],
@@ -2356,7 +2356,7 @@ const docTemplate = `{
         },
         "/professor/{id}/grades": {
             "get": {
-                "description": "\"Returns the overall grade distribution for a professor\"",
+                "description": "\"Returns the overall grade distribution for a professor. The grade distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]\"",
                 "produces": [
                     "application/json"
                 ],
@@ -2375,7 +2375,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "A grade distribution array for the professor",
+                        "description": "An 18-element grade distribution array for the professor: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_int"
                         }
@@ -3062,7 +3062,7 @@ const docTemplate = `{
         },
         "/section/{id}/grades": {
             "get": {
-                "description": "\"Returns the overall grade distribution for a section\"",
+                "description": "\"Returns the overall grade distribution for a section. The grade distribution array represents counts for: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]\"",
                 "produces": [
                     "application/json"
                 ],
@@ -3081,7 +3081,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "A grade distribution array for the section",
+                        "description": "An 18-element grade distribution array for the section: [A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, W, P, CR, NC, I]",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_int"
                         }
