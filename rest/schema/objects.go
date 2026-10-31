@@ -402,6 +402,57 @@ type APIResponse[T any] struct {
 	Data    T      `json:"data"`
 }
 
+// Program Schema
+type Program struct {
+	ID       int              `json:"programId"`
+	Sections []ProgramSection `json:"sections"` // About, Program Overview, Academics and Courses, Costs, Practical Information, etc.
+	NextCost *Cost            `json:"nextAppCycleCostSheet"`
+	// The brochure has no name, term, or location of its own, so these are merged in from the discovery search
+	Name      string            `json:"programName"`
+	Summary   string            `json:"summary"`
+	Terms     []string          `json:"terms"`
+	Locations []ProgramLocation `json:"locations"`
+}
+
+type ProgramLocation struct {
+	City      string  `json:"city"`
+	Country   string  `json:"country"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+}
+
+type ProgramSection struct {
+	DisplayName string          `json:"sectionDisplayName"`
+	Widgets     []ProgramWidget `json:"sectionWidgets"` // content, information sheet, media, EMPTY: action buttons, dates / deadlines, costSheet
+}
+
+type ProgramWidget struct {
+	ContentType string      `json:"contentType"`
+	ContentHTML string      `json:"contentHTML"`
+	Parameters  []Parameter `json:"parameters"` // rows of the information sheet, only set on "information sheet" widgets
+}
+
+type Parameter struct {
+	Name           string   `json:"parameterName"`  // name of row in information sheet (EX: Area of Study)
+	AssignedValues []string `json:"assignedValues"` // values associated with parameter (Business, Computer Science, Engineering,)
+}
+
+// Cost Structs
+type Cost struct {
+	Term string `json:"term"`
+	Year int    `json:"year"`
+	// The different cost sheet items are separated into billable, non-billable, and credits to make it easier to display on the frontend
+	Billable    []CostItem `json:"billableCostSheetItems"`
+	NonBillable []CostItem `json:"nonBillableCostSheetItems"`
+	Credits     []CostItem `json:"creditCostSheetItems"`
+}
+
+type CostItem struct {
+	Name  string             `json:"costSheetItemName"`
+	Type  string             `json:"costSheetItemType"` // Tells how item cost is interpreted, for example "fixed" means its just the cost value, while "perCreditHour" cost value x credit hours
+	Costs map[string]float64 `json:"costDetails"`       // cost key (e.g. "In-State", "Out-of-State", empty for fixed) to cost value
+}
+
 /* Can uncomment these if we ever get evals
 
 // 5 Level Likert Item scale for evaluation responses
