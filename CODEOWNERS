@@ -5,7 +5,5 @@
 rest/controllers/trends.go @UTDNebula/portfolio-lead
 rest/controllers/grades.go @UTDNebula/portfolio-lead
 rest/controllers/events.go @UTDNebula/portfolio-lead
-rest/controllers/astra.go @UTDNebula/portfolio-lead
-rest/controllers/mazevo.go @UTDNebula/portfolio-lead
+rest/events/ @UTDNebula/portfolio-lead
 rest/controllers/rooms.go @UTDNebula/portfolio-lead
-rest/controllers/calendar.go @UTDNebula/portfolio-lead
