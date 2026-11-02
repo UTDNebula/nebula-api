@@ -35,3 +35,6 @@ go.work.sum
 
 # API executables
 rest-api
+
+# mac
+**/.DS_Store

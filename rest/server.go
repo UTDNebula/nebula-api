@@ -60,7 +60,9 @@ func main() {
 	// Configure Gin Router
 	router := gin.New()
 	// Get rid of "trusted all proxies" warning -- we don't care
-	router.SetTrustedProxies(nil)
+	if err := router.SetTrustedProxies(nil); err != nil {
+		return
+	}
 
 	// Enable CORS
 	router.Use(CORS)
@@ -96,7 +98,9 @@ func main() {
 	portString := configs.GetPortString()
 
 	// Serve Traffic
-	router.Run(portString)
+	if err := router.Run(portString); err != nil {
+		return
+	}
 }
 
 func CORS(c *gin.Context) {

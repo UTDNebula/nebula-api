@@ -13,6 +13,7 @@ setup:
 	go install honnef.co/go/tools/cmd/staticcheck@latest
 	go install golang.org/x/tools/cmd/goimports@latest
 	go install github.com/swaggo/swag/cmd/swag@latest
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0
 
 check:
 	go mod tidy
@@ -20,6 +21,7 @@ check:
 	staticcheck ./...
 	gofmt -w .
 	goimports -w .
+	golangci-lint run ./...
 
 test:
 	go test ./... -count=1

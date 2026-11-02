@@ -141,7 +141,8 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 // Pointer types are allowed to recur once, i.e., only considered a loop when
 // the same pointer type appears twice in a row.
 func willCreateLoop(visited []reflect.Type, value reflect.Type) bool {
-	if value.Kind() != reflect.Ptr {
+	if value.Kind() !=
+		reflect.Pointer {
 		return false
 	}
 
@@ -155,7 +156,7 @@ func willCreateLoop(visited []reflect.Type, value reflect.Type) bool {
 
 // drillType gets the base of a type, removing pointers and slices/arrays
 func drillType(t reflect.Type) reflect.Type {
-	for t.Kind() == reflect.Ptr || t.Kind() == reflect.Slice || t.Kind() == reflect.Array {
+	for t.Kind() == reflect.Pointer || t.Kind() == reflect.Slice || t.Kind() == reflect.Array {
 		t = t.Elem()
 	}
 	return t

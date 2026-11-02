@@ -76,7 +76,7 @@ func DiscountSearch(c *gin.Context) {
 			return
 		}
 	}
-	defer cursor.Close(ctx)
+	defer func() { _ = cursor.Close(ctx) }()
 
 	discounts := make([]schema.DiscountProgram, 0)
 	if err = cursor.All(ctx, &discounts); err != nil {
