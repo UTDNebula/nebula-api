@@ -9,12 +9,13 @@ import (
 	"strings"
 	"testing"
 
-	"cloud.google.com/go/storage"
+	"github.com/fsouza/fake-gcs-server/fakestorage"
 	"github.com/gin-gonic/gin"
 )
 
 func TestMaxUploadSize(t *testing.T) {
 	// Set the environment variable for max upload size (e.g., 100 bytes)
+
 	if err := os.Setenv("MAX_UPLOAD_SIZE", "100"); err != nil {
 		t.Fatalf("Error setting 'MAX_UPLOAD_SIZE'")
 	}
@@ -25,13 +26,16 @@ func TestMaxUploadSize(t *testing.T) {
 		}
 	}()
 
+	server := fakestorage.NewServer(nil)
+	defer server.Stop()
+	client := server.Client()
+
 	// Setup Gin
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 
 	router.POST("/storage/:bucket/:objectID", func(c *gin.Context) {
-
-		c.Set("gcsClient", &storage.Client{})
+		c.Set("gcsClient", client)
 		PostObject(c)
 	})
 
