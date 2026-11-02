@@ -33,7 +33,8 @@ Submit proposed changes via a [Pull Request](https://docs.github.com/en/pull-req
 
 ## Repository Structure
 
-- `rest/` - REST API service implementation
+- `rest/` - REST API service implementation; event controllers and route registration are in `rest/events/`
+- `shared/` - Event repository contracts and MongoDB implementations
 - `internal/` - Shared schemas, models, and utilities across services
 - `Makefile` & `build.bat` - Root-level build and development scripts
 
@@ -100,3 +101,15 @@ Check command output to see the route serving traffic. It's likely port 8080.
 Visit `http://localhost:8080` to access nebula-api locally.
 
 > Storage and email routes require additional environment variables. If you're working on these routes, ask for help in the [Discord](https://discord.utdnebula.com)
+
+### Testing event controllers
+
+Run the Astra, Mazevo, and Comet Calendar HTTP tests without MongoDB:
+
+```bash
+go test ./rest/events -count=1
+```
+
+These tests use the real event routes with test repositories. They check HTTP
+responses without starting the server or loading other controllers that connect
+to a database. The full test suite still needs MongoDB for the other controllers.

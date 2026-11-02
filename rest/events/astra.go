@@ -1,4 +1,4 @@
-package controllers
+package events
 
 import (
 	"context"
@@ -9,15 +9,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/mongo"
-
-	"github.com/UTDNebula/nebula-api/rest/configs"
+	"github.com/UTDNebula/nebula-api/rest/responses"
+	"github.com/UTDNebula/nebula-api/shared"
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var astraCollection *mongo.Collection = configs.GetCollection("astra")
+type astraController struct {
+	repository shared.EventRepository[schema.AstraEvent]
+}
 
 // @Id				AstraEvents
 // @Router			/astra/{date} [get]
@@ -27,27 +27,25 @@ var astraCollection *mongo.Collection = configs.GetCollection("astra")
 // @Param			date	path		string																true	"date (ISO format) to retrieve astra events"
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.AstraEvent]]	"All AstraEvents with events on the inputted date"
 // @Failure		500		{object}	schema.APIResponse[string]											"A string describing the error"
-func AstraEvents(c *gin.Context) {
+func (h astraController) AstraEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
 
-	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
-
 	// Find astra event given date
-	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
+	astra_events, err := h.repository.GetEventsByDate(ctx, date)
 	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
+		if errors.Is(err, shared.ErrEventsNotFound) {
 			astra_events.Date = date
 			astra_events.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
 		} else {
-			respondWithInternalError(c, err)
+			responses.RespondWithInternalError(c, err)
 			return
 		}
 	}
 
-	respond(c, http.StatusOK, "success", astra_events)
+	responses.Respond(c, http.StatusOK, "success", astra_events)
 }
 
 // @Id				AstraEventsByBuilding
@@ -60,24 +58,23 @@ func AstraEvents(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.AstraEvent]]	"All sections with meetings on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]											"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]											"A string describing the error"
-func AstraEventsByBuilding(c *gin.Context) {
+func (h astraController) AstraEventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
 	building := strings.TrimSpace(c.Param("building")) // trimming the input
 
-	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
 	var astra_eventsByBuilding schema.SingleBuildingEvents[schema.AstraEvent]
 
 	// Find astra event given date
-	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
+	astra_events, err := h.repository.GetEventsByDate(ctx, date)
 	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
+		if errors.Is(err, shared.ErrEventsNotFound) {
+			responses.Respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
-		respondWithInternalError(c, err)
+		responses.RespondWithInternalError(c, err)
 		return
 	}
 
@@ -101,11 +98,11 @@ func AstraEventsByBuilding(c *gin.Context) {
 			available = append(available, "(and more)")
 		}
 
-		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
+		responses.Respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
 
-	respond(c, http.StatusOK, "success", astra_eventsByBuilding)
+	responses.Respond(c, http.StatusOK, "success", astra_eventsByBuilding)
 }
 
 // @Id				AstraEventsByBuildingandRoom
@@ -119,7 +116,7 @@ func AstraEventsByBuilding(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.AstraEvent]]	"All sections with meetings on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]											"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]											"A string describing the error"
-func AstraEventsByBuildingAndRoom(c *gin.Context) {
+func (h astraController) AstraEventsByBuildingAndRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -127,17 +124,16 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	building := strings.TrimSpace(c.Param("building"))
 	room := strings.TrimSpace(c.Param("room"))
 
-	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
 	var roomEvents schema.RoomEvents[schema.AstraEvent]
 
 	// Find astra event given date
-	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
+	astra_events, err := h.repository.GetEventsByDate(ctx, date)
 	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
+		if errors.Is(err, shared.ErrEventsNotFound) {
+			responses.Respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
-		respondWithInternalError(c, err)
+		responses.RespondWithInternalError(c, err)
 		return
 	}
 
@@ -151,7 +147,7 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	}
 
 	if matchedBuilding == nil {
-		respond(c, http.StatusNotFound, "error", "Building not found")
+		responses.Respond(c, http.StatusNotFound, "error", "Building not found")
 		return
 	}
 
@@ -174,9 +170,9 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 			available = append(available, "(and more)")
 		}
 
-		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
+		responses.Respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
 		return
 	}
 
-	respond(c, http.StatusOK, "success", roomEvents)
+	responses.Respond(c, http.StatusOK, "success", roomEvents)
 }
