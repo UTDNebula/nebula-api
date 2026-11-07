@@ -109,6 +109,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_string:
+    properties:
+      data:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-int:
     properties:
       data:
@@ -3332,6 +3343,24 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Sections
+  /semesters:
+    get:
+      description: '"Returns a list of all available terms in CourseBook, sorted by
+        recency"'
+      operationId: semesters
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A string list of all available terms, lowercased
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Other
   /storage/{bucket}:
     delete:
       description: '"Delete a bucket. This route is restricted to only Nebula Labs

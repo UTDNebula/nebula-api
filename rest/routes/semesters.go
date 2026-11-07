@@ -6,6 +6,7 @@ import (
 )
 
 func SemestersRoute(router *gin.Engine) {
+	// All routes related to semesters come here
 	semestersGroup := router.Group("/semesters")
 
 	semestersGroup.OPTIONS("", controllers.Preflight)

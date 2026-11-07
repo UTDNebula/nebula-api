@@ -3142,6 +3142,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/semesters": {
+            "get": {
+                "description": "\"Returns a list of all available terms in CourseBook, sorted by recency\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Other"
+                ],
+                "operationId": "semesters",
+                "responses": {
+                    "200": {
+                        "description": "A string list of all available terms, lowercased",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/storage/{bucket}": {
             "get": {
                 "description": "\"Get info on a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
@@ -3605,6 +3631,23 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.TypedGradeData"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-array_string": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 },
                 "message": {
