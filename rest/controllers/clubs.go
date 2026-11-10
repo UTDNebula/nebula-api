@@ -296,6 +296,105 @@ func constructEventsQuery(params schema.ClubsEventQueryParams, clubId string, ar
 	return
 }
 
+func constructTagsQuery(params schema.ClubsTagsQueryParams, argcInit int) (query string, args []any, argc int) {
+	params.TrimSpace()
+
+	argc = argcInit
+	// WHERE conditions
+	var conditions []string
+	orderBy := ""
+	limit := "LIMIT 20"
+	offset := ""
+
+	// Handle Query
+	if params.Query != "" {
+		args = append(args, params.Query)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`
+			used_tags.tag ILIKE '%' || $`, argc, ` || '%'
+			OR word_similarity($`, argc, `, used_tags.tag) >= 0.2`))
+
+		// By default, order by relevance if there's a search query
+		orderBy = fmt.Sprint(`ORDER BY 
+			(similarity(used_tags.tag, $`, argc, `)) DESC,
+			used_tags.count DESC,
+			used_tags.tag ASC`)
+	}
+
+	// Handle Sort
+	// By default, sort by upcoming. If Query is present, sort by relevant. If Sort is present, sort according to that
+	switch params.Sort {
+	case "relevant":
+		// Use orderBy statement from Query handler
+	case "alphabetical":
+		orderBy = "ORDER BY used_tags.tag ASC"
+	case "uncommon":
+		orderBy = "ORDER BY used_tags.count ASC, used_tags.tag ASC"
+	default:
+		if params.Query != "" {
+			break
+		}
+		fallthrough
+	case "common":
+		orderBy = "ORDER BY used_tags.count DESC, used_tags.tag ASC"
+	}
+
+	// Handle MinCount
+	if params.MinCount > 0 {
+		args = append(args, params.MinCount)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`used_tags.count >= $`, argc))
+	}
+
+	// Handle MaxCount
+	if params.MaxCount > 0 {
+		args = append(args, params.MaxCount)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`used_tags.count <= $`, argc))
+	}
+
+	// Handle Limit
+	if params.Limit > 0 {
+		args = append(args, params.Limit)
+		argc++
+		limit = fmt.Sprint("LIMIT $", argc)
+	}
+
+	// Handle Offset
+	if params.Offset > 0 {
+		args = append(args, params.Offset)
+		argc++
+		offset = fmt.Sprint("OFFSET $", argc)
+	}
+
+	// Construct query
+	var conditionsBuilder strings.Builder
+	for _, condition := range conditions {
+		conditionsBuilder.WriteString(" AND ")
+		conditionsBuilder.WriteString(condition)
+	}
+	query = `
+		SELECT jsonb_agg(subquery.tag_data) AS tags
+		FROM (
+			SELECT ` + schema.ClubsTagJSONB + ` AS tag_data
+			FROM used_tags
+			WHERE TRUE` + conditionsBuilder.String() + `
+			` + orderBy + `
+			` + limit + `
+			` + offset + `
+		) AS subquery`
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("  ", argc, "ARGS:", args)
+	// fmt.Println(" ORDER BY:", orderBy)
+	// fmt.Println("    LIMIT:", limit)
+	// fmt.Println("   OFFSET:", offset)
+
+	return
+}
+
 // @Id				clubById
 // @Router			/clubs/{id} [get]
 // @Tags			Clubs
@@ -546,4 +645,53 @@ func ClubsEvents(c *gin.Context) {
 	}
 
 	respond(c, http.StatusOK, "success", clubsEvents)
+}
+
+// @Id				clubsTags
+// @Router			/clubs/tags [get]
+// @Tags			Clubs
+// @Description	Returns list of tags used in Clubs
+// @Produce		json
+// @Param			q			query		string									false	"Search string to match tags."
+// @Param			sort		query		string									false	"Order of returned events. Default to upcoming. If `q` is provided, then defaults to relevant."	Enums(relevant, common, uncommon, alphabetical)
+// @Param			limit		query		int										false	"Number of results to return."																	minimum(1)	maximum(100)	default(20)
+// @Param			offset		query		int										false	"The starting position of the current page of events"											minimum(0)	default(0)
+// @Param			min_count	query		int										false	"The required minimum number of uses the tag must have"											minimum(1)
+// @Param			max_count	query		int										false	"The required maximum number of uses the tag must have"											minimum(1)
+// @Success		200			{object}	schema.APIResponse[[]schema.ClubsTag]	"List of matching tags"
+// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400			{object}	schema.APIResponse[string]				"A string describing the error"
+func ClubsTags(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var params schema.ClubsTagsQueryParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+
+	query, args, _ := constructTagsQuery(params, 0)
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "No tags found")
+		return
+	}
+
+	var clubsTags []schema.ClubsTag
+	if err := json.Unmarshal(raw, &clubsTags); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", clubsTags)
 }

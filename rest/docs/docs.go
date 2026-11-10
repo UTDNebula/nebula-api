@@ -662,6 +662,89 @@ const docTemplate = `{
                 }
             }
         },
+        "/clubs/tags": {
+            "get": {
+                "description": "Returns list of tags used in Clubs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "operationId": "clubsTags",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search string to match tags.",
+                        "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relevant",
+                            "common",
+                            "uncommon",
+                            "alphabetical"
+                        ],
+                        "type": "string",
+                        "description": "Order of returned events. Default to upcoming. If ` + "`" + `q` + "`" + ` is provided, then defaults to relevant.",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Number of results to return.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "default": 0,
+                        "description": "The starting position of the current page of events",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "The required minimum number of uses the tag must have",
+                        "name": "min_count",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "The required maximum number of uses the tag must have",
+                        "name": "max_count",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of matching tags",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_ClubsTag"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/clubs/{id}": {
             "get": {
                 "description": "Returns the listing info for the club with given ID",
@@ -3808,6 +3891,23 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-array_schema_ClubsTag": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.ClubsTag"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-array_schema_Course": {
             "type": "object",
             "properties": {
@@ -4684,6 +4784,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "position": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ClubsTag": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "tag": {
                     "type": "string"
                 }
             }

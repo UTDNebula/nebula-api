@@ -54,6 +54,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_ClubsTag:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.ClubsTag'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_Course:
     properties:
       data:
@@ -623,6 +634,13 @@ definitions:
       name:
         type: string
       position:
+        type: string
+    type: object
+  schema.ClubsTag:
+    properties:
+      count:
+        type: integer
+      tag:
         type: string
     type: object
   schema.CollectionRequirement:
@@ -1793,6 +1811,65 @@ paths:
           description: An event
           schema:
             $ref: '#/definitions/schema.APIResponse-schema_ClubsEvent'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /clubs/tags:
+    get:
+      description: Returns list of tags used in Clubs
+      operationId: clubsTags
+      parameters:
+      - description: Search string to match tags.
+        in: query
+        name: q
+        type: string
+      - description: Order of returned events. Default to upcoming. If `q` is provided,
+          then defaults to relevant.
+        enum:
+        - relevant
+        - common
+        - uncommon
+        - alphabetical
+        in: query
+        name: sort
+        type: string
+      - default: 20
+        description: Number of results to return.
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 0
+        description: The starting position of the current page of events
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - description: The required minimum number of uses the tag must have
+        in: query
+        minimum: 1
+        name: min_count
+        type: integer
+      - description: The required maximum number of uses the tag must have
+        in: query
+        minimum: 1
+        name: max_count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of matching tags
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_ClubsTag'
         "400":
           description: A string describing the error
           schema:

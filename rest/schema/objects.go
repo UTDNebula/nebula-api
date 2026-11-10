@@ -437,6 +437,24 @@ func (params *ClubsEventQueryParams) TrimSpace() {
 	params.Query = strings.TrimSpace(params.Query)
 }
 
+type ClubsTag struct {
+	Tag   string `json:"tag"`
+	Count int    `json:"count"`
+}
+
+type ClubsTagsQueryParams struct {
+	Query    string `form:"q"`
+	Sort     string `form:"sort" binding:"omitempty,oneof=relevant common uncommon alphabetical"`
+	Limit    int    `form:"limit" default:"20" binding:"omitempty,min=1,max=100"`
+	Offset   int    `form:"offset" default:"1" binding:"omitempty,min=1"`
+	MinCount int    `form:"min_count" binding:"omitempty,min=1"`
+	MaxCount int    `form:"max_count" binding:"omitempty,min=1"`
+}
+
+func (params *ClubsTagsQueryParams) TrimSpace() {
+	params.Query = strings.TrimSpace(params.Query)
+}
+
 type EmailAttachment struct {
 	Name string `json:"name" binding:"required"`
 	Data []byte `json:"data" binding:"required"`

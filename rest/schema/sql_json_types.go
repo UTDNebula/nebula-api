@@ -44,3 +44,8 @@ const ClubsEventJSONB = `jsonb_build_object(
 	'created_at', (events.created_at AT TIME ZONE 'UTC'),
 	'updated_at', (events.updated_at AT TIME ZONE 'UTC')
 )`
+
+const ClubsTagJSONB = `jsonb_build_object(
+	'tag', used_tags.tag,
+	'count', used_tags.count
+)`

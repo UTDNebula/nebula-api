@@ -15,4 +15,5 @@ func ClubsRoute(router *gin.Engine) {
 	clubGroup.GET("/:id/events", controllers.ClubEvents)
 	clubGroup.GET("/events", controllers.ClubsEvents)
 	clubGroup.GET("/events/:id", controllers.ClubsEventById)
+	clubGroup.GET("/tags", controllers.ClubsTags)
 }
