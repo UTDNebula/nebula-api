@@ -16,27 +16,27 @@ import (
 )
 
 const clubJoins string = `
-    JOIN LATERAL (
-        SELECT jsonb_agg(` + schema.ClubsOfficerJSONB + `
-                ORDER BY officers.display_order
-            ) AS officers
-        FROM officers
-        WHERE officers.club_id = club.id
-    ) AS officers ON TRUE
-    JOIN LATERAL (
-        SELECT jsonb_agg(` + schema.ClubsContactJSONB + `
-                ORDER BY contacts.display_order
-            ) AS contacts
-        FROM contacts
-        WHERE contacts.club_id = club.id
-    ) AS contacts ON TRUE
-    JOIN LATERAL (
-        SELECT jsonb_agg(` + schema.ClubsMembershipFormJSONB + `
-                ORDER BY membership_forms.display_order
-            ) AS membership_forms
-        FROM membership_forms
-        WHERE membership_forms.club_id = club.id
-    ) AS membership_forms ON TRUE`
+	JOIN LATERAL (
+		SELECT jsonb_agg(` + schema.ClubsOfficerJSONB + `
+				ORDER BY officers.display_order
+			) AS officers
+		FROM officers
+		WHERE officers.club_id = club.id
+	) AS officers ON TRUE
+	JOIN LATERAL (
+		SELECT jsonb_agg(` + schema.ClubsContactJSONB + `
+				ORDER BY contacts.display_order
+			) AS contacts
+		FROM contacts
+		WHERE contacts.club_id = club.id
+	) AS contacts ON TRUE
+	JOIN LATERAL (
+		SELECT jsonb_agg(` + schema.ClubsMembershipFormJSONB + `
+				ORDER BY membership_forms.display_order
+			) AS membership_forms
+		FROM membership_forms
+		WHERE membership_forms.club_id = club.id
+	) AS membership_forms ON TRUE`
 
 // Constructs the SQL query for clubs from Clubs, given search query parameters.
 // Initialize argcInit with 0 by default, unless you are using the returned query in a nested query with additional arguments in the prepared statement.
@@ -127,16 +127,16 @@ func constructClubsQuery(params schema.ClubQueryParams, argcInit int) (query str
 		conditionsBuilder.WriteString(condition)
 	}
 	query = `
-        SELECT jsonb_agg(subquery.club_data) AS club
-        FROM (
-            SELECT ` + schema.ClubsClubJSONB + ` AS club_data
-            FROM club
-            ` + clubJoins + `
-            WHERE club.approved = 'approved'::approved_enum` + conditionsBuilder.String() + `
-            ` + orderBy + `
-            ` + limit + `
-            ` + offset + `
-        ) AS subquery`
+		SELECT jsonb_agg(subquery.club_data) AS club
+		FROM (
+			SELECT ` + schema.ClubsClubJSONB + ` AS club_data
+			FROM club
+			` + clubJoins + `
+			WHERE club.approved = 'approved'::approved_enum` + conditionsBuilder.String() + `
+			` + orderBy + `
+			` + limit + `
+			` + offset + `
+		) AS subquery`
 
 	// // DEBUGGING
 	// fmt.Println("QUERY:", query)
@@ -272,16 +272,16 @@ func constructEventsQuery(params schema.ClubsEventQueryParams, clubId string, ar
 		conditionsBuilder.WriteString(condition)
 	}
 	query = `
-        SELECT jsonb_agg(subquery.event_data) AS events
-        FROM (
-            SELECT ` + schema.ClubsEventJSONB + ` AS event_data
-            FROM events
-            ` + join + `
-            WHERE events.approved = 'approved'::status_enum` + conditionsBuilder.String() + `
-            ` + orderBy + `
-            ` + limit + `
-            ` + offset + `
-        ) AS subquery`
+		SELECT jsonb_agg(subquery.event_data) AS events
+		FROM (
+			SELECT ` + schema.ClubsEventJSONB + ` AS event_data
+			FROM events
+			` + join + `
+			WHERE events.approved = 'approved'::status_enum` + conditionsBuilder.String() + `
+			` + orderBy + `
+			` + limit + `
+			` + offset + `
+		) AS subquery`
 
 	// // DEBUGGING
 	// fmt.Println("QUERY:", query)
@@ -314,10 +314,10 @@ func ClubById(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT jsonb_agg(`+schema.ClubsClubJSONB+`)
-        FROM club
-        `+clubJoins+`
-        WHERE club.id = $1;`,
+		SELECT jsonb_agg(`+schema.ClubsClubJSONB+`)
+		FROM club
+		`+clubJoins+`
+		WHERE club.id = $1;`,
 		id).Scan(&raw)
 
 	if err != nil {
@@ -370,9 +370,9 @@ func ClubEvents(c *gin.Context) {
 	eventsQuery, eventsArgs, _ := constructEventsQuery(params, id, 1)
 
 	query := `
-        SELECT
-            EXISTS (SELECT 1 FROM club WHERE club.id = $1) AS club_exists,
-            (` + eventsQuery + `) AS events;`
+		SELECT
+			EXISTS (SELECT 1 FROM club WHERE club.id = $1) AS club_exists,
+			(` + eventsQuery + `) AS events;`
 	var args []any = append([]any{id}, eventsArgs...)
 
 	// // DEBUGGING
@@ -473,9 +473,9 @@ func ClubsEventById(c *gin.Context) {
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT jsonb_agg(`+schema.ClubsEventJSONB+`) AS events
-        FROM events
-        WHERE events.id = $1`,
+		SELECT jsonb_agg(`+schema.ClubsEventJSONB+`) AS events
+		FROM events
+		WHERE events.id = $1`,
 		id).Scan(&raw)
 
 	if err != nil {
