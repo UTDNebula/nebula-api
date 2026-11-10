@@ -264,7 +264,8 @@ func ClubsEventById(c *gin.Context) {
 // @Param			end_date	query		string									false	"End date to search for events up to. Defaults to one year in the future. If `sort` is `past`, then defaults to current date.\nFormat: YYYY-MM-DD"
 // @Param			limit		query		int										false	"Number of results to return."							minimum(1)	maximum(100)	default(20)
 // @Param			offset		query		int										false	"The starting position of the current page of events"	minimum(0)	default(0)
-// @Param			tag			query		[]string								false	"A club tag that should exist in the returned events' host clubs."
+// @Param			tag			query		[]string								false	"A club tag that should exist in the returned events' host club(s)."
+// @Param			not_tag		query		[]string								false	"A club tag that should NOT exist in the returned events' host club(s)."
 // @Success		200			{object}	schema.APIResponse[[]schema.ClubsEvent]	"List of matching events"
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400			{object}	schema.APIResponse[string]				"A string describing the error"
@@ -286,13 +287,19 @@ func ClubsEvents(c *gin.Context) {
 
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
 
+	// PREPARE arguments
 	var args []any
 	argc := 0
+
+	// WHERE conditions
 	var conditions []string
-	join := ""
 	orderBy := ""
 	limit := "LIMIT 20"
 	offset := ""
+
+	// JOINs
+	join := ""
+	joinWithClub := false
 
 	// Handle Query
 	if params.Query != "" {
@@ -325,8 +332,16 @@ func ClubsEvents(c *gin.Context) {
 	if len(params.Tags) != 0 {
 		args = append(args, params.Tags)
 		argc++
-		join = "JOIN club ON events.club_id = club.id"
+		joinWithClub = true
 		conditions = append(conditions, fmt.Sprint(`club.tags && $`, argc))
+	}
+
+	// Handle ExcludeTags
+	if len(params.ExcludeTags) != 0 {
+		args = append(args, params.ExcludeTags)
+		argc++
+		joinWithClub = true
+		conditions = append(conditions, fmt.Sprint(`NOT (club.tags && $`, argc, ")"))
 	}
 
 	// Handle StartDate
@@ -365,6 +380,11 @@ func ClubsEvents(c *gin.Context) {
 		args = append(args, params.Offset)
 		argc++
 		offset = fmt.Sprint("OFFSET $", argc)
+	}
+
+	// Construct joins
+	if joinWithClub {
+		join = "JOIN club ON events.club_id = club.id"
 	}
 
 	// Construct query

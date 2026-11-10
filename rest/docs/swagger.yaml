@@ -1603,7 +1603,7 @@ paths:
   /clubs:
     get:
       description: Returns list of clubs matching the search string
-      operationId: clubSearch
+      operationId: clubs
       parameters:
       - description: Search string
         in: query
@@ -1684,7 +1684,7 @@ paths:
   /clubs/events:
     get:
       description: Returns list of events matching the search string and filters
-      operationId: clubsEventSearch
+      operationId: clubsEvents
       parameters:
       - description: Search string to match event names and descriptions.
         in: query
@@ -1726,11 +1726,19 @@ paths:
         name: offset
         type: integer
       - collectionFormat: csv
-        description: A club tag that should exist in the returned events' host clubs.
+        description: A club tag that should exist in the returned events' host club(s).
         in: query
         items:
           type: string
         name: tag
+        type: array
+      - collectionFormat: csv
+        description: A club tag that should NOT exist in the returned events' host
+          club(s).
+        in: query
+        items:
+          type: string
+        name: not_tag
         type: array
       produces:
       - application/json

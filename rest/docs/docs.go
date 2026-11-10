@@ -440,7 +440,7 @@ const docTemplate = `{
                 "tags": [
                     "Clubs"
                 ],
-                "operationId": "clubSearch",
+                "operationId": "clubs",
                 "parameters": [
                     {
                         "type": "string",
@@ -481,7 +481,7 @@ const docTemplate = `{
                 "tags": [
                     "Clubs"
                 ],
-                "operationId": "clubsEventSearch",
+                "operationId": "clubsEvents",
                 "parameters": [
                     {
                         "type": "string",
@@ -536,8 +536,18 @@ const docTemplate = `{
                             "type": "string"
                         },
                         "collectionFormat": "csv",
-                        "description": "A club tag that should exist in the returned events' host clubs.",
+                        "description": "A club tag that should exist in the returned events' host club(s).",
                         "name": "tag",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "A club tag that should NOT exist in the returned events' host club(s).",
+                        "name": "not_tag",
                         "in": "query"
                     }
                 ],
