@@ -15,6 +15,153 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Constructs the SQL query for events from Clubs, given search query parameters.
+// If clubId is omitted, constructs a query to search every club (which also enables filtering for club tags).
+// Initialize argcInit with 0 by default, unless you are using the returned query in a nested query with additional arguments in the prepared statement.
+//
+// Returns the query with placeholders, the placeholder args, and the next free argument index.
+func constructEventsQuery(params schema.ClubsEventQueryParams, clubId string, argcInit int) (query string, args []any, argc int) {
+	params.TrimSpace()
+
+	now := time.Now()
+	nowDateTime := now.Format(time.DateTime)
+	inOneYear := time.Now().Add(365 * 24 * time.Hour)
+	inOneYearDateTime := inOneYear.Format(time.DateTime)
+
+	argc = argcInit
+	// WHERE conditions
+	var conditions []string
+	orderBy := ""
+	limit := "LIMIT 20"
+	offset := ""
+	// JOINs
+	join := ""
+	joinWithClub := false
+
+	// Handle clubId (for single club)
+	if clubId != "" {
+		args = append(args, clubId)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.club_id = $`, argc))
+	} else { // Filters for multiple clubs
+		// Handle Tags
+		if len(params.Tags) != 0 {
+			args = append(args, params.Tags)
+			argc++
+			joinWithClub = true
+			conditions = append(conditions, fmt.Sprint(`club.tags && $`, argc))
+		}
+
+		// Handle ExcludeTags
+		if len(params.ExcludeTags) != 0 {
+			args = append(args, params.ExcludeTags)
+			argc++
+			joinWithClub = true
+			conditions = append(conditions, fmt.Sprint(`NOT (club.tags && $`, argc, ")"))
+		}
+	}
+
+	// Handle Query
+	if params.Query != "" {
+		args = append(args, params.Query)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.search_tsv @@ (websearch_to_tsquery('english', $`, argc, `))`))
+		// By default, order by relevance if there's a search query
+		orderBy = fmt.Sprint(`ORDER BY (ts_rank(events.search_tsv, websearch_to_tsquery('english', $`, argc, `))) DESC`)
+	}
+
+	// Handle Sort
+	// By default, sort by upcoming. If Query is present, sort by relevant. If Sort is present, sort according to that
+	switch params.Sort {
+	case "relevant":
+		// Use orderBy statement from Query handler
+	case "past":
+		orderBy = "ORDER BY events.start_time DESC"
+	case "updated":
+		orderBy = "ORDER BY events.updated_at DESC"
+	default:
+		if params.Query != "" {
+			break
+		}
+		fallthrough
+	case "upcoming":
+		orderBy = "ORDER BY events.start_time ASC"
+	}
+
+	// Handle StartDate
+	if params.StartDate.IsZero() {
+		if params.Sort != "past" {
+			conditions = append(conditions, `events.end_time >= '`+nowDateTime+`'`)
+		}
+	} else {
+		args = append(args, params.StartDate)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.end_time >= $`, argc, ``))
+	}
+
+	// Handle EndDate
+	if params.EndDate.IsZero() {
+		if params.Sort != "past" {
+			conditions = append(conditions, `events.start_time <= '`+inOneYearDateTime+`'`)
+		} else {
+			conditions = append(conditions, `events.start_time <= '`+nowDateTime+`'`)
+		}
+	} else {
+		args = append(args, params.EndDate)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.start_time <= $`, argc, ``))
+	}
+
+	// Handle Limit
+	if params.Limit > 0 {
+		args = append(args, params.Limit)
+		argc++
+		limit = fmt.Sprint("LIMIT $", argc)
+	}
+
+	// Handle Offset
+	if params.Offset > 0 {
+		args = append(args, params.Offset)
+		argc++
+		offset = fmt.Sprint("OFFSET $", argc)
+	}
+
+	// Construct joins
+	if joinWithClub {
+		join = "JOIN club ON events.club_id = club.id"
+	}
+
+	// Construct query
+	var conditionsBuilder strings.Builder
+	for _, condition := range conditions {
+		conditionsBuilder.WriteString(" AND ")
+		conditionsBuilder.WriteString(condition)
+	}
+	query = `
+        SELECT jsonb_agg(subquery.event_data) AS events
+        FROM (
+            SELECT ` + schema.ClubsEventJSONB + ` AS event_data
+            FROM events
+            ` + join + `
+            WHERE events.approved = 'approved'::status_enum` + conditionsBuilder.String() + `
+            ` + orderBy + `
+            ` + limit + `
+            ` + offset + `
+        ) AS subquery`
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("  ", argc, "ARGS:", args)
+	// fmt.Println(" ORDER BY:", orderBy)
+	// fmt.Println("    LIMIT:", limit)
+	// fmt.Println("   OFFSET:", offset)
+	// fmt.Println("StartDate:", params.StartDate)
+	// fmt.Println("  EndDate:", params.EndDate)
+
+	return
+}
+
 // @Id				clubById
 // @Router			/clubs/{id} [get]
 // @Tags			Clubs
@@ -81,38 +228,48 @@ func ClubById(c *gin.Context) {
 // @Id				clubEvents
 // @Router			/clubs/{id}/events [get]
 // @Tags			Clubs
-// @Description	Returns the upcoming events for the club with given ID
+// @Description	Returns the upcoming events for the club with given ID. Events must also match the search string and filters
 // @Produce		json
-// @Param			id	path		string									true	"ID of the club to get events for"
-// @Success		200	{object}	schema.APIResponse[schema.ClubsEvent]	"An event"
-// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
-// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Param			id			path		string									true	"ID of the club to get events for"
+// @Param			q			query		string									false	"Search string to match event names and descriptions."
+// @Param			sort		query		string									false	"Order of returned events. Default to upcoming. If `q` is provided, then defaults to relevant."	Enums(relevant, upcoming, past, updated)
+// @Param			start_date	query		string									false	"Start date to begin searching for events. Defaults to current date. If `sort` is `past`, then defaults to no value.\nFormat: YYYY-MM-DD"
+// @Param			end_date	query		string									false	"End date to search for events up to. Defaults to one year in the future. If `sort` is `past`, then defaults to current date.\nFormat: YYYY-MM-DD"
+// @Param			limit		query		int										false	"Number of results to return."							minimum(1)	maximum(100)	default(20)
+// @Param			offset		query		int										false	"The starting position of the current page of events"	minimum(0)	default(0)
+// @Success		200			{object}	schema.APIResponse[schema.ClubsEvent]	"An event"
+// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400			{object}	schema.APIResponse[string]				"A string describing the error"
 func ClubEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	now := time.Now()
-	nowDateTime := now.Format(time.DateTime)
-	inOneYear := time.Now().Add(365 * 24 * time.Hour)
-	inOneYearDateTime := inOneYear.Format(time.DateTime)
+	id := c.Param("id")
+	var params schema.ClubsEventQueryParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
 
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
-	id := c.Param("id")
+
+	eventsQuery, eventsArgs, _ := constructEventsQuery(params, id, 1)
+
+	query := `
+        SELECT
+            EXISTS (SELECT 1 FROM club WHERE club.id = $1) AS club_exists,
+            (` + eventsQuery + `) AS events;`
+	var args []any = append([]any{id}, eventsArgs...)
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("ARGS:", args)
 
 	var clubExists bool
 	var raw []byte
-	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT
-            EXISTS (SELECT 1 FROM club WHERE club.id = $1) AS club_exists,
-            (
-                SELECT jsonb_agg(`+schema.ClubsEventJSONB+`) AS events
-                FROM events
-                WHERE events.club_id = $1
-                    AND events.end_time >= '`+nowDateTime+`'
-                    AND events.start_time <= '`+inOneYearDateTime+`'
-                    AND events.approved = 'approved'::status_enum
-            ) AS events;`,
-		id).Scan(&clubExists, &raw)
+	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&clubExists, &raw)
+
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
@@ -273,147 +430,15 @@ func ClubsEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	now := time.Now()
-	nowDateTime := now.Format(time.DateTime)
-	inOneYear := time.Now().Add(365 * 24 * time.Hour)
-	inOneYearDateTime := inOneYear.Format(time.DateTime)
-
 	var params schema.ClubsEventQueryParams
 	if err := c.ShouldBindQuery(&params); err != nil {
 		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
 		return
 	}
-	params.TrimSpace()
 
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
 
-	// PREPARE arguments
-	var args []any
-	argc := 0
-
-	// WHERE conditions
-	var conditions []string
-	orderBy := ""
-	limit := "LIMIT 20"
-	offset := ""
-
-	// JOINs
-	join := ""
-	joinWithClub := false
-
-	// Handle Query
-	if params.Query != "" {
-		args = append(args, params.Query)
-		argc++
-		conditions = append(conditions, fmt.Sprint(`events.search_tsv @@ (websearch_to_tsquery('english', $`, argc, `))`))
-		// By default, order by relevance if there's a search query
-		orderBy = fmt.Sprint(`ORDER BY (ts_rank(events.search_tsv, websearch_to_tsquery('english', $`, argc, `))) DESC`)
-	}
-
-	// Handle Sort
-	// By default, sort by upcoming. If Query is present, sort by relevant. If Sort is present, sort according to that
-	switch params.Sort {
-	case "relevant":
-		// Use orderBy statement from Query handler
-	case "past":
-		orderBy = "ORDER BY events.start_time DESC"
-	case "updated":
-		orderBy = "ORDER BY events.updated_at DESC"
-	default:
-		if params.Query != "" {
-			break
-		}
-		fallthrough
-	case "upcoming":
-		orderBy = "ORDER BY events.start_time ASC"
-	}
-
-	// Handle Tags
-	if len(params.Tags) != 0 {
-		args = append(args, params.Tags)
-		argc++
-		joinWithClub = true
-		conditions = append(conditions, fmt.Sprint(`club.tags && $`, argc))
-	}
-
-	// Handle ExcludeTags
-	if len(params.ExcludeTags) != 0 {
-		args = append(args, params.ExcludeTags)
-		argc++
-		joinWithClub = true
-		conditions = append(conditions, fmt.Sprint(`NOT (club.tags && $`, argc, ")"))
-	}
-
-	// Handle StartDate
-	if params.StartDate.IsZero() {
-		if params.Sort != "past" {
-			conditions = append(conditions, `events.end_time >= '`+nowDateTime+`'`)
-		}
-	} else {
-		args = append(args, params.StartDate)
-		argc++
-		conditions = append(conditions, fmt.Sprint(`events.end_time >= $`, argc, ``))
-	}
-
-	// Handle EndDate
-	if params.EndDate.IsZero() {
-		if params.Sort != "past" {
-			conditions = append(conditions, `events.start_time <= '`+inOneYearDateTime+`'`)
-		} else {
-			conditions = append(conditions, `events.start_time <= '`+nowDateTime+`'`)
-		}
-	} else {
-		args = append(args, params.EndDate)
-		argc++
-		conditions = append(conditions, fmt.Sprint(`events.start_time <= $`, argc, ``))
-	}
-
-	// Handle Limit
-	if params.Limit > 0 {
-		args = append(args, params.Limit)
-		argc++
-		limit = fmt.Sprint("LIMIT $", argc)
-	}
-
-	// Handle Offset
-	if params.Offset > 0 {
-		args = append(args, params.Offset)
-		argc++
-		offset = fmt.Sprint("OFFSET $", argc)
-	}
-
-	// Construct joins
-	if joinWithClub {
-		join = "JOIN club ON events.club_id = club.id"
-	}
-
-	// Construct query
-	var conditionsBuilder strings.Builder
-	for _, condition := range conditions {
-		conditionsBuilder.WriteString(" AND ")
-		conditionsBuilder.WriteString(condition)
-	}
-	query := `
-        SELECT jsonb_agg(subquery.event_data) AS events
-        FROM (
-            SELECT ` + schema.ClubsEventJSONB + ` AS event_data
-            FROM events
-            ` + join + `
-            WHERE events.approved = 'approved'::status_enum` + conditionsBuilder.String() + `
-            ` + orderBy + `
-            ` + limit + `
-            ` + offset + `
-        ) AS subquery;`
-
-	// // DEBUGGING
-	// fmt.Println("QUERY:", query)
-	// fmt.Println()
-	// fmt.Println("  ", argc, "ARGS:", args)
-	// fmt.Println(" ORDER BY:", orderBy)
-	// fmt.Println("    LIMIT:", limit)
-	// fmt.Println("   OFFSET:", offset)
-	// fmt.Println("StartDate:", params.StartDate)
-	// fmt.Println("  EndDate:", params.EndDate)
+	query, args, _ := constructEventsQuery(params, "", 0)
 
 	var raw []byte
 	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&raw)
