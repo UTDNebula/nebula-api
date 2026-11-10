@@ -88,7 +88,7 @@ func main() {
 	routes.AstraRoute(router)
 	routes.MazevoRoute(router)
 	routes.CalendarRoute(router)
-	routes.ClubRoute(router)
+	routes.ClubsRoute(router)
 	routes.DiscountRoutes(router)
 	routes.EmailRoute(router)
 	routes.BudgetRoute(router)

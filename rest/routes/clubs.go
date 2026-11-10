@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ClubRoute(router *gin.Engine) {
+func ClubsRoute(router *gin.Engine) {
 	// All routes related to UTD Clubs come here
 	clubGroup := router.Group("/clubs")
 
