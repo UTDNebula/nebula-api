@@ -15,6 +15,140 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const clubJoins string = `
+    JOIN LATERAL (
+        SELECT jsonb_agg(` + schema.ClubsOfficerJSONB + `
+                ORDER BY officers.display_order
+            ) AS officers
+        FROM officers
+        WHERE officers.club_id = club.id
+    ) AS officers ON TRUE
+    JOIN LATERAL (
+        SELECT jsonb_agg(` + schema.ClubsContactJSONB + `
+                ORDER BY contacts.display_order
+            ) AS contacts
+        FROM contacts
+        WHERE contacts.club_id = club.id
+    ) AS contacts ON TRUE
+    JOIN LATERAL (
+        SELECT jsonb_agg(` + schema.ClubsMembershipFormJSONB + `
+                ORDER BY membership_forms.display_order
+            ) AS membership_forms
+        FROM membership_forms
+        WHERE membership_forms.club_id = club.id
+    ) AS membership_forms ON TRUE`
+
+// Constructs the SQL query for clubs from Clubs, given search query parameters.
+// Initialize argcInit with 0 by default, unless you are using the returned query in a nested query with additional arguments in the prepared statement.
+//
+// Returns the query with placeholders, the placeholder args, and the next free argument index.
+func constructClubsQuery(params schema.ClubQueryParams, argcInit int) (query string, args []any, argc int) {
+	params.TrimSpace()
+
+	argc = argcInit
+	// WHERE conditions
+	var conditions []string
+	orderBy := ""
+	limit := "LIMIT 20"
+	offset := ""
+
+	// Handle Query
+	if params.Query != "" {
+		args = append(args, params.Query)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`
+			club.search_tsv @@ websearch_to_tsquery('english', $`, argc, `)
+			OR word_similarity($`, argc, `, club.name) >= 0.2
+			OR word_similarity($`, argc, `, coalesce(club.alias, '')) >= 0.2
+			OR club.name ILIKE '%' || $`, argc, ` || '%'
+			OR club.alias ILIKE '%' || $`, argc, ` || '%'`))
+
+		// By default, order by relevance if there's a search query
+		orderBy = fmt.Sprint(`
+			ORDER BY (
+				(20.0 * word_similarity($`, argc, `, coalesce(club.alias, '')))
+				+ (10.0 * word_similarity($`, argc, `, club.name))
+				+ (5.0 * word_similarity($`, argc, `, coalesce(array_to_string(club.tags, ' '), '')))
+				+ (coalesce(-1.0 * (club.search_tsv <@> to_bm25query(to_tsvector('english', $`, argc, `), 'club_search_idx')), 0.0))
+			) DESC,
+			club.page_views DESC, club.name ASC`)
+	}
+
+	// Handle Sort
+	// By default, sort by upcoming. If Query is present, sort by relevant. If Sort is present, sort according to that
+	switch params.Sort {
+	case "relevant":
+		// Use orderBy statement from Query handler
+	case "alphabetical":
+		orderBy = "ORDER BY club.name ASC"
+	case "new":
+		orderBy = "ORDER BY club.founding_date DESC"
+	default:
+		if params.Query != "" {
+			break
+		}
+		fallthrough
+	case "trending":
+		orderBy = "ORDER BY club.page_views DESC, club.name ASC"
+	}
+
+	// Handle Limit
+	if params.Limit > 0 {
+		args = append(args, params.Limit)
+		argc++
+		limit = fmt.Sprint("LIMIT $", argc)
+	}
+
+	// Handle Offset
+	if params.Offset > 0 {
+		args = append(args, params.Offset)
+		argc++
+		offset = fmt.Sprint("OFFSET $", argc)
+	}
+
+	// Handle Tags
+	if len(params.Tags) != 0 {
+		args = append(args, params.Tags)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`club.tags && $`, argc))
+	}
+
+	// Handle ExcludeTags
+	if len(params.ExcludeTags) != 0 {
+		args = append(args, params.ExcludeTags)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`NOT (club.tags && $`, argc, ")"))
+	}
+
+	// Construct query
+	var conditionsBuilder strings.Builder
+	for _, condition := range conditions {
+		conditionsBuilder.WriteString(" AND ")
+		conditionsBuilder.WriteString(condition)
+	}
+	query = `
+        SELECT jsonb_agg(subquery.club_data) AS club
+        FROM (
+            SELECT ` + schema.ClubsClubJSONB + ` AS club_data
+            FROM club
+            ` + clubJoins + `
+            WHERE club.approved = 'approved'::approved_enum` + conditionsBuilder.String() + `
+            ` + orderBy + `
+            ` + limit + `
+            ` + offset + `
+        ) AS subquery`
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("  ", argc, "ARGS:", args)
+	// fmt.Println(" ORDER BY:", orderBy)
+	// fmt.Println("    LIMIT:", limit)
+	// fmt.Println("   OFFSET:", offset)
+
+	return
+}
+
 // Constructs the SQL query for events from Clubs, given search query parameters.
 // If clubId is omitted, constructs a query to search every club (which also enables filtering for club tags).
 // Initialize argcInit with 0 by default, unless you are using the returned query in a nested query with additional arguments in the prepared statement.
@@ -182,27 +316,7 @@ func ClubById(c *gin.Context) {
 	err := clubsDatabase.QueryRowContext(ctx, `
         SELECT jsonb_agg(`+schema.ClubsClubJSONB+`)
         FROM club
-            JOIN LATERAL (
-                SELECT jsonb_agg(`+schema.ClubsOfficerJSONB+`
-                        ORDER BY officers.display_order
-                    ) AS officers
-                FROM officers
-                WHERE officers.club_id = club.id
-            ) AS officers ON TRUE
-            JOIN LATERAL (
-                SELECT jsonb_agg(`+schema.ClubsContactJSONB+`
-                        ORDER BY contacts.display_order
-                    ) AS contacts
-                FROM contacts
-                WHERE contacts.club_id = club.id
-            ) AS contacts ON TRUE
-            JOIN LATERAL (
-                SELECT jsonb_agg(`+schema.ClubsMembershipFormJSONB+`
-                        ORDER BY membership_forms.display_order
-                    ) AS membership_forms
-                FROM membership_forms
-                WHERE membership_forms.club_id = club.id
-            ) AS membership_forms ON TRUE
+        `+clubJoins+`
         WHERE club.id = $1;`,
 		id).Scan(&raw)
 
@@ -295,60 +409,33 @@ func ClubEvents(c *gin.Context) {
 // @Id				clubs
 // @Router			/clubs [get]
 // @Tags			Clubs
-// @Description	Returns list of clubs matching the search string
+// @Description	Returns list of clubs matching the search string and filters
 // @Produce		json
-// @Param			q	query		string								true	"Search string"
-// @Success		200	{object}	schema.APIResponse[[]schema.Club]	"List of matching clubs"
-// @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
-// @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
+// @Param			q		query		string								false	"Search string to match club names, alias, and tags."
+// @Param			sort	query		string								false	"Order of returned clubs. Default to trending. If `q` is provided, then defaults to relevant."	Enums(relevant, alphabetical, new, trending)
+// @Param			limit	query		int									false	"Number of results to return."																	minimum(1)	maximum(100)	default(20)
+// @Param			offset	query		int									false	"The starting position of the current page of clubs"											minimum(0)	default(0)
+// @Param			tag		query		[]string							false	"A tag that the returned clubs should have."
+// @Param			not_tag	query		[]string							false	"A tag that the returned clubs should NOT have"
+// @Success		200		{object}	schema.APIResponse[[]schema.Club]	"List of matching clubs"
+// @Failure		500		{object}	schema.APIResponse[string]			"A string describing the error"
+// @Failure		400		{object}	schema.APIResponse[string]			"A string describing the error"
 func Clubs(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
+	var params schema.ClubQueryParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+
 	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
-	search := c.Query("q")
+
+	query, args, _ := constructClubsQuery(params, 0)
 
 	var raw []byte
-	err := clubsDatabase.QueryRowContext(ctx, `
-        SELECT jsonb_agg(`+schema.ClubsClubJSONB+`
-                ORDER BY (
-                    (20.0 * word_similarity($1, coalesce(club.alias, '')))
-                    + (10.0 * word_similarity($1, club.name))
-                    + (5.0 * word_similarity($1, coalesce(array_to_string(club.tags, ' '), '')))
-                    + (coalesce(-1.0 * (club.search_tsv <@> to_bm25query(to_tsvector('english', $1), 'club_search_idx')), 0.0))
-                ) DESC
-            ) AS club
-        FROM club
-            JOIN LATERAL (
-                SELECT jsonb_agg(`+schema.ClubsOfficerJSONB+`
-                        ORDER BY officers.display_order
-                    ) AS officers
-                FROM officers
-                WHERE officers.club_id = club.id
-            ) AS officers ON TRUE
-            JOIN LATERAL (
-                SELECT jsonb_agg(`+schema.ClubsContactJSONB+`
-                        ORDER BY contacts.display_order
-                    ) AS contacts
-                FROM contacts
-                WHERE contacts.club_id = club.id
-            ) AS contacts ON TRUE
-            JOIN LATERAL (
-                SELECT jsonb_agg(`+schema.ClubsMembershipFormJSONB+`
-                        ORDER BY membership_forms.display_order
-                    ) AS membership_forms
-                FROM membership_forms
-                WHERE membership_forms.club_id = club.id
-            ) AS membership_forms ON TRUE
-        WHERE (
-                club.search_tsv @@ websearch_to_tsquery('english', $1)
-                OR word_similarity($1, club.name) >= 0.2
-                OR word_similarity($1, COALESCE(club.alias, '')) >= 0.2
-                OR club.name ILIKE '%' || $1 || '%'
-                OR club.alias ILIKE '%' || $1 || '%'
-            )
-            AND 'approved' = 'approved'::approved_enum`,
-		search).Scan(&raw)
+	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&raw)
 
 	if err != nil {
 		respondWithInternalError(c, err)

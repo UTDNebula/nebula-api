@@ -433,7 +433,7 @@ const docTemplate = `{
         },
         "/clubs": {
             "get": {
-                "description": "Returns list of clubs matching the search string",
+                "description": "Returns list of clubs matching the search string and filters",
                 "produces": [
                     "application/json"
                 ],
@@ -444,10 +444,58 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Search string",
+                        "description": "Search string to match club names, alias, and tags.",
                         "name": "q",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relevant",
+                            "alphabetical",
+                            "new",
+                            "trending"
+                        ],
+                        "type": "string",
+                        "description": "Order of returned clubs. Default to trending. If ` + "`" + `q` + "`" + ` is provided, then defaults to relevant.",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Number of results to return.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "default": 0,
+                        "description": "The starting position of the current page of clubs",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "A tag that the returned clubs should have.",
+                        "name": "tag",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "A tag that the returned clubs should NOT have",
+                        "name": "not_tag",
+                        "in": "query"
                     }
                 ],
                 "responses": {

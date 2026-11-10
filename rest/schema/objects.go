@@ -396,6 +396,19 @@ type Club struct {
 	MembershipForms []ClubsMembershipForm `json:"membership_forms"`
 }
 
+type ClubQueryParams struct {
+	Query       string   `form:"q"`
+	Sort        string   `form:"sort" binding:"omitempty,oneof=relevant alphabetical new trending"`
+	Limit       int      `form:"limit" default:"20" binding:"omitempty,min=1,max=100"`
+	Offset      int      `form:"offset" default:"1" binding:"omitempty,min=1"`
+	Tags        []string `form:"tag"`
+	ExcludeTags []string `form:"not_tag"`
+}
+
+func (params *ClubQueryParams) TrimSpace() {
+	params.Query = strings.TrimSpace(params.Query)
+}
+
 type ClubsEvent struct {
 	ID          string    `json:"id"`
 	ClubID      string    `json:"club_id"`
