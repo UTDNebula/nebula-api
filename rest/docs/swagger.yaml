@@ -43,6 +43,28 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_ClubsEvent:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.ClubsEvent'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-array_schema_ClubsTag:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.ClubsTag'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_Course:
     properties:
       data:
@@ -149,6 +171,15 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/schema.Club'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  schema.APIResponse-schema_ClubsEvent:
+    properties:
+      data:
+        $ref: '#/definitions/schema.ClubsEvent'
       message:
         type: string
       status:
@@ -522,24 +553,36 @@ definitions:
     type: object
   schema.Club:
     properties:
+      alias:
+        type: string
+      banner_image:
+        type: string
       contacts:
         items:
-          $ref: '#/definitions/schema.Contact'
+          $ref: '#/definitions/schema.ClubsContact'
         type: array
       description:
         type: string
+      founding_date:
+        type: string
       id:
         type: string
+      membership_forms:
+        items:
+          $ref: '#/definitions/schema.ClubsMembershipForm'
+        type: array
       name:
         type: string
       officers:
         items:
-          additionalProperties:
-            type: string
-          type: object
+          $ref: '#/definitions/schema.ClubsOfficer'
         type: array
       profile_image:
         type: string
+      schools:
+        items:
+          type: string
+        type: array
       slug:
         type: string
       tags:
@@ -547,6 +590,57 @@ definitions:
           type: string
         type: array
       updated_at:
+        type: string
+    type: object
+  schema.ClubsContact:
+    properties:
+      platform:
+        type: string
+      url:
+        type: string
+    type: object
+  schema.ClubsEvent:
+    properties:
+      club_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      end_time:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      start_time:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  schema.ClubsMembershipForm:
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  schema.ClubsOfficer:
+    properties:
+      name:
+        type: string
+      position:
+        type: string
+    type: object
+  schema.ClubsTag:
+    properties:
+      count:
+        type: integer
+      tag:
         type: string
     type: object
   schema.CollectionRequirement:
@@ -559,13 +653,6 @@ definitions:
       required:
         type: integer
       type:
-        type: string
-    type: object
-  schema.Contact:
-    properties:
-      platform:
-        type: string
-      url:
         type: string
     type: object
   schema.Course:
@@ -1474,10 +1561,73 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
-  /club/{id}:
+  /clubs:
     get:
-      description: '"Returns the directory info for given club."'
-      operationId: clubGet
+      description: Returns list of clubs matching the search string and filters
+      operationId: clubs
+      parameters:
+      - description: Search string to match club names, alias, and tags.
+        in: query
+        name: q
+        type: string
+      - description: Order of returned clubs. Default to trending. If `q` is provided,
+          then defaults to relevant.
+        enum:
+        - relevant
+        - alphabetical
+        - new
+        - trending
+        in: query
+        name: sort
+        type: string
+      - default: 20
+        description: Number of results to return.
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 0
+        description: The starting position of the current page of clubs
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - collectionFormat: csv
+        description: A tag that the returned clubs should have.
+        in: query
+        items:
+          type: string
+        name: tag
+        type: array
+      - collectionFormat: csv
+        description: A tag that the returned clubs should NOT have
+        in: query
+        items:
+          type: string
+        name: not_tag
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of matching clubs
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /clubs/{id}:
+    get:
+      description: Returns the listing info for the club with given ID
+      operationId: clubById
       parameters:
       - description: ID of the club to get
         in: path
@@ -1501,23 +1651,225 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Clubs
-  /club/search:
+  /clubs/{id}/events:
     get:
-      description: '"Returns list of clubs matching the search string"'
-      operationId: clubSearch
+      description: Returns the upcoming events for the club with given ID. Events
+        must also match the search string and filters
+      operationId: clubEvents
       parameters:
-      - description: Search string
+      - description: ID of the club to get events for
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Search string to match event names and descriptions.
         in: query
         name: q
+        type: string
+      - description: Order of returned events. Default to upcoming. If `q` is provided,
+          then defaults to relevant.
+        enum:
+        - relevant
+        - upcoming
+        - past
+        - updated
+        in: query
+        name: sort
+        type: string
+      - description: |-
+          Start date to begin searching for events. Defaults to current date. If `sort` is `past`, then defaults to no value.
+          Format: YYYY-MM-DD
+        in: query
+        name: start_date
+        type: string
+      - description: |-
+          End date to search for events up to. Defaults to one year in the future. If `sort` is `past`, then defaults to current date.
+          Format: YYYY-MM-DD
+        in: query
+        name: end_date
+        type: string
+      - default: 20
+        description: Number of results to return.
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 0
+        description: The starting position of the current page of events
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: An event
+          schema:
+            $ref: '#/definitions/schema.APIResponse-schema_ClubsEvent'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /clubs/events:
+    get:
+      description: Returns list of events matching the search string and filters
+      operationId: clubsEvents
+      parameters:
+      - description: Search string to match event names and descriptions.
+        in: query
+        name: q
+        type: string
+      - description: Order of returned events. Default to upcoming. If `q` is provided,
+          then defaults to relevant.
+        enum:
+        - relevant
+        - upcoming
+        - past
+        - updated
+        in: query
+        name: sort
+        type: string
+      - description: |-
+          Start date to begin searching for events. Defaults to current date. If `sort` is `past`, then defaults to no value.
+          Format: YYYY-MM-DD
+        in: query
+        name: start_date
+        type: string
+      - description: |-
+          End date to search for events up to. Defaults to one year in the future. If `sort` is `past`, then defaults to current date.
+          Format: YYYY-MM-DD
+        in: query
+        name: end_date
+        type: string
+      - default: 20
+        description: Number of results to return.
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 0
+        description: The starting position of the current page of events
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - collectionFormat: csv
+        description: A club tag that should exist in the returned events' host club(s).
+        in: query
+        items:
+          type: string
+        name: tag
+        type: array
+      - collectionFormat: csv
+        description: A club tag that should NOT exist in the returned events' host
+          club(s).
+        in: query
+        items:
+          type: string
+        name: not_tag
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of matching events
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_ClubsEvent'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /clubs/events/{id}:
+    get:
+      description: Returns the listing info for the event with given ID
+      operationId: clubsEventById
+      parameters:
+      - description: ID of the event to get
+        in: path
+        name: id
         required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: List of matching clubs
+          description: An event
           schema:
-            $ref: '#/definitions/schema.APIResponse-array_schema_Club'
+            $ref: '#/definitions/schema.APIResponse-schema_ClubsEvent'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
+  /clubs/tags:
+    get:
+      description: Returns list of tags used in Clubs
+      operationId: clubsTags
+      parameters:
+      - description: Search string to match tags.
+        in: query
+        name: q
+        type: string
+      - description: Order of returned events. Default to upcoming. If `q` is provided,
+          then defaults to relevant.
+        enum:
+        - relevant
+        - common
+        - uncommon
+        - alphabetical
+        in: query
+        name: sort
+        type: string
+      - default: 20
+        description: Number of results to return.
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 0
+        description: The starting position of the current page of events
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - description: The required minimum number of uses the tag must have
+        in: query
+        minimum: 1
+        name: min_count
+        type: integer
+      - description: The required maximum number of uses the tag must have
+        in: query
+        minimum: 1
+        name: max_count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of matching tags
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_ClubsTag'
         "400":
           description: A string describing the error
           schema:
