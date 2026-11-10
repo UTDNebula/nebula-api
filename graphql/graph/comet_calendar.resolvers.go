@@ -69,17 +69,14 @@ func (r *queryResolver) CometCalendars(ctx context.Context, filter *model.CometC
 }
 
 // CometCalendar is the resolver for the CometCalendar field.
-func (r *queryResolver) CometCalendar(ctx context.Context, id string) (*model.CometCalendar, error) {
+func (r *queryResolver) CometCalendar(ctx context.Context, id bson.ObjectID) (*model.CometCalendar, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	objectId, err := bson.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-
 	var calendar model.CometCalendar
-	err = r.CometCalendarCollection.FindOne(timeoutCtx, bson.M{"_id": objectId}).Decode(&calendar)
+	var err error
+
+	err = r.CometCalendarCollection.FindOne(timeoutCtx, bson.M{"_id": id}).Decode(&calendar)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, fmt.Errorf("calendar not found: cannot find collection")

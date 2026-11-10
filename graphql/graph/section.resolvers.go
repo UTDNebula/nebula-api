@@ -13,16 +13,11 @@ import (
 )
 
 // Sections is the resolver for the sections field.
-func (r *queryResolver) Sections(
-	ctx context.Context,
-	filter *model.SectionFilter,
-	offset int32,
-) ([]*model.Section, error) {
+func (r *queryResolver) Sections(ctx context.Context, filter *model.SectionFilter, offset int32,) ([]*model.Section, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	var sections []*model.Section
-	var dbSections []*model.DBSection
 
 	// building mongo query from filter (nil filter --> empty query --> return all)
 	sectionQuery := bson.M{}
@@ -47,42 +42,32 @@ func (r *queryResolver) Sections(
 	defer cursor.Close(timeoutCtx)
 
 	// Decode
-	if err := cursor.All(timeoutCtx, &dbSections); err != nil {
+	if err := cursor.All(timeoutCtx, &sections); err != nil {
 		return nil, err
-	}
-
-	for _, dbSection := range dbSections {
-		sections = append(sections, model.TransformSection(dbSection))
 	}
 
 	return sections, nil
 }
 
 // Section is the resolver for the section field by ID.
-func (r *queryResolver) Section(ctx context.Context, id string) (*model.Section, error) {
+func (r *queryResolver) Section(ctx context.Context, id bson.ObjectID) (*model.Section, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	objectId, err := bson.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-
 	// decoding to a real value and not a nullptr
-	var dbSection model.DBSection
-	result := r.SectionCollection.FindOne(timeoutCtx, bson.M{"_id": objectId})
-	if err = result.Decode(&dbSection); err != nil {
+	var section model.Section
+	var err error
+
+	result := r.SectionCollection.FindOne(timeoutCtx, bson.M{"_id": id})
+	if err = result.Decode(&section); err != nil {
 		return nil, err
 	}
 
-	return model.TransformSection(&dbSection), nil
+	return &section, nil
 }
 
-func (r *sectionResolver) CourseReference(
-	ctx context.Context,
-	obj *model.Section,
-) (*model.Course, error) {
-	return r.Query().Course(ctx, obj.CourseReference.ID)
+func (r *sectionResolver) CourseReference(ctx context.Context, obj *model.Section) (*model.Course, error) {
+	return r.Query().Course(ctx, obj.CourseReference)
 }
 
 func (r *sectionResolver) Professors(ctx context.Context, obj *model.Section) ([]*model.Professor, error) {

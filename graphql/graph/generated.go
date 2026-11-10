@@ -18,6 +18,7 @@ import (
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // region    ***************************** api!.gotpl *****************************
@@ -200,12 +201,6 @@ type ComplexityRoot struct {
 		Date      func(childComplexity int) int
 	}
 
-	Office struct {
-		Building func(childComplexity int) int
-		MapURI   func(childComplexity int) int
-		Room     func(childComplexity int) int
-	}
-
 	Professor struct {
 		Email       func(childComplexity int) int
 		FirstName   func(childComplexity int) int
@@ -224,16 +219,16 @@ type ComplexityRoot struct {
 		AstraEvents           func(childComplexity int, date string) int
 		AstraEventsByBuilding func(childComplexity int, date string, building string) int
 		AstraEventsByRoom     func(childComplexity int, date string, building string, room string) int
-		CometCalendar         func(childComplexity int, id string) int
+		CometCalendar         func(childComplexity int, id bson.ObjectID) int
 		CometCalendars        func(childComplexity int, filter *model.CometCalendarFilter, offset int32) int
-		Course                func(childComplexity int, id string) int
+		Course                func(childComplexity int, id bson.ObjectID) int
 		Courses               func(childComplexity int, filter *model.CourseFilter, offset int32) int
 		Events                func(childComplexity int, date string, building *string, room *string) int
 		MazevoEvents          func(childComplexity int, date string) int
-		Professor             func(childComplexity int, id string) int
+		Professor             func(childComplexity int, id bson.ObjectID) int
 		Professors            func(childComplexity int, filter *model.ProfessorFilter, offset int32) int
 		Rooms                 func(childComplexity int) int
-		Section               func(childComplexity int, id string) int
+		Section               func(childComplexity int, id bson.ObjectID) int
 		Sections              func(childComplexity int, filter *model.SectionFilter, offset int32) int
 	}
 
@@ -288,14 +283,14 @@ type ProfessorResolver interface {
 }
 type QueryResolver interface {
 	Courses(ctx context.Context, filter *model.CourseFilter, offset int32) ([]*model.Course, error)
-	Course(ctx context.Context, id string) (*model.Course, error)
+	Course(ctx context.Context, id bson.ObjectID) (*model.Course, error)
 	Professors(ctx context.Context, filter *model.ProfessorFilter, offset int32) ([]*model.Professor, error)
-	Professor(ctx context.Context, id string) (*model.Professor, error)
+	Professor(ctx context.Context, id bson.ObjectID) (*model.Professor, error)
 	Sections(ctx context.Context, filter *model.SectionFilter, offset int32) ([]*model.Section, error)
-	Section(ctx context.Context, id string) (*model.Section, error)
+	Section(ctx context.Context, id bson.ObjectID) (*model.Section, error)
 	Rooms(ctx context.Context) ([]*model.BuildingRooms, error)
 	CometCalendars(ctx context.Context, filter *model.CometCalendarFilter, offset int32) ([]*model.CometCalendar, error)
-	CometCalendar(ctx context.Context, id string) (*model.CometCalendar, error)
+	CometCalendar(ctx context.Context, id bson.ObjectID) (*model.CometCalendar, error)
 	Events(ctx context.Context, date string, building *string, room *string) (model.EventResult, error)
 	AstraEvents(ctx context.Context, date string) (*model.AstraDayEvents, error)
 	AstraEventsByBuilding(ctx context.Context, date string, building string) (*model.AstraBuilding, error)
@@ -943,25 +938,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.MultiBuildingEvents.Date(childComplexity), true
 
-	case "Office.building":
-		if e.ComplexityRoot.Office.Building == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Office.Building(childComplexity), true
-	case "Office.map_uri":
-		if e.ComplexityRoot.Office.MapURI == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Office.MapURI(childComplexity), true
-	case "Office.room":
-		if e.ComplexityRoot.Office.Room == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Office.Room(childComplexity), true
-
 	case "Professor.email":
 		if e.ComplexityRoot.Professor.Email == nil {
 			break
@@ -1072,7 +1048,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.CometCalendar(childComplexity, args["id"].(string)), true
+		return e.ComplexityRoot.Query.CometCalendar(childComplexity, args["id"].(bson.ObjectID)), true
 	case "Query.cometCalendars":
 		if e.ComplexityRoot.Query.CometCalendars == nil {
 			break
@@ -1094,7 +1070,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.Course(childComplexity, args["id"].(string)), true
+		return e.ComplexityRoot.Query.Course(childComplexity, args["id"].(bson.ObjectID)), true
 	case "Query.courses":
 		if e.ComplexityRoot.Query.Courses == nil {
 			break
@@ -1139,7 +1115,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.Professor(childComplexity, args["id"].(string)), true
+		return e.ComplexityRoot.Query.Professor(childComplexity, args["id"].(bson.ObjectID)), true
 	case "Query.professors":
 		if e.ComplexityRoot.Query.Professors == nil {
 			break
@@ -1167,7 +1143,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.Section(childComplexity, args["id"].(string)), true
+		return e.ComplexityRoot.Query.Section(childComplexity, args["id"].(bson.ObjectID)), true
 	case "Query.sections":
 		if e.ComplexityRoot.Query.Sections == nil {
 			break
@@ -1727,18 +1703,6 @@ func (ec *executionContext) childFields_Meeting(ctx context.Context, field graph
 	return nil, fmt.Errorf("no field named %q was found under type Meeting", field.Name)
 }
 
-func (ec *executionContext) childFields_Office(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-	switch field.Name {
-	case "building":
-		return ec.fieldContext_Office_building(ctx, field)
-	case "map_uri":
-		return ec.fieldContext_Office_map_uri(ctx, field)
-	case "room":
-		return ec.fieldContext_Office_room(ctx, field)
-	}
-	return nil, fmt.Errorf("no field named %q was found under type Office", field.Name)
-}
-
 func (ec *executionContext) childFields_Professor(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 	switch field.Name {
 	case "_id":
@@ -2043,8 +2007,8 @@ func (ec *executionContext) field_Query_cometCalendar_args(ctx context.Context, 
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id",
-		func(ctx context.Context, v any) (string, error) {
-			return ec.unmarshalNID2string(ctx, v)
+		func(ctx context.Context, v any) (bson.ObjectID, error) {
+			return ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -2079,8 +2043,8 @@ func (ec *executionContext) field_Query_course_args(ctx context.Context, rawArgs
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id",
-		func(ctx context.Context, v any) (string, error) {
-			return ec.unmarshalNID2string(ctx, v)
+		func(ctx context.Context, v any) (bson.ObjectID, error) {
+			return ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -2159,8 +2123,8 @@ func (ec *executionContext) field_Query_professor_args(ctx context.Context, rawA
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id",
-		func(ctx context.Context, v any) (string, error) {
-			return ec.unmarshalNID2string(ctx, v)
+		func(ctx context.Context, v any) (bson.ObjectID, error) {
+			return ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -2195,8 +2159,8 @@ func (ec *executionContext) field_Query_section_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id",
-		func(ctx context.Context, v any) (string, error) {
-			return ec.unmarshalNID2string(ctx, v)
+		func(ctx context.Context, v any) (bson.ObjectID, error) {
+			return ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -3016,15 +2980,15 @@ func (ec *executionContext) _CometCalendar__id(ctx context.Context, field graphq
 			return obj.ID, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNID2string(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v bson.ObjectID) graphql.Marshaler {
+			return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, selections, v)
 		},
 		true,
 		true,
 	)
 }
 func (ec *executionContext) fieldContext_CometCalendar__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("CometCalendar", field, false, false, "ID")
+	return graphql.NewScalarFieldContext("CometCalendar", field, false, false, "ObjectID")
 }
 
 func (ec *executionContext) _CometCalendar_date(ctx context.Context, field graphql.CollectedField, obj *model.CometCalendar) (ret graphql.Marshaler) {
@@ -3204,15 +3168,15 @@ func (ec *executionContext) _Course__id(ctx context.Context, field graphql.Colle
 			return obj.ID, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNID2string(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v bson.ObjectID) graphql.Marshaler {
+			return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, selections, v)
 		},
 		true,
 		true,
 	)
 }
 func (ec *executionContext) fieldContext_Course__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Course", field, false, false, "ID")
+	return graphql.NewScalarFieldContext("Course", field, false, false, "ObjectID")
 }
 
 func (ec *executionContext) _Course_subject_prefix(ctx context.Context, field graphql.CollectedField, obj *model.Course) (ret graphql.Marshaler) {
@@ -3723,15 +3687,15 @@ func (ec *executionContext) _Event__id(ctx context.Context, field graphql.Collec
 			return obj.ID, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNID2string(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v bson.ObjectID) graphql.Marshaler {
+			return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, selections, v)
 		},
 		true,
 		true,
 	)
 }
 func (ec *executionContext) fieldContext_Event__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Event", field, false, false, "ID")
+	return graphql.NewScalarFieldContext("Event", field, false, false, "ObjectID")
 }
 
 func (ec *executionContext) _Event_summary(ctx context.Context, field graphql.CollectedField, obj *model.Event) (ret graphql.Marshaler) {
@@ -4722,75 +4686,6 @@ func (ec *executionContext) fieldContext_MultiBuildingEvents_buildings(_ context
 	return fc, nil
 }
 
-func (ec *executionContext) _Office_building(ctx context.Context, field graphql.CollectedField, obj *model.Office) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Office_building(ctx, field)
-		},
-		func(ctx context.Context) (any, error) {
-			return obj.Building, nil
-		},
-		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNString2string(ctx, selections, v)
-		},
-		true,
-		true,
-	)
-}
-func (ec *executionContext) fieldContext_Office_building(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Office", field, false, false, "String")
-}
-
-func (ec *executionContext) _Office_map_uri(ctx context.Context, field graphql.CollectedField, obj *model.Office) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Office_map_uri(ctx, field)
-		},
-		func(ctx context.Context) (any, error) {
-			return obj.MapURI, nil
-		},
-		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNString2string(ctx, selections, v)
-		},
-		true,
-		true,
-	)
-}
-func (ec *executionContext) fieldContext_Office_map_uri(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Office", field, false, false, "String")
-}
-
-func (ec *executionContext) _Office_room(ctx context.Context, field graphql.CollectedField, obj *model.Office) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Office_room(ctx, field)
-		},
-		func(ctx context.Context) (any, error) {
-			return obj.Room, nil
-		},
-		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNString2string(ctx, selections, v)
-		},
-		true,
-		true,
-	)
-}
-func (ec *executionContext) fieldContext_Office_room(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Office", field, false, false, "String")
-}
-
 func (ec *executionContext) _Professor__id(ctx context.Context, field graphql.CollectedField, obj *model.Professor) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -4803,15 +4698,15 @@ func (ec *executionContext) _Professor__id(ctx context.Context, field graphql.Co
 			return obj.ID, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNID2string(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v bson.ObjectID) graphql.Marshaler {
+			return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, selections, v)
 		},
 		true,
 		true,
 	)
 }
 func (ec *executionContext) fieldContext_Professor__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Professor", field, false, false, "ID")
+	return graphql.NewScalarFieldContext("Professor", field, false, false, "ObjectID")
 }
 
 func (ec *executionContext) _Professor_first_name(ctx context.Context, field graphql.CollectedField, obj *model.Professor) (ret graphql.Marshaler) {
@@ -4941,8 +4836,8 @@ func (ec *executionContext) _Professor_office(ctx context.Context, field graphql
 			return obj.Office, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v *model.Office) graphql.Marshaler {
-			return ec.marshalNOffice2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐOffice(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v *model.Location) graphql.Marshaler {
+			return ec.marshalNLocation2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐLocation(ctx, selections, v)
 		},
 		true,
 		true,
@@ -4955,7 +4850,7 @@ func (ec *executionContext) fieldContext_Professor_office(_ context.Context, fie
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.childFields_Office(ctx, field)
+			return ec.childFields_Location(ctx, field)
 		},
 	}
 	return fc, nil
@@ -5116,7 +5011,7 @@ func (ec *executionContext) _Query_course(ctx context.Context, field graphql.Col
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Course(ctx, fc.Args["id"].(string))
+			return ec.Resolvers.Query().Course(ctx, fc.Args["id"].(bson.ObjectID))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *model.Course) graphql.Marshaler {
@@ -5204,7 +5099,7 @@ func (ec *executionContext) _Query_professor(ctx context.Context, field graphql.
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Professor(ctx, fc.Args["id"].(string))
+			return ec.Resolvers.Query().Professor(ctx, fc.Args["id"].(bson.ObjectID))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *model.Professor) graphql.Marshaler {
@@ -5292,7 +5187,7 @@ func (ec *executionContext) _Query_section(ctx context.Context, field graphql.Co
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Section(ctx, fc.Args["id"].(string))
+			return ec.Resolvers.Query().Section(ctx, fc.Args["id"].(bson.ObjectID))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *model.Section) graphql.Marshaler {
@@ -5412,7 +5307,7 @@ func (ec *executionContext) _Query_cometCalendar(ctx context.Context, field grap
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().CometCalendar(ctx, fc.Args["id"].(string))
+			return ec.Resolvers.Query().CometCalendar(ctx, fc.Args["id"].(bson.ObjectID))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *model.CometCalendar) graphql.Marshaler {
@@ -5855,15 +5750,15 @@ func (ec *executionContext) _Section__id(ctx context.Context, field graphql.Coll
 			return obj.ID, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNID2string(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v bson.ObjectID) graphql.Marshaler {
+			return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, selections, v)
 		},
 		true,
 		true,
 	)
 }
 func (ec *executionContext) fieldContext_Section__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Section", field, false, false, "ID")
+	return graphql.NewScalarFieldContext("Section", field, false, false, "ObjectID")
 }
 
 func (ec *executionContext) _Section_section_number(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
@@ -7879,7 +7774,7 @@ func (ec *executionContext) unmarshalInputSectionFilter(ctx context.Context, obj
 			it.SectionNumber = data
 		case "course_reference":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("course_reference"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOObjectID2ᚖgoᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9007,49 +8902,6 @@ func (ec *executionContext) _MultiBuildingEvents(ctx context.Context, sel ast.Se
 			}
 		case "buildings":
 			out.Values[i] = ec._MultiBuildingEvents_buildings(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	if n := len(deferred.Defers); n > 0 {
-		atomic.AddInt32(&ec.Deferred, int32(min(n, math.MaxInt32)))
-		ec.ProcessDeferredGroup(deferred)
-	}
-
-	return out
-}
-
-var officeImplementors = []string{"Office"}
-
-func (ec *executionContext) _Office(ctx context.Context, sel ast.SelectionSet, obj *model.Office) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, officeImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := graphql.NewDeferredGroup(ctx)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Office")
-		case "building":
-			out.Values[i] = ec._Office_building(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "map_uri":
-			out.Values[i] = ec._Office_map_uri(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "room":
-			out.Values[i] = ec._Office_room(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -10198,20 +10050,6 @@ func (ec *executionContext) marshalNFloat642float64(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {
-	res, err := graphql.UnmarshalID(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	_ = sel
-	res := graphql.MarshalID(v)
-	if res == graphql.Null {
-		graphql.AddInvalidNullFromMarshaler(ctx, "ID!")
-	}
-	return res
-}
-
 func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
 	res, err := graphql.UnmarshalInt32(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -10330,12 +10168,18 @@ func (ec *executionContext) marshalNMeeting2ᚖgithubᚗcomᚋUTDNebulaᚋnebula
 	return ec._Meeting(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNOffice2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐOffice(ctx context.Context, sel ast.SelectionSet, v *model.Office) graphql.Marshaler {
-	if v == nil {
-		graphql.AddInvalidNullError(ctx, "Office!")
-		return graphql.Null
+func (ec *executionContext) unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx context.Context, v any) (bson.ObjectID, error) {
+	res, err := model.UnmarshalObjectID(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx context.Context, sel ast.SelectionSet, v bson.ObjectID) graphql.Marshaler {
+	_ = sel
+	res := model.MarshalObjectID(v)
+	if res == graphql.Null {
+		graphql.AddInvalidNullFromMarshaler(ctx, "ObjectID!")
 	}
-	return ec._Office(ctx, sel, v)
+	return res
 }
 
 func (ec *executionContext) marshalNProfessor2ᚕᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessorᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Professor) graphql.Marshaler {
@@ -10891,24 +10735,6 @@ func (ec *executionContext) marshalOFloat642ᚖfloat64(ctx context.Context, sel 
 	return res
 }
 
-func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v any) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalID(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	_ = sel
-	_ = ctx
-	res := graphql.MarshalID(*v)
-	return res
-}
-
 func (ec *executionContext) unmarshalOInt2ᚕint32ᚄ(ctx context.Context, v any) ([]int32, error) {
 	if v == nil {
 		return nil, nil
@@ -10949,6 +10775,24 @@ func (ec *executionContext) marshalOMazevoDayEvents2ᚖgithubᚗcomᚋUTDNebula�
 		return graphql.Null
 	}
 	return ec._MazevoDayEvents(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOObjectID2ᚖgoᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx context.Context, v any) (*bson.ObjectID, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := model.UnmarshalObjectID(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOObjectID2ᚖgoᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx context.Context, sel ast.SelectionSet, v *bson.ObjectID) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := model.MarshalObjectID(*v)
+	return res
 }
 
 func (ec *executionContext) marshalOProfessor2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐProfessor(ctx context.Context, sel ast.SelectionSet, v *model.Professor) graphql.Marshaler {

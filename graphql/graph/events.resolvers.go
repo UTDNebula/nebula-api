@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/UTDNebula/nebula-api/graphql/graph/model"
+	"github.com/UTDNebula/nebula-api/graphql/loaders"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
@@ -14,19 +15,18 @@ func (r *queryResolver) Events(ctx context.Context, date string, building *strin
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	var dbEvents model.DBMultiBuildingEvents
 	var events *model.MultiBuildingEvents
 
-	err := r.EventCollection.FindOne(timeoutCtx, bson.M{"date": date}).Decode(&dbEvents)
+	err := r.EventCollection.FindOne(timeoutCtx, bson.M{"date": date}).Decode(events)
 	if err != nil {
 		return nil, err
 	}
 
-	events = model.TransformMultiBuildingEvents(&dbEvents)
 	if building == nil {
 		return events, nil
 	}
-
+	
+	events = &model.MultiBuildingEvents{}
 	for _, b := range events.Buildings {
 		if b.Building == *building {
 			if room == nil {
@@ -46,5 +46,5 @@ func (r *queryResolver) Events(ctx context.Context, date string, building *strin
 
 // Section implements [SectionWithTimeResolver].
 func (r *sectionWithTimeResolver) Section(ctx context.Context, obj *model.SectionWithTime) (*model.Section, error) {
-	return r.Query().Section(ctx, obj.Section.ID)
+	return loaders.GetSection(ctx, obj.Section)
 }

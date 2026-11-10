@@ -4,6 +4,8 @@ package model
 
 import (
 	"time"
+
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 type EventResult interface {
@@ -11,16 +13,16 @@ type EventResult interface {
 }
 
 type AcademicSession struct {
-	Name      string    `json:"name"`
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
+	Name      string    `json:"name" bson:"name"`
+	StartDate time.Time `json:"start_date" bson:"start_date"`
+	EndDate   time.Time `json:"end_date" bson:"end_date"`
 }
 
 type Assistant struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Role      string `json:"role"`
-	Email     string `json:"email"`
+	FirstName string `json:"first_name" bson:"first_name"`
+	LastName  string `json:"last_name" bson:"last_name"`
+	Role      string `json:"role" bson:"role"`
+	Email     string `json:"email" bson:"email"`
 }
 
 type AstraBuilding struct {
@@ -57,14 +59,14 @@ type BuildingRooms struct {
 }
 
 type CollectionRequirement struct {
-	Type     string `json:"type"`
-	Name     string `json:"name"`
-	Required int32  `json:"required"`
-	Options  any    `json:"options,omitempty"`
+	Type     string `json:"type" bson:"type"`
+	Name     string `json:"name" bson:"name"`
+	Required int32  `json:"required" bson:"required"`
+	Options  any    `json:"options,omitempty" bson:"options"`
 }
 
 type CometCalendar struct {
-	ID        string                   `json:"_id" bson:"_id"`
+	ID        bson.ObjectID            `json:"_id" bson:"_id"`
 	Date      string                   `json:"date" bson:"date"`
 	Buildings []*CometCalendarBuilding `json:"buildings" bson:"buildings"`
 }
@@ -94,30 +96,6 @@ type CometCalendarRoomInput struct {
 	Events []*EventInput `json:"events,omitempty"`
 }
 
-type Course struct {
-	ID                     string                 `json:"_id"`
-	SubjectPrefix          string                 `json:"subject_prefix"`
-	CourseNumber           string                 `json:"course_number"`
-	Title                  string                 `json:"title"`
-	Description            string                 `json:"description"`
-	EnrollmentReqs         string                 `json:"enrollment_reqs"`
-	School                 string                 `json:"school"`
-	CreditHours            string                 `json:"credit_hours"`
-	ClassLevel             string                 `json:"class_level"`
-	ActivityType           string                 `json:"activity_type"`
-	Grading                string                 `json:"grading"`
-	InternalCourseNumber   string                 `json:"internal_course_number"`
-	Prerequisites          *CollectionRequirement `json:"prerequisites,omitempty"`
-	Corequisites           *CollectionRequirement `json:"corequisites,omitempty"`
-	CoOrPreRequisites      *CollectionRequirement `json:"co_or_pre_requisites,omitempty"`
-	Sections               []*Section             `json:"sections"`
-	LectureContactHours    string                 `json:"lecture_contact_hours"`
-	LaboratoryContactHours string                 `json:"laboratory_contact_hours"`
-	OfferingFrequency      string                 `json:"offering_frequency"`
-	CatalogYear            string                 `json:"catalog_year"`
-	Attributes             any                    `json:"attributes,omitempty"`
-}
-
 type CourseFilter struct {
 	SubjectPrefix          *string `json:"subject_prefix,omitempty" bson:"subject_prefix,omitempty"`
 	CourseNumber           *string `json:"course_number,omitempty" bson:"course_number,omitempty"`
@@ -134,21 +112,21 @@ type CourseFilter struct {
 }
 
 type Event struct {
-	ID                 string    `json:"_id" bson:"_id"`
-	Summary            string    `json:"summary" bson:"summary"`
-	Location           string    `json:"location" bson:"location"`
-	StartTime          time.Time `json:"start_time" bson:"start_time"`
-	EndTime            time.Time `json:"end_time" bson:"end_time"`
-	Description        string    `json:"description" bson:"description"`
-	EventType          []string  `json:"event_type" bson:"event_type"`
-	TargetAudience     []string  `json:"target_audience" bson:"target_audience"`
-	Topic              []string  `json:"topic" bson:"topic"`
-	EventTags          []string  `json:"event_tags" bson:"event_tags"`
-	EventWebsite       string    `json:"event_website" bson:"event_website"`
-	Department         []string  `json:"department" bson:"department"`
-	ContactName        string    `json:"contact_name" bson:"contact_name"`
-	ContactEmail       string    `json:"contact_email" bson:"contact_email"`
-	ContactPhoneNumber string    `json:"contact_phone_number" bson:"contact_phone_number"`
+	ID                 bson.ObjectID `json:"_id" bson:"_id"`
+	Summary            string        `json:"summary" bson:"summary"`
+	Location           string        `json:"location" bson:"location"`
+	StartTime          time.Time     `json:"start_time" bson:"start_time"`
+	EndTime            time.Time     `json:"end_time" bson:"end_time"`
+	Description        string        `json:"description" bson:"description"`
+	EventType          []string      `json:"event_type" bson:"event_type"`
+	TargetAudience     []string      `json:"target_audience" bson:"target_audience"`
+	Topic              []string      `json:"topic" bson:"topic"`
+	EventTags          []string      `json:"event_tags" bson:"event_tags"`
+	EventWebsite       string        `json:"event_website" bson:"event_website"`
+	Department         []string      `json:"department" bson:"department"`
+	ContactName        string        `json:"contact_name" bson:"contact_name"`
+	ContactEmail       string        `json:"contact_email" bson:"contact_email"`
+	ContactPhoneNumber string        `json:"contact_phone_number" bson:"contact_phone_number"`
 }
 
 type EventInput struct {
@@ -163,9 +141,9 @@ type EventInput struct {
 }
 
 type Location struct {
-	Building string `json:"building"`
-	Room     string `json:"room"`
-	MapURI   string `json:"map_uri"`
+	Building string `json:"building" bson:"building"`
+	Room     string `json:"room" bson:"room"`
+	MapURI   string `json:"map_uri" bson:"map_uri"`
 }
 
 type MazevoBuilding struct {
@@ -196,41 +174,21 @@ type MazevoRoom struct {
 }
 
 type Meeting struct {
-	StartDate   time.Time `json:"start_date"`
-	EndDate     time.Time `json:"end_date"`
-	MeetingDays []string  `json:"meeting_days"`
-	StartTime   string    `json:"start_time"`
-	EndTime     string    `json:"end_time"`
-	Modality    string    `json:"modality"`
-	Location    *Location `json:"location"`
+	StartDate   time.Time `json:"start_date" bson:"start_date"`
+	EndDate     time.Time `json:"end_date" bson:"end_date"`
+	MeetingDays []string  `json:"meeting_days" bson:"meeting_days"`
+	StartTime   string    `json:"start_time" bson:"start_time"`
+	EndTime     string    `json:"end_time" bson:"end_time"`
+	Modality    string    `json:"modality" bson:"modality"`
+	Location    *Location `json:"location" bson:"location"`
 }
 
 type MultiBuildingEvents struct {
-	Date      string                  `json:"date"`
-	Buildings []*SingleBuildingEvents `json:"buildings"`
+	Date      string                  `json:"date" bson:"date"`
+	Buildings []*SingleBuildingEvents `json:"buildings" bson:"buildings"`
 }
 
 func (MultiBuildingEvents) IsEventResult() {}
-
-type Office struct {
-	Building string `json:"building"`
-	MapURI   string `json:"map_uri"`
-	Room     string `json:"room"`
-}
-
-type Professor struct {
-	ID          string     `json:"_id"`
-	FirstName   string     `json:"first_name"`
-	LastName    string     `json:"last_name"`
-	Titles      []string   `json:"titles"`
-	Email       string     `json:"email"`
-	PhoneNumber string     `json:"phone_number"`
-	Office      *Office    `json:"office"`
-	ProfileURI  string     `json:"profile_uri"`
-	ImageURI    string     `json:"image_uri"`
-	OfficeHours any        `json:"office_hours,omitempty"`
-	Sections    []*Section `json:"sections"`
-}
 
 type ProfessorFilter struct {
 	Email          *string `json:"email,omitempty" bson:"email,omitempty"`
@@ -249,48 +207,23 @@ type Room struct {
 }
 
 type RoomEvents struct {
-	Room          string             `json:"room"`
-	SectionEvents []*SectionWithTime `json:"section_events"`
+	Room          string             `json:"room" bson:"room"`
+	SectionEvents []*SectionWithTime `json:"section_events" bson:"events"`
 }
 
 func (RoomEvents) IsEventResult() {}
 
-type Section struct {
-	ID                  string                 `json:"_id"`
-	SectionNumber       string                 `json:"section_number"`
-	CourseReference     *Course                `json:"course_reference"`
-	SectionCorequisites *CollectionRequirement `json:"section_corequisites,omitempty"`
-	AcademicSession     *AcademicSession       `json:"academic_session"`
-	Professors          []*Professor           `json:"professors"`
-	TeachingAssistants  []*Assistant           `json:"teaching_assistants"`
-	InternalClassNumber string                 `json:"internal_class_number"`
-	InstructionMode     string                 `json:"instruction_mode"`
-	Meetings            []*Meeting             `json:"meetings"`
-	CoreFlags           []string               `json:"core_flags"`
-	SyllabusURI         string                 `json:"syllabus_uri"`
-	GradeDistribution   []int32                `json:"grade_distribution,omitempty"`
-	Attributes          any                    `json:"attributes,omitempty"`
-}
-
 type SectionFilter struct {
-	SectionNumber       *string `json:"section_number,omitempty" bson:"section_number,omitempty"`
-	CourseReference     *string `json:"course_reference,omitempty" bson:"course_reference,omitempty"`
-	InternalClassNumber *string `json:"internal_class_number,omitempty" bson:"internal_class_number,omitempty"`
-	InstructionMode     *string `json:"instruction_mode,omitempty" bson:"instruction_mode,omitempty"`
-	SyllabusURI         *string `json:"syllabus_uri,omitempty" bson:"syllabus_uri,omitempty"`
+	SectionNumber       *string        `json:"section_number,omitempty" bson:"section_number,omitempty"`
+	CourseReference     *bson.ObjectID `json:"course_reference,omitempty" bson:"course_reference,omitempty"`
+	InternalClassNumber *string        `json:"internal_class_number,omitempty" bson:"internal_class_number,omitempty"`
+	InstructionMode     *string        `json:"instruction_mode,omitempty" bson:"instruction_mode,omitempty"`
+	SyllabusURI         *string        `json:"syllabus_uri,omitempty" bson:"syllabus_uri,omitempty"`
 }
-
-type SectionWithTime struct {
-	Section   *Section `json:"section"`
-	StartTime string   `json:"start_time"`
-	EndTime   string   `json:"end_time"`
-}
-
-func (SectionWithTime) IsEventResult() {}
 
 type SingleBuildingEvents struct {
-	Building string        `json:"building"`
-	Rooms    []*RoomEvents `json:"rooms"`
+	Building string        `json:"building" bson:"building"`
+	Rooms    []*RoomEvents `json:"rooms" bson:"rooms"`
 }
 
 func (SingleBuildingEvents) IsEventResult() {}

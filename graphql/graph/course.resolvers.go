@@ -18,10 +18,9 @@ func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter,
 	defer cancel()
 
 	var courses []*model.Course
-	var dbCourses []*model.DBCourse
 
 	// Build the mongo query from the filter's struct
-	var courseQuery bson.M
+	courseQuery := bson.M{}
 	if filter != nil {
 		bsonBytes, err := bson.Marshal(filter)
 		if err != nil {
@@ -41,35 +40,28 @@ func (r *queryResolver) Courses(ctx context.Context, filter *model.CourseFilter,
 	}
 	defer cursor.Close(timeoutCtx)
 
-	if err = cursor.All(timeoutCtx, &dbCourses); err != nil {
+	// Unmarshal into courses
+	if err = cursor.All(timeoutCtx, &courses); err != nil {
 		return nil, err
-	}
-
-	// Transform Mongo course to GraphQL course
-	for _, dbCourse := range dbCourses {
-		courses = append(courses, model.TransformCourse(dbCourse))
 	}
 
 	return courses, err
 }
 
 // Course is the resolver for the course field.
-func (r *queryResolver) Course(ctx context.Context, id string) (*model.Course, error) {
+func (r *queryResolver) Course(ctx context.Context, id bson.ObjectID) (*model.Course, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	objectId, err := bson.ObjectIDFromHex(id)
-	if err != nil {
+	var course model.Course
+	var err error
+	
+	result := r.CourseCollection.FindOne(timeoutCtx, bson.M{"_id": id})
+	if err = result.Decode(&course); err != nil {
 		return nil, err
 	}
 
-	var dbCourse model.DBCourse
-	result := r.CourseCollection.FindOne(timeoutCtx, bson.M{"_id": objectId})
-	if err = result.Decode(&dbCourse); err != nil {
-		return nil, err
-	}
-
-	return model.TransformCourse(&dbCourse), err
+	return &course, err
 }
 
 // Sections is the resolver for the section field referenced from course

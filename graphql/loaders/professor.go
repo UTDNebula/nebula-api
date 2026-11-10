@@ -21,48 +21,36 @@ func (p *professorReader) getProfessors(ctx context.Context, professorIDs []bson
 	}
 	defer cursor.Close(ctx)
 
-	var dbProfessors []*model.DBProfessor
-	if err := cursor.All(ctx, &dbProfessors); err != nil {
+	var professors []*model.Professor
+	if err := cursor.All(ctx, &professors); err != nil {
 		return nil, []error{err}
 	}
 
-	professorMap := make(map[bson.ObjectID]*model.Professor, len(dbProfessors))
-	for _, dbProfessor := range dbProfessors {
-		professorMap[dbProfessor.ID] = model.TransformProfessor(dbProfessor)
+	professorMap := make(map[bson.ObjectID]*model.Professor, len(professors))
+	for _, professor := range professors {
+		professorMap[professor.ID] = professor
 	}
 
-	professors := make([]*model.Professor, len(professorIDs))
+	orderedProfessors := make([]*model.Professor, len(professorIDs))
 	errs := make([]error, len(professorIDs))
 	for i, id := range professorIDs {
-		professors[i] = professorMap[id]
-		if professors[i] == nil {
+		orderedProfessors[i] = professorMap[id]
+		if orderedProfessors[i] == nil {
 			errs[i] = mongo.ErrNoDocuments
 		}
 	}
 
-	return professors, errs
+	return orderedProfessors, errs
 }
 
 // GetProfessor loads a professor from a reference that contains only its ID.
-func GetProfessor(ctx context.Context, professorRef *model.Professor) (*model.Professor, error) {
-	professorID, err := bson.ObjectIDFromHex(professorRef.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	return For(ctx).ProfessorLoader.Load(ctx, professorID)
+func GetProfessor(ctx context.Context, professorRef bson.ObjectID) (*model.Professor, error) {
+	loaders := For(ctx)
+	return loaders.ProfessorLoader.Load(ctx, professorRef)
 }
 
 // GetProfessors loads professors from references that contain only their IDs.
-func GetProfessors(ctx context.Context, professorsRef []*model.Professor) ([]*model.Professor, error) {
-	professorIDs := make([]bson.ObjectID, len(professorsRef))
-	for i, professor := range professorsRef {
-		professorID, err := bson.ObjectIDFromHex(professor.ID)
-		if err != nil {
-			return nil, err
-		}
-		professorIDs[i] = professorID
-	}
-
-	return For(ctx).ProfessorLoader.LoadAll(ctx, professorIDs)
+func GetProfessors(ctx context.Context, professorsRef []bson.ObjectID) ([]*model.Professor, error) {
+  loaders := For(ctx)
+	return loaders.ProfessorLoader.LoadAll(ctx, professorsRef)
 }
