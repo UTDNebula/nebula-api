@@ -55,7 +55,7 @@ func (r *queryResolver) Course(ctx context.Context, id bson.ObjectID) (*model.Co
 
 	var course model.Course
 	var err error
-	
+
 	result := r.CourseCollection.FindOne(timeoutCtx, bson.M{"_id": id})
 	if err = result.Decode(&course); err != nil {
 		return nil, err

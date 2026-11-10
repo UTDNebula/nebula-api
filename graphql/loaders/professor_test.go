@@ -1,13 +1,11 @@
 package loaders
 
-import (
-	// "context"
-	// "testing"
+// "context"
+// "testing"
 
-	// "github.com/UTDNebula/nebula-api/graphql/graph/model"
-	// "github.com/vikstrous/dataloadgen"
-	// "go.mongodb.org/mongo-driver/v2/bson"
-)
+// "github.com/UTDNebula/nebula-api/graphql/graph/model"
+// "github.com/vikstrous/dataloadgen"
+// "go.mongodb.org/mongo-driver/v2/bson"
 
 // func TestGetProfessorsInvalidID(t *testing.T) {
 // 	// ID validation must finish before the loader can make a database query.

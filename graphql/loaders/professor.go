@@ -51,6 +51,6 @@ func GetProfessor(ctx context.Context, professorRef bson.ObjectID) (*model.Profe
 
 // GetProfessors loads professors from references that contain only their IDs.
 func GetProfessors(ctx context.Context, professorsRef []bson.ObjectID) ([]*model.Professor, error) {
-  loaders := For(ctx)
+	loaders := For(ctx)
 	return loaders.ProfessorLoader.LoadAll(ctx, professorsRef)
 }

@@ -17,7 +17,7 @@ func (r *queryResolver) Professors(ctx context.Context, filter *model.ProfessorF
 	defer cancel()
 
 	var professors []*model.Professor
-	
+
 	professorQuery := bson.M{}
 	if filter != nil {
 		bsonBytes, err := bson.Marshal(filter)
@@ -27,7 +27,7 @@ func (r *queryResolver) Professors(ctx context.Context, filter *model.ProfessorF
 		if err = bson.Unmarshal(bsonBytes, &professorQuery); err != nil {
 			return nil, err
 		}
-	} 
+	}
 
 	paginate := options.Find().SetSkip(int64(offset)).SetLimit(configs.GetEnvLimit())
 

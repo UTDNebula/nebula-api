@@ -25,7 +25,7 @@ func (r *queryResolver) Events(ctx context.Context, date string, building *strin
 	if building == nil {
 		return events, nil
 	}
-	
+
 	events = &model.MultiBuildingEvents{}
 	for _, b := range events.Buildings {
 		if b.Building == *building {
