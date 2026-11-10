@@ -10,9 +10,9 @@ func ClubRoute(router *gin.Engine) {
 	clubGroup := router.Group("/clubs")
 
 	clubGroup.OPTIONS("", controllers.Preflight)
+	clubGroup.GET("", controllers.Clubs)
 	clubGroup.GET("/:id", controllers.ClubById)
 	clubGroup.GET("/:id/events", controllers.ClubEvents)
-	clubGroup.GET("/search", controllers.ClubSearch)
+	clubGroup.GET("/events", controllers.ClubsEvents)
 	clubGroup.GET("/events/:id", controllers.ClubsEventById)
-	clubGroup.GET("/events/search", controllers.ClubsEventSearch)
 }

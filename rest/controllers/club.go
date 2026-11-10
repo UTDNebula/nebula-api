@@ -135,8 +135,8 @@ func ClubEvents(c *gin.Context) {
 	respond(c, http.StatusOK, "success", clubsEvents)
 }
 
-// @Id				clubSearch
-// @Router			/clubs/search [get]
+// @Id				clubs
+// @Router			/clubs [get]
 // @Tags			Clubs
 // @Description	Returns list of clubs matching the search string
 // @Produce		json
@@ -144,7 +144,7 @@ func ClubEvents(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Club]	"List of matching clubs"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
-func ClubSearch(c *gin.Context) {
+func Clubs(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -253,8 +253,8 @@ func ClubsEventById(c *gin.Context) {
 	respond(c, http.StatusOK, "success", clubsEvents[0])
 }
 
-// @Id				clubsEventSearch
-// @Router			/clubs/events/search [get]
+// @Id				clubsEvents
+// @Router			/clubs/events [get]
 // @Tags			Clubs
 // @Description	Returns list of events matching the search string and filters
 // @Produce		json
@@ -268,7 +268,7 @@ func ClubsEventById(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[[]schema.ClubsEvent]	"List of matching events"
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400			{object}	schema.APIResponse[string]				"A string describing the error"
-func ClubsEventSearch(c *gin.Context) {
+func ClubsEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 

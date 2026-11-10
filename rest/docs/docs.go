@@ -431,7 +431,48 @@ const docTemplate = `{
                 }
             }
         },
-        "/clubs/events/search": {
+        "/clubs": {
+            "get": {
+                "description": "Returns list of clubs matching the search string",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "operationId": "clubSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search string",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of matching clubs",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_Club"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/events": {
             "get": {
                 "description": "Returns list of events matching the search string and filters",
                 "produces": [
@@ -546,47 +587,6 @@ const docTemplate = `{
                         "description": "An event",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-schema_ClubsEvent"
-                        }
-                    },
-                    "400": {
-                        "description": "A string describing the error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    },
-                    "500": {
-                        "description": "A string describing the error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
-        "/clubs/search": {
-            "get": {
-                "description": "Returns list of clubs matching the search string",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Clubs"
-                ],
-                "operationId": "clubSearch",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Search string",
-                        "name": "q",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of matching clubs",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-array_schema_Club"
                         }
                     },
                     "400": {

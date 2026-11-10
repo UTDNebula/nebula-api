@@ -1600,6 +1600,33 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Events
+  /clubs:
+    get:
+      description: Returns list of clubs matching the search string
+      operationId: clubSearch
+      parameters:
+      - description: Search string
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of matching clubs
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_Club'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Clubs
   /clubs/{id}:
     get:
       description: Returns the listing info for the club with given ID
@@ -1654,34 +1681,7 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Clubs
-  /clubs/events/{id}:
-    get:
-      description: Returns the listing info for the event with given ID
-      operationId: clubsEventById
-      parameters:
-      - description: ID of the event to get
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: An event
-          schema:
-            $ref: '#/definitions/schema.APIResponse-schema_ClubsEvent'
-        "400":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-        "500":
-          description: A string describing the error
-          schema:
-            $ref: '#/definitions/schema.APIResponse-string'
-      tags:
-      - Clubs
-  /clubs/events/search:
+  /clubs/events:
     get:
       description: Returns list of events matching the search string and filters
       operationId: clubsEventSearch
@@ -1749,23 +1749,23 @@ paths:
             $ref: '#/definitions/schema.APIResponse-string'
       tags:
       - Clubs
-  /clubs/search:
+  /clubs/events/{id}:
     get:
-      description: Returns list of clubs matching the search string
-      operationId: clubSearch
+      description: Returns the listing info for the event with given ID
+      operationId: clubsEventById
       parameters:
-      - description: Search string
-        in: query
-        name: q
+      - description: ID of the event to get
+        in: path
+        name: id
         required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: List of matching clubs
+          description: An event
           schema:
-            $ref: '#/definitions/schema.APIResponse-array_schema_Club'
+            $ref: '#/definitions/schema.APIResponse-schema_ClubsEvent'
         "400":
           description: A string describing the error
           schema:
