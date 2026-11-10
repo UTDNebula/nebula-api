@@ -1,7 +1,9 @@
 directive @goTag(key: String!, value: String) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+directive @goField(forceResolver: Boolean) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION 
 scalar Any
 scalar Float64
 scalar DateTime
+scalar ObjectID
 type CollectionRequirement {
 	type: String!
 	name: String!
@@ -24,7 +26,7 @@ type Course {
 	prerequisites: CollectionRequirement
 	corequisites: CollectionRequirement
 	co_or_pre_requisites: CollectionRequirement
-	sections: [Section!]!
+	sections: [Section!]! @goField(forceResolver: true)
 	lecture_contact_hours: String!
 	laboratory_contact_hours: String!
 	offering_frequency: String!
@@ -61,7 +63,7 @@ type Professor {
 	profile_uri: String!
 	image_uri: String!
 	office_hours: Any
-	sections: [Section!]!
+	sections: [Section!]! @goField(forceResolver: true)
 }
 input ProfessorFilter {
 	email: String @goTag(key: "bson", value: "email,omitempty")
@@ -98,10 +100,10 @@ type Meeting {
 type Section {
 	_id: ID!
 	section_number: String!
-	course_reference: Course!
+	course_reference: Course! @goField(forceResolver: true)
 	section_corequisites: CollectionRequirement
 	academic_session: AcademicSession!
-	professors: [Professor!]!
+	professors: [Professor!]! @goField(forceResolver: true)
 	teaching_assistants: [Assistant!]!
 	internal_class_number: String!
 	instruction_mode: String!
@@ -138,10 +140,10 @@ type SingleBuildingEvents {
 }
 type RoomEvents {
 	room: String!
-	section_events: [SectionWithTime!]!
+	section_events: [SectionWithTime!]! 
 }
 type SectionWithTime {
-	section: Section!
+	section: Section! @goField(forceResolver: true)
 	start_time: String!
 	end_time: String!
 }

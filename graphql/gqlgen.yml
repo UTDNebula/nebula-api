@@ -161,26 +161,6 @@ models:
   Any:
     model:
       - github.com/99designs/gqlgen/graphql.Any
-  
-  # Forcing field resolvers
-  Course:
-    fields:
-      sections:
-        resolver: true
-
-  Section:
-    fields:
-      course_reference:
-        resolver: true
-      professors:
-        resolver: true
-
-  Professor:
-    fields:
-      sections:
-        resolver: true
-
-  SectionWithTime:
-    fields:
-      section:
-        resolver: true
+  ObjectID:
+    model:
+      - github.com/UTDNebula/nebula-api/graphql/graph/model.ObjectID
