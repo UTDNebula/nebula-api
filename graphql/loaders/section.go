@@ -36,11 +36,15 @@ func (s *sectionReader) getSections(ctx context.Context, sectionIDs []bson.Objec
 	}
 
 	orderedSections := make([]*model.Section, len(sectionIDs))
+	errs := make([]error, len(sectionIDs))
 	for i, ID := range sectionIDs {
 		orderedSections[i] = sectionMap[ID]
+		if orderedSections[i] == nil {
+			errs[i] = mongo.ErrNoDocuments
+		}
 	}
 
-	return orderedSections, nil
+	return orderedSections, errs
 }
 
 // For convenience in resolvers
