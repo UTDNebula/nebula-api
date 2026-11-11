@@ -74,9 +74,8 @@ func (r *queryResolver) CometCalendar(ctx context.Context, id bson.ObjectID) (*m
 	defer cancel()
 
 	var calendar model.CometCalendar
-	var err error
 
-	err = r.CometCalendarCollection.FindOne(timeoutCtx, bson.M{"_id": id}).Decode(&calendar)
+	err := r.CometCalendarCollection.FindOne(timeoutCtx, bson.M{"_id": id}).Decode(&calendar)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, fmt.Errorf("calendar not found: cannot find collection")
