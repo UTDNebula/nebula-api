@@ -1,15 +1,17 @@
 directive @goTag(key: String!, value: String) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+directive @goField(forceResolver: Boolean) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION 
 scalar Any
 scalar Float64
 scalar DateTime
+scalar ObjectID
 type CollectionRequirement {
-	type: String!
-	name: String!
-	required: Int!
-	options: Any
+	type: String! @goTag(key: "bson", value: "type")
+	name: String! @goTag(key: "bson", value: "name")
+	required: Int! @goTag(key: "bson", value: "required")
+	options: Any @goTag(key: "bson", value: "options")
 }
 type Course {
-	_id: ID!
+	_id: ObjectID!
 	subject_prefix: String!
 	course_number: String!
 	title: String!
@@ -24,7 +26,7 @@ type Course {
 	prerequisites: CollectionRequirement
 	corequisites: CollectionRequirement
 	co_or_pre_requisites: CollectionRequirement
-	sections: [Section!]!
+	sections: [Section!]! @goField(forceResolver: true)
 	lecture_contact_hours: String!
 	laboratory_contact_hours: String!
 	offering_frequency: String!
@@ -45,23 +47,19 @@ input CourseFilter {
 	offering_frequency: String @goTag(key: "bson", value: "offering_frequency,omitempty")
 	catalog_year: String @goTag(key: "bson", value: "catalog_year,omitempty")
 }
-type Office {
-	building: String!
-	map_uri: String!
-	room: String!
-}
+
 type Professor {
-	_id: ID!
+	_id: ObjectID!
 	first_name: String!
 	last_name: String!
 	titles: [String!]!
 	email: String!
 	phone_number: String!
-	office: Office!
+	office: Location!
 	profile_uri: String!
 	image_uri: String!
 	office_hours: Any
-	sections: [Section!]!
+	sections: [Section!]! @goField(forceResolver: true)
 }
 input ProfessorFilter {
 	email: String @goTag(key: "bson", value: "email,omitempty")
@@ -71,37 +69,37 @@ input ProfessorFilter {
 	office_building: String @goTag(key: "bson", value: "office.building,omitempty")
 }
 type AcademicSession {
-	name: String!
-	start_date: DateTime!
-	end_date: DateTime!
+	name: String! @goTag(key: "bson", value: "name")
+	start_date: DateTime! @goTag(key: "bson", value: "start_date")
+	end_date: DateTime! @goTag(key: "bson", value: "end_date")
 }
 type Assistant {
-	first_name: String!
-	last_name: String!
-	role: String!
-	email: String!
+	first_name: String! @goTag(key: "bson", value: "first_name")
+	last_name: String! @goTag(key: "bson", value: "last_name")
+	role: String! @goTag(key: "bson", value: "role")
+	email: String! @goTag(key: "bson", value: "email")
 }
 type Location {
-	building: String!
-	room: String!
-	map_uri: String!
+	building: String! @goTag(key: "bson", value: "building")
+	room: String! @goTag(key: "bson", value: "room")
+	map_uri: String! @goTag(key: "bson", value: "map_uri")
 }
 type Meeting {
-	start_date: DateTime!
-	end_date: DateTime!
-	meeting_days: [String!]!
-	start_time: String!
-	end_time: String!
-	modality: String!
-	location: Location!
+	start_date: DateTime! @goTag(key: "bson", value: "start_date")
+	end_date: DateTime! @goTag(key: "bson", value: "end_date")
+	meeting_days: [String!]! @goTag(key: "bson", value: "meeting_days")
+	start_time: String! @goTag(key: "bson", value: "start_time")
+	end_time: String! @goTag(key: "bson", value: "end_time")
+	modality: String! @goTag(key: "bson", value: "modality")
+	location: Location! @goTag(key: "bson", value: "location")
 }
 type Section {
-	_id: ID!
+	_id: ObjectID!
 	section_number: String!
-	course_reference: Course!
+	course_reference: Course! @goField(forceResolver: true)
 	section_corequisites: CollectionRequirement
 	academic_session: AcademicSession!
-	professors: [Professor!]!
+	professors: [Professor!]! @goField(forceResolver: true)
 	teaching_assistants: [Assistant!]!
 	internal_class_number: String!
 	instruction_mode: String!
@@ -113,7 +111,7 @@ type Section {
 }
 input SectionFilter {
 	section_number: String @goTag(key: "bson", value: "section_number,omitempty")
-	course_reference: ID @goTag(key: "bson", value: "course_reference,omitempty")
+	course_reference: ObjectID @goTag(key: "bson", value: "course_reference,omitempty")
 	internal_class_number: String @goTag(key: "bson", value: "internal_class_number,omitempty")
 	instruction_mode: String @goTag(key: "bson", value: "instruction_mode,omitempty")
 	syllabus_uri: String @goTag(key: "bson", value: "syllabus_uri,omitempty")
@@ -129,19 +127,19 @@ type BuildingRooms {
 	lon: Float64! @goTag(key: "bson", value: "lon")
 }
 type MultiBuildingEvents {
-	date: String!
-	buildings: [SingleBuildingEvents!]!
+	date: String! @goTag(key: "bson", value: "date")
+	buildings: [SingleBuildingEvents!]! @goTag(key: "bson", value: "buildings")
 }
 type SingleBuildingEvents {
-	building: String!
-	rooms: [RoomEvents!]!
+	building: String! @goTag(key: "bson", value: "building")
+	rooms: [RoomEvents!]! @goTag(key: "bson", value: "rooms")
 }
 type RoomEvents {
-	room: String!
-	section_events: [SectionWithTime!]!
+	room: String! @goTag(key: "bson", value: "room")
+	section_events: [SectionWithTime!]! @goTag(key: "bson", value: "events")
 }
 type SectionWithTime {
-	section: Section!
+	section: Section! @goField(forceResolver: true)
 	start_time: String!
 	end_time: String!
 }
@@ -192,7 +190,7 @@ type MazevoDayEvents {
 	buildings: [MazevoBuilding!]! @goTag(key: "bson", value: "buildings")
 }
 type Event {
-	_id: ID! @goTag(key: "bson", value: "_id")
+	_id: ObjectID! @goTag(key: "bson", value: "_id")
 	summary: String! @goTag(key: "bson", value: "summary")
 	location: String! @goTag(key: "bson", value: "location")
 	start_time: DateTime! @goTag(key: "bson", value: "start_time")
@@ -217,7 +215,7 @@ type CometCalendarBuilding {
 	rooms: [CometCalendarRoom!]! @goTag(key: "bson", value: "rooms")
 }
 type CometCalendar {
-	_id: ID! @goTag(key: "bson", value: "_id")
+	_id: ObjectID! @goTag(key: "bson", value: "_id")
 	date: String! @goTag(key: "bson", value: "date")
 	buildings: [CometCalendarBuilding!]! @goTag(key: "bson", value: "buildings")
 }
@@ -245,14 +243,14 @@ input EventInput {
 }
 type Query {
 	courses(filter: CourseFilter, offset: Int! = 0): [Course!]!
-	course(id: ID!): Course
+	course(id: ObjectID!): Course
 	professors(filter: ProfessorFilter, offset: Int! = 0): [Professor!]!
-	professor(id: ID!): Professor
+	professor(id: ObjectID!): Professor
 	sections(filter: SectionFilter, offset: Int! = 0): [Section!]!
-	section(id: ID!): Section
+	section(id: ObjectID!): Section
 	rooms: [BuildingRooms!]!
 	cometCalendars(filter: CometCalendarFilter, offset: Int! = 0): [CometCalendar!]!
-	cometCalendar(id: ID!): CometCalendar
+	cometCalendar(id: ObjectID!): CometCalendar
 	events(date: String!, building: String, room: String): EventResult
 	astraEvents(date: String!): AstraDayEvents
 	astraEventsByBuilding(date: String!, building: String!): AstraBuilding

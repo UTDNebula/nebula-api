@@ -23,54 +23,40 @@ func (s *sectionReader) getSections(ctx context.Context, sectionIDs []bson.Objec
 	defer cursor.Close(ctx)
 
 	// Decode
-	var dbSections []*model.DBSection
-	if err := cursor.All(ctx, &dbSections); err != nil {
+	var sections []*model.Section
+	if err := cursor.All(ctx, &sections); err != nil {
 		return nil, []error{err}
 	}
 
 	// $in does not return in order of given sectionIDs
 	// so we order with map.
-	sectionMap := make(map[bson.ObjectID]*model.Section, len(dbSections))
-	for _, dbSection := range dbSections {
-		sectionMap[dbSection.ID] = model.TransformSection(dbSection)
+	sectionMap := make(map[bson.ObjectID]*model.Section, len(sections))
+	for _, section := range sections {
+		sectionMap[section.ID] = section
 	}
 
-	sections := make([]*model.Section, len(sectionIDs))
+	orderedSections := make([]*model.Section, len(sectionIDs))
+	errs := make([]error, len(sectionIDs))
 	for i, ID := range sectionIDs {
-		sections[i] = sectionMap[ID]
+		orderedSections[i] = sectionMap[ID]
+		if orderedSections[i] == nil {
+			errs[i] = mongo.ErrNoDocuments
+		}
 	}
 
-	return sections, nil
+	return orderedSections, errs
 }
 
 // For convenience in resolvers
 
 // GetSection returns single section by id efficiently
-// Note that sectionRef contains only its ObjectID.
-// All other fields in sectionRef are empty.
-func GetSection(ctx context.Context, sectionRef *model.Section) (*model.Section, error) {
-	sectionID, err := bson.ObjectIDFromHex(sectionRef.ID)
-	if err != nil {
-		return nil, err
-	}
-
+func GetSection(ctx context.Context, sectionRef bson.ObjectID) (*model.Section, error) {
 	loaders := For(ctx)
-	return loaders.SectionLoader.Load(ctx, sectionID)
+	return loaders.SectionLoader.Load(ctx, sectionRef)
 }
 
 // GetSections returns many sections by ids efficiently
-// Note that sectionsRef contains only the sections' ObjectID.
-// All other fields of each section in sectionsRef are empty.
-func GetSections(ctx context.Context, sectionsRef []*model.Section) ([]*model.Section, error) {
-	sectionIDs := make([]bson.ObjectID, len(sectionsRef))
-	for i, section := range sectionsRef {
-		sectionID, err := bson.ObjectIDFromHex(section.ID)
-		if err != nil {
-			return nil, err
-		}
-		sectionIDs[i] = sectionID
-	}
-
+func GetSections(ctx context.Context, sectionsRef []bson.ObjectID) ([]*model.Section, error) {
 	loaders := For(ctx)
-	return loaders.SectionLoader.LoadAll(ctx, sectionIDs)
+	return loaders.SectionLoader.LoadAll(ctx, sectionsRef)
 }

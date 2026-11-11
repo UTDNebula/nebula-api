@@ -17,9 +17,8 @@ func (r *queryResolver) Professors(ctx context.Context, filter *model.ProfessorF
 	defer cancel()
 
 	var professors []*model.Professor
-	var dbProfessors []*model.DBProfessor
 
-	var professorQuery bson.M
+	professorQuery := bson.M{}
 	if filter != nil {
 		bsonBytes, err := bson.Marshal(filter)
 		if err != nil {
@@ -28,8 +27,6 @@ func (r *queryResolver) Professors(ctx context.Context, filter *model.ProfessorF
 		if err = bson.Unmarshal(bsonBytes, &professorQuery); err != nil {
 			return nil, err
 		}
-	} else {
-		professorQuery = bson.M{} // no filter
 	}
 
 	paginate := options.Find().SetSkip(int64(offset)).SetLimit(configs.GetEnvLimit())
@@ -40,35 +37,26 @@ func (r *queryResolver) Professors(ctx context.Context, filter *model.ProfessorF
 	}
 	defer cursor.Close(timeoutCtx)
 
-	if err = cursor.All(timeoutCtx, &dbProfessors); err != nil {
+	if err = cursor.All(timeoutCtx, &professors); err != nil {
 		return nil, err
-	}
-
-	for _, dbProfessor := range dbProfessors {
-		professors = append(professors, model.TransformProfessor(dbProfessor))
 	}
 
 	return professors, err
 }
 
-func (r *queryResolver) Professor(ctx context.Context, id string) (*model.Professor, error) {
+func (r *queryResolver) Professor(ctx context.Context, id bson.ObjectID) (*model.Professor, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	objectId, err := bson.ObjectIDFromHex(id)
-	if err != nil {
+	professor := &model.Professor{}
+	var err error
+
+	result := r.ProfCollection.FindOne(timeoutCtx, bson.M{"_id": id})
+	if err = result.Decode(professor); err != nil {
 		return nil, err
 	}
 
-	dbProfessor := &model.DBProfessor{}
-
-	result := r.ProfCollection.FindOne(timeoutCtx, bson.M{"_id": objectId})
-	if err = result.Decode(dbProfessor); err != nil {
-		return nil, err
-	}
-
-	return model.TransformProfessor(dbProfessor), err
-
+	return professor, err
 }
 
 // Sections is the resolver for the section field referenced from professor

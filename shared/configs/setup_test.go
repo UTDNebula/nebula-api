@@ -19,8 +19,11 @@ func TestGetOptionLimit(t *testing.T) {
 
 		query := bson.M{"offset": "should-be-ignored"}
 		optionsBuilder, err := GetOptionLimit(&query, c)
-		options := buildOptions(optionsBuilder)
+		if err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
 
+		options, err := buildOptions(optionsBuilder)
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err)
 		}
@@ -36,7 +39,11 @@ func TestGetOptionLimit(t *testing.T) {
 
 		query := bson.M{}
 		optionsBuilder, _ := GetOptionLimit(&query, c)
-		options := buildOptions(optionsBuilder)
+
+		options, err := buildOptions(optionsBuilder)
+		if err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
 
 		if options.Skip == nil || *options.Skip != int64(0) {
 			t.Errorf("Expected default Skip to be 0, got %v", options.Skip)
@@ -113,10 +120,12 @@ func isEqual(actual interface{}, expected int) bool {
 	}
 }
 
-func buildOptions(optionsBuilder *options.FindOptionsBuilder) options.FindOptions {
-	var options options.FindOptions
+func buildOptions(optionsBuilder *options.FindOptionsBuilder) (options.FindOptions, error) {
+	var opts options.FindOptions
 	for _, set := range optionsBuilder.Opts {
-		_ = set(&options)
+		if err := set(&opts); err != nil {
+			return options.FindOptions{}, err
+		}
 	}
-	return options
+	return opts, nil
 }

@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	port := configs.GetPortString("8000")
+	port := configs.GetPortString()
 	resolver := graph.Resolver{
 		CourseCollection:        configs.GetCollection("courses"),
 		SectionCollection:       configs.GetCollection("sections"),

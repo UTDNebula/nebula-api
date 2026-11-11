@@ -47,6 +47,11 @@ docs-rest:
 
 docs: docs-rest
 
+generate: 
+	cd graphql && go get -tool github.com/99designs/gqlgen@latest
+	cd graphql && go tool gqlgen generate
+	go mod tidy
+
 build-rest: docs-rest
 	go build -o $(REST_EXEC_NAME) ./rest
 
