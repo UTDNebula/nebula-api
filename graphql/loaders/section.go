@@ -46,16 +46,12 @@ func (s *sectionReader) getSections(ctx context.Context, sectionIDs []bson.Objec
 // For convenience in resolvers
 
 // GetSection returns single section by id efficiently
-// Note that sectionRef contains only its ObjectID.
-// All other fields in sectionRef are empty.
 func GetSection(ctx context.Context, sectionRef bson.ObjectID) (*model.Section, error) {
 	loaders := For(ctx)
 	return loaders.SectionLoader.Load(ctx, sectionRef)
 }
 
 // GetSections returns many sections by ids efficiently
-// Note that sectionsRef contains only the sections' ObjectID.
-// All other fields of each section in sectionsRef are empty.
 func GetSections(ctx context.Context, sectionsRef []bson.ObjectID) ([]*model.Section, error) {
 	loaders := For(ctx)
 	return loaders.SectionLoader.LoadAll(ctx, sectionsRef)
