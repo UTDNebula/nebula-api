@@ -156,12 +156,12 @@ exit /b 0
 :generate
 echo Generating GraphQL execution layer...
 pushd graphql
-go get github.com/99designs/gqlgen@latest
+go get -tool github.com/99designs/gqlgen@latest
 if ERRORLEVEL 1 (
 	popd
 	exit /b %ERRORLEVEL%
 )
-go run github.com/99designs/gqlgen generate
+go tool gqlgen genreate
 if ERRORLEVEL 1 (
 	popd
 	exit /b %ERRORLEVEL%
