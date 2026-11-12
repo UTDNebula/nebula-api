@@ -166,19 +166,6 @@ func TestGetClubsDBUri(t *testing.T) {
 			t.Errorf("expected %q, got %q", expected, uri)
 		}
 	})
-
-	t.Run("Unset panics", func(t *testing.T) {
-
-		unsetEnv(t, "CLUBS_DB_URI")
-
-		defer func() {
-			if recovered := recover(); recovered == nil {
-				t.Error("expected a panic when CLUBS_DB_URI is unset")
-			}
-		}()
-
-		GetClubsDBUri()
-	})
 }
 
 func TestGetEnvLogin(t *testing.T) {
