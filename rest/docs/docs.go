@@ -15,6 +15,79 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/academicCalendars/current": {
+            "get": {
+                "description": "Returns one academic calendar whose timeline is current.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Academic Calendars"
+                ],
+                "operationId": "academicCalendarsCurrent",
+                "responses": {
+                    "200": {
+                        "description": "The current academic calendar",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_AcademicCalendar"
+                        }
+                    },
+                    "404": {
+                        "description": "No current academic calendar",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/academicCalendars/{id}": {
+            "get": {
+                "description": "Returns the academic calendar for the given term ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Academic Calendars"
+                ],
+                "operationId": "academicCalendarsById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Academic term ID, for example 26F",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An academic calendar",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-schema_AcademicCalendar"
+                        }
+                    },
+                    "404": {
+                        "description": "No matching academic calendar",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/astra/{date}": {
             "get": {
                 "description": "\"Returns AstraEvent based on the input date\"",
@@ -1117,112 +1190,6 @@ const docTemplate = `{
                         "description": "A list of discounts",
                         "schema": {
                             "$ref": "#/definitions/schema.APIResponse-array_schema_DiscountProgram"
-                        }
-                    },
-                    "400": {
-                        "description": "A string describing the error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    },
-                    "500": {
-                        "description": "A string describing the error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
-        "/email/queue": {
-            "post": {
-                "description": "\"Queue an email to be sent via SMTP. Multi-recipient emails will be queued as separate emails to avoid bypassing queueing system. This route is restricted to only Nebula Labs internal Projects.\"",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Internal"
-                ],
-                "operationId": "QueueEmail",
-                "parameters": [
-                    {
-                        "description": "Email Request Body",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/schema.EmailRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "The internal email queue key",
-                        "name": "x-email-queue-key",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The list of queued task names",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-array_string"
-                        }
-                    },
-                    "400": {
-                        "description": "A string describing the error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    },
-                    "500": {
-                        "description": "A string describing the error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
-        "/email/send": {
-            "post": {
-                "description": "\"Send an email via SMTP. This route is restricted to only Nebula Labs internal Projects.\"",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Internal"
-                ],
-                "operationId": "sendEmail",
-                "parameters": [
-                    {
-                        "description": "Email Request Body",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/schema.EmailRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "The internal email send key",
-                        "name": "x-email-send-key",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Email Request Body",
-                        "schema": {
-                            "$ref": "#/definitions/schema.APIResponse-schema_EmailRequest"
                         }
                     },
                     "400": {
@@ -3648,14 +3615,11 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.APIResponse-array_string": {
+        "schema.APIResponse-int": {
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"
@@ -3665,11 +3629,11 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.APIResponse-int": {
+        "schema.APIResponse-schema_AcademicCalendar": {
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "integer"
+                    "$ref": "#/definitions/schema.AcademicCalendar"
                 },
                 "message": {
                     "type": "string"
@@ -3726,20 +3690,6 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/schema.Course"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "schema.APIResponse-schema_EmailRequest": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/schema.EmailRequest"
                 },
                 "message": {
                     "type": "string"
@@ -3942,6 +3892,123 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "schema.AcademicCalendar": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "enrollment_opens": {
+                    "type": "string"
+                },
+                "last_from_waitlist": {
+                    "type": "string"
+                },
+                "last_readmission": {
+                    "type": "string"
+                },
+                "midterms_due": {
+                    "type": "string"
+                },
+                "no_classes": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "online_add_swap_ends": {
+                    "type": "string"
+                },
+                "schedule_planner_available": {
+                    "type": "string"
+                },
+                "sessions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.AcademicCalendarSession"
+                    }
+                },
+                "timeline": {
+                    "type": "string"
+                },
+                "university_closings": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.AcademicCalendarDropDeadlines": {
+            "type": "object",
+            "properties": {
+                "graduate_withdrawl_ends": {
+                    "type": "string"
+                },
+                "undergrad_approval_required": {
+                    "type": "string"
+                },
+                "without_w": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.AcademicCalendarSession": {
+            "type": "object",
+            "properties": {
+                "begin": {
+                    "type": "string"
+                },
+                "census_day": {
+                    "type": "string"
+                },
+                "drop_deadlines": {
+                    "$ref": "#/definitions/schema.AcademicCalendarDropDeadlines"
+                },
+                "end": {
+                    "type": "string"
+                },
+                "exams": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "final_grading_period": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "last_registration": {
+                    "type": "string"
+                },
+                "late_registration": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "reading_days": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -4370,61 +4437,6 @@ const docTemplate = `{
                 },
                 "website": {
                     "type": "string"
-                }
-            }
-        },
-        "schema.EmailAttachment": {
-            "type": "object",
-            "required": [
-                "data",
-                "name"
-            ],
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.EmailRequest": {
-            "type": "object",
-            "required": [
-                "body",
-                "subject",
-                "to"
-            ],
-            "properties": {
-                "attachments": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schema.EmailAttachment"
-                    }
-                },
-                "body": {
-                    "type": "string"
-                },
-                "embeds": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/schema.EmailAttachment"
-                    }
-                },
-                "from": {
-                    "type": "string"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "to": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             }
         },
