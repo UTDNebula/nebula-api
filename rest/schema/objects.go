@@ -72,6 +72,15 @@ type Meeting struct {
 	Location     Location  `bson:"location" json:"location" queryable:""`
 }
 
+type Enrollment struct {
+	Section_reference bson.ObjectID `bson:"section_reference" json:"section_reference"`
+	Scraped_at        *time.Time    `bson:"scraped_at,omitempty" json:"scraped_at,omitempty"`
+	Status            string        `bson:"status,omitempty" json:"status,omitempty" queryable:""`
+	Available_seats   *int          `bson:"available_seats,omitempty" json:"available_seats,omitempty"`
+	Enrolled_total    *int          `bson:"enrolled_total,omitempty" json:"enrolled_total,omitempty"` // includes cross-listed sections (e.g. CS/CE 2336: 6 + 22 = 28).
+	Waitlist          *int          `bson:"waitlist,omitempty" json:"waitlist,omitempty"`
+}
+
 type Section struct {
 	Id                    bson.ObjectID          `bson:"_id" json:"_id"`
 	Section_number        string                 `bson:"section_number" json:"section_number" queryable:""`
@@ -89,6 +98,7 @@ type Section struct {
 	Attributes            interface{}            `bson:"attributes" json:"attributes"`
 	Professor_details     *[]BasicProfessor      `bson:"professor_details,omitempty" json:"professor_details,omitempty"` // only shows if professor_details was set by the endpoint
 	Course_details        *[]BasicCourse         `bson:"course_details,omitempty" json:"course_details,omitempty"`       // only shows if course_details was set by the endpoint
+	Latest_enrollment     *Enrollment            `bson:"latest_enrollment,omitempty" json:"latest_enrollment,omitempty" queryable:""`
 }
 
 type Professor struct {
