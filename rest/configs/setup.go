@@ -153,6 +153,7 @@ func CreateSemestersJSON() error {
 	if err != nil {
 		return err
 	}
+	log.Printf("Aggregated semesters from MongoDB")
 
 	type term struct {
 		name   string
@@ -211,5 +212,6 @@ func CreateSemestersJSON() error {
 		return err
 	}
 
+	log.Printf("Created semesters JSON file")
 	return nil
 }
