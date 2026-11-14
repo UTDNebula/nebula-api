@@ -149,8 +149,13 @@ func CreateSemestersJSON() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	terms, err := GetCollection("sections").Distinct(ctx, "academic_session.name", bson.D{})
-	if err != nil {
+	res := GetCollection("sections").Distinct(ctx, "academic_session.name", bson.D{})
+	if err := res.Err(); err != nil {
+		return err
+	}
+
+	var terms []string
+	if err := res.Decode(&terms); err != nil {
 		return err
 	}
 	log.Printf("Aggregated semesters from MongoDB")
@@ -164,9 +169,8 @@ func CreateSemestersJSON() error {
 	var parsedTerms []term
 	seen := make(map[string]struct{})
 
-	for _, t := range terms {
-		str, ok := t.(string)
-		if !ok || len(str) < 3 {
+	for _, str := range terms {
+		if len(str) < 3 {
 			continue
 		}
 
@@ -188,13 +192,15 @@ func CreateSemestersJSON() error {
 		})
 	}
 
+	seasonOrder := map[string]int{"f": 3, "u": 2, "s": 1}
+
 	// Sort terms by recency
 	sort.Slice(parsedTerms, func(i, j int) bool {
 		if parsedTerms[i].year != parsedTerms[j].year {
 			return parsedTerms[i].year > parsedTerms[j].year
 		}
-		// Sort by season (comparing ascii values)
-		return parsedTerms[i].season > parsedTerms[j].season
+		// Sort by season
+		return seasonOrder[parsedTerms[i].season] > seasonOrder[parsedTerms[j].season]
 	})
 
 	sortedTerms := make([]string, len(parsedTerms))
