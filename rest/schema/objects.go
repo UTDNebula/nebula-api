@@ -73,11 +73,12 @@ type Meeting struct {
 }
 
 type Enrollment struct {
-	Scraped_at      *time.Time `bson:"scraped_at,omitempty" json:"scraped_at,omitempty"`
-	Status          string     `bson:"status,omitempty" json:"status,omitempty" queryable:""`
-	Available_seats *int       `bson:"available_seats,omitempty" json:"available_seats,omitempty"`
-	Enrolled_total *int        `bson:"enrolled_total,omitempty" json:"enrolled_total,omitempty"` // includes cross-listed sections (e.g. CS/CE 2336: 6 + 22 = 28).
-	Waitlist       *int        `bson:"waitlist,omitempty" json:"waitlist,omitempty"`
+	Section_reference bson.ObjectID `bson:"section_reference" json:"section_reference"`
+	Scraped_at        *time.Time    `bson:"scraped_at,omitempty" json:"scraped_at,omitempty"`
+	Status            string        `bson:"status,omitempty" json:"status,omitempty" queryable:""`
+	Available_seats   *int          `bson:"available_seats,omitempty" json:"available_seats,omitempty"`
+	Enrolled_total    *int          `bson:"enrolled_total,omitempty" json:"enrolled_total,omitempty"` // includes cross-listed sections (e.g. CS/CE 2336: 6 + 22 = 28).
+	Waitlist          *int          `bson:"waitlist,omitempty" json:"waitlist,omitempty"`
 }
 
 type Section struct {
