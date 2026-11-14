@@ -4440,6 +4440,30 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.Enrollment": {
+            "type": "object",
+            "properties": {
+                "available_seats": {
+                    "type": "integer"
+                },
+                "enrolled_total": {
+                    "description": "includes cross-listed sections (e.g. CS/CE 2336: 6 + 22 = 28).",
+                    "type": "integer"
+                },
+                "scraped_at": {
+                    "type": "string"
+                },
+                "section_reference": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "waitlist": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.Event": {
             "type": "object",
             "properties": {
@@ -4977,6 +5001,9 @@ const docTemplate = `{
                 },
                 "internal_class_number": {
                     "type": "string"
+                },
+                "latest_enrollment": {
+                    "$ref": "#/definitions/schema.Enrollment"
                 },
                 "meetings": {
                     "type": "array",

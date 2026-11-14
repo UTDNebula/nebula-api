@@ -646,6 +646,22 @@ definitions:
       website:
         type: string
     type: object
+  schema.Enrollment:
+    properties:
+      available_seats:
+        type: integer
+      enrolled_total:
+        description: 'includes cross-listed sections (e.g. CS/CE 2336: 6 + 22 = 28).'
+        type: integer
+      scraped_at:
+        type: string
+      section_reference:
+        type: string
+      status:
+        type: string
+      waitlist:
+        type: integer
+    type: object
   schema.Event:
     properties:
       _id:
@@ -998,6 +1014,8 @@ definitions:
         type: string
       internal_class_number:
         type: string
+      latest_enrollment:
+        $ref: '#/definitions/schema.Enrollment'
       meetings:
         items:
           $ref: '#/definitions/schema.Meeting'
