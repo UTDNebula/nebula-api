@@ -2541,7 +2541,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "The latest CourseBook enrollment status (e.g. OPEN or CLOSED)",
+                        "description": "The latest CourseBook enrollment status (may be out of date). Most are OPEN or CLOSED/FULL with few exceptions",
                         "name": "latest_enrollment.status",
                         "in": "query"
                     },
@@ -2719,7 +2719,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "The latest CourseBook enrollment status (e.g. OPEN or CLOSED)",
+                        "description": "The latest CourseBook enrollment status (may be out of date). Most are OPEN or CLOSED/FULL with few exceptions",
                         "name": "latest_enrollment.status",
                         "in": "query"
                     },
@@ -2897,7 +2897,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "The latest CourseBook enrollment status (e.g. OPEN or CLOSED)",
+                        "description": "The latest CourseBook enrollment status (may be out of date). Most are OPEN or CLOSED/FULL with few exceptions",
                         "name": "latest_enrollment.status",
                         "in": "query"
                     },

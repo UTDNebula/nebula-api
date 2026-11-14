@@ -2941,7 +2941,8 @@ paths:
         in: query
         name: instruction_mode
         type: string
-      - description: The latest CourseBook enrollment status (e.g. OPEN or CLOSED)
+      - description: The latest CourseBook enrollment status (may be out of date).
+          Most are OPEN or CLOSED/FULL with few exceptions
         in: query
         name: latest_enrollment.status
         type: string
@@ -3176,7 +3177,8 @@ paths:
         in: query
         name: instruction_mode
         type: string
-      - description: The latest CourseBook enrollment status (e.g. OPEN or CLOSED)
+      - description: The latest CourseBook enrollment status (may be out of date).
+          Most are OPEN or CLOSED/FULL with few exceptions
         in: query
         name: latest_enrollment.status
         type: string
@@ -3298,7 +3300,8 @@ paths:
         in: query
         name: instruction_mode
         type: string
-      - description: The latest CourseBook enrollment status (e.g. OPEN or CLOSED)
+      - description: The latest CourseBook enrollment status (may be out of date).
+          Most are OPEN or CLOSED/FULL with few exceptions
         in: query
         name: latest_enrollment.status
         type: string
