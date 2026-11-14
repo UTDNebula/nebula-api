@@ -2541,6 +2541,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "The latest CourseBook enrollment status (e.g. OPEN or CLOSED)",
+                        "name": "latest_enrollment.status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "The start date of one of the section's meetings",
                         "name": "meetings.start_date",
                         "in": "query"
@@ -2713,6 +2719,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "The latest CourseBook enrollment status (e.g. OPEN or CLOSED)",
+                        "name": "latest_enrollment.status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "The start date of one of the section's meetings",
                         "name": "meetings.start_date",
                         "in": "query"
@@ -2881,6 +2893,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "The instruction modality for this section",
                         "name": "instruction_mode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The latest CourseBook enrollment status (e.g. OPEN or CLOSED)",
+                        "name": "latest_enrollment.status",
                         "in": "query"
                     },
                     {

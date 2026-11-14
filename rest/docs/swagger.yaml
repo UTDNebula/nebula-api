@@ -2941,6 +2941,10 @@ paths:
         in: query
         name: instruction_mode
         type: string
+      - description: The latest CourseBook enrollment status (e.g. OPEN or CLOSED)
+        in: query
+        name: latest_enrollment.status
+        type: string
       - description: The start date of one of the section's meetings
         in: query
         name: meetings.start_date
@@ -3172,6 +3176,10 @@ paths:
         in: query
         name: instruction_mode
         type: string
+      - description: The latest CourseBook enrollment status (e.g. OPEN or CLOSED)
+        in: query
+        name: latest_enrollment.status
+        type: string
       - description: The start date of one of the section's meetings
         in: query
         name: meetings.start_date
@@ -3289,6 +3297,10 @@ paths:
       - description: The instruction modality for this section
         in: query
         name: instruction_mode
+        type: string
+      - description: The latest CourseBook enrollment status (e.g. OPEN or CLOSED)
+        in: query
+        name: latest_enrollment.status
         type: string
       - description: The start date of one of the section's meetings
         in: query
