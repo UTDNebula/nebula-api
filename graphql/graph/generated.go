@@ -8001,7 +8001,7 @@ func (ec *executionContext) unmarshalInputSectionFilter(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"section_number", "course_reference", "internal_class_number", "instruction_mode", "latest_enrollment_status", "syllabus_uri"}
+	fieldsInOrder := [...]string{"section_number", "course_reference", "academic_session_name", "internal_class_number", "instruction_mode", "latest_enrollment_status", "syllabus_uri"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -8022,6 +8022,13 @@ func (ec *executionContext) unmarshalInputSectionFilter(ctx context.Context, obj
 				return it, err
 			}
 			it.CourseReference = data
+		case "academic_session_name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("academic_session_name"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AcademicSessionName = data
 		case "internal_class_number":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("internal_class_number"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)

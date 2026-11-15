@@ -225,6 +225,7 @@ type SectionEnrollment struct {
 type SectionFilter struct {
 	SectionNumber          *string        `json:"section_number,omitempty" bson:"section_number,omitempty"`
 	CourseReference        *bson.ObjectID `json:"course_reference,omitempty" bson:"course_reference,omitempty"`
+	AcademicSessionName    *string        `json:"academic_session_name,omitempty" bson:"academic_session.name,omitempty"`
 	InternalClassNumber    *string        `json:"internal_class_number,omitempty" bson:"internal_class_number,omitempty"`
 	InstructionMode        *string        `json:"instruction_mode,omitempty" bson:"instruction_mode,omitempty"`
 	LatestEnrollmentStatus *string        `json:"latest_enrollment_status,omitempty" bson:"latest_enrollment.status,omitempty"`

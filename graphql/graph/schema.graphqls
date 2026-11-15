@@ -121,6 +121,7 @@ type Section {
 input SectionFilter {
 	section_number: String @goTag(key: "bson", value: "section_number,omitempty")
 	course_reference: ObjectID @goTag(key: "bson", value: "course_reference,omitempty")
+	academic_session_name: String @goTag(key: "bson", value: "academic_session.name,omitempty")
 	internal_class_number: String @goTag(key: "bson", value: "internal_class_number,omitempty")
 	instruction_mode: String @goTag(key: "bson", value: "instruction_mode,omitempty")
 	latest_enrollment_status: String @goTag(key: "bson", value: "latest_enrollment.status,omitempty")
