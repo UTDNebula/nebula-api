@@ -93,6 +93,14 @@ type Meeting {
 	modality: String! @goTag(key: "bson", value: "modality")
 	location: Location! @goTag(key: "bson", value: "location")
 }
+type SectionEnrollment {
+	section_reference: ObjectID @goTag(key: "bson", value: "section_reference,omitempty")
+	updated_at: DateTime @goTag(key: "bson", value: "updated_at,omitempty")
+	status: String @goTag(key: "bson", value: "status,omitempty")
+	available_seats: Int @goTag(key: "bson", value: "available_seats,omitempty")
+	enrolled_total: Int @goTag(key: "bson", value: "enrolled_total,omitempty")
+	waitlist: Int @goTag(key: "bson", value: "waitlist,omitempty")
+}
 type Section {
 	_id: ObjectID!
 	section_number: String!
@@ -108,12 +116,14 @@ type Section {
 	syllabus_uri: String!
 	grade_distribution: [Int!]
 	attributes: Any
+	latest_enrollment: SectionEnrollment
 }
 input SectionFilter {
 	section_number: String @goTag(key: "bson", value: "section_number,omitempty")
 	course_reference: ObjectID @goTag(key: "bson", value: "course_reference,omitempty")
 	internal_class_number: String @goTag(key: "bson", value: "internal_class_number,omitempty")
 	instruction_mode: String @goTag(key: "bson", value: "instruction_mode,omitempty")
+	latest_enrollment_status: String @goTag(key: "bson", value: "latest_enrollment.status,omitempty")
 	syllabus_uri: String @goTag(key: "bson", value: "syllabus_uri,omitempty")
 }
 type Room {

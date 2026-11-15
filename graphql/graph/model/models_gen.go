@@ -213,12 +213,22 @@ type RoomEvents struct {
 
 func (RoomEvents) IsEventResult() {}
 
+type SectionEnrollment struct {
+	SectionReference *bson.ObjectID `json:"section_reference,omitempty" bson:"section_reference,omitempty"`
+	UpdatedAt        *time.Time     `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
+	Status           *string        `json:"status,omitempty" bson:"status,omitempty"`
+	AvailableSeats   *int32         `json:"available_seats,omitempty" bson:"available_seats,omitempty"`
+	EnrolledTotal    *int32         `json:"enrolled_total,omitempty" bson:"enrolled_total,omitempty"`
+	Waitlist         *int32         `json:"waitlist,omitempty" bson:"waitlist,omitempty"`
+}
+
 type SectionFilter struct {
-	SectionNumber       *string        `json:"section_number,omitempty" bson:"section_number,omitempty"`
-	CourseReference     *bson.ObjectID `json:"course_reference,omitempty" bson:"course_reference,omitempty"`
-	InternalClassNumber *string        `json:"internal_class_number,omitempty" bson:"internal_class_number,omitempty"`
-	InstructionMode     *string        `json:"instruction_mode,omitempty" bson:"instruction_mode,omitempty"`
-	SyllabusURI         *string        `json:"syllabus_uri,omitempty" bson:"syllabus_uri,omitempty"`
+	SectionNumber          *string        `json:"section_number,omitempty" bson:"section_number,omitempty"`
+	CourseReference        *bson.ObjectID `json:"course_reference,omitempty" bson:"course_reference,omitempty"`
+	InternalClassNumber    *string        `json:"internal_class_number,omitempty" bson:"internal_class_number,omitempty"`
+	InstructionMode        *string        `json:"instruction_mode,omitempty" bson:"instruction_mode,omitempty"`
+	LatestEnrollmentStatus *string        `json:"latest_enrollment_status,omitempty" bson:"latest_enrollment.status,omitempty"`
+	SyllabusURI            *string        `json:"syllabus_uri,omitempty" bson:"syllabus_uri,omitempty"`
 }
 
 type SingleBuildingEvents struct {

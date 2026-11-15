@@ -251,12 +251,22 @@ type ComplexityRoot struct {
 		ID                  func(childComplexity int) int
 		InstructionMode     func(childComplexity int) int
 		InternalClassNumber func(childComplexity int) int
+		LatestEnrollment    func(childComplexity int) int
 		Meetings            func(childComplexity int) int
 		Professors          func(childComplexity int) int
 		SectionCorequisites func(childComplexity int) int
 		SectionNumber       func(childComplexity int) int
 		SyllabusURI         func(childComplexity int) int
 		TeachingAssistants  func(childComplexity int) int
+	}
+
+	SectionEnrollment struct {
+		AvailableSeats   func(childComplexity int) int
+		EnrolledTotal    func(childComplexity int) int
+		SectionReference func(childComplexity int) int
+		Status           func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+		Waitlist         func(childComplexity int) int
 	}
 
 	SectionWithTime struct {
@@ -1230,6 +1240,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Section.InternalClassNumber(childComplexity), true
+	case "Section.latest_enrollment":
+		if e.ComplexityRoot.Section.LatestEnrollment == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Section.LatestEnrollment(childComplexity), true
 	case "Section.meetings":
 		if e.ComplexityRoot.Section.Meetings == nil {
 			break
@@ -1266,6 +1282,43 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Section.TeachingAssistants(childComplexity), true
+
+	case "SectionEnrollment.available_seats":
+		if e.ComplexityRoot.SectionEnrollment.AvailableSeats == nil {
+			break
+		}
+
+		return e.ComplexityRoot.SectionEnrollment.AvailableSeats(childComplexity), true
+	case "SectionEnrollment.enrolled_total":
+		if e.ComplexityRoot.SectionEnrollment.EnrolledTotal == nil {
+			break
+		}
+
+		return e.ComplexityRoot.SectionEnrollment.EnrolledTotal(childComplexity), true
+	case "SectionEnrollment.section_reference":
+		if e.ComplexityRoot.SectionEnrollment.SectionReference == nil {
+			break
+		}
+
+		return e.ComplexityRoot.SectionEnrollment.SectionReference(childComplexity), true
+	case "SectionEnrollment.status":
+		if e.ComplexityRoot.SectionEnrollment.Status == nil {
+			break
+		}
+
+		return e.ComplexityRoot.SectionEnrollment.Status(childComplexity), true
+	case "SectionEnrollment.updated_at":
+		if e.ComplexityRoot.SectionEnrollment.UpdatedAt == nil {
+			break
+		}
+
+		return e.ComplexityRoot.SectionEnrollment.UpdatedAt(childComplexity), true
+	case "SectionEnrollment.waitlist":
+		if e.ComplexityRoot.SectionEnrollment.Waitlist == nil {
+			break
+		}
+
+		return e.ComplexityRoot.SectionEnrollment.Waitlist(childComplexity), true
 
 	case "SectionWithTime.end_time":
 		if e.ComplexityRoot.SectionWithTime.EndTime == nil {
@@ -1781,8 +1834,28 @@ func (ec *executionContext) childFields_Section(ctx context.Context, field graph
 		return ec.fieldContext_Section_grade_distribution(ctx, field)
 	case "attributes":
 		return ec.fieldContext_Section_attributes(ctx, field)
+	case "latest_enrollment":
+		return ec.fieldContext_Section_latest_enrollment(ctx, field)
 	}
 	return nil, fmt.Errorf("no field named %q was found under type Section", field.Name)
+}
+
+func (ec *executionContext) childFields_SectionEnrollment(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "section_reference":
+		return ec.fieldContext_SectionEnrollment_section_reference(ctx, field)
+	case "updated_at":
+		return ec.fieldContext_SectionEnrollment_updated_at(ctx, field)
+	case "status":
+		return ec.fieldContext_SectionEnrollment_status(ctx, field)
+	case "available_seats":
+		return ec.fieldContext_SectionEnrollment_available_seats(ctx, field)
+	case "enrolled_total":
+		return ec.fieldContext_SectionEnrollment_enrolled_total(ctx, field)
+	case "waitlist":
+		return ec.fieldContext_SectionEnrollment_waitlist(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type SectionEnrollment", field.Name)
 }
 
 func (ec *executionContext) childFields_SectionWithTime(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
@@ -6114,6 +6187,176 @@ func (ec *executionContext) fieldContext_Section_attributes(_ context.Context, f
 	return graphql.NewScalarFieldContext("Section", field, false, false, "Any")
 }
 
+func (ec *executionContext) _Section_latest_enrollment(ctx context.Context, field graphql.CollectedField, obj *model.Section) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Section_latest_enrollment(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.LatestEnrollment, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *model.SectionEnrollment) graphql.Marshaler {
+			return ec.marshalOSectionEnrollment2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionEnrollment(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Section_latest_enrollment(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Section",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_SectionEnrollment(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectionEnrollment_section_reference(ctx context.Context, field graphql.CollectedField, obj *model.SectionEnrollment) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_SectionEnrollment_section_reference(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.SectionReference, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *bson.ObjectID) graphql.Marshaler {
+			return ec.marshalOObjectID2ᚖgoᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_SectionEnrollment_section_reference(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("SectionEnrollment", field, false, false, "ObjectID")
+}
+
+func (ec *executionContext) _SectionEnrollment_updated_at(ctx context.Context, field graphql.CollectedField, obj *model.SectionEnrollment) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_SectionEnrollment_updated_at(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.UpdatedAt, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *time.Time) graphql.Marshaler {
+			return ec.marshalODateTime2ᚖtimeᚐTime(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_SectionEnrollment_updated_at(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("SectionEnrollment", field, false, false, "DateTime")
+}
+
+func (ec *executionContext) _SectionEnrollment_status(ctx context.Context, field graphql.CollectedField, obj *model.SectionEnrollment) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_SectionEnrollment_status(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Status, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalOString2ᚖstring(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_SectionEnrollment_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("SectionEnrollment", field, false, false, "String")
+}
+
+func (ec *executionContext) _SectionEnrollment_available_seats(ctx context.Context, field graphql.CollectedField, obj *model.SectionEnrollment) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_SectionEnrollment_available_seats(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.AvailableSeats, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *int32) graphql.Marshaler {
+			return ec.marshalOInt2ᚖint32(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_SectionEnrollment_available_seats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("SectionEnrollment", field, false, false, "Int")
+}
+
+func (ec *executionContext) _SectionEnrollment_enrolled_total(ctx context.Context, field graphql.CollectedField, obj *model.SectionEnrollment) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_SectionEnrollment_enrolled_total(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.EnrolledTotal, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *int32) graphql.Marshaler {
+			return ec.marshalOInt2ᚖint32(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_SectionEnrollment_enrolled_total(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("SectionEnrollment", field, false, false, "Int")
+}
+
+func (ec *executionContext) _SectionEnrollment_waitlist(ctx context.Context, field graphql.CollectedField, obj *model.SectionEnrollment) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_SectionEnrollment_waitlist(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Waitlist, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *int32) graphql.Marshaler {
+			return ec.marshalOInt2ᚖint32(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_SectionEnrollment_waitlist(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("SectionEnrollment", field, false, false, "Int")
+}
+
 func (ec *executionContext) _SectionWithTime_section(ctx context.Context, field graphql.CollectedField, obj *model.SectionWithTime) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -7758,7 +8001,7 @@ func (ec *executionContext) unmarshalInputSectionFilter(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"section_number", "course_reference", "internal_class_number", "instruction_mode", "syllabus_uri"}
+	fieldsInOrder := [...]string{"section_number", "course_reference", "internal_class_number", "instruction_mode", "latest_enrollment_status", "syllabus_uri"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7793,6 +8036,13 @@ func (ec *executionContext) unmarshalInputSectionFilter(ctx context.Context, obj
 				return it, err
 			}
 			it.InstructionMode = data
+		case "latest_enrollment_status":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("latest_enrollment_status"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.LatestEnrollmentStatus = data
 		case "syllabus_uri":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("syllabus_uri"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -9299,6 +9549,69 @@ func (ec *executionContext) _Section(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.RequiredNull {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "latest_enrollment":
+			out.Values[i] = ec._Section_latest_enrollment(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	if n := len(deferred.Defers); n > 0 {
+		atomic.AddInt32(&ec.Deferred, int32(min(n, math.MaxInt32)))
+		ec.ProcessDeferredGroup(deferred)
+	}
+
+	return out
+}
+
+var sectionEnrollmentImplementors = []string{"SectionEnrollment"}
+
+func (ec *executionContext) _SectionEnrollment(ctx context.Context, sel ast.SelectionSet, obj *model.SectionEnrollment) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, sectionEnrollmentImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := graphql.NewDeferredGroup(ctx)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SectionEnrollment")
+		case "section_reference":
+			out.Values[i] = ec._SectionEnrollment_section_reference(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
+		case "updated_at":
+			out.Values[i] = ec._SectionEnrollment_updated_at(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
+		case "status":
+			out.Values[i] = ec._SectionEnrollment_status(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
+		case "available_seats":
+			out.Values[i] = ec._SectionEnrollment_available_seats(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
+		case "enrolled_total":
+			out.Values[i] = ec._SectionEnrollment_enrolled_total(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
+		case "waitlist":
+			out.Values[i] = ec._SectionEnrollment_waitlist(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10770,6 +11083,24 @@ func (ec *executionContext) marshalOInt2ᚕint32ᚄ(ctx context.Context, sel ast
 	return ret
 }
 
+func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v any) (*int32, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt32(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.SelectionSet, v *int32) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalInt32(*v)
+	return res
+}
+
 func (ec *executionContext) marshalOMazevoDayEvents2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐMazevoDayEvents(ctx context.Context, sel ast.SelectionSet, v *model.MazevoDayEvents) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -10815,6 +11146,13 @@ func (ec *executionContext) marshalOSection2ᚖgithubᚗcomᚋUTDNebulaᚋnebula
 		return graphql.Null
 	}
 	return ec._Section(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOSectionEnrollment2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionEnrollment(ctx context.Context, sel ast.SelectionSet, v *model.SectionEnrollment) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SectionEnrollment(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOSectionFilter2ᚖgithubᚗcomᚋUTDNebulaᚋnebulaᚑapiᚋgraphqlᚋgraphᚋmodelᚐSectionFilter(ctx context.Context, v any) (*model.SectionFilter, error) {

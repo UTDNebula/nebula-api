@@ -60,6 +60,7 @@ type Section struct {
 	SyllabusURI         string                 `json:"syllabus_uri" bson:"syllabus_uri"`
 	GradeDistribution   []int32                `json:"grade_distribution,omitempty" bson:"grade_distribution,omitempty"`
 	Attributes          any                    `json:"attributes,omitempty" bson:"attributes,omitempty"`
+	LatestEnrollment    *SectionEnrollment     `json:"latest_enrollment,omitempty" bson:"latest_enrollment,omitempty"`
 }
 
 type SectionWithTime struct {
