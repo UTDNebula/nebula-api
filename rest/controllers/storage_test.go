@@ -43,7 +43,7 @@ func TestMaxUploadSize(t *testing.T) {
 
 		defer func() {
 			if r := recover(); r != nil {
-				t.Fatalf("Recover panicked unexpectedly")
+				t.Fatalf("Recover panicked unexpectedly: %v", r)
 			}
 		}()
 
