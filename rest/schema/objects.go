@@ -350,7 +350,7 @@ type AcademicCalendarDropDeadlines struct {
 }
 
 type AcademicProgram struct {
-	Id              primitive.ObjectID `bson:"_id" json:"_id"`
+	Id              bson.ObjectID      `bson:"_id" json:"_id"`
 	Title           string             `bson:"name" json:"name" queryable:""`
 	School          string             `bson:"school" json:"school" queryable:""`
 	DegreeOptions   []Degree           `bson:"degree_options" json:"degree_options" queryable:""`
