@@ -1,4 +1,4 @@
-package events
+package controllers
 
 import (
 	"context"
@@ -9,14 +9,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/UTDNebula/nebula-api/rest/responses"
 	"github.com/UTDNebula/nebula-api/shared"
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-type astraController struct {
-	repository shared.EventRepository[schema.AstraEvent]
+type AstraController struct {
+	Repository shared.EventRepository[schema.AstraEvent]
 }
 
 // @Id				AstraEvents
@@ -27,25 +26,25 @@ type astraController struct {
 // @Param			date	path		string																true	"date (ISO format) to retrieve astra events"
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.AstraEvent]]	"All AstraEvents with events on the inputted date"
 // @Failure		500		{object}	schema.APIResponse[string]											"A string describing the error"
-func (h astraController) AstraEvents(c *gin.Context) {
+func (h AstraController) AstraEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
 
 	// Find astra event given date
-	astra_events, err := h.repository.GetEventsByDate(ctx, date)
+	astra_events, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
 			astra_events.Date = date
 			astra_events.Buildings = []schema.SingleBuildingEvents[schema.AstraEvent]{}
 		} else {
-			responses.RespondWithInternalError(c, err)
+			respondWithInternalError(c, err)
 			return
 		}
 	}
 
-	responses.Respond(c, http.StatusOK, "success", astra_events)
+	respond(c, http.StatusOK, "success", astra_events)
 }
 
 // @Id				AstraEventsByBuilding
@@ -58,7 +57,7 @@ func (h astraController) AstraEvents(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.AstraEvent]]	"All sections with meetings on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]											"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]											"A string describing the error"
-func (h astraController) AstraEventsByBuilding(c *gin.Context) {
+func (h AstraController) AstraEventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -68,13 +67,13 @@ func (h astraController) AstraEventsByBuilding(c *gin.Context) {
 	var astra_eventsByBuilding schema.SingleBuildingEvents[schema.AstraEvent]
 
 	// Find astra event given date
-	astra_events, err := h.repository.GetEventsByDate(ctx, date)
+	astra_events, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
-			responses.Respond(c, http.StatusNotFound, "error", "No events found for the specified date")
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
-		responses.RespondWithInternalError(c, err)
+		respondWithInternalError(c, err)
 		return
 	}
 
@@ -98,11 +97,11 @@ func (h astraController) AstraEventsByBuilding(c *gin.Context) {
 			available = append(available, "(and more)")
 		}
 
-		responses.Respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
+		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
 
-	responses.Respond(c, http.StatusOK, "success", astra_eventsByBuilding)
+	respond(c, http.StatusOK, "success", astra_eventsByBuilding)
 }
 
 // @Id				AstraEventsByBuildingandRoom
@@ -116,7 +115,7 @@ func (h astraController) AstraEventsByBuilding(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.AstraEvent]]	"All sections with meetings on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]											"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]											"A string describing the error"
-func (h astraController) AstraEventsByBuildingAndRoom(c *gin.Context) {
+func (h AstraController) AstraEventsByBuildingAndRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -127,13 +126,13 @@ func (h astraController) AstraEventsByBuildingAndRoom(c *gin.Context) {
 	var roomEvents schema.RoomEvents[schema.AstraEvent]
 
 	// Find astra event given date
-	astra_events, err := h.repository.GetEventsByDate(ctx, date)
+	astra_events, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
-			responses.Respond(c, http.StatusNotFound, "error", "No events found for the specified date")
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		}
-		responses.RespondWithInternalError(c, err)
+		respondWithInternalError(c, err)
 		return
 	}
 
@@ -147,7 +146,7 @@ func (h astraController) AstraEventsByBuildingAndRoom(c *gin.Context) {
 	}
 
 	if matchedBuilding == nil {
-		responses.Respond(c, http.StatusNotFound, "error", "Building not found")
+		respond(c, http.StatusNotFound, "error", "Building not found")
 		return
 	}
 
@@ -170,9 +169,9 @@ func (h astraController) AstraEventsByBuildingAndRoom(c *gin.Context) {
 			available = append(available, "(and more)")
 		}
 
-		responses.Respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
+		respond(c, http.StatusNotFound, "error", "Room not found. Available in this building: "+strings.Join(available, ", "))
 		return
 	}
 
-	responses.Respond(c, http.StatusOK, "success", roomEvents)
+	respond(c, http.StatusOK, "success", roomEvents)
 }

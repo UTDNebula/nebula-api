@@ -1,4 +1,4 @@
-package events
+package controllers
 
 import (
 	"context"
@@ -8,13 +8,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/UTDNebula/nebula-api/rest/responses"
 	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/UTDNebula/nebula-api/shared"
 )
 
-type mazevoController struct {
-	repository shared.EventRepository[schema.MazevoEvent]
+type MazevoController struct {
+	Repository shared.EventRepository[schema.MazevoEvent]
 }
 
 // @Id				MazevoEvents
@@ -25,25 +24,25 @@ type mazevoController struct {
 // @Param			date	path		string																true	"date (ISO format) to retrieve mazevo events"
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.MazevoEvent]]	"All MazevoEvents with events on the inputted date"
 // @Failure		500		{object}	schema.APIResponse[string]											"A string describing the error"
-func (h mazevoController) MazevoEvents(c *gin.Context) {
+func (h MazevoController) MazevoEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
 
 	// Find mazevo event for input date
-	mazevoEvents, err := h.repository.GetEventsByDate(ctx, date)
+	mazevoEvents, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
 			mazevoEvents.Date = date
 			mazevoEvents.Buildings = []schema.SingleBuildingEvents[schema.MazevoEvent]{}
 		} else {
-			responses.RespondWithInternalError(c, err)
+			respondWithInternalError(c, err)
 			return
 		}
 	}
 
-	responses.Respond(c, http.StatusOK, "success", mazevoEvents)
+	respond(c, http.StatusOK, "success", mazevoEvents)
 }
 
 // @Id				mazevoEventsByBuilding
@@ -56,7 +55,7 @@ func (h mazevoController) MazevoEvents(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.MazevoEvent]]	"All MazevoEvents sections with meetings on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]											"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]											"A string describing the error"
-func (h mazevoController) MazevoEventsByBuilding(c *gin.Context) {
+func (h MazevoController) MazevoEventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -66,13 +65,13 @@ func (h mazevoController) MazevoEventsByBuilding(c *gin.Context) {
 	var mazevoEventsByBuilding schema.SingleBuildingEvents[schema.MazevoEvent]
 
 	// find and parse matching date
-	mazevoEvents, err := h.repository.GetEventsByDate(ctx, date)
+	mazevoEvents, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
 			mazevoEvents.Date = date
 			mazevoEvents.Buildings = []schema.SingleBuildingEvents[schema.MazevoEvent]{}
 		} else {
-			responses.RespondWithInternalError(c, err)
+			respondWithInternalError(c, err)
 			return
 		}
 	}
@@ -87,11 +86,11 @@ func (h mazevoController) MazevoEventsByBuilding(c *gin.Context) {
 
 	// if no building found return an error
 	if mazevoEventsByBuilding.Building == "" {
-		responses.Respond(c, http.StatusNotFound, "error", "No events found for the specified building")
+		respond(c, http.StatusNotFound, "error", "No events found for the specified building")
 		return
 	}
 
-	responses.Respond(c, http.StatusOK, "success", mazevoEventsByBuilding)
+	respond(c, http.StatusOK, "success", mazevoEventsByBuilding)
 }
 
 // @Id				mazevoEventsByRoom
@@ -105,7 +104,7 @@ func (h mazevoController) MazevoEventsByBuilding(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.MazevoEvent]]	"All MazevoEvents sections with meetings on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]											"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]
-func (h mazevoController) MazevoEventsByRoom(c *gin.Context) {
+func (h MazevoController) MazevoEventsByRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -116,13 +115,13 @@ func (h mazevoController) MazevoEventsByRoom(c *gin.Context) {
 	var mazevoEventsByRoom schema.RoomEvents[schema.MazevoEvent]
 
 	// find and parse matching date
-	mazevoEvents, err := h.repository.GetEventsByDate(ctx, date)
+	mazevoEvents, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
 			mazevoEvents.Date = date
 			mazevoEvents.Buildings = []schema.SingleBuildingEvents[schema.MazevoEvent]{}
 		} else {
-			responses.RespondWithInternalError(c, err)
+			respondWithInternalError(c, err)
 			return
 		}
 	}
@@ -141,9 +140,9 @@ func (h mazevoController) MazevoEventsByRoom(c *gin.Context) {
 	}
 
 	if mazevoEventsByRoom.Room == "" {
-		responses.Respond(c, http.StatusNotFound, "error", "No events found for that specific building and room")
+		respond(c, http.StatusNotFound, "error", "No events found for that specific building and room")
 		return
 	}
 
-	responses.Respond(c, http.StatusOK, "success", mazevoEventsByRoom)
+	respond(c, http.StatusOK, "success", mazevoEventsByRoom)
 }

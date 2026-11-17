@@ -6,15 +6,24 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/UTDNebula/nebula-api/rest/responses"
 	"github.com/UTDNebula/nebula-api/rest/schema"
+	"github.com/getsentry/sentry-go"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
+// Sets the API's response to a request, producing valid JSON given a status code and data.
 func respond[T any](c *gin.Context, status int, message string, data T) {
-	responses.Respond(c, status, message, data)
+	c.JSON(
+		status,
+		schema.APIResponse[T]{
+			Status:  status,
+			Message: message,
+			Data:    data,
+		},
+	)
 }
 
 // Builds a MongoDB filter for type T based on the given flag search or byid
@@ -43,7 +52,19 @@ func getQuery[T any](flag string, c *gin.Context) (bson.M, error) {
 	}
 }
 
-var respondWithInternalError = responses.RespondWithInternalError
+// Helper function for logging and responding to a generic internal server error.
+func respondWithInternalError(c *gin.Context, err error) {
+	// Note that we use log.Output here to be able to set the stack depth to the frame above this one (2),
+	// which allows us to log the location this function was called from
+	log.Output(2, fmt.Sprintf("INTERNAL SERVER ERROR: %s", err.Error()))
+	// Capture error with Sentry
+	if hub := sentrygin.GetHubFromContext(c); hub != nil {
+		hub.WithScope(func(scope *sentry.Scope) {
+			hub.CaptureException(err)
+		})
+	}
+	respond(c, http.StatusInternalServerError, "error", err.Error())
+}
 
 // Attempts to convert the given parameter to an ObjectID for use with MongoDB.
 // Automatically responds with http.StatusBadRequest if conversion fails.

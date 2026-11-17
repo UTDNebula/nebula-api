@@ -5,7 +5,6 @@ import (
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
 	_ "github.com/UTDNebula/nebula-api/rest/docs"
-	"github.com/UTDNebula/nebula-api/rest/events"
 	"github.com/UTDNebula/nebula-api/rest/routes"
 	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/UTDNebula/nebula-api/shared"
@@ -88,9 +87,9 @@ func main() {
 	routes.StorageRoute(router)
 	routes.RoomsRoute(router)
 	routes.EventsRoute(router)
-	events.AstraRoute(router, shared.NewMongoEventRepository[schema.AstraEvent](configs.GetCollection("astra")))
-	events.MazevoRoute(router, shared.NewMongoEventRepository[schema.MazevoEvent](configs.GetCollection("mazevo")))
-	events.CalendarRoute(router, shared.NewMongoEventRepository[schema.Event](configs.GetCollection("cometCalendar")))
+	routes.AstraRoute(router, shared.NewMongoEventRepository[schema.AstraEvent](configs.GetCollection("astra")))
+	routes.MazevoRoute(router, shared.NewMongoEventRepository[schema.MazevoEvent](configs.GetCollection("mazevo")))
+	routes.CalendarRoute(router, shared.NewMongoEventRepository[schema.Event](configs.GetCollection("cometCalendar")))
 	routes.ClubRoute(router)
 	routes.DiscountRoutes(router)
 	routes.BudgetRoute(router)

@@ -1,4 +1,4 @@
-package events
+package controllers
 
 import (
 	"context"
@@ -11,14 +11,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/UTDNebula/nebula-api/rest/responses"
 	"github.com/UTDNebula/nebula-api/shared"
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-type calendarController struct {
-	repository shared.EventRepository[schema.Event]
+type CalendarController struct {
+	Repository shared.EventRepository[schema.Event]
 }
 
 // @Id				CometCalendarEvents
@@ -29,25 +28,25 @@ type calendarController struct {
 // @Param			date	path		string															true	"date (ISO format) to retrieve comet calendar events"
 // @Success		200		{object}	schema.APIResponse[schema.MultiBuildingEvents[schema.Event]]	"All CometCalendarEvents with events on the inputted date"
 // @Failure		500		{object}	schema.APIResponse[string]										"A string describing the error"
-func (h calendarController) CometCalendarEvents(c *gin.Context) {
+func (h CalendarController) CometCalendarEvents(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
 	date := c.Param("date")
 
 	// Find comet calendar event given date
-	cometCalendarEvents, err := h.repository.GetEventsByDate(ctx, date)
+	cometCalendarEvents, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
 			cometCalendarEvents.Date = date
 			cometCalendarEvents.Buildings = []schema.SingleBuildingEvents[schema.Event]{}
 		} else {
-			responses.RespondWithInternalError(c, err)
+			respondWithInternalError(c, err)
 			return
 		}
 	}
 
-	responses.Respond(c, http.StatusOK, "success", cometCalendarEvents)
+	respond(c, http.StatusOK, "success", cometCalendarEvents)
 }
 
 // @Id				CometCalendarEventsByBuilding
@@ -60,7 +59,7 @@ func (h calendarController) CometCalendarEvents(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[schema.SingleBuildingEvents[schema.Event]]	"All events on the specified date in the specified building"
 // @Failure		500			{object}	schema.APIResponse[string]										"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]										"A string describing the error"
-func (h calendarController) CometCalendarEventsByBuilding(c *gin.Context) {
+func (h CalendarController) CometCalendarEventsByBuilding(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -77,20 +76,20 @@ func (h calendarController) CometCalendarEventsByBuilding(c *gin.Context) {
 	var cometCalendarEventsByBuilding schema.SingleBuildingEvents[schema.Event]
 
 	// Find comet calendar event given date
-	cometCalendarEvents, err := h.repository.GetEventsByDate(ctx, date)
+	cometCalendarEvents, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
-			responses.Respond(c, http.StatusNotFound, "error", "No events found for the specified date")
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		} else {
-			responses.RespondWithInternalError(c, err)
+			respondWithInternalError(c, err)
 			return
 		}
 	}
 
 	// Check if any buildings exist
 	if len(cometCalendarEvents.Buildings) == 0 {
-		responses.Respond(c, http.StatusNotFound, "error", "No buildings found for the specified date")
+		respond(c, http.StatusNotFound, "error", "No buildings found for the specified date")
 		return
 	}
 
@@ -113,11 +112,11 @@ func (h calendarController) CometCalendarEventsByBuilding(c *gin.Context) {
 			available = append(available, "(and more)")
 		}
 
-		responses.Respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
+		respond(c, http.StatusNotFound, "error", "Building not found. Available: "+strings.Join(available, ", "))
 		return
 	}
 
-	responses.Respond(c, http.StatusOK, "success", cometCalendarEventsByBuilding)
+	respond(c, http.StatusOK, "success", cometCalendarEventsByBuilding)
 }
 
 // @Id				CometCalendarEventsByBuildingAndRoom
@@ -131,7 +130,7 @@ func (h calendarController) CometCalendarEventsByBuilding(c *gin.Context) {
 // @Success		200			{object}	schema.APIResponse[schema.RoomEvents[schema.Event]]	"All events on the specified date in the specified building and room"
 // @Failure		500			{object}	schema.APIResponse[string]							"A string describing the error"
 // @Failure		404			{object}	schema.APIResponse[string]							"A string describing the error"
-func (h calendarController) CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
+func (h CalendarController) CometCalendarEventsByBuildingAndRoom(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
@@ -154,20 +153,20 @@ func (h calendarController) CometCalendarEventsByBuildingAndRoom(c *gin.Context)
 	var roomEvents schema.RoomEvents[schema.Event]
 
 	// Find comet calendar event given date
-	cometCalendarEvents, err := h.repository.GetEventsByDate(ctx, date)
+	cometCalendarEvents, err := h.Repository.GetEventsByDate(ctx, date)
 	if err != nil {
 		if errors.Is(err, shared.ErrEventsNotFound) {
-			responses.Respond(c, http.StatusNotFound, "error", "No events found for the specified date")
+			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
 			return
 		} else {
-			responses.RespondWithInternalError(c, err)
+			respondWithInternalError(c, err)
 			return
 		}
 	}
 
 	// Check if any buildings exist
 	if len(cometCalendarEvents.Buildings) == 0 {
-		responses.Respond(c, http.StatusNotFound, "error", "No buildings found for the specified date")
+		respond(c, http.StatusNotFound, "error", "No buildings found for the specified date")
 		return
 	}
 
@@ -186,13 +185,13 @@ func (h calendarController) CometCalendarEventsByBuildingAndRoom(c *gin.Context)
 	}
 
 	if !buildingFound {
-		responses.Respond(c, http.StatusNotFound, "error", "Building not found")
+		respond(c, http.StatusNotFound, "error", "Building not found")
 		return
 	}
 
 	// Check if any rooms exist for this building
 	if len(matchedBuilding.Rooms) == 0 {
-		responses.Respond(c, http.StatusNotFound, "error", "No rooms found for the specified building")
+		respond(c, http.StatusNotFound, "error", "No rooms found for the specified building")
 		return
 	}
 
@@ -224,9 +223,9 @@ func (h calendarController) CometCalendarEventsByBuildingAndRoom(c *gin.Context)
 		if len(matchedBuilding.Rooms) > 20 {
 			roomList += " (and more...)"
 		}
-		responses.Respond(c, http.StatusNotFound, "error", "No events found for the specified room. Available rooms: "+roomList)
+		respond(c, http.StatusNotFound, "error", "No events found for the specified room. Available rooms: "+roomList)
 		return
 	}
 
-	responses.Respond(c, http.StatusOK, "success", roomEvents)
+	respond(c, http.StatusOK, "success", roomEvents)
 }
