@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
@@ -13,6 +15,30 @@ import (
 
 func TestSectionCourseById(t *testing.T) {
 	gin.SetMode(gin.TestMode)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	defer cancel()
+
+	// Select a section with an existing course without changing database records.
+	cursor, err := sectionCollection.Aggregate(ctx, bson.A{
+		bson.M{"$lookup": bson.M{"from": "courses", "localField": "course_reference", "foreignField": "_id", "as": "course"}},
+		bson.M{"$unwind": "$course"},
+		bson.M{"$limit": 1},
+	})
+	if err != nil {
+		t.Fatalf("select a section with a course for the success case: %v", err)
+	}
+	defer cursor.Close(ctx)
+	if !cursor.Next(ctx) {
+		t.Fatalf("no section with a course available for the success case (cursor error: %v)", cursor.Err())
+	}
+	var section struct {
+		ID     bson.ObjectID `bson:"_id"`
+		Course schema.Course `bson:"course"`
+	}
+	if err := cursor.Decode(&section); err != nil {
+		t.Fatalf("decode the section and course for the success case: %v", err)
+	}
 
 	testCases := []struct {
 		name                    string
@@ -23,7 +49,7 @@ func TestSectionCourseById(t *testing.T) {
 	}{
 		{
 			name:                    "ReturnCourseSuccessfully",
-			id:                      "6a8f623120b48b6efe790176",
+			id:                      section.ID.Hex(),
 			expectedStatus:          http.StatusOK,
 			expectedResponseMessage: "success",
 		},
@@ -64,6 +90,17 @@ func TestSectionCourseById(t *testing.T) {
 			}
 			if response.Message != testCase.expectedResponseMessage {
 				t.Errorf("expected response message %q, got %q", testCase.expectedResponseMessage, response.Message)
+			}
+
+			if testCase.expectedStatus == http.StatusOK {
+				var returnedCourse schema.Course
+				if err := json.Unmarshal(response.Data, &returnedCourse); err != nil {
+					t.Fatalf("decode returned course: %v", err)
+				}
+				if returnedCourse.Id != section.Course.Id {
+					t.Errorf("returned course ID = %s, want %s", returnedCourse.Id.Hex(), section.Course.Id.Hex())
+				}
+				return
 			}
 
 			if testCase.expectedData == "" {
