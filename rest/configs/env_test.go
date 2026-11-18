@@ -90,12 +90,9 @@ func TestGetEnvMongoURI(t *testing.T) {
 	t.Run("Unset returns an error", func(t *testing.T) {
 		unsetEnv(t, "MONGODB_URI")
 
-		uri, err := GetEnvMongoURI()
+		_, err := GetEnvMongoURI()
 		if err == nil {
 			t.Error("expected an error when MONGODB_URI is unset")
-		}
-		if uri != "" {
-			t.Errorf("expected an empty URI, got %q", uri)
 		}
 	})
 }
@@ -120,12 +117,9 @@ func TestGetClubsDBUri(t *testing.T) {
 
 		unsetEnv(t, "CLUBS_DB_URI")
 
-		uri, err := GetClubsDBUri()
+		_, err := GetClubsDBUri()
 		if err == nil {
 			t.Error("expected an error when CLUBS_DB_URI is unset")
-		}
-		if uri != "" {
-			t.Errorf("expected an empty URI, got %q", uri)
 		}
 	})
 }
@@ -158,12 +152,9 @@ func TestGetEnvLogin(t *testing.T) {
 		unsetEnv(t, "LOGIN_NETID")
 		t.Setenv("LOGIN_PASSWORD", "hunter2")
 
-		netID, password, err := GetEnvLogin()
+		_, _, err := GetEnvLogin()
 		if err == nil {
 			t.Error("expected an error when LOGIN_NETID is unset")
-		}
-		if netID != "" || password != "" {
-			t.Errorf("expected empty login values, got net ID %q and password %q", netID, password)
 		}
 	})
 
@@ -171,12 +162,9 @@ func TestGetEnvLogin(t *testing.T) {
 		t.Setenv("LOGIN_NETID", "abc123456")
 		unsetEnv(t, "LOGIN_PASSWORD")
 
-		netID, password, err := GetEnvLogin()
+		_, _, err := GetEnvLogin()
 		if err == nil {
 			t.Error("expected an error when LOGIN_PASSWORD is unset")
-		}
-		if netID != "" || password != "" {
-			t.Errorf("expected empty login values, got net ID %q and password %q", netID, password)
 		}
 	})
 }

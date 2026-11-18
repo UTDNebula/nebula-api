@@ -38,6 +38,7 @@ func ConnectDB(uri string) error {
 		// ping the database
 		err = client.Ping(ctx, nil)
 		if err != nil {
+			_ = client.Disconnect(ctx)
 			dbErr = fmt.Errorf("ping MongoDB: %w", err)
 			return
 		}
@@ -129,6 +130,7 @@ func ConnectClubsDB(uri string) error {
 		// ping the database
 		err = db.PingContext(ctx)
 		if err != nil {
+			_ = db.Close()
 			clubsDBErr = fmt.Errorf("ping clubs database: %w", err)
 			return
 		}

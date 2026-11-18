@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 	}
 
 	if err := configs.ConnectDB(uri); err != nil {
-		fmt.Fprintf(os.Stderr, "connect to MongoDB: %v\n", err)
+		fmt.Fprintln(os.Stderr, "Unable to connect to MongoDB. Check MONGODB_URI.")
 		os.Exit(1)
 	}
 

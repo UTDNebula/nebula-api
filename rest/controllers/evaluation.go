@@ -166,13 +166,10 @@ func refreshToken(chromedpCtx context.Context) map[string][]string {
 		return cachedCookie
 	}
 
-	netID, password, err := configs.GetEnvLogin()
-	if err != nil {
-		return nil
-	}
+	netID, password := configs.GetEnvLogin()
 
 	log.WriteDebug("Getting new token...")
-	_, err = chromedp.RunResponse(chromedpCtx,
+	_, err := chromedp.RunResponse(chromedpCtx,
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			err := network.ClearBrowserCookies().Do(ctx)
 			return err

@@ -51,7 +51,7 @@ func main() {
 		log.Fatal(err)
 	}
 	if err := configs.ConnectDB(mongoURI); err != nil {
-		log.Fatalf("Unable to connect to MongoDB: %v", err)
+		log.Fatal("Unable to connect to MongoDB. Check MONGODB_URI.")
 	}
 
 	clubsDBURI, err := configs.GetClubsDBUri()
@@ -59,7 +59,7 @@ func main() {
 		log.Fatal(err)
 	}
 	if err := configs.ConnectClubsDB(clubsDBURI); err != nil {
-		log.Fatalf("Unable to connect to clubs database: %v", err)
+		log.Fatal("Unable to connect to clubs database. Check CLUBS_DB_URI.")
 	}
 
 	controllers.InitializeCollections()
