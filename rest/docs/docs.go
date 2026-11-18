@@ -4978,6 +4978,9 @@ const docTemplate = `{
                 "internal_class_number": {
                     "type": "string"
                 },
+                "latest_enrollment": {
+                    "$ref": "#/definitions/schema.SectionEnrollment"
+                },
                 "meetings": {
                     "type": "array",
                     "items": {
@@ -5011,6 +5014,31 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/schema.Assistant"
                     }
+                }
+            }
+        },
+        "schema.SectionEnrollment": {
+            "type": "object",
+            "properties": {
+                "available_seats": {
+                    "type": "integer"
+                },
+                "enrolled_total": {
+                    "description": "includes cross-listed sections (e.g. CS/CE 2336: 6 + 22 = 28).",
+                    "type": "integer"
+                },
+                "section_reference": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "description": "Term scraping completion time",
+                    "type": "string"
+                },
+                "waitlist": {
+                    "type": "integer"
                 }
             }
         },
