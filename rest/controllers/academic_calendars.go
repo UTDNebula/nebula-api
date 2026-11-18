@@ -10,12 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var academicCalendarsCollection *mongo.Collection = configs.GetCollection("academicCalendars")
+var academicCalendarsCollection *mongo.Collection
 
 // AcademicCalendarsById returns an academic calendar by its string ID.
 //

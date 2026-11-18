@@ -12,12 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var astraCollection *mongo.Collection = configs.GetCollection("astra")
+var astraCollection *mongo.Collection
 
 // @Id				AstraEvents
 // @Router			/astra/{date} [get]

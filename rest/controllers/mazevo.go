@@ -11,11 +11,10 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
 	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var mazevoCollection *mongo.Collection = configs.GetCollection("mazevo")
+var mazevoCollection *mongo.Collection
 
 // @Id				MazevoEvents
 // @Router			/mazevo/{date} [get]

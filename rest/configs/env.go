@@ -53,37 +53,37 @@ func GetPortString() string {
 	return portString
 }
 
-func GetEnvMongoURI() string {
+func GetEnvMongoURI() (string, error) {
 
 	uri, exist := os.LookupEnv("MONGODB_URI")
 	if !exist {
-		log.Fatalf("Error loading 'MONGODB_URI' from the .env file")
+		return "", fmt.Errorf("environment variable %q is not set", "MONGODB_URI")
 	}
 
-	return uri
+	return uri, nil
 }
 
-func GetClubsDBUri() string {
+func GetClubsDBUri() (string, error) {
 	uri, exist := os.LookupEnv("CLUBS_DB_URI")
 	if !exist {
-		log.Panic("Error loading 'CLUBS_DB_URI' from the .env file")
+		return "", fmt.Errorf("environment variable %q is not set", "CLUBS_DB_URI")
 	}
 
-	return uri
+	return uri, nil
 }
 
-func GetEnvLogin() (netID string, password string) {
+func GetEnvLogin() (netID string, password string, err error) {
 
 	netID, exist := os.LookupEnv("LOGIN_NETID")
 	if !exist {
-		log.Fatalf("Error loading 'LOGIN_NETID' from the .env file")
+		return "", "", fmt.Errorf("environment variable %q is not set", "LOGIN_NETID")
 	}
 	password, exist = os.LookupEnv("LOGIN_PASSWORD")
 	if !exist {
-		log.Fatalf("Error loading 'LOGIN_PASSWORD' from the .env file")
+		return "", "", fmt.Errorf("environment variable %q is not set", "LOGIN_PASSWORD")
 	}
 
-	return netID, password
+	return netID, password, nil
 }
 
 func GetEnvLimit() int64 {

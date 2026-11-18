@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
+	"github.com/UTDNebula/nebula-api/rest/controllers"
 	_ "github.com/UTDNebula/nebula-api/rest/docs"
 	"github.com/UTDNebula/nebula-api/rest/routes"
 	"github.com/getsentry/sentry-go"
@@ -45,8 +46,23 @@ func main() {
 	log.Default().SetFlags(log.Ltime | log.Llongfile)
 
 	// Establish the connection to the database
-	configs.ConnectDB()
-	configs.ConnectClubsDB()
+	mongoURI, err := configs.GetEnvMongoURI()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := configs.ConnectDB(mongoURI); err != nil {
+		log.Fatal("Unable to connect to MongoDB. Check MONGODB_URI.")
+	}
+
+	clubsDBURI, err := configs.GetClubsDBUri()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := configs.ConnectClubsDB(clubsDBURI); err != nil {
+		log.Fatal("Unable to connect to clubs database. Check CLUBS_DB_URI.")
+	}
+
+	controllers.InitializeCollections()
 
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{
