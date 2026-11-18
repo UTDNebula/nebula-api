@@ -1,0 +1,697 @@
+package controllers
+
+import (
+	"context"
+	"database/sql"
+	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
+	"encoding/json"
+
+	"github.com/UTDNebula/nebula-api/rest/configs"
+	"github.com/UTDNebula/nebula-api/rest/schema"
+	"github.com/gin-gonic/gin"
+)
+
+const clubJoins string = `
+	JOIN LATERAL (
+		SELECT jsonb_agg(` + schema.ClubsOfficerJSONB + `
+				ORDER BY officers.display_order
+			) AS officers
+		FROM officers
+		WHERE officers.club_id = club.id
+	) AS officers ON TRUE
+	JOIN LATERAL (
+		SELECT jsonb_agg(` + schema.ClubsContactJSONB + `
+				ORDER BY contacts.display_order
+			) AS contacts
+		FROM contacts
+		WHERE contacts.club_id = club.id
+	) AS contacts ON TRUE
+	JOIN LATERAL (
+		SELECT jsonb_agg(` + schema.ClubsMembershipFormJSONB + `
+				ORDER BY membership_forms.display_order
+			) AS membership_forms
+		FROM membership_forms
+		WHERE membership_forms.club_id = club.id
+	) AS membership_forms ON TRUE`
+
+// Constructs the SQL query for clubs from Clubs, given search query parameters.
+// Initialize argcInit with 0 by default, unless you are using the returned query in a nested query with additional arguments in the prepared statement.
+//
+// Returns the query with placeholders, the placeholder args, and the next free argument index.
+func constructClubsQuery(params schema.ClubQueryParams, argcInit int) (query string, args []any, argc int) {
+	params.TrimSpace()
+
+	argc = argcInit
+	// WHERE conditions
+	var conditions []string
+	orderBy := ""
+	limit := "LIMIT 20"
+	offset := ""
+
+	// Handle Query
+	if params.Query != "" {
+		args = append(args, params.Query)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`
+			club.search_tsv @@ websearch_to_tsquery('english', $`, argc, `)
+			OR word_similarity($`, argc, `, club.name) >= 0.2
+			OR word_similarity($`, argc, `, coalesce(club.alias, '')) >= 0.2
+			OR club.name ILIKE '%' || $`, argc, ` || '%'
+			OR club.alias ILIKE '%' || $`, argc, ` || '%'`))
+
+		// By default, order by relevance if there's a search query
+		orderBy = fmt.Sprint(`
+			ORDER BY (
+				(20.0 * word_similarity($`, argc, `, coalesce(club.alias, '')))
+				+ (10.0 * word_similarity($`, argc, `, club.name))
+				+ (5.0 * word_similarity($`, argc, `, coalesce(array_to_string(club.tags, ' '), '')))
+				+ (coalesce(-1.0 * (club.search_tsv <@> to_bm25query(to_tsvector('english', $`, argc, `), 'club_search_idx')), 0.0))
+			) DESC,
+			club.page_views DESC, club.name ASC`)
+	}
+
+	// Handle Sort
+	// By default, sort by upcoming. If Query is present, sort by relevant. If Sort is present, sort according to that
+	switch params.Sort {
+	case "relevant":
+		// Use orderBy statement from Query handler
+	case "alphabetical":
+		orderBy = "ORDER BY club.name ASC"
+	case "new":
+		orderBy = "ORDER BY club.founding_date DESC"
+	default:
+		if params.Query != "" {
+			break
+		}
+		fallthrough
+	case "trending":
+		orderBy = "ORDER BY club.page_views DESC, club.name ASC"
+	}
+
+	// Handle Limit
+	if params.Limit > 0 {
+		args = append(args, params.Limit)
+		argc++
+		limit = fmt.Sprint("LIMIT $", argc)
+	}
+
+	// Handle Offset
+	if params.Offset > 0 {
+		args = append(args, params.Offset)
+		argc++
+		offset = fmt.Sprint("OFFSET $", argc)
+	}
+
+	// Handle Tags
+	if len(params.Tags) != 0 {
+		args = append(args, params.Tags)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`club.tags && $`, argc))
+	}
+
+	// Handle ExcludeTags
+	if len(params.ExcludeTags) != 0 {
+		args = append(args, params.ExcludeTags)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`NOT (club.tags && $`, argc, ")"))
+	}
+
+	// Construct query
+	var conditionsBuilder strings.Builder
+	for _, condition := range conditions {
+		conditionsBuilder.WriteString(" AND ")
+		conditionsBuilder.WriteString(condition)
+	}
+	query = `
+		SELECT jsonb_agg(subquery.club_data) AS club
+		FROM (
+			SELECT ` + schema.ClubsClubJSONB + ` AS club_data
+			FROM club
+			` + clubJoins + `
+			WHERE club.approved = 'approved'::approved_enum` + conditionsBuilder.String() + `
+			` + orderBy + `
+			` + limit + `
+			` + offset + `
+		) AS subquery`
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("  ", argc, "ARGS:", args)
+	// fmt.Println(" ORDER BY:", orderBy)
+	// fmt.Println("    LIMIT:", limit)
+	// fmt.Println("   OFFSET:", offset)
+
+	return
+}
+
+// Constructs the SQL query for events from Clubs, given search query parameters.
+// If clubId is omitted, constructs a query to search every club (which also enables filtering for club tags).
+// Initialize argcInit with 0 by default, unless you are using the returned query in a nested query with additional arguments in the prepared statement.
+//
+// Returns the query with placeholders, the placeholder args, and the next free argument index.
+func constructEventsQuery(params schema.ClubsEventQueryParams, clubId string, argcInit int) (query string, args []any, argc int) {
+	params.TrimSpace()
+
+	now := time.Now()
+	nowDateTime := now.Format(time.DateTime)
+	inOneYear := time.Now().Add(365 * 24 * time.Hour)
+	inOneYearDateTime := inOneYear.Format(time.DateTime)
+
+	argc = argcInit
+	// WHERE conditions
+	var conditions []string
+	orderBy := ""
+	limit := "LIMIT 20"
+	offset := ""
+	// JOINs
+	join := ""
+	joinWithClub := false
+
+	// Handle clubId (for single club)
+	if clubId != "" {
+		args = append(args, clubId)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.club_id = $`, argc))
+	} else { // Filters for multiple clubs
+		// Handle Tags
+		if len(params.Tags) != 0 {
+			args = append(args, params.Tags)
+			argc++
+			joinWithClub = true
+			conditions = append(conditions, fmt.Sprint(`club.tags && $`, argc))
+		}
+
+		// Handle ExcludeTags
+		if len(params.ExcludeTags) != 0 {
+			args = append(args, params.ExcludeTags)
+			argc++
+			joinWithClub = true
+			conditions = append(conditions, fmt.Sprint(`NOT (club.tags && $`, argc, ")"))
+		}
+	}
+
+	// Handle Query
+	if params.Query != "" {
+		args = append(args, params.Query)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.search_tsv @@ (websearch_to_tsquery('english', $`, argc, `))`))
+		// By default, order by relevance if there's a search query
+		orderBy = fmt.Sprint(`ORDER BY (ts_rank(events.search_tsv, websearch_to_tsquery('english', $`, argc, `))) DESC`)
+	}
+
+	// Handle Sort
+	// By default, sort by upcoming. If Query is present, sort by relevant. If Sort is present, sort according to that
+	switch params.Sort {
+	case "relevant":
+		// Use orderBy statement from Query handler
+	case "past":
+		orderBy = "ORDER BY events.start_time DESC"
+	case "updated":
+		orderBy = "ORDER BY events.updated_at DESC"
+	default:
+		if params.Query != "" {
+			break
+		}
+		fallthrough
+	case "upcoming":
+		orderBy = "ORDER BY events.start_time ASC"
+	}
+
+	// Handle StartDate
+	if params.StartDate.IsZero() {
+		if params.Sort != "past" {
+			conditions = append(conditions, `events.end_time >= '`+nowDateTime+`'`)
+		}
+	} else {
+		args = append(args, params.StartDate)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.end_time >= $`, argc, ``))
+	}
+
+	// Handle EndDate
+	if params.EndDate.IsZero() {
+		if params.Sort != "past" {
+			conditions = append(conditions, `events.start_time <= '`+inOneYearDateTime+`'`)
+		} else {
+			conditions = append(conditions, `events.start_time <= '`+nowDateTime+`'`)
+		}
+	} else {
+		args = append(args, params.EndDate)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`events.start_time <= $`, argc, ``))
+	}
+
+	// Handle Limit
+	if params.Limit > 0 {
+		args = append(args, params.Limit)
+		argc++
+		limit = fmt.Sprint("LIMIT $", argc)
+	}
+
+	// Handle Offset
+	if params.Offset > 0 {
+		args = append(args, params.Offset)
+		argc++
+		offset = fmt.Sprint("OFFSET $", argc)
+	}
+
+	// Construct joins
+	if joinWithClub {
+		join = "JOIN club ON events.club_id = club.id"
+	}
+
+	// Construct query
+	var conditionsBuilder strings.Builder
+	for _, condition := range conditions {
+		conditionsBuilder.WriteString(" AND ")
+		conditionsBuilder.WriteString(condition)
+	}
+	query = `
+		SELECT jsonb_agg(subquery.event_data) AS events
+		FROM (
+			SELECT ` + schema.ClubsEventJSONB + ` AS event_data
+			FROM events
+			` + join + `
+			WHERE events.approved = 'approved'::status_enum` + conditionsBuilder.String() + `
+			` + orderBy + `
+			` + limit + `
+			` + offset + `
+		) AS subquery`
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("  ", argc, "ARGS:", args)
+	// fmt.Println(" ORDER BY:", orderBy)
+	// fmt.Println("    LIMIT:", limit)
+	// fmt.Println("   OFFSET:", offset)
+	// fmt.Println("StartDate:", params.StartDate)
+	// fmt.Println("  EndDate:", params.EndDate)
+
+	return
+}
+
+func constructTagsQuery(params schema.ClubsTagsQueryParams, argcInit int) (query string, args []any, argc int) {
+	params.TrimSpace()
+
+	argc = argcInit
+	// WHERE conditions
+	var conditions []string
+	orderBy := ""
+	limit := "LIMIT 20"
+	offset := ""
+
+	// Handle Query
+	if params.Query != "" {
+		args = append(args, params.Query)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`
+			used_tags.tag ILIKE '%' || $`, argc, ` || '%'
+			OR word_similarity($`, argc, `, used_tags.tag) >= 0.2`))
+
+		// By default, order by relevance if there's a search query
+		orderBy = fmt.Sprint(`ORDER BY 
+			(similarity(used_tags.tag, $`, argc, `)) DESC,
+			used_tags.count DESC,
+			used_tags.tag ASC`)
+	}
+
+	// Handle Sort
+	// By default, sort by upcoming. If Query is present, sort by relevant. If Sort is present, sort according to that
+	switch params.Sort {
+	case "relevant":
+		// Use orderBy statement from Query handler
+	case "alphabetical":
+		orderBy = "ORDER BY used_tags.tag ASC"
+	case "uncommon":
+		orderBy = "ORDER BY used_tags.count ASC, used_tags.tag ASC"
+	default:
+		if params.Query != "" {
+			break
+		}
+		fallthrough
+	case "common":
+		orderBy = "ORDER BY used_tags.count DESC, used_tags.tag ASC"
+	}
+
+	// Handle MinCount
+	if params.MinCount > 0 {
+		args = append(args, params.MinCount)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`used_tags.count >= $`, argc))
+	}
+
+	// Handle MaxCount
+	if params.MaxCount > 0 {
+		args = append(args, params.MaxCount)
+		argc++
+		conditions = append(conditions, fmt.Sprint(`used_tags.count <= $`, argc))
+	}
+
+	// Handle Limit
+	if params.Limit > 0 {
+		args = append(args, params.Limit)
+		argc++
+		limit = fmt.Sprint("LIMIT $", argc)
+	}
+
+	// Handle Offset
+	if params.Offset > 0 {
+		args = append(args, params.Offset)
+		argc++
+		offset = fmt.Sprint("OFFSET $", argc)
+	}
+
+	// Construct query
+	var conditionsBuilder strings.Builder
+	for _, condition := range conditions {
+		conditionsBuilder.WriteString(" AND ")
+		conditionsBuilder.WriteString(condition)
+	}
+	query = `
+		SELECT jsonb_agg(subquery.tag_data) AS tags
+		FROM (
+			SELECT ` + schema.ClubsTagJSONB + ` AS tag_data
+			FROM used_tags
+			WHERE TRUE` + conditionsBuilder.String() + `
+			` + orderBy + `
+			` + limit + `
+			` + offset + `
+		) AS subquery`
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("  ", argc, "ARGS:", args)
+	// fmt.Println(" ORDER BY:", orderBy)
+	// fmt.Println("    LIMIT:", limit)
+	// fmt.Println("   OFFSET:", offset)
+
+	return
+}
+
+// @Id				clubById
+// @Router			/clubs/{id} [get]
+// @Tags			Clubs
+// @Description	Returns the listing info for the club with given ID
+// @Produce		json
+// @Param			id	path		string							true	"ID of the club to get"
+// @Success		200	{object}	schema.APIResponse[schema.Club]	"A club"
+// @Failure		500	{object}	schema.APIResponse[string]		"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]		"A string describing the error"
+func ClubById(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	id := c.Param("id")
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, `
+		SELECT jsonb_agg(`+schema.ClubsClubJSONB+`)
+		FROM club
+		`+clubJoins+`
+		WHERE club.id = $1;`,
+		id).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "Club not found")
+		return
+	}
+
+	var clubs []schema.Club
+	if err := json.Unmarshal(raw, &clubs); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// Return single club since filtering by unique ID
+	respond(c, http.StatusOK, "success", clubs[0])
+}
+
+// @Id				clubEvents
+// @Router			/clubs/{id}/events [get]
+// @Tags			Clubs
+// @Description	Returns the upcoming events for the club with given ID. Events must also match the search string and filters
+// @Produce		json
+// @Param			id			path		string									true	"ID of the club to get events for"
+// @Param			q			query		string									false	"Search string to match event names and descriptions."
+// @Param			sort		query		string									false	"Order of returned events. Default to upcoming. If `q` is provided, then defaults to relevant."	Enums(relevant, upcoming, past, updated)
+// @Param			start_date	query		string									false	"Start date to begin searching for events. Defaults to current date. If `sort` is `past`, then defaults to no value.\nFormat: YYYY-MM-DD"
+// @Param			end_date	query		string									false	"End date to search for events up to. Defaults to one year in the future. If `sort` is `past`, then defaults to current date.\nFormat: YYYY-MM-DD"
+// @Param			limit		query		int										false	"Number of results to return."							minimum(1)	maximum(100)	default(20)
+// @Param			offset		query		int										false	"The starting position of the current page of events"	minimum(0)	default(0)
+// @Success		200			{object}	schema.APIResponse[schema.ClubsEvent]	"An event"
+// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400			{object}	schema.APIResponse[string]				"A string describing the error"
+func ClubEvents(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	id := c.Param("id")
+	var params schema.ClubsEventQueryParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+
+	eventsQuery, eventsArgs, _ := constructEventsQuery(params, id, 1)
+
+	query := `
+		SELECT
+			EXISTS (SELECT 1 FROM club WHERE club.id = $1) AS club_exists,
+			(` + eventsQuery + `) AS events;`
+	var args []any = append([]any{id}, eventsArgs...)
+
+	// // DEBUGGING
+	// fmt.Println("QUERY:", query)
+	// fmt.Println()
+	// fmt.Println("ARGS:", args)
+
+	var clubExists bool
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&clubExists, &raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if !clubExists {
+		respond(c, http.StatusNotFound, "error", "Club not found")
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "No events found for club")
+		return
+	}
+
+	var clubsEvents []schema.ClubsEvent
+	if err := json.Unmarshal(raw, &clubsEvents); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", clubsEvents)
+}
+
+// @Id				clubs
+// @Router			/clubs [get]
+// @Tags			Clubs
+// @Description	Returns list of clubs matching the search string and filters
+// @Produce		json
+// @Param			q		query		string								false	"Search string to match club names, alias, and tags."
+// @Param			sort	query		string								false	"Order of returned clubs. Default to trending. If `q` is provided, then defaults to relevant."	Enums(relevant, alphabetical, new, trending)
+// @Param			limit	query		int									false	"Number of results to return."																	minimum(1)	maximum(100)	default(20)
+// @Param			offset	query		int									false	"The starting position of the current page of clubs"											minimum(0)	default(0)
+// @Param			tag		query		[]string							false	"A tag that the returned clubs should have."
+// @Param			not_tag	query		[]string							false	"A tag that the returned clubs should NOT have"
+// @Success		200		{object}	schema.APIResponse[[]schema.Club]	"List of matching clubs"
+// @Failure		500		{object}	schema.APIResponse[string]			"A string describing the error"
+// @Failure		400		{object}	schema.APIResponse[string]			"A string describing the error"
+func Clubs(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var params schema.ClubQueryParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+
+	query, args, _ := constructClubsQuery(params, 0)
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "No clubs found")
+		return
+	}
+
+	var clubs []schema.Club
+	if err := json.Unmarshal(raw, &clubs); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", clubs)
+}
+
+// @Id				clubsEventById
+// @Router			/clubs/events/{id} [get]
+// @Tags			Clubs
+// @Description	Returns the listing info for the event with given ID
+// @Produce		json
+// @Param			id	path		string									true	"ID of the event to get"
+// @Success		200	{object}	schema.APIResponse[schema.ClubsEvent]	"An event"
+// @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
+func ClubsEventById(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	id := c.Param("id")
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, `
+		SELECT jsonb_agg(`+schema.ClubsEventJSONB+`) AS events
+		FROM events
+		WHERE events.id = $1`,
+		id).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "Event not found")
+		return
+	}
+
+	var clubsEvents []schema.ClubsEvent
+	if err := json.Unmarshal(raw, &clubsEvents); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	// Return single event since filtering by unique ID
+	respond(c, http.StatusOK, "success", clubsEvents[0])
+}
+
+// @Id				clubsEvents
+// @Router			/clubs/events [get]
+// @Tags			Clubs
+// @Description	Returns list of events matching the search string and filters
+// @Produce		json
+// @Param			q			query		string									false	"Search string to match event names and descriptions."
+// @Param			sort		query		string									false	"Order of returned events. Default to upcoming. If `q` is provided, then defaults to relevant."	Enums(relevant, upcoming, past, updated)
+// @Param			start_date	query		string									false	"Start date to begin searching for events. Defaults to current date. If `sort` is `past`, then defaults to no value.\nFormat: YYYY-MM-DD"
+// @Param			end_date	query		string									false	"End date to search for events up to. Defaults to one year in the future. If `sort` is `past`, then defaults to current date.\nFormat: YYYY-MM-DD"
+// @Param			limit		query		int										false	"Number of results to return."							minimum(1)	maximum(100)	default(20)
+// @Param			offset		query		int										false	"The starting position of the current page of events"	minimum(0)	default(0)
+// @Param			tag			query		[]string								false	"A club tag that should exist in the returned events' host club(s)."
+// @Param			not_tag		query		[]string								false	"A club tag that should NOT exist in the returned events' host club(s)."
+// @Success		200			{object}	schema.APIResponse[[]schema.ClubsEvent]	"List of matching events"
+// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400			{object}	schema.APIResponse[string]				"A string describing the error"
+func ClubsEvents(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var params schema.ClubsEventQueryParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+
+	query, args, _ := constructEventsQuery(params, "", 0)
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "No events found")
+		return
+	}
+
+	var clubsEvents []schema.ClubsEvent
+	if err := json.Unmarshal(raw, &clubsEvents); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", clubsEvents)
+}
+
+// @Id				clubsTags
+// @Router			/clubs/tags [get]
+// @Tags			Clubs
+// @Description	Returns list of tags used in Clubs
+// @Produce		json
+// @Param			q			query		string									false	"Search string to match tags."
+// @Param			sort		query		string									false	"Order of returned events. Default to upcoming. If `q` is provided, then defaults to relevant."	Enums(relevant, common, uncommon, alphabetical)
+// @Param			limit		query		int										false	"Number of results to return."																	minimum(1)	maximum(100)	default(20)
+// @Param			offset		query		int										false	"The starting position of the current page of events"											minimum(0)	default(0)
+// @Param			min_count	query		int										false	"The required minimum number of uses the tag must have"											minimum(1)
+// @Param			max_count	query		int										false	"The required maximum number of uses the tag must have"											minimum(1)
+// @Success		200			{object}	schema.APIResponse[[]schema.ClubsTag]	"List of matching tags"
+// @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
+// @Failure		400			{object}	schema.APIResponse[string]				"A string describing the error"
+func ClubsTags(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+	defer cancel()
+
+	var params schema.ClubsTagsQueryParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+
+	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+
+	query, args, _ := constructTagsQuery(params, 0)
+
+	var raw []byte
+	err := clubsDatabase.QueryRowContext(ctx, query, args...).Scan(&raw)
+
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	if raw == nil {
+		respond(c, http.StatusNotFound, "error", "No tags found")
+		return
+	}
+
+	var clubsTags []schema.ClubsTag
+	if err := json.Unmarshal(raw, &clubsTags); err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+
+	respond(c, http.StatusOK, "success", clubsTags)
+}
