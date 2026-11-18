@@ -3,7 +3,11 @@ package configs
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"os"
+	"sort"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -136,4 +140,84 @@ func ConnectClubsDB() *sql.DB {
 	})
 
 	return clubsDbInstance
+}
+
+// make sure this file is in gitignore if changed
+const SemestersJSONFilename = "semesters.json"
+
+func CreateSemestersJSON() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	res := GetCollection("sections").Distinct(ctx, "academic_session.name", bson.D{})
+	if err := res.Err(); err != nil {
+		return err
+	}
+
+	var terms []string
+	if err := res.Decode(&terms); err != nil {
+		return err
+	}
+	log.Printf("Aggregated semesters from MongoDB")
+
+	type term struct {
+		name   string
+		year   int
+		season string
+	}
+
+	var parsedTerms []term
+	seen := make(map[string]struct{})
+
+	for _, str := range terms {
+		if len(str) < 3 {
+			continue
+		}
+
+		str = strings.ToLower(strings.TrimSpace(str))
+
+		// Solution for possible duplicate value case (if database query returns '24F' and '24f')
+		if _, exists := seen[str]; exists {
+			continue
+		}
+
+		year, err := strconv.Atoi(str[:2])
+		if err != nil {
+			continue
+		}
+		parsedTerms = append(parsedTerms, term{
+			name:   str,
+			year:   year,
+			season: str[2:],
+		})
+	}
+
+	seasonOrder := map[string]int{"f": 3, "u": 2, "s": 1}
+
+	// Sort terms by recency
+	sort.Slice(parsedTerms, func(i, j int) bool {
+		if parsedTerms[i].year != parsedTerms[j].year {
+			return parsedTerms[i].year > parsedTerms[j].year
+		}
+		// Sort by season
+		return seasonOrder[parsedTerms[i].season] > seasonOrder[parsedTerms[j].season]
+	})
+
+	sortedTerms := make([]string, len(parsedTerms))
+	for i, t := range parsedTerms {
+		sortedTerms[i] = t.name
+	}
+
+	jsonData, err := json.Marshal(sortedTerms)
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(SemestersJSONFilename, jsonData, 0644)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Created semesters JSON file")
+	return nil
 }

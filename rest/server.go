@@ -48,6 +48,12 @@ func main() {
 	configs.ConnectDB()
 	configs.ConnectClubsDB()
 
+	// Create JSON file for /semesters endpoint
+	err := configs.CreateSemestersJSON()
+	if err != nil {
+		log.Fatalf("Unable to create Semesters JSON")
+	}
+
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{
 		Dsn:              configs.GetEnvSentryDSN(),
@@ -91,6 +97,7 @@ func main() {
 	routes.ClubRoute(router)
 	routes.DiscountRoutes(router)
 	routes.BudgetRoute(router)
+	routes.SemestersRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
