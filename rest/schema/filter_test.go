@@ -144,6 +144,21 @@ func TestFilterQuery(t *testing.T) {
 				"nested.number": "0",
 			},
 		},
+		"Academic program": {
+			Function: FilterQuery[AcademicProgram],
+			UrlQuery: map[string][]string{
+				"name":                 {"Computer Science"},
+				"school":               {"Erik Jonsson School of Engineering"},
+				"degree_options.level": {"BS"},
+				"areas_of_interest":    {"computer science"},
+			},
+			Expected: bson.M{
+				"name":                 "Computer Science",
+				"school":               "Erik Jonsson School of Engineering",
+				"degree_options.level": "BS",
+				"areas_of_interest":    "computer science",
+			},
+		},
 		"Multiple values": {
 			Function: FilterQuery[_nested],
 			UrlQuery: map[string][]string{
