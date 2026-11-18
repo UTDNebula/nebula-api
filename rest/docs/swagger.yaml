@@ -98,6 +98,17 @@ definitions:
       status:
         type: integer
     type: object
+  schema.APIResponse-array_schema_TrendsCourseGrades:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/schema.TrendsCourseGrades'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   schema.APIResponse-array_schema_TypedGradeData:
     properties:
       data:
@@ -1166,6 +1177,65 @@ definitions:
         type: array
       total:
         $ref: '#/definitions/schema.FundsValues'
+    type: object
+  schema.TrendsCourseGrades:
+    properties:
+      _id:
+        type: string
+      professors:
+        items:
+          $ref: '#/definitions/schema.TrendsProfessorGrades'
+        type: array
+    type: object
+  schema.TrendsGradesRequest:
+    properties:
+      courses:
+        description: Courses as "<subject prefix> <course number>", e.g. "CS 2336"
+        example:
+        - CS 2336
+        - CS 1200
+        items:
+          type: string
+        minItems: 1
+        type: array
+      professors:
+        description: Professors as "<first name> <last name>", e.g. "John Cole". Empty
+          or omitted returns every professor of the courses
+        example:
+        - John Cole
+        items:
+          type: string
+        type: array
+    required:
+    - courses
+    - professors
+    type: object
+  schema.TrendsProfessorGrades:
+    properties:
+      professor:
+        type: string
+      semesters:
+        items:
+          $ref: '#/definitions/schema.TrendsSemesterGrades'
+        type: array
+    type: object
+  schema.TrendsSemesterGrades:
+    properties:
+      semester:
+        type: string
+      types:
+        items:
+          $ref: '#/definitions/schema.TrendsTypeGrades'
+        type: array
+    type: object
+  schema.TrendsTypeGrades:
+    properties:
+      grade_distribution:
+        items:
+          type: integer
+        type: array
+      type:
+        type: string
     type: object
   schema.TypedGradeData:
     properties:
@@ -2258,6 +2328,40 @@ paths:
             semester included
           schema:
             $ref: '#/definitions/schema.APIResponse-array_schema_TypedGradeData'
+        "400":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+        "500":
+          description: A string describing the error
+          schema:
+            $ref: '#/definitions/schema.APIResponse-string'
+      tags:
+      - Grades
+  /grades/trends:
+    post:
+      consumes:
+      - application/json
+      description: '"Returns grade distributions for a batch of courses, grouped by
+        course, professor, semester, and section type. If professors are given, only
+        the course-professor pairs that actually exist are returned; otherwise every
+        professor of the given courses is returned. Specialized convenience endpoint
+        for UTD Trends internal use."'
+      operationId: trendsGrades
+      parameters:
+      - description: Courses and optional professors
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.TrendsGradesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Grade distributions grouped by course
+          schema:
+            $ref: '#/definitions/schema.APIResponse-array_schema_TrendsCourseGrades'
         "400":
           description: A string describing the error
           schema:

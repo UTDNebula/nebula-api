@@ -19,4 +19,5 @@ func GradesRoute(router *gin.Engine) {
 	gradesGroup.GET("semester", controllers.GradeAggregationSemester)
 	gradesGroup.GET("semester/sectionType", controllers.GradesAggregationSectionType)
 	gradesGroup.GET("overall", controllers.GradesAggregationOverall)
+	gradesGroup.POST("trends", controllers.TrendsGrades)
 }
