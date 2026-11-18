@@ -4,6 +4,7 @@ import "github.com/UTDNebula/nebula-api/rest/configs"
 
 // InitializeCollections creates collection handles after the database connects.
 func InitializeCollections() {
+	academicCalendarsCollection = configs.GetCollection("academicCalendars")
 	astraCollection = configs.GetCollection("astra")
 	DAGCollection = configs.GetCollection("DAG")
 	budgetCollection = configs.GetCollection("budgets")

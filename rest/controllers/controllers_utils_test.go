@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // TestObjectIDFromParam validates the conversion of URL string parameters to MongoDB ObjectIDs.
@@ -61,7 +61,7 @@ func TestGetQuery(t *testing.T) {
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
 
-		id := primitive.NewObjectID()
+		id := bson.NewObjectID()
 		c.Params = []gin.Param{{Key: "id", Value: id.Hex()}}
 
 		query, err := getQuery[any]("ById", c)
@@ -70,7 +70,7 @@ func TestGetQuery(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 		// Verify the query map contains the correct ObjectID
-		if *query["_id"].(*primitive.ObjectID) != id {
+		if *query["_id"].(*bson.ObjectID) != id {
 			t.Errorf("Expected query _id to be %v, got %v", id, query["_id"])
 		}
 	})

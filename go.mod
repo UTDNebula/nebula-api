@@ -12,8 +12,7 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.16.6
-	github.com/wneessen/go-mail v0.8.1
-	go.mongodb.org/mongo-driver v1.17.9
+	go.mongodb.org/mongo-driver/v2 v2.9.1
 	google.golang.org/api v0.293.0
 )
 
@@ -36,7 +35,7 @@ require (
 	github.com/envoyproxy/go-control-plane/envoy v1.39.0 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.3.3 // indirect
 	github.com/felixge/httpsnoop v1.1.0 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.6 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v1.0.0 // indirect
@@ -55,7 +54,6 @@ require (
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.61.0 // indirect
 	github.com/spiffe/go-spiffe/v2 v2.8.1 // indirect
-	go.mongodb.org/mongo-driver/v2 v2.8.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/detectors/gcp v1.45.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.70.0 // indirect
@@ -76,7 +74,6 @@ require (
 )
 
 require (
-	cloud.google.com/go/cloudtasks v1.19.0
 	github.com/bytedance/gopkg v0.1.4 // indirect
 	github.com/bytedance/sonic v1.15.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.15 // indirect
@@ -91,7 +88,6 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.30.3 // indirect
 	github.com/goccy/go-json v0.10.6 // indirect
-	github.com/golang/snappy v1.0.0 // indirect
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.19.2 // indirect
@@ -100,7 +96,6 @@ require (
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/montanaflynn/stats v0.12.4 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.3.2 // indirect

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 type _normal struct {
