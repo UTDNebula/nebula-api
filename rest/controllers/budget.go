@@ -6,17 +6,14 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/rest/configs"
+	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
-
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
-
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
-	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var budgetCollection *mongo.Collection = configs.GetCollection("budgets")
+func budgetCollection() *mongo.Collection { return configs.GetCollection("budgets") }
 
 // @Id				Budget
 // @Router			/budget/{year} [get]
@@ -36,7 +33,7 @@ func Budget(c *gin.Context) {
 	var budget schema.Budget
 
 	// Find budget given date
-	err := budgetCollection.FindOne(ctx, bson.M{"_id": year}).Decode(&budget)
+	err := budgetCollection().FindOne(ctx, bson.M{"_id": year}).Decode(&budget)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No budgets found for the specified fiscal year")

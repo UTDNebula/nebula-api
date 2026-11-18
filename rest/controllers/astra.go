@@ -7,17 +7,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/rest/configs"
+	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
-
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
-
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
-	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var astraCollection *mongo.Collection = configs.GetCollection("astra")
+func astraCollection() *mongo.Collection { return configs.GetCollection("astra") }
 
 // @Id				AstraEvents
 // @Router			/astra/{date} [get]
@@ -36,7 +33,7 @@ func AstraEvents(c *gin.Context) {
 	var astra_events schema.MultiBuildingEvents[schema.AstraEvent]
 
 	// Find astra event given date
-	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
+	err := astraCollection().FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			astra_events.Date = date
@@ -71,7 +68,7 @@ func AstraEventsByBuilding(c *gin.Context) {
 	var astra_eventsByBuilding schema.SingleBuildingEvents[schema.AstraEvent]
 
 	// Find astra event given date
-	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
+	err := astraCollection().FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")
@@ -131,7 +128,7 @@ func AstraEventsByBuildingAndRoom(c *gin.Context) {
 	var roomEvents schema.RoomEvents[schema.AstraEvent]
 
 	// Find astra event given date
-	err := astraCollection.FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
+	err := astraCollection().FindOne(ctx, bson.M{"date": date}).Decode(&astra_events)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No events found for the specified date")

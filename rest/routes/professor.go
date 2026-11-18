@@ -1,29 +1,30 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"github.com/UTDNebula/nebula-api/rest/controllers"
+	"github.com/UTDNebula/nebula-api/shared"
+	"github.com/gin-gonic/gin"
 )
 
-func ProfessorRoute(router *gin.Engine) {
+func ProfessorRoute(router *gin.Engine, repo shared.ProfessorRepo) {
+	handler := controllers.NewProfessorController(repo)
 	// All routes related to professors come here
 	professorGroup := router.Group("/professor")
 
 	professorGroup.OPTIONS("", controllers.Preflight)
-	professorGroup.GET("", controllers.ProfessorSearch)
-	professorGroup.GET(":id", controllers.ProfessorById)
-	professorGroup.GET("all", controllers.ProfessorAll)
+	professorGroup.GET("", handler.ProfessorSearch)
+	professorGroup.GET(":id", handler.ProfessorById)
+	professorGroup.GET("all", handler.ProfessorAll)
 
 	// Endpoints to get the courses of the professors
-	professorGroup.GET("courses", controllers.ProfessorCourseSearch)
-	professorGroup.GET(":id/courses", controllers.ProfessorCourseById)
+	professorGroup.GET("courses", handler.ProfessorCourseSearch)
+	professorGroup.GET(":id/courses", handler.ProfessorCourseById)
 
 	// Endpoints to get the sections of the professors
-	professorGroup.GET("sections", controllers.ProfessorSectionSearch)
-	professorGroup.GET(":id/sections", controllers.ProfessorSectionById)
-	professorGroup.GET("sections/trends", controllers.TrendsProfessorSectionSearch)
+	professorGroup.GET("sections", handler.ProfessorSectionSearch)
+	professorGroup.GET(":id/sections", handler.ProfessorSectionById)
+	professorGroup.GET("sections/trends", handler.TrendsProfessorSectionSearch)
 
 	// Endpoints to get the grades for a professor
-	professorGroup.GET(":id/grades", controllers.GradesByProfessorID)
+	professorGroup.GET(":id/grades", handler.GradesByProfessorID)
 }

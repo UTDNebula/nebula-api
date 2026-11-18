@@ -5,17 +5,14 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/rest/configs"
+	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
-
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
-
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
-	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var buildingCollection *mongo.Collection = configs.GetCollection("rooms")
+func buildingCollection() *mongo.Collection { return configs.GetCollection("rooms") }
 
 // @Id				rooms
 // @Router			/rooms [get]
@@ -31,7 +28,7 @@ func Rooms(c *gin.Context) {
 	var buildingRooms []schema.BuildingRooms // buildings and rooms to be returned
 
 	//cursor is the pointer for the returned documents
-	cursor, err := buildingCollection.Find(ctx, bson.M{})
+	cursor, err := buildingCollection().Find(ctx, bson.M{})
 	if err != nil {
 		respondWithInternalError(c, err)
 		return

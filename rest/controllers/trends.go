@@ -2,15 +2,13 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/UTDNebula/nebula-api/rest/configs"
 	"github.com/UTDNebula/nebula-api/rest/schema"
+	"github.com/UTDNebula/nebula-api/shared"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // @Id				trendsCourseSectionSearch
@@ -22,8 +20,9 @@ import (
 // @Param			subject_prefix	query		string									true	"The course's subject prefix"
 // @Success		200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsCourseSectionSearch(c *gin.Context) {
-	trendsSectionSearch("Course", c)
+func (h *CourseController) TrendsCourseSectionSearch(c *gin.Context) {
+	// UTDTrends only uses prefix and number
+	trendsSections(c, bson.M{"_id": c.Query("subject_prefix") + c.Query("course_number")}, h.repo.TrendsSections)
 }
 
 // @Id				trendsProfessorSectionSearch
@@ -35,8 +34,13 @@ func TrendsCourseSectionSearch(c *gin.Context) {
 // @Param			last_name	query		string									true	"The professor's last name"
 // @Success		200			{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500			{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsProfessorSectionSearch(c *gin.Context) {
-	trendsSectionSearch("Professor", c)
+func (h *ProfessorController) TrendsProfessorSectionSearch(c *gin.Context) {
+	query, err := schema.FilterQuery[schema.Professor](c.Request.URL.Query())
+	if err != nil {
+		respond(c, http.StatusBadRequest, "Invalid query parameters", err.Error())
+		return
+	}
+	trendsSections(c, query, h.repo.TrendsSections)
 }
 
 // @Id				trendsCombinedSectionSearch
@@ -50,107 +54,27 @@ func TrendsProfessorSectionSearch(c *gin.Context) {
 // @Param			last_name		query		string									true	"The professor's last name"
 // @Success		200				{object}	schema.APIResponse[[]schema.Section]	"A list of Sections"
 // @Failure		500				{object}	schema.APIResponse[string]				"A string describing the error"
-func TrendsCombinedSectionSearch(c *gin.Context) {
-	trendsSectionSearch("Combined", c)
+func (h *TrendsController) TrendsCombinedSectionSearch(c *gin.Context) {
+	query := bson.M{"_id": bson.M{
+		"course":     c.Query("subject_prefix") + c.Query("course_number"),
+		"prof_first": c.Query("first_name"),
+		"prof_last":  c.Query("last_name"),
+	}}
+	trendsSections(c, query, h.repo.Sections)
 }
 
-// trendsSectionSearch handles trends-based section routes for both course and professor query.
-// Reduce the repetitiveness of routes whose aggregation behaviors are identical.
-// This is subject to change as requests might be more complex.
-func trendsSectionSearch(flag string, c *gin.Context) {
+type TrendsController struct{ repo shared.TrendsRepo }
+
+func NewTrendsController(repo shared.TrendsRepo) *TrendsController {
+	return &TrendsController{repo: repo}
+}
+func trendsSections(c *gin.Context, filter bson.M, fetch func(context.Context, bson.M) ([]schema.Section, error)) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
-
-	var detailedSections []schema.Section
-
-	// If the branches become complicated, refactor to make it more generic.
-	var trendsCollection *mongo.Collection
-	var trendsQuery bson.M
-	var err error
-
-	switch flag {
-	case "Course":
-		trendsCollection = configs.GetCollection("trends_course_sections")
-		// UTDTrends only uses prefix and number
-		trendsQuery = bson.M{
-			"_id": c.Query("subject_prefix") + c.Query("course_number"),
-		}
-	case "Professor":
-		trendsCollection = configs.GetCollection("trends_prof_sections")
-		trendsQuery, err = schema.FilterQuery[schema.Professor](c.Request.URL.Query())
-		if err != nil {
-			return
-		}
-	case "Combined":
-		trendsCollection = configs.GetCollection("trends_course_and_prof_sections")
-		trendsQuery = bson.M{
-			"_id": bson.M{
-				"course":     c.Query("subject_prefix") + c.Query("course_number"),
-				"prof_first": c.Query("first_name"),
-				"prof_last":  c.Query("last_name"),
-			},
-		}
-	default:
-		// This should never happen, but act as a fallback
-		err = fmt.Errorf("invalid flag for trendsSectionSearch: %s", flag)
-		respondWithInternalError(c, err)
-	}
-
-	cursor, err := trendsCollection.Aggregate(ctx, buildTrendsPipeline(trendsQuery))
+	sections, err := fetch(ctx, filter)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-	defer cursor.Close(ctx)
-
-	if err := cursor.All(ctx, &detailedSections); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", detailedSections)
-}
-
-// buildTrendsPipeline build the pipeline to embed the list of professors and course details
-// directly in the queried list of sections
-func buildTrendsPipeline(srcObjQuery bson.M) mongo.Pipeline {
-	return mongo.Pipeline{
-		// Match the original objects from the query
-		bson.D{{Key: "$match", Value: srcObjQuery}},
-
-		// Expand sections array into individual documents
-		bson.D{
-			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$sections"},
-				// Avoid documents that can't be replaced
-				{Key: "preserveNullAndEmptyArrays", Value: false},
-			}},
-		},
-
-		// Embed the course details to the list of sections
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "sections.course_reference"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections.course_details"},
-			}},
-		},
-
-		// Embed the professor details to the list of sections
-		bson.D{
-			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "professors"},
-				{Key: "localField", Value: "sections.professors"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "sections.professor_details"},
-			}},
-		},
-
-		// Replace the original objects with sections
-		bson.D{{Key: "$replaceWith", Value: "$sections"}},
-
-		// Keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-	}
+	respond(c, http.StatusOK, "success", sections)
 }

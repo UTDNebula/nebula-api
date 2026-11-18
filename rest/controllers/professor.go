@@ -4,25 +4,13 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"reflect"
-	"strings"
 	"time"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
-
+	"github.com/UTDNebula/nebula-api/shared"
 	"github.com/gin-gonic/gin"
-
-	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/mongo"
 )
-
-var professorCollection *mongo.Collection = configs.GetCollection("professors")
-var aggregateMap = map[string]string{
-	"Course":  "courses",
-	"Section": "sections",
-}
 
 // @Id				professorSearch
 // @Router			/professor [get]
@@ -52,42 +40,24 @@ var aggregateMap = map[string]string{
 // @Success		200								{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorSearch(c *gin.Context) {
-	//name := c.Query("name")            // value of specific query parameter: string
-	//queryParams := c.Request.URL.Query() // map of all query params: map[string][]string
-
+func (h *ProfessorController) ProfessorSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
-
-	var professors []schema.Professor
-
 	// build query key value pairs (only one value per key)
 	query, err := getQuery[schema.Professor]("Search", c)
 	if err != nil {
 		return
 	}
-
-	optionLimit, err := configs.GetOptionLimit(&query, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
+	offset, ok := searchOffset(c)
+	if !ok {
 		return
 	}
-
-	// get cursor for query results
-	cursor, err := professorCollection.Find(ctx, query, optionLimit)
+	records, err := h.repo.Search(ctx, query, offset, configs.GetEnvLimit())
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &professors); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", professors)
+	respond(c, http.StatusOK, "success", records)
 }
 
 // @Id				professorById
@@ -99,31 +69,25 @@ func ProfessorSearch(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[schema.Professor]	"A professor"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorById(c *gin.Context) {
+func (h *ProfessorController) ProfessorById(c *gin.Context) {
+	// parse object id from id parameter
+	id, err := objectIDFromParam(c, "id")
+	if err != nil {
+		return
+	}
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
-
-	var professor schema.Professor
-
-	// parse object id from id parameter
-	query, err := getQuery[schema.Professor]("ById", c)
-	if err != nil {
-		return
-	}
-
 	// find and parse matching professor
-	err = professorCollection.FindOne(ctx, query).Decode(&professor)
-	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			respond(c, http.StatusNotFound, "error", "No professors with given ID")
-		} else {
-			respondWithInternalError(c, err)
-		}
+	record, err := h.repo.ByID(ctx, *id)
+	if errors.Is(err, shared.ErrNotFound) {
+		respond(c, http.StatusNotFound, "error", "No professors with given ID")
 		return
 	}
-
-	// return result
-	respond(c, http.StatusOK, "success", professor)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	respond(c, http.StatusOK, "success", record)
 }
 
 // @Id				professorAll
@@ -133,27 +97,15 @@ func ProfessorById(c *gin.Context) {
 // @Produce		json
 // @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"All professors"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorAll(c *gin.Context) {
+func (h *ProfessorController) ProfessorAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
-
-	var professors []schema.Professor
-
-	cursor, err := professorCollection.Find(ctx, bson.M{})
-
+	records, err := h.repo.All(ctx)
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &professors); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", professors)
+	respond(c, http.StatusOK, "success", records)
 }
 
 // @Id				professorCourseSearch
@@ -185,8 +137,8 @@ func ProfessorAll(c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Professor]	"A list of courses"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorCourseSearch(c *gin.Context) {
-	professorAggregate[schema.Course]("Search", c)
+func (h *ProfessorController) ProfessorCourseSearch(c *gin.Context) {
+	respondRelated[schema.Professor, schema.Course]("Search", c, h.repo.Courses, "offset is not type integer")
 }
 
 // @Id				professorCourseById
@@ -198,8 +150,8 @@ func ProfessorCourseSearch(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
-func ProfessorCourseById(c *gin.Context) {
-	professorAggregate[schema.Course]("ById", c)
+func (h *ProfessorController) ProfessorCourseById(c *gin.Context) {
+	respondRelated[schema.Professor, schema.Course]("ById", c, h.repo.Courses, "offset is not type integer")
 }
 
 // @Id				professorSectionSearch
@@ -231,8 +183,8 @@ func ProfessorCourseById(c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorSectionSearch(c *gin.Context) {
-	professorAggregate[schema.Section]("Search", c)
+func (h *ProfessorController) ProfessorSectionSearch(c *gin.Context) {
+	respondRelated[schema.Professor, schema.Section]("Search", c, h.repo.Sections, "offset is not type integer")
 }
 
 // @Id				professorSectionById
@@ -244,118 +196,13 @@ func ProfessorSectionSearch(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
-func ProfessorSectionById(c *gin.Context) {
-	professorAggregate[schema.Section]("ById", c)
+func (h *ProfessorController) ProfessorSectionById(c *gin.Context) {
+	respondRelated[schema.Professor, schema.Section]("ById", c, h.repo.Sections, "offset is not type integer")
 }
 
-// Get data for professor aggregate endpoints depending on flag
-func professorAggregate[T any](flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
-	defer cancel()
+// ProfessorController handles requests using a supplied repository.
+type ProfessorController struct{ repo shared.ProfessorRepo }
 
-	var profAggregate []T
-	var profQuery bson.M
-
-	// Determine the professor's query
-	profQuery, err := getQuery[schema.Professor](flag, c)
-	if err != nil {
-		return
-	}
-
-	// Determine the offset and limit for pagination stage
-	paginate, err := configs.GetAggregateLimit(&profQuery, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
-		return
-	}
-
-	// Pipeline to query the courses or sections from the filtered professors (or a single professor)
-	endpointType := strings.Split(reflect.TypeOf(profAggregate).String(), ".")[1]
-	endpoint := aggregateMap[endpointType]
-	profPipeline := buildProfessorPipeline(endpoint, profQuery, paginate)
-
-	// Perform aggreration on the pipeline
-	cursor, err := professorCollection.Aggregate(ctx, profPipeline)
-	if err != nil {
-		// return the error with there's something wrong with the aggregation
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// Parse the array of courses or sections from these professors
-	if err = cursor.All(ctx, &profAggregate); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", profAggregate)
-}
-
-// Pipeline builder for professor aggregate endpoints
-func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
-	// common stages
-	baseStages := mongo.Pipeline{
-		// filter the professors
-		bson.D{{Key: "$match", Value: professorQuery}},
-
-		// paginate the professors before pulling the courses/sections from those professor
-		paginate["former_offset"],
-		paginate["limit"],
-
-		// lookup the array of sections from sections collection
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "sections"},
-			{Key: "localField", Value: "sections"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "sections"},
-		}}},
-	}
-
-	var middleStages mongo.Pipeline
-
-	switch endpoint {
-	case "courses":
-		middleStages = mongo.Pipeline{
-			// project the courses referenced by each section in the array
-			bson.D{{Key: "$project", Value: bson.D{{Key: "courses", Value: "$sections.course_reference"}}}},
-
-			// lookup the array of courses from coures collection
-			bson.D{{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "courses"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "courses"},
-			}}},
-		}
-
-	case "sections":
-		middleStages = mongo.Pipeline{
-			// project the sections
-			bson.D{{Key: "$project", Value: bson.D{{Key: "sections", Value: "$sections"}}}},
-		}
-
-	default:
-		panic("invalid endpoint for professorPipeline: " + endpoint)
-	}
-
-	// common pagination stages
-	paginateStages := mongo.Pipeline{
-		// unwind the courses/sections
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$" + endpoint},
-			{Key: "preserveNullAndEmptyArrays", Value: false},
-		}}},
-
-		// replace the combination of ids and courses/sections with the courses/sections entirely
-		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
-
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses/sections
-		paginate["latter_offset"],
-		paginate["limit"],
-	}
-
-	return append(append(baseStages, middleStages...), paginateStages...)
+func NewProfessorController(repo shared.ProfessorRepo) *ProfessorController {
+	return &ProfessorController{repo: repo}
 }

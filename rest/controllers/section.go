@@ -7,16 +7,10 @@ import (
 	"time"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
-
+	"github.com/UTDNebula/nebula-api/shared"
 	"github.com/gin-gonic/gin"
-
-	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/mongo"
 )
-
-var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 
 // @Id				sectionSearch
 // @Router			/section [get]
@@ -48,40 +42,24 @@ var sectionCollection *mongo.Collection = configs.GetCollection("sections")
 // @Success		200								{object}	schema.APIResponse[[]schema.Section]	"A list of sections"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func SectionSearch(c *gin.Context) {
-
+func (h *SectionController) SectionSearch(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
-
-	var sections []schema.Section
-
 	// build query key value pairs (only one value per key)
 	query, err := getQuery[schema.Section]("Search", c)
 	if err != nil {
 		return
 	}
-
-	optionLimit, err := configs.GetOptionLimit(&query, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "offset is not type integer", err.Error())
+	offset, ok := searchOffset(c)
+	if !ok {
 		return
 	}
-
-	// get cursor for query results
-	cursor, err := sectionCollection.Find(ctx, query, optionLimit)
+	records, err := h.repo.Search(ctx, query, offset, configs.GetEnvLimit())
 	if err != nil {
 		respondWithInternalError(c, err)
 		return
 	}
-
-	// retrieve and parse all valid documents
-	if err = cursor.All(ctx, &sections); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	// return result
-	respond(c, http.StatusOK, "success", sections)
+	respond(c, http.StatusOK, "success", records)
 }
 
 // @Id				sectionById
@@ -93,31 +71,25 @@ func SectionSearch(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[schema.Section]	"A section"
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
-func SectionById(c *gin.Context) {
+func (h *SectionController) SectionById(c *gin.Context) {
+	// parse object id from id parameter
+	id, err := objectIDFromParam(c, "id")
+	if err != nil {
+		return
+	}
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
-
-	var section schema.Section
-
-	// parse object id from id parameter
-	query, err := getQuery[schema.Section]("ById", c)
-	if err != nil {
-		return
-	}
-
 	// find and parse matching section
-	err = sectionCollection.FindOne(ctx, query).Decode(&section)
-	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			respond(c, http.StatusNotFound, "error", "No sections with given ID")
-		} else {
-			respondWithInternalError(c, err)
-		}
+	record, err := h.repo.ByID(ctx, *id)
+	if errors.Is(err, shared.ErrNotFound) {
+		respond(c, http.StatusNotFound, "error", "No sections with given ID")
 		return
 	}
-
-	// return result
-	respond(c, http.StatusOK, "success", section)
+	if err != nil {
+		respondWithInternalError(c, err)
+		return
+	}
+	respond(c, http.StatusOK, "success", record)
 }
 
 // @Id				sectionCourseSearch
@@ -151,8 +123,8 @@ func SectionById(c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Course]	"A list of courses"
 // @Failure		500								{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]			"A string describing the error"
-func SectionCourseSearch(c *gin.Context) {
-	sectionCourse("Search", c)
+func (h *SectionController) SectionCourseSearch(c *gin.Context) {
+	respondRelated[schema.Section, schema.Course]("Search", c, h.repo.Courses, "Error offset is not type integer")
 }
 
 // @Id				sectionCourseById
@@ -165,48 +137,16 @@ func SectionCourseSearch(c *gin.Context) {
 // @Failure		500	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]			"A string describing the error"
 // @Failure		404	{object}	schema.APIResponse[string]			"A string describing the error"
-func SectionCourseById(c *gin.Context) {
-	sectionCourse("ById", c)
-}
-
-// Get an array of courses from sections, filtered based on the the flag
-func sectionCourse(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
-	defer cancel()
-
-	var sectionCourses []schema.Course
-	var sectionQuery bson.M
-	var err error
-	if sectionQuery, err = getQuery[schema.Section](flag, c); err != nil {
+func (h *SectionController) SectionCourseById(c *gin.Context) {
+	courses, ok := relationshipResults[schema.Section, schema.Course]("ById", c, h.repo.Courses, "Error offset is not type integer")
+	if !ok {
 		return
 	}
-
-	paginate, err := configs.GetAggregateLimit(&sectionQuery, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
+	if len(courses) == 0 {
+		respond(c, http.StatusNotFound, "error", "No section with given ID")
 		return
 	}
-
-	cursor, err := sectionCollection.Aggregate(ctx, buildSectionPipeline("courses", sectionQuery, paginate))
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-	if err = cursor.All(ctx, &sectionCourses); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	switch flag {
-	case "Search":
-		respond(c, http.StatusOK, "success", sectionCourses)
-	case "ById":
-		if len(sectionCourses) == 0 {
-			respond(c, http.StatusNotFound, "error", "No section with given ID")
-			return
-		}
-		respond(c, http.StatusOK, "success", sectionCourses[0])
-	}
+	respond(c, http.StatusOK, "success", courses[0])
 }
 
 // @Id				sectionProfessorSearch
@@ -240,8 +180,8 @@ func sectionCourse(flag string, c *gin.Context) {
 // @Success		200								{object}	schema.APIResponse[[]schema.Professor]	"A list of professor"
 // @Failure		500								{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400								{object}	schema.APIResponse[string]				"A string describing the error"
-func SectionProfessorSearch(c *gin.Context) {
-	sectionProfessor("Search", c)
+func (h *SectionController) SectionProfessorSearch(c *gin.Context) {
+	respondRelated[schema.Section, schema.Professor]("Search", c, h.repo.Professors, "offset is not type integer")
 }
 
 // @Id				sectionProfessorById
@@ -253,111 +193,13 @@ func SectionProfessorSearch(c *gin.Context) {
 // @Success		200	{object}	schema.APIResponse[[]schema.Professor]	"A list of professors"
 // @Failure		500	{object}	schema.APIResponse[string]				"A string describing the error"
 // @Failure		400	{object}	schema.APIResponse[string]				"A string describing the error"
-func SectionProfessorById(c *gin.Context) {
-	sectionProfessor("ById", c)
+func (h *SectionController) SectionProfessorById(c *gin.Context) {
+	respondRelated[schema.Section, schema.Professor]("ById", c, h.repo.Professors, "offset is not type integer")
 }
 
-// Get an array of professors from sections,
-func sectionProfessor(flag string, c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
-	defer cancel()
+// SectionController handles requests using a supplied repository.
+type SectionController struct{ repo shared.SectionRepo }
 
-	var sectionProfessors []schema.Professor
-	var sectionQuery bson.M
-	sectionQuery, err := getQuery[schema.Section](flag, c)
-	if err != nil {
-		return
-	}
-
-	paginate, err := configs.GetAggregateLimit(&sectionQuery, c)
-	if err != nil {
-		respond(c, http.StatusBadRequest, "Error offset is not type integer", err.Error())
-		return
-	}
-
-	cursor, err := sectionCollection.Aggregate(ctx, buildSectionPipeline("professors", sectionQuery, paginate))
-	if err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-	if err = cursor.All(ctx, &sectionProfessors); err != nil {
-		respondWithInternalError(c, err)
-		return
-	}
-
-	respond(c, http.StatusOK, "success", sectionProfessors)
-}
-
-// buildSectionPipeline builds the pipeline to aggregate courses or professors from filtered sections
-func buildSectionPipeline(endpoint string, sectionQuery bson.M, paginate map[string]bson.D) mongo.Pipeline {
-	baseStages := mongo.Pipeline{
-		// filter the sections
-		bson.D{{Key: "$match", Value: sectionQuery}},
-
-		// paginate the sections before pulling courses from those sections
-		paginate["former_offset"],
-		paginate["limit"],
-	}
-
-	var lookupStages mongo.Pipeline
-	switch endpoint {
-	case "courses":
-		lookupStages = mongo.Pipeline{
-			// lookup the course referenced by sections from the course collection
-			bson.D{{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "courses"},
-				{Key: "localField", Value: "course_reference"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "courses"},
-			}}},
-		}
-
-	case "professors":
-		lookupStages = mongo.Pipeline{
-			// lookup the professors referenced by sections from the course collection
-			bson.D{{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "professors"},
-				{Key: "localField", Value: "professors"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "professors"},
-			}}},
-		}
-
-	default:
-		panic("invalid endpoint for buildSectionPipeline: " + endpoint)
-	}
-
-	replaceStages := mongo.Pipeline{
-		// project to remove every other fields except for courses/professors
-		bson.D{{Key: "$project", Value: bson.D{
-			{Key: endpoint, Value: "$" + endpoint},
-		}}},
-
-		// unwind the courses/professors
-		bson.D{{Key: "$unwind", Value: bson.D{
-			{Key: "path", Value: "$" + endpoint},
-			{Key: "preserveNullAndEmptyArrays", Value: false},
-		}}},
-
-		// replace the combinations of id and course/professor with courses/professors entirely
-		bson.D{{Key: "$replaceWith", Value: "$" + endpoint}},
-
-		// remove duplicate courses/professors
-		bson.D{{Key: "$group", Value: bson.D{
-			{Key: "_id", Value: "$_id"},
-			{Key: "item", Value: bson.D{{Key: "$first", Value: "$$ROOT"}}},
-		}}},
-		bson.D{{Key: "$replaceWith", Value: "$item"}},
-	}
-
-	paginateStages := mongo.Pipeline{
-		// keep order deterministic between calls
-		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
-
-		// paginate the courses/professors
-		paginate["latter_offset"],
-		paginate["limit"],
-	}
-
-	return append(append(append(baseStages, lookupStages...), replaceStages...), paginateStages...)
+func NewSectionController(repo shared.SectionRepo) *SectionController {
+	return &SectionController{repo: repo}
 }

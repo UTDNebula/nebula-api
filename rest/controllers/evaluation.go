@@ -11,14 +11,11 @@ import (
 	"strings"
 	"sync"
 	"time"
-
 	"log"
+
 	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
-
 	"github.com/gin-gonic/gin"
-
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"go.mongodb.org/mongo-driver/bson"
@@ -26,7 +23,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var evaluationCollection *mongo.Collection = configs.GetCollection("evaluations")
+func evaluationCollection() *mongo.Collection { return configs.GetCollection("evaluations") }
 
 func EvalBySectionID(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -44,7 +41,7 @@ func EvalBySectionID(c *gin.Context) {
 	}
 
 	// First, check if we've already parsed an eval for this section before
-	err = evaluationCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&eval)
+	err = evaluationCollection().FindOne(ctx, bson.M{"_id": objId}).Decode(&eval)
 
 	// If not, perform on-demand scraping
 	if err != nil {
@@ -56,7 +53,7 @@ func EvalBySectionID(c *gin.Context) {
 		}
 
 		// Find and parse matching section
-		err = sectionCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
+		err = sectionCollection().FindOne(ctx, bson.M{"_id": objId}).Decode(&section)
 		if err != nil {
 			log.WriteError(err)
 			respondWithInternalError(c, err)
@@ -66,7 +63,7 @@ func EvalBySectionID(c *gin.Context) {
 		// Find and parse course associated with section
 		objId = section.Course_reference
 
-		err = courseCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
+		err = courseCollection().FindOne(ctx, bson.M{"_id": objId}).Decode(&course)
 		if err != nil {
 			log.WriteError(err)
 			respondWithInternalError(c, err)

@@ -1,12 +1,13 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"github.com/UTDNebula/nebula-api/rest/controllers"
+	"github.com/UTDNebula/nebula-api/shared"
+	"github.com/gin-gonic/gin"
 )
 
-func GradesRoute(router *gin.Engine) {
+func GradesRoute(router *gin.Engine, repo shared.GradesRepo) {
+	handler := controllers.NewGradesController(repo)
 	// All routes related to sections come here
 	gradesGroup := router.Group("/grades")
 
@@ -16,7 +17,7 @@ func GradesRoute(router *gin.Engine) {
 	// ---- gradesGroup.OPTIONS("semester", controllers.Preflight)
 	// ---- gradesGroup.OPTIONS("overall", controllers.Preflight)
 
-	gradesGroup.GET("semester", controllers.GradeAggregationSemester)
-	gradesGroup.GET("semester/sectionType", controllers.GradesAggregationSectionType)
-	gradesGroup.GET("overall", controllers.GradesAggregationOverall)
+	gradesGroup.GET("semester", handler.GradeAggregationSemester)
+	gradesGroup.GET("semester/sectionType", handler.GradesAggregationSectionType)
+	gradesGroup.GET("overall", handler.GradesAggregationOverall)
 }

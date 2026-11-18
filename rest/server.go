@@ -6,6 +6,7 @@ import (
 	"github.com/UTDNebula/nebula-api/rest/configs"
 	_ "github.com/UTDNebula/nebula-api/rest/docs"
 	"github.com/UTDNebula/nebula-api/rest/routes"
+	"github.com/UTDNebula/nebula-api/shared"
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
@@ -76,11 +77,16 @@ func main() {
 
 	// Connect Routes
 	routes.AcademicCalendarRoute(router)
-	routes.CourseRoute(router)
-	routes.SectionRoute(router)
-	routes.ProfessorRoute(router)
-	routes.CombinedRoute(router)
-	routes.GradesRoute(router)
+	courseRepo := shared.NewMongoCourseRepo(
+		configs.GetCollection("courses"),
+	)
+
+	routes.CourseRoute(router, courseRepo)
+
+	routes.SectionRoute(router, shared.NewMongoSectionRepo(configs.GetCollection("sections")))
+	routes.ProfessorRoute(router, shared.NewMongoProfessorRepo(configs.GetCollection("professors")))
+	routes.CombinedRoute(router, shared.NewMongoTrendsRepo(configs.GetCollection("trends_course_and_prof_sections")))
+	routes.GradesRoute(router, shared.NewMongoGradesRepo(configs.ConnectDB().Database("combinedDB")))
 	routes.AutocompleteRoute(router)
 	routes.StorageRoute(router)
 	routes.RoomsRoute(router)
