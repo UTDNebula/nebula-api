@@ -16,7 +16,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-var discountCollection *mongo.Collection = configs.GetCollection("discounts")
+func discountCollection() *mongo.Collection { return configs.GetCollection("discounts") }
 
 var discountCategories []string
 var discountCategoriesOnce sync.Once
@@ -57,7 +57,7 @@ func DiscountSearch(c *gin.Context) {
 		}
 
 		pipeline := buildFuzzySearchPipeline(params.Q)
-		cursor, err = discountCollection.Aggregate(ctx, pipeline)
+		cursor, err = discountCollection().Aggregate(ctx, pipeline)
 		if err != nil {
 			respondWithInternalError(c, err)
 			return
@@ -70,7 +70,7 @@ func DiscountSearch(c *gin.Context) {
 			return
 		}
 
-		cursor, err = discountCollection.Find(ctx, discountQuery)
+		cursor, err = discountCollection().Find(ctx, discountQuery)
 		if err != nil {
 			respondWithInternalError(c, err)
 			return
@@ -94,7 +94,7 @@ func fetchDiscountCategories() {
 		ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
 		defer cancel()
 
-		err := discountCollection.Distinct(ctx, "category", bson.M{}).Decode(&discountCategories)
+		err := discountCollection().Distinct(ctx, "category", bson.M{}).Decode(&discountCategories)
 		if err != nil {
 			panic(err)
 		}

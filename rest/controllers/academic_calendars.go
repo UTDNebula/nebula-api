@@ -6,16 +6,16 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/UTDNebula/nebula-api/rest/configs"
+	"github.com/UTDNebula/nebula-api/rest/schema"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
-
-	"github.com/UTDNebula/nebula-api/rest/configs"
-
-	"github.com/UTDNebula/nebula-api/rest/schema"
 )
 
-var academicCalendarsCollection *mongo.Collection = configs.GetCollection("academicCalendars")
+func academicCalendarsCollection() *mongo.Collection {
+	return configs.GetCollection("academicCalendars")
+}
 
 // AcademicCalendarsById returns an academic calendar by its string ID.
 //
@@ -39,7 +39,7 @@ func AcademicCalendarsById(c *gin.Context) {
 	query := bson.M{"_id": id}
 
 	// Find and parse matching academic calendar
-	err := academicCalendarsCollection.FindOne(ctx, query).Decode(&academicCalendar)
+	err := academicCalendarsCollection().FindOne(ctx, query).Decode(&academicCalendar)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No academic calendars with the given ID")
@@ -72,7 +72,7 @@ func AcademicCalendarsCurrent(c *gin.Context) {
 	query := bson.M{"timeline": "current"}
 
 	//find and parse matching academic calendar
-	err := academicCalendarsCollection.FindOne(ctx, query).Decode(&academicCalendar)
+	err := academicCalendarsCollection().FindOne(ctx, query).Decode(&academicCalendar)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			respond(c, http.StatusNotFound, "error", "No current academic calendars")

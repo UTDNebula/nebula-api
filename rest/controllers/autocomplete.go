@@ -6,16 +6,13 @@ import (
 	"time"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
-
 	"github.com/UTDNebula/nebula-api/rest/schema"
-
 	"github.com/gin-gonic/gin"
-
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-var DAGCollection *mongo.Collection = configs.GetCollection("DAG")
+func DAGCollection() *mongo.Collection { return configs.GetCollection("DAG") }
 
 // @Id				autocompleteDAG
 // @Router			/autocomplete/dag [get]
@@ -30,7 +27,7 @@ func AutocompleteDAG(c *gin.Context) {
 
 	var autocompleteDAG []schema.Autocomplete
 
-	cursor, err := DAGCollection.Find(ctx, bson.M{})
+	cursor, err := DAGCollection().Find(ctx, bson.M{})
 
 	if err != nil {
 		respondWithInternalError(c, err)
