@@ -82,7 +82,7 @@ func (r *sectionResolver) CourseReference(
 	ctx context.Context,
 	obj *model.Section,
 ) (*model.Course, error) {
-	return r.Query().Course(ctx, obj.CourseReference.ID)
+	return loaders.GetCourse(ctx, obj.CourseReference)
 }
 
 func (r *sectionResolver) Professors(ctx context.Context, obj *model.Section) ([]*model.Professor, error) {
