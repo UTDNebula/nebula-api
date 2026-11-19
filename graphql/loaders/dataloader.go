@@ -20,6 +20,7 @@ const (
 )
 
 type Loaders struct {
+	CourseLoader    *dataloadgen.Loader[bson.ObjectID, *model.Course]
 	SectionLoader   *dataloadgen.Loader[bson.ObjectID, *model.Section]
 	ProfessorLoader *dataloadgen.Loader[bson.ObjectID, *model.Professor]
 }
@@ -27,10 +28,12 @@ type Loaders struct {
 // NewLoaders instantiates data loaders for the middleware
 func NewLoaders() *Loaders {
 	// Define the dataloaders
+	courseReader := &courseReader{collection: configs.GetCollection("courses")}
 	sectionReader := &sectionReader{collection: configs.GetCollection("sections")}
 	professorReader := &professorReader{collection: configs.GetCollection("professors")}
 
 	return &Loaders{
+		CourseLoader:    dataloadgen.NewLoader(courseReader.getCourses, dataloadgen.WithWait(time.Millisecond)),
 		SectionLoader:   dataloadgen.NewLoader(sectionReader.getSections, dataloadgen.WithWait(time.Millisecond)),
 		ProfessorLoader: dataloadgen.NewLoader(professorReader.getProfessors, dataloadgen.WithWait(time.Millisecond)),
 	}
