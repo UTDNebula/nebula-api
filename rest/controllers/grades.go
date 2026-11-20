@@ -183,7 +183,7 @@ func gradesAggregation(flag string, c *gin.Context) {
 		}
 	}
 
-	professor := (first_name != "" || last_name != "")
+	professor := (q.FirstName != "" && q.LastName != "")
 
 	// Find internal_course_number associated with subject_prefix and course_number, which will be used later on
 	sampleCourseFind = bson.D{
