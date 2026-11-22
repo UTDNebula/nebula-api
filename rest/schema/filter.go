@@ -19,7 +19,9 @@ var (
 		reflect.TypeFor[primitive.ObjectID](): true,
 	}
 	ignoredParameters = map[string]bool{
-		"offset": true,
+		"offset":        true,
+		"former_offset": true,
+		"latter_offset": true,
 	}
 )
 
@@ -101,8 +103,8 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 		return nil
 	}
 
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
+	for field := range t.Fields() {
+		field := field
 		json, hasJson := field.Tag.Lookup("json")
 		if !hasJson {
 			return fmt.Errorf("exported field '%s.%s' missing json tag", t.Name(), field.Name)
@@ -142,7 +144,7 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 // Pointer types are allowed to recur once, i.e., only considered a loop when
 // the same pointer type appears twice in a row.
 func willCreateLoop(visited []reflect.Type, value reflect.Type) bool {
-	if value.Kind() != reflect.Ptr {
+	if value.Kind() != reflect.Pointer {
 		return false
 	}
 

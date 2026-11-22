@@ -295,6 +295,7 @@ func buildSectionPipeline(endpoint string, sectionQuery bson.M, paginate map[str
 		bson.D{{Key: "$match", Value: sectionQuery}},
 
 		// paginate the sections before pulling courses from those sections
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 		paginate["former_offset"],
 		paginate["limit"],
 	}

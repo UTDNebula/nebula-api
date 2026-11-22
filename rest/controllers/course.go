@@ -278,6 +278,7 @@ func buildCoursePipeline(endpoint string, courseQuery bson.M, paginate map[strin
 		bson.D{{Key: "$match", Value: courseQuery}},
 
 		// Skip to the offset, then limit to the number of courses
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 		paginate["former_offset"],
 		paginate["limit"],
 
