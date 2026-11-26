@@ -103,7 +103,7 @@ func main() {
 	routes.MazevoRoute(router)
 	routes.CalendarRoute(router)
 	routes.DegreesRoute(router)
-	routes.ClubRoute(router)
+	routes.ClubsRoute(router)
 	routes.DiscountRoutes(router)
 	routes.BudgetRoute(router)
 	routes.SemestersRoute(router)
