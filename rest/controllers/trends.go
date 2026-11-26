@@ -101,7 +101,7 @@ func trendsSectionSearch(flag string, c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	defer cursor.Close(ctx)
+	defer func() { _ = cursor.Close(ctx) }()
 
 	if err := cursor.All(ctx, &detailedSections); err != nil {
 		respondWithInternalError(c, err)

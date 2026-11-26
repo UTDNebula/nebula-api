@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
 	_ "github.com/UTDNebula/nebula-api/rest/docs"
@@ -48,6 +49,12 @@ func main() {
 	configs.ConnectDB()
 	configs.ConnectClubsDB()
 
+	// Create JSON file for /semesters endpoint
+	err := configs.CreateSemestersJSON()
+	if err != nil {
+		log.Fatalf("Unable to create Semesters JSON")
+	}
+
 	// Set up Sentry
 	if err := sentry.Init(sentry.ClientOptions{
 		Dsn:              configs.GetEnvSentryDSN(),
@@ -60,7 +67,9 @@ func main() {
 	// Configure Gin Router
 	router := gin.New()
 	// Get rid of "trusted all proxies" warning -- we don't care
-	router.SetTrustedProxies(nil)
+	if err := router.SetTrustedProxies(nil); err != nil {
+		return
+	}
 
 	// Enable CORS
 	router.Use(CORS)
@@ -73,6 +82,11 @@ func main() {
 
 	// Setup swagger-ui hosted
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// Redirect users to swagger documentation
+	router.GET("/", func(r *gin.Context) {
+		r.Redirect(http.StatusFound, "/swagger/index.html")
+	})
 
 	// Connect Routes
 	routes.AcademicCalendarRoute(router)
@@ -88,15 +102,19 @@ func main() {
 	routes.AstraRoute(router)
 	routes.MazevoRoute(router)
 	routes.CalendarRoute(router)
+	routes.DegreesRoute(router)
 	routes.ClubsRoute(router)
 	routes.DiscountRoutes(router)
 	routes.BudgetRoute(router)
+	routes.SemestersRoute(router)
 
 	// Retrieve the port string to serve traffic on
 	portString := configs.GetPortString()
 
 	// Serve Traffic
-	router.Run(portString)
+	if err := router.Run(portString); err != nil {
+		return
+	}
 }
 
 func CORS(c *gin.Context) {

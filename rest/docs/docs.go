@@ -1504,6 +1504,82 @@ const docTemplate = `{
                 }
             }
         },
+        "/degrees": {
+            "get": {
+                "description": "\"Returns paginated academic programs matching the query's string-typed key-value pairs. An areas_of_interest query matches any area in the program's areas_of_interest array.\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Degrees"
+                ],
+                "operationId": "degrees",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "The starting position of the current page of degrees (e.g. For starting at the 17th degree, offset=16).",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The name of the academic program",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The school offering the academic program",
+                        "name": "school",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The level of one degree option, such as BS or MS",
+                        "name": "degree_options.level",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The public URL of one degree option",
+                        "name": "degree_options.public_url",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The Classification of Instructional Programs code of one degree option",
+                        "name": "degree_options.cip_code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "One area of interest for the academic program",
+                        "name": "areas_of_interest",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of academic programs",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_schema_AcademicProgram"
+                        }
+                    },
+                    "400": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/discountPrograms": {
             "get": {
                 "description": "\"Returns list of discounts filtered using field-specific keyword searches or full-text search.\"",
@@ -3503,6 +3579,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/semesters": {
+            "get": {
+                "description": "\"Returns a list of all available terms in CourseBook, sorted by recency\"",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Other"
+                ],
+                "operationId": "semesters",
+                "responses": {
+                    "200": {
+                        "description": "A string list of all available terms, lowercased",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-array_string"
+                        }
+                    },
+                    "500": {
+                        "description": "A string describing the error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/storage/{bucket}": {
             "get": {
                 "description": "\"Get info on a bucket. This route is restricted to only Nebula Labs internal Projects.\"",
@@ -3823,6 +3925,23 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.APIResponse-array_schema_AcademicProgram": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.AcademicProgram"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.APIResponse-array_schema_Autocomplete": {
             "type": "object",
             "properties": {
@@ -4000,6 +4119,23 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.TypedGradeData"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.APIResponse-array_string": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 },
                 "message": {
@@ -4418,6 +4554,29 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "schema.AcademicProgram": {
+            "type": "object",
+            "properties": {
+                "areas_of_interest": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "degree_options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.Degree"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "school": {
+                    "type": "string"
                 }
             }
         },
@@ -4900,6 +5059,26 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.Degree": {
+            "type": "object",
+            "properties": {
+                "cip_code": {
+                    "type": "string"
+                },
+                "joint_program": {
+                    "type": "boolean"
+                },
+                "level": {
+                    "type": "string"
+                },
+                "public_url": {
+                    "type": "string"
+                },
+                "stem_designated": {
+                    "type": "boolean"
                 }
             }
         },
