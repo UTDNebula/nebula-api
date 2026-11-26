@@ -70,7 +70,7 @@ func GetOptionLimit(query *bson.M, c *gin.Context) (*options.FindOptionsBuilder,
 	var offset int64
 	var err error
 
-	var limit int64 = GetEnvLimit()
+	var limit = GetEnvLimit()
 
 	if c.Query("offset") == "" {
 		offset = 0 // default value for offset
@@ -137,7 +137,8 @@ func ConnectClubsDB() *sql.DB {
 		// ping the database
 		err = db.PingContext(ctx)
 		if err != nil {
-			log.Panic("Unable to ping database.")
+			log.Panic("Unable to ping database")
+			return
 		}
 
 		log.Println("Connected to Clubs DB.")

@@ -38,3 +38,6 @@ semesters.json
 
 # API executables
 rest-api
+
+# mac
+**/.DS_Store

@@ -48,7 +48,7 @@ func Degrees(c *gin.Context) {
 		respondWithInternalError(c, err)
 		return
 	}
-	defer cursor.Close(ctx)
+	defer func() { _ = cursor.Close(ctx) }()
 
 	degrees := make([]schema.AcademicProgram, 0)
 	if err = cursor.All(ctx, &degrees); err != nil {
