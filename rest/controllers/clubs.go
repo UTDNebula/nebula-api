@@ -295,6 +295,10 @@ func constructEventsQuery(params schema.ClubsEventQueryParams, clubId string, ar
 	return
 }
 
+// Constructs the SQL query for used tags from Clubs, given search query parameters.
+// Initialize argcInit with 0 by default, unless you are using the returned query in a nested query with additional arguments in the prepared statement.
+//
+// Returns the query with placeholders, the placeholder args, and the next free argument index.
 func constructTagsQuery(params schema.ClubsTagsQueryParams, argcInit int) (query string, args []any, argc int) {
 	params.TrimSpace()
 
