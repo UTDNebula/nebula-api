@@ -421,6 +421,8 @@ definitions:
     type: object
   schema.AcademicProgram:
     properties:
+      _id:
+        type: string
       areas_of_interest:
         items:
           type: string

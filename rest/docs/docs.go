@@ -4560,6 +4560,9 @@ const docTemplate = `{
         "schema.AcademicProgram": {
             "type": "object",
             "properties": {
+                "_id": {
+                    "type": "string"
+                },
                 "areas_of_interest": {
                     "type": "array",
                     "items": {

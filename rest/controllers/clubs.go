@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"net/http"
 	"strings"
@@ -408,7 +407,7 @@ func ClubById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase = configs.ConnectClubsDB()
 	id := c.Param("id")
 
 	var raw []byte
@@ -464,7 +463,7 @@ func ClubEvents(c *gin.Context) {
 		return
 	}
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase = configs.ConnectClubsDB()
 
 	eventsQuery, eventsArgs, _ := constructEventsQuery(params, id, 1)
 
@@ -472,7 +471,7 @@ func ClubEvents(c *gin.Context) {
 		SELECT
 			EXISTS (SELECT 1 FROM club WHERE club.id = $1) AS club_exists,
 			(` + eventsQuery + `) AS events;`
-	var args []any = append([]any{id}, eventsArgs...)
+	var args = append([]any{id}, eventsArgs...)
 
 	// // DEBUGGING
 	// fmt.Println("QUERY:", query)
@@ -529,7 +528,7 @@ func Clubs(c *gin.Context) {
 		return
 	}
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase = configs.ConnectClubsDB()
 
 	query, args, _ := constructClubsQuery(params, 0)
 
@@ -567,7 +566,7 @@ func ClubsEventById(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase = configs.ConnectClubsDB()
 	id := c.Param("id")
 
 	var raw []byte
@@ -622,7 +621,7 @@ func ClubsEvents(c *gin.Context) {
 		return
 	}
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase = configs.ConnectClubsDB()
 
 	query, args, _ := constructEventsQuery(params, "", 0)
 
@@ -671,7 +670,7 @@ func ClubsTags(c *gin.Context) {
 		return
 	}
 
-	var clubsDatabase *sql.DB = configs.ConnectClubsDB()
+	var clubsDatabase = configs.ConnectClubsDB()
 
 	query, args, _ := constructTagsQuery(params, 0)
 
