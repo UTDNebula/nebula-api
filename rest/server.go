@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/UTDNebula/nebula-api/rest/configs"
 	_ "github.com/UTDNebula/nebula-api/rest/docs"
@@ -80,6 +81,11 @@ func main() {
 	// Setup swagger-ui hosted
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	// Redirect users to swagger documentation
+	router.GET("/", func(r *gin.Context) {
+		r.Redirect(http.StatusFound, "/swagger/index.html")
+	})
+
 	// Connect Routes
 	routes.AcademicCalendarRoute(router)
 	routes.CourseRoute(router)
@@ -94,6 +100,7 @@ func main() {
 	routes.AstraRoute(router)
 	routes.MazevoRoute(router)
 	routes.CalendarRoute(router)
+	routes.DegreesRoute(router)
 	routes.ClubRoute(router)
 	routes.DiscountRoutes(router)
 	routes.BudgetRoute(router)
