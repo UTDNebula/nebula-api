@@ -23,7 +23,7 @@ func TestCourseById(t *testing.T) {
 	}{
 		{
 			name:                    "ReturnCourseSuccessfully",
-			id:                      "6a8f623120b48b6efe790172",
+			id:                      "6afa8ba7c82a15eca4f610bb",
 			expectedStatus:          http.StatusOK,
 			expectedResponseMessage: "success",
 		},

@@ -299,6 +299,7 @@ func buildProfessorPipeline(endpoint string, professorQuery bson.M, paginate map
 		bson.D{{Key: "$match", Value: professorQuery}},
 
 		// paginate the professors before pulling the courses/sections from those professor
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "_id", Value: 1}}}},
 		paginate["former_offset"],
 		paginate["limit"],
 
