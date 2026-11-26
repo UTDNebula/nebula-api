@@ -104,7 +104,6 @@ func recBuild(t reflect.Type, prefix string, queryableMap map[string]bool, visit
 	}
 
 	for field := range t.Fields() {
-		field := field
 		json, hasJson := field.Tag.Lookup("json")
 		if !hasJson {
 			return fmt.Errorf("exported field '%s.%s' missing json tag", t.Name(), field.Name)
