@@ -33,6 +33,9 @@ bin/
 go.work
 go.work.sum
 
+# semesters json
+semesters.json
+
 # API executables
 rest-api
 
