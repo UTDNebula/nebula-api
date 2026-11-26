@@ -418,7 +418,7 @@ func projectGradeDistributionStage(flag string, withSection bool) bson.D {
 			{Key: "case", Value: bson.D{
 				{Key: "$regexMatch", Value: bson.D{
 					{Key: "input", Value: regexInput},
-					{Key: "regex", Value: typeRegex},
+					{Key: "regex", Value: "^" + typeRegex + "$"},
 				}},
 			}},
 			{Key: "then", Value: typeStrings[i]},
