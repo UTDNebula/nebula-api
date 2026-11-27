@@ -1048,6 +1048,8 @@ definitions:
         type: string
       internal_class_number:
         type: string
+      latest_enrollment:
+        $ref: '#/definitions/schema.SectionEnrollment'
       meetings:
         items:
           $ref: '#/definitions/schema.Meeting'
@@ -1071,6 +1073,23 @@ definitions:
         items:
           $ref: '#/definitions/schema.Assistant'
         type: array
+    type: object
+  schema.SectionEnrollment:
+    properties:
+      available_seats:
+        type: integer
+      enrolled_total:
+        description: 'includes cross-listed sections (e.g. CS/CE 2336: 6 + 22 = 28).'
+        type: integer
+      section_reference:
+        type: string
+      status:
+        type: string
+      updated_at:
+        description: Term scraping completion time
+        type: string
+      waitlist:
+        type: integer
     type: object
   schema.SectionNumberProfessors:
     properties:
@@ -3026,6 +3045,11 @@ paths:
         in: query
         name: instruction_mode
         type: string
+      - description: The latest CourseBook enrollment status (may be out of date).
+          Most are OPEN or CLOSED/FULL with few exceptions
+        in: query
+        name: latest_enrollment.status
+        type: string
       - description: The start date of one of the section's meetings
         in: query
         name: meetings.start_date
@@ -3257,6 +3281,11 @@ paths:
         in: query
         name: instruction_mode
         type: string
+      - description: The latest CourseBook enrollment status (may be out of date).
+          Most are OPEN or CLOSED/FULL with few exceptions
+        in: query
+        name: latest_enrollment.status
+        type: string
       - description: The start date of one of the section's meetings
         in: query
         name: meetings.start_date
@@ -3374,6 +3403,11 @@ paths:
       - description: The instruction modality for this section
         in: query
         name: instruction_mode
+        type: string
+      - description: The latest CourseBook enrollment status (may be out of date).
+          Most are OPEN or CLOSED/FULL with few exceptions
+        in: query
+        name: latest_enrollment.status
         type: string
       - description: The start date of one of the section's meetings
         in: query

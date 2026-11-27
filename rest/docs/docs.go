@@ -2617,6 +2617,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "The latest CourseBook enrollment status (may be out of date). Most are OPEN or CLOSED/FULL with few exceptions",
+                        "name": "latest_enrollment.status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "The start date of one of the section's meetings",
                         "name": "meetings.start_date",
                         "in": "query"
@@ -2789,6 +2795,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "The latest CourseBook enrollment status (may be out of date). Most are OPEN or CLOSED/FULL with few exceptions",
+                        "name": "latest_enrollment.status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "The start date of one of the section's meetings",
                         "name": "meetings.start_date",
                         "in": "query"
@@ -2957,6 +2969,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "The instruction modality for this section",
                         "name": "instruction_mode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The latest CourseBook enrollment status (may be out of date). Most are OPEN or CLOSED/FULL with few exceptions",
+                        "name": "latest_enrollment.status",
                         "in": "query"
                     },
                     {
@@ -5157,6 +5175,9 @@ const docTemplate = `{
                 "internal_class_number": {
                     "type": "string"
                 },
+                "latest_enrollment": {
+                    "$ref": "#/definitions/schema.SectionEnrollment"
+                },
                 "meetings": {
                     "type": "array",
                     "items": {
@@ -5190,6 +5211,31 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/schema.Assistant"
                     }
+                }
+            }
+        },
+        "schema.SectionEnrollment": {
+            "type": "object",
+            "properties": {
+                "available_seats": {
+                    "type": "integer"
+                },
+                "enrolled_total": {
+                    "description": "includes cross-listed sections (e.g. CS/CE 2336: 6 + 22 = 28).",
+                    "type": "integer"
+                },
+                "section_reference": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "description": "Term scraping completion time",
+                    "type": "string"
+                },
+                "waitlist": {
+                    "type": "integer"
                 }
             }
         },
